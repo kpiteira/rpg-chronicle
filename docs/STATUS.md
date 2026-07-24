@@ -23,7 +23,8 @@ analysis engine has been selected.
 
 ## Accepted facts
 
-- No specialist branch or durable specialist finding has been integrated yet.
+- No specialist goal has yet completed the full issue → Copilot-reviewed PR → GitHub
+  merge lifecycle.
 - No public benchmark excerpt or provisional real transcription engine is selected.
 - The canonical schema is version `0.1` and intentionally narrow.
 - The existing analysis is declared fixture truth, not generated model output.
@@ -33,25 +34,22 @@ analysis engine has been selected.
 - The bootstrap installer excludes Git metadata and local caches and never overwrites
   files already present in a target checkout.
 
-## Parallel focus
+## Goal portfolio
 
-| Role | Start item | Integration dependency |
-|---|---|---|
-| Reuse research | `R01` component scorecard | Needs benchmark criteria; can begin from documented evaluation dimensions |
-| Benchmark research | `B01` manifest schema and candidates | Independent; unblocks public-source convergence |
-| Review and analysis | `A01` analysis/review contract | Uses the existing synthetic canonical fixture |
-| Vault discovery | `V01` sanitized vault-structure report | Requires configured external path; falls back to contract work if unavailable |
+GitHub Issues labeled `goal:active` are the live source of specialist assignments.
+`docs/GOALS.md` defines discovery and activation. This status document intentionally
+does not mirror issue-by-issue assignment state.
 
 ## Integration focus
 
-The next convergence point is `I01`: replace the source-specific fixture path with one
-public excerpt and provisional processor while retaining the canonical/review boundary.
-Integration must wait for evidence from at least `B01`, `R01`, and `A01`, but the lead
-can refine adapters and validation without selecting those outputs prematurely.
+The next convergence outcome is a public excerpt processed through the canonical and
+review boundaries. The TPM should activate coarse specialist goals that independently
+advance source evidence, processor evidence, and analysis/review contracts without
+decomposing them into implementation tasks.
 
 ## Known blockers
 
-- GitHub issues, assignments, and milestones have not yet been seeded from the
-  bootstrap backlog, so `docs/BACKLOG.md` remains the authoritative work queue.
+- GitHub goal labels, milestones, and active goal issues must be configured before
+  specialist `/goal` invocations can resolve work.
 - Vault discovery may lack a configured private path. This does not block `V02`,
   the vault-neutral campaign-change contract and safety policy.

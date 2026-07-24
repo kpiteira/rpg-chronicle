@@ -1,73 +1,124 @@
 # Contributing
 
-## Before starting
+## Non-negotiable branch rule
 
-Read `AGENTS.md`, your role brief, `docs/STATUS.md`, and the selected item in
-`docs/BACKLOG.md`. Confirm the item is unblocked and does not duplicate work visible
-in another branch or worktree.
+No agent commits or merges directly to local or remote `main`. Every change uses a
+branch and a GitHub pull request, including documentation, governance, and TPM changes.
 
-Use a focused branch:
-
-```text
-codex/<role-id>/<backlog-id>-<short-slug>
-```
-
-Examples:
+Specialist goal branches use:
 
 ```text
-codex/benchmark-research/B01-corpus-manifest
-codex/review-analysis/A01-review-contract
+codex/<role-id>/<goal-issue-number>-<short-slug>
 ```
 
-## Scope and repository safety
+Create them from current remote `main`, not a stale local branch:
 
-- Preserve product and architecture boundaries.
-- Keep downloaded recordings, private transcripts, real vault contents, model files,
-  secrets, and machine-specific configuration out of Git.
-- Commit source URLs, licensing notes, scripts, schemas, sanitized fixtures, and
-  aggregate results when reproducible.
-- Do not mix drive-by cleanup with the assigned backlog item.
-- Do not introduce a foundational abstraction without a decision record.
+```bash
+git fetch origin
+git switch -c codex/<role-id>/<issue>-<slug> origin/main
+```
 
-## Verification
+## Before implementation
 
-Run checks proportional to the change. The baseline repository checks are:
+For a specialist `/goal`:
+
+1. resolve exactly one open active goal issue for the role;
+2. read the issue, milestone, linked context, and discussion;
+3. check existing branches and PRs for duplicate work;
+4. comment on the issue that execution has started;
+5. inspect the repository and choose an autonomous internal plan.
+
+Keep private recordings, transcripts, vaults, downloaded copyrighted media, models,
+secrets, caches, and machine configuration outside Git.
+
+## Commits and verification
+
+Make focused commits that trace to the goal outcome. Update decisions, risks, schemas,
+fixtures, and docs with the implementation they explain.
+
+Baseline checks:
 
 ```bash
 uv sync --group dev
 uv run pytest -q
 uv run ruff check .
+git diff --check
 ```
 
-Research-only changes must still validate structured files and run any probe or
-manifest checks they introduce. Documentation changes must leave links, role names,
-backlog IDs, and commands internally consistent.
+Add proportional product, benchmark, schema, privacy, or recovery evidence required by
+the goal. Implementer assertions are not acceptance evidence.
 
-## Commit and pull request
+## Open the pull request
 
-Prefer a small number of intentional commits. A pull request should state:
+Push the branch and open a PR against `main`. The PR must:
 
-- primary backlog ID and milestone;
-- outcome in user/product terms;
-- files or contracts changed;
-- reproducible verification;
-- privacy/license review where applicable;
-- risks, uncertainty, and rejected alternatives;
-- cross-role follow-ups;
-- screenshots or sample output when the user-visible result changes.
+- use `Closes #<goal-number>`;
+- describe the outcome in product/program terms;
+- map evidence to goal acceptance criteria;
+- identify architecture, privacy, license, risk, and follow-up implications;
+- contain only the active goal's coherent scope.
 
-Implementing-agent claims are not acceptance evidence. The integration lead verifies
-the artifact or reruns the evidence before integration.
+Do not merge yet.
 
-## Handoff format
+## Copilot Code Review loop
 
-```text
-Backlog:
-Branch/commit:
-Outcome:
-Artifacts:
-Verification:
-Risks/uncertainty:
-Integration notes:
-Recommended next step:
+The specialist owns the complete loop:
+
+1. request GitHub Copilot Code Review on the PR;
+2. wait for the review to finish;
+3. inspect every top-level and inline comment, including unresolved-thread state;
+4. classify each comment as:
+   - **implement** — correct and in scope;
+   - **reject** — incorrect or harmful, answered with concrete evidence;
+   - **defer** — valid but independently scoped, answered with a linked follow-up issue
+     or explicit TPM-goal candidate;
+   - **already addressed/duplicate** — answer with the relevant code or thread;
+5. implement justified feedback and rerun relevant checks;
+6. reply to every rejected, deferred, or non-obvious resolution;
+7. request another Copilot review when material code changed, the review requested
+   changes, or confidence otherwise requires it;
+8. resolve threads only after the implementation or response actually addresses them.
+
+Never apply a reviewer suggestion mechanically when it conflicts with product intent,
+architecture, evidence, safety, or goal scope.
+
+With GitHub CLI, request the initial review or a re-review using:
+
+```bash
+gh pr edit <pr-number> --add-reviewer @copilot
 ```
+
+Copilot leaves a comment review rather than an approval. Its completion is review
+evidence, not proof that the PR is correct or permission to skip independent checks.
+
+## Merge through GitHub
+
+The specialist may merge only when:
+
+- goal acceptance evidence passes;
+- required checks pass;
+- every review comment has been triaged and addressed;
+- any required re-review is complete;
+- the PR is current and GitHub reports it mergeable;
+- privacy and licensing checks are satisfied.
+
+Merge using GitHub, not local `git merge`. Then verify:
+
+- remote `main` contains the merge;
+- the goal issue closed;
+- no active label remains on another open goal for the same specialist;
+- the merged outcome and important follow-ups are durable.
+
+Finally, report completion to the user. The user decides when to notify the TPM.
+
+## Pull-request review record
+
+The PR description or comments should preserve:
+
+- goal and milestone;
+- outcome and changed contracts;
+- exact verification;
+- Copilot review request and completion;
+- implemented, rejected, and deferred feedback;
+- architecture/decision/risk impact;
+- follow-up goal candidates.

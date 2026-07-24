@@ -6,11 +6,17 @@ The public GitHub repository is the software and durable knowledge home. Codex i
 
 ## Parallel roles
 
-- Integration lead: owns the runnable product and convergence.
+- Technical Program Manager: owns milestones, architecture coherence, priorities,
+  dependencies, and substantial specialist goals.
 - Reuse research: inspects and probes reusable projects and engines.
 - Benchmark research: builds the reproducible public-audio evaluation corpus.
 - Review and analysis: builds hierarchical RPG understanding and summary-first review.
 - Vault discovery: studies an external reference vault and defines safe integration contracts.
+
+Specialists are long-lived agents with one active GitHub goal each. They autonomously
+own implementation and the complete reviewed pull-request lifecycle. The user notifies
+the TPM after a specialist goal merges; the TPM assesses milestone progress and creates
+the next substantial goal when appropriate.
 
 ## Product maturity
 
@@ -40,7 +46,10 @@ Plan against August 11, 2026. August 18 is extra hardening time if the live sess
 
 ## Integration rule
 
-Research and implementation run concurrently. Each specialist produces durable outputs that can be reviewed and integrated. The product must remain runnable as capabilities replace fixtures or borrowed components.
+Research and implementation run concurrently. Each specialist produces durable outputs
+through a GitHub pull request that closes its active goal. The product must remain
+runnable as capabilities replace fixtures or borrowed components. No agent commits or
+merges directly to `main`.
 
 ## Initial convergence point
 

@@ -30,4 +30,4 @@ rsync -a --ignore-existing \
   "$SOURCE_DIR"/ "$TARGET_DIR"/
 
 echo "Bootstrap copied into $TARGET_DIR without overwriting existing files."
-echo "Review skipped/conflicting files, then commit the intended foundation."
+echo "Review skipped/conflicting files, then commit on a branch and open a GitHub PR."

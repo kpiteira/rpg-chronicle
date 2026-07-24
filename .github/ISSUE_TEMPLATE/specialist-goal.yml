@@ -1,0 +1,86 @@
+name: Specialist goal
+description: A substantial autonomous outcome for one long-lived specialist
+title: "[GOAL] "
+labels:
+  - goal:proposed
+body:
+  - type: dropdown
+    id: specialist
+    attributes:
+      label: Specialist
+      description: Apply the matching agent label before activation.
+      options:
+        - reuse-research
+        - benchmark-research
+        - review-analysis
+        - vault-discovery
+    validations:
+      required: true
+  - type: input
+    id: milestone
+    attributes:
+      label: Milestone
+      description: Assign the matching GitHub milestone as well.
+      placeholder: M1 — R0 public vertical slice
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What coherent product or program result will exist when this goal is complete?
+    validations:
+      required: true
+  - type: textarea
+    id: why_now
+    attributes:
+      label: Why now
+      description: Explain milestone value, priority, and dependencies this unlocks.
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Scope and boundaries
+      description: State owned scope, exclusions, architecture constraints, and privacy/license limits.
+    validations:
+      required: true
+  - type: textarea
+    id: outputs
+    attributes:
+      label: Durable outputs
+      description: Name expected repository, research, contract, or evaluation artifacts without prescribing implementation tasks.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance evidence
+      description: Define independently reproducible evidence that proves the outcome.
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies and risks
+      description: Record known upstream state, cross-workstream consumers, and material risks.
+  - type: textarea
+    id: product_input
+    attributes:
+      label: Genuine product-input triggers
+      description: Identify consequential product choices that may require asking the user. Write "None known" when appropriate.
+    validations:
+      required: true
+  - type: checkboxes
+    id: quality
+    attributes:
+      label: Goal quality gate
+      options:
+        - label: This is one substantial outcome, not a stream of small tasks.
+          required: true
+        - label: The specialist can choose and sequence its own implementation.
+          required: true
+        - label: Exactly one agent label and one lifecycle label will be applied.
+          required: true
+        - label: Completion requires a reviewed GitHub PR that closes this issue.
+          required: true

@@ -10,8 +10,8 @@ Create a reproducible evaluation corpus and harness that reflects the path from 
 - `docs/PRODUCT.md`
 - `docs/EVALUATION.md`
 - `docs/OPERATING_MODEL.md`
+- `docs/GOALS.md`
 - `docs/STATUS.md`
-- `docs/BACKLOG.md`
 - `config/paths.example.yaml`
 - `CONTRIBUTING.md`
 
@@ -21,22 +21,20 @@ You own reproducible evaluation inputs and result definitions. You document sour
 license, preparation, truth annotations, recording conditions, and metrics. You do
 not choose a processor independently of the comparison evidence.
 
-## Start now
+## On `/goal`
 
-Take `B01` from `docs/BACKLOG.md`.
-
-1. Inspect existing benchmark fixtures and manifest guidance.
-2. Define the smallest schema that supports reproducibility, privacy/license review,
-   source conditions, important entities/events, and later product-level measurement.
-3. Select at least two contrasting candidates and verify their URLs and timestamps.
-4. Recommend one R0 excerpt without committing downloaded media.
+Resolve the single open issue labeled `agent:benchmark-research` and `goal:active`, then
+follow the repository `/goal` protocol. Own the complete evaluation outcome described
+by the issue, including reproducibility and rights evidence, without waiting for a
+stream of TPM instructions.
 
 Do not optimize for corpus size. Optimize for diagnostic diversity.
 
-## Handoff gate
+## Goal and PR gate
 
 - Manifests validate with a repository command.
 - Source and license/redistribution claims are explicit and access-dated.
 - Candidate diversity is explained against corpus tiers and risks.
 - Generated/downloaded paths are ignored.
-- The handoff gives reuse research a stable input for `R02`.
+- The PR closes the active goal and completes the Copilot review loop.
+- Cross-workstream consumers can use the merged artifact without a chat relay.
