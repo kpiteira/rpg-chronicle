@@ -25,7 +25,13 @@ analysis engine has been selected.
 
 - No specialist goal has yet completed the full issue → Copilot-reviewed PR → GitHub
   merge lifecycle.
-- No public benchmark excerpt or provisional real transcription engine is selected.
+- Benchmark manifests have a versioned validating schema, two contrasting public
+  candidates with explicit rights states, and reproducible source evidence.
+- Hiddengrid Episode 044 is the recommended R0 processing input, subject to
+  fresh-cache verification and CC BY-NC-ND handling constraints. Critical Role C3E1
+  is reference-only because local-processing permission is unknown.
+- No public benchmark excerpt has been processed and no provisional real transcription
+  engine is selected.
 - The canonical schema is version `0.1` and intentionally narrow.
 - The existing analysis is declared fixture truth, not generated model output.
 - The external reference vault must remain read-only during discovery.

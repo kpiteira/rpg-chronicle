@@ -1,0 +1,64 @@
+{
+  "schema_version": "0.1",
+  "id": "hiddengrid-swc-ep044-tower-play",
+  "title": "Hiddengrid Episode 044: Maria Mercurial session 6, Tower Play",
+  "corpus_tier": "amateur_online",
+  "source": {
+    "landing_url": "https://www.hiddengrid.com/category/podcast/feed/",
+    "media_url": "https://www.hiddengrid.com/wp-content/Podcast/HIDDENGRID_EP044_S028_P01_140524.mp3",
+    "publisher": "Hiddengrid: The Sixth World Chronicles",
+    "published_at": "2014-05-24",
+    "accessed_at": "2026-07-24",
+    "episode_duration_ms": 7954009
+  },
+  "excerpt": {
+    "start_ms": 0,
+    "end_ms": 600000,
+    "timestamp_basis": "published_media_file",
+    "verification": "A 2026-07-24 fetch returned a 127266240-byte MP3 lasting 7954.009375 seconds (SHA-256 2a0f5272568b772fe9bcfd9371231484b153dc79e755564490a69b2552ac37e9); the 0–600 second window is within the published file."
+  },
+  "recording_conditions": {
+    "capture_layout": "unknown",
+    "production": "edited",
+    "expected_physical_speakers": null,
+    "overlap": "unknown",
+    "music_or_effects": true,
+    "observations": "Independent full-cast Shadowrun actual-play podcast. Capture topology and speaker count require verification; it should be less acoustically controlled than the studio candidate."
+  },
+  "references": {
+    "caption_or_transcript": "none",
+    "speaker_labels": false,
+    "annotation_status": "none"
+  },
+  "truth": {
+    "important_entities": [
+      {"label": "Maria Mercurial", "kind": "character", "status": "provisional"}
+    ],
+    "important_events": [
+      {
+        "label": "Session 6 tower sequence begins.",
+        "kind": "event",
+        "status": "provisional"
+      }
+    ],
+    "notes": "Only episode-title targets are recorded at B01. B02 must listen, identify speakers, and create evidence-timestamped truth before this candidate is scored."
+  },
+  "rights": {
+    "copyright_holder": "Hiddengrid contributors; Shadowrun rights remain with The Topps Company, Inc.",
+    "license": "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International",
+    "license_url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "local_processing": "permitted",
+    "redistribution": "restricted",
+    "review_notes": "The source site applies CC BY-NC-ND 4.0 and separately identifies Topps ownership of Shadowrun material. For R0, retain the original privately, process noncommercially, attribute the source, and select the time window logically. Do not publish a clip, modified audio, or transcript without further rights review.",
+    "accessed_at": "2026-07-24"
+  },
+  "selection": {
+    "r0_status": "recommended",
+    "diagnostic_value": "An explicitly licensed, directly downloadable independent actual-play source provides a reproducible first real probe and contrasts with polished studio production.",
+    "risks": [
+      "NoDerivatives makes redistribution of a clipped or transformed artifact unsafe without permission.",
+      "Capture layout, speaker count, and excerpt truth content are not yet independently verified.",
+      "It is an online podcast, not the target single-room iPad condition."
+    ]
+  }
+}
