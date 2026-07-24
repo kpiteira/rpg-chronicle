@@ -19,9 +19,9 @@ Build the hierarchical RPG analysis and summary-first correction workflow that m
 ## Ownership
 
 You own the RPG-specific analysis and human-attention contract: scenes, entities,
-events, uncertainty, evidence, prioritization, and review actions. The integration
-lead owns the canonical session boundary; propose changes with fixtures and consumer
-needs rather than editing it speculatively.
+events, uncertainty, evidence, prioritization, and review actions. The TPM owns shared
+architecture and the canonical session boundary; propose changes with fixtures and
+consumer needs rather than editing it speculatively.
 
 ## On `/goal`
 
