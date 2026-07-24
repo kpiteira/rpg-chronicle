@@ -1,88 +1,114 @@
 # Project operating model
 
-## Purpose
+## Model
 
-Four specialist workstreams run in parallel while the integration lead keeps one
-continuously runnable product. Repository artifacts, not agent memory or chat, are
-the coordination boundary.
+The project uses a goal-driven, asynchronous model:
+
+- the user sets product direction and provides genuinely necessary product input;
+- the Technical Program Manager owns milestones, architecture coherence, priorities,
+  dependencies, and coarse specialist goals;
+- long-lived specialists autonomously execute one substantial active goal each;
+- GitHub Issues are the goal control plane;
+- GitHub pull requests are the implementation, review, and merge control plane;
+- repository documents are shared durable context.
+
+The TPM does not manually relay messages between agents. Specialists communicate
+through merged contracts, fixtures, research, decisions, risks, and linked GitHub
+artifacts.
 
 ## Ownership
 
-| Workstream | Owns | Produces | Does not own |
-|---|---|---|---|
-| Reuse research | External component evaluation | Scorecards, probes, license notes, recommendations, replacement triggers | Canonical product model |
-| Benchmark research | Evaluation corpus and measurement inputs | Manifests, fetch/clip tooling, annotations, result schemas | Selecting a winner without evidence |
-| Review and analysis | RPG understanding and attention UX | Analysis contracts, fixtures, ranked review packages, attention metrics | ASR engine internals or vault layout |
-| Vault discovery | External-vault understanding and safe export needs | Sanitized structural fixtures, campaign-change contract, safety policy | Modifying the real vault |
-| Integration lead | Runnable product and convergence | Canonical boundaries, integrated increments, acceptance decisions, status | Replacing specialist evidence with intuition |
+| Role | Owns | Does not own |
+|---|---|---|
+| TPM | Milestones, architecture coherence, goal portfolio, prioritization, dependencies, outcome assessment | Specialist implementation or PR execution |
+| Reuse research | Reusable-component evidence, probes, licensing, recommendations, replacement triggers | Canonical product boundaries or final prioritization |
+| Benchmark research | Evaluation corpus, preparation reproducibility, annotations, result definitions | Processor selection without comparative evidence |
+| Review and analysis | RPG understanding, evidence, uncertainty, attention-budget UX | ASR internals or vault layout |
+| Vault discovery | Vault evidence, sanitized structures, campaign-change and safety contracts | Modifying the real vault |
 
-Shared contracts are owned by the integration lead but shaped through specialist
-fixtures and findings. A specialist proposing a contract change should document the
-consumer need and supply an example; the integration lead makes the cross-cutting
-change or explicitly delegates it.
+Shared architecture boundaries are TPM-owned. Specialists propose changes through their
+goal PR with consumer evidence and migration impact.
 
-## Dependency flow
+## Goal portfolio
+
+A goal is an open GitHub Issue with:
+
+- exactly one `agent:<role-id>` label;
+- the `goal:active` label while it is the specialist's current mandate;
+- one GitHub milestone;
+- a substantial outcome and acceptance evidence;
+- explicit boundaries, dependencies, risks, and product-input triggers.
+
+Each specialist may have at most one open active goal. Other future goals may exist with
+`goal:proposed`, but the TPM activates them only after checking priority and capacity.
+The full protocol and label set live in `docs/GOALS.md`.
+
+## Lifecycle
 
 ```mermaid
 flowchart LR
-    B["Benchmark research"] -->|"manifests and evidence"| R["Reuse research"]
-    B -->|"fixtures and truth"| A["Review and analysis"]
-    R -->|"provider recommendation"| I["Integration lead"]
-    A -->|"analysis/review contract"| I
-    V["Vault discovery"] -->|"campaign-change contract"| I
-    I -->|"canonical fixtures and runnable path"| A
-    I -->|"result schema and integration needs"| B
+    U["User notifies TPM of completed goal"] --> T["TPM assesses outcome and milestone"]
+    T --> G["TPM creates one substantial active goal issue"]
+    G --> S["User tells specialist /goal"]
+    S --> E["Specialist executes autonomously"]
+    E --> P["Specialist opens PR closing goal"]
+    P --> C["Copilot review and critical triage loop"]
+    C --> M["Specialist merges through GitHub"]
+    M --> R["Specialist reports completion to user"]
+    R --> U
 ```
 
-Workstreams should use synthetic or sanitized fixtures when an upstream dependency is
-not ready. Only the integration lead merges competing changes to shared canonical
-contracts.
+The user triggers the handoff between a completed specialist and the TPM. The TPM does
+not poll agents or carry implementation messages between them.
 
-## Coordination state
+## Specialist autonomy
 
-- `docs/STATUS.md` records what is true now, active focus, accepted evidence, and
-  blockers.
-- `docs/BACKLOG.md` is the bootstrap queue until GitHub issues exist.
-- `docs/MILESTONES.md` defines outcome gates and sequencing.
-- `docs/DECISIONS.md` records accepted architectural/product decisions.
-- `docs/RISKS.md` records material delivery, quality, privacy, and safety risks.
+An active goal grants authority to make normal, reversible implementation and research
+choices within its boundaries. Specialists should use evidence, repository conventions,
+and architecture constraints to decide how.
 
-GitHub issues become the live execution queue once created. Keep the stable backlog ID
-in the issue title or body so repository history remains traceable.
+A specialist asks the user only when a consequential product decision:
 
-## Issue states and labels
+- materially changes user experience, risk tolerance, privacy, or product intent;
+- has multiple viable outcomes not resolved by repository context or evidence; and
+- cannot safely be deferred or represented as a reversible proposal.
 
-Use the workflow `proposed → ready → in progress → in review → done`, with `blocked`
-as an explicit exception. Recommended labels:
+Tool choice, internal decomposition, test design, ordinary technical tradeoffs, and PR
+mechanics are not product-input questions.
 
-- `area:integration`, `area:reuse`, `area:benchmark`, `area:analysis`, `area:vault`
-- `type:research`, `type:feature`, `type:contract`, `type:integration`
-- `priority:p0`, `priority:p1`, `priority:p2`
-- `status:blocked`, `needs:decision`, `needs:evidence`
+## Pull-request ownership
 
-An item is `ready` only when its output, dependencies, and acceptance evidence are
-clear enough for an agent to proceed without product clarification.
+The specialist owns branch creation, commits, publication, Copilot review requests,
+waiting, comment triage, fixes and replies, re-review, checks, and GitHub merge. Review
+comments are advice to evaluate, not commands to apply blindly.
 
-## Convergence cadence
+The TPM intervenes only when review exposes architecture, milestone, product, safety, or
+cross-workstream consequences beyond the active goal. The TPM does not become the PR
+operator.
 
-Specialists hand off a bounded branch as soon as acceptance evidence exists. The
-integration lead:
+No role commits or merges directly to `main`. Branch protection should enforce pull
+requests and required checks when repository settings allow it.
 
-1. checks the artifact against product boundaries;
-2. independently inspects or reruns evidence;
-3. resolves shared-contract changes;
-4. integrates the smallest coherent increment;
-5. updates status, decisions, risks, and follow-up issues.
+## Outcome assessment
 
-No workstream should accumulate a large private branch awaiting a ceremonial merge.
+After the user reports a merged goal, the TPM reviews:
+
+- whether the promised outcome and evidence exist;
+- architecture and canonical-boundary impact;
+- milestone exit-criterion progress;
+- new risks, decisions, or cross-workstream dependencies;
+- whether another goal for that specialist is the best current priority.
+
+This is an outcome and program review, not a duplicate line-by-line code review.
 
 ## Conflict resolution
 
 Resolve disagreements in this order:
 
-1. product intent and privacy/safety constraints;
-2. measured evidence on representative inputs;
-3. documented architecture boundaries;
-4. smallest reversible choice that preserves the vertical slice.
+1. product intent, privacy, and safety;
+2. representative measured evidence;
+3. architecture and canonical-boundary coherence;
+4. milestone value and dependency order;
+5. the smallest reversible choice.
 
-Record consequential resolutions in `docs/DECISIONS.md`.
+Consequential resolutions belong in `docs/DECISIONS.md`.

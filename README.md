@@ -29,9 +29,10 @@ For parallel Codex work, the complete bootstrap prompt is:
 You are the <role> agent. Get started.
 ```
 
-The repository routes that role through inherited instructions, current status, a
-ready backlog item, and a durable handoff workflow. See `docs/OPERATING_MODEL.md`,
-`docs/MILESTONES.md`, and `CONTRIBUTING.md`.
+The repository routes that role through inherited instructions and durable shared
+context. Specialists then receive `/goal`, resolve their single active GitHub goal, and
+own execution through Copilot-reviewed GitHub merge. See `docs/OPERATING_MODEL.md`,
+`docs/GOALS.md`, `docs/MILESTONES.md`, and `CONTRIBUTING.md`.
 
 ## First milestone
 

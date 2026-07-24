@@ -3,16 +3,21 @@
 Milestones are outcome gates, not collections of unrelated tasks. Dates are planning
 targets from `docs/EXECUTION.md`; quality gates remain required.
 
+The TPM owns milestone scope, sequencing, and exit assessment. Substantial specialist
+goal issues advance one milestone each. Goals may produce evidence for several exit
+criteria, but milestones must not become detailed specialist task lists.
+
 ## M0 — Team-ready bootstrap
 
-**Outcome:** Each specialist can start from a one-line role prompt, select distinct
-work, and produce an integration-ready handoff.
+**Outcome:** Each long-lived specialist can resolve one active GitHub goal from `/goal`
+and autonomously complete a reviewed PR through GitHub merge.
 
 Exit criteria:
 
 - inherited agent instructions and role-specific ownership are explicit;
-- status, backlog, milestones, contribution flow, and templates exist;
-- every starter item has outputs, dependencies, and acceptance evidence;
+- goal labels, issue forms, milestones, contribution flow, and PR templates exist;
+- `/goal` resolves exactly one substantial active goal per specialist;
+- the specialist-owned Copilot review and GitHub merge loop is documented;
 - privacy and copyright boundaries appear in research workflows.
 
 ## M1 — R0 public vertical slice

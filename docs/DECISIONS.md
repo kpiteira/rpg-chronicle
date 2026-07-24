@@ -27,3 +27,13 @@ stage. Borrowed processors return their native artifact for debugging, but downs
 analysis and review consume only canonical transcript turns with stable IDs, timestamps,
 physical-speaker labels, and confidence. This boundary is deliberately narrow and will
 grow only when a visible product increment requires it.
+
+## D-007: Goal-driven long-lived specialist agents
+
+The TPM owns milestone, architecture, priority, and dependency coherence. Each
+long-lived specialist receives exactly one substantial active goal through a labeled
+GitHub Issue and owns autonomous execution through a Copilot-reviewed pull request and
+GitHub merge. No agent commits or merges directly to `main`. After a specialist reports
+completion to the user, the user notifies the TPM for outcome assessment and creation of
+the next goal when appropriate. This replaces the static repository task backlog and
+manual cross-agent handoffs.
