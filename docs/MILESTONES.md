@@ -1,0 +1,71 @@
+# Delivery milestones
+
+Milestones are outcome gates, not collections of unrelated tasks. Dates are planning
+targets from `docs/EXECUTION.md`; quality gates remain required.
+
+## M0 — Team-ready bootstrap
+
+**Outcome:** Each specialist can start from a one-line role prompt, select distinct
+work, and produce an integration-ready handoff.
+
+Exit criteria:
+
+- inherited agent instructions and role-specific ownership are explicit;
+- status, backlog, milestones, contribution flow, and templates exist;
+- every starter item has outputs, dependencies, and acceptance evidence;
+- privacy and copyright boundaries appear in research workflows.
+
+## M1 — R0 public vertical slice
+
+**Outcome:** A reproducible public RPG excerpt travels through a provisional processor,
+canonical session normalization, scene/session analysis, and summary-first review.
+
+Exit criteria:
+
+- selected source has URL, timestamps, conditions, and licensing notes;
+- fetch/preparation steps are reproducible without committing restricted media;
+- provisional engine choice is evidence-backed;
+- canonical output retains timestamps, physical-speaker distinction, confidence, and
+  native processor artifacts;
+- every important summary/review assertion links to transcript evidence;
+- one command produces the review package and can resume after interruption.
+
+## M2 — R1 useful prototype
+
+**Outcome:** Longer inputs produce hierarchical RPG summaries, important-name
+uncertainty, vocabulary correction, and summary-only review.
+
+Exit criteria:
+
+- representative corpus covers polished, amateur, room-mic, long, and degraded audio;
+- evaluation measures plot/entity capture, unsupported claims, surfaced errors, time,
+  memory, question count, and review burden;
+- corrections update canonical session outputs and future vocabulary/context;
+- review does not require full-transcript proofreading.
+
+## M3 — R2 personal alpha
+
+**Outcome:** Persistent campaigns support corrections, speaker profiles, resumability,
+a capped review queue, and campaign-change packages.
+
+Exit criteria:
+
+- interrupted long jobs preserve useful partial results;
+- campaign changes are schema-validated, evidence-backed, and previewable;
+- authored and generated vault content have explicit ownership rules;
+- personal-alpha review target is under three minutes per recorded hour.
+
+## M4 — R3 live-game candidate
+
+**Target:** August 11, 2026; August 18 is reserved for hardening.
+
+**Outcome:** The system is reliable enough for a four-hour single-iPad recording and a
+safe vault-preview workflow.
+
+Exit criteria:
+
+- multi-hour stress case completes with fallbacks and diagnostics;
+- external local/NAS paths work without symlink requirements;
+- poor and overlapping speech degrade gracefully;
+- important unsupported claims are warned or withheld;
+- vault application is previewed, traceable, non-destructive, and recoverable.

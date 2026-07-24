@@ -1,0 +1,66 @@
+name: Work item
+description: A bounded implementation, contract, integration, or research outcome
+title: "[BACKLOG-ID] "
+labels: []
+body:
+  - type: dropdown
+    id: workstream
+    attributes:
+      label: Workstream
+      options:
+        - integration
+        - reuse
+        - benchmark
+        - analysis
+        - vault
+    validations:
+      required: true
+  - type: dropdown
+    id: milestone
+    attributes:
+      label: Milestone
+      options:
+        - M0 — Team-ready bootstrap
+        - M1 — R0 public vertical slice
+        - M2 — R1 useful prototype
+        - M3 — R2 personal alpha
+        - M4 — R3 live-game candidate
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What product or research truth will exist when this is done?
+    validations:
+      required: true
+  - type: textarea
+    id: outputs
+    attributes:
+      label: Durable outputs
+      description: Name expected repository artifacts, contracts, scripts, or results.
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies and boundaries
+      description: List blockers, upstream IDs, privacy constraints, and out-of-scope work.
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance evidence
+      description: State the reproducible evidence required for integration.
+    validations:
+      required: true
+  - type: checkboxes
+    id: ready
+    attributes:
+      label: Ready checklist
+      options:
+        - label: The item is bounded to one primary outcome.
+          required: true
+        - label: Privacy and copyright constraints are explicit.
+          required: true
+        - label: Acceptance does not depend solely on the implementing agent's claim.
+          required: true

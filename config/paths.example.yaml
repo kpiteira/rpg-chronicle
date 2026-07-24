@@ -1,0 +1,17 @@
+# Copy this file to a private location, then point RPG_CHRONICLE_CONFIG at it.
+# Paths may be local directories, mounted NAS paths, or symlinks.
+
+paths:
+  recordings_inbox: /path/to/recordings/inbox
+  session_store: /path/to/private/session-data
+  benchmark_cache: /path/to/cache/rpg-chronicle/benchmarks
+  model_cache: /path/to/cache/rpg-chronicle/models
+  reference_vault: /path/to/external/obsidian-vault
+  output_vault: /path/to/external/obsidian-vault-copy
+  temp: /path/to/fast/local/temp
+
+privacy:
+  allow_cloud_raw_audio: false
+  allow_cloud_transcript: false
+  allow_cloud_selected_excerpts: false
+  allow_cloud_structured_summaries: true
