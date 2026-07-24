@@ -1,6 +1,6 @@
 ## Goal
 
-Closes #
+Closes #GOAL-ISSUE-NUMBER
 
 - Specialist:
 - Milestone:

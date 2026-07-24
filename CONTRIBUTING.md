@@ -15,7 +15,7 @@ Create them from current remote `main`, not a stale local branch:
 
 ```bash
 git fetch origin
-git switch -c codex/<role-id>/<issue>-<slug> origin/main
+git switch -c codex/<role-id>/<goal-issue-number>-<slug> origin/main
 ```
 
 ## Before implementation
