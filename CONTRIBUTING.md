@@ -88,6 +88,10 @@ With GitHub CLI, request the initial review or a re-review using:
 gh pr edit <pr-number> --add-reviewer @copilot
 ```
 
+This requires a GitHub CLI release that supports the `@copilot` reviewer on GitHub.com.
+Check `gh --version` during startup; if the command reports an unsupported reviewer,
+update GitHub CLI before continuing the review loop.
+
 Copilot leaves a comment review rather than an approval. Its completion is review
 evidence, not proof that the PR is correct or permission to skip independent checks.
 
