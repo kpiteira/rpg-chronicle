@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://rpg-chronicle.local/schema/benchmark-manifest-0.1.json",
+  "title": "RPG Chronicle benchmark manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "title",
+    "corpus_tier",
+    "source",
+    "excerpt",
+    "recording_conditions",
+    "references",
+    "truth",
+    "rights",
+    "selection"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1"},
+    "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "title": {"type": "string", "minLength": 1},
+    "corpus_tier": {
+      "type": "string",
+      "enum": [
+        "polished_professional",
+        "amateur_online",
+        "single_room_single_microphone",
+        "controlled_or_synthetic",
+        "multi_hour_stress"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["landing_url", "media_url", "publisher", "published_at", "accessed_at"],
+      "properties": {
+        "landing_url": {"type": "string", "format": "uri", "pattern": "^https?://"},
+        "media_url": {"type": "string", "format": "uri", "pattern": "^https?://"},
+        "publisher": {"type": "string", "minLength": 1},
+        "published_at": {"type": "string", "format": "date"},
+        "accessed_at": {"type": "string", "format": "date"},
+        "episode_duration_ms": {"type": "integer", "minimum": 1}
+      }
+    },
+    "excerpt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start_ms", "end_ms", "timestamp_basis"],
+      "properties": {
+        "start_ms": {"type": "integer", "minimum": 0},
+        "end_ms": {"type": "integer", "minimum": 1},
+        "timestamp_basis": {
+          "type": "string",
+          "enum": ["publisher_player", "published_media_file", "third_party_index"]
+        },
+        "verification": {"type": "string", "minLength": 1}
+      }
+    },
+    "recording_conditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "capture_layout",
+        "production",
+        "expected_physical_speakers",
+        "overlap",
+        "music_or_effects",
+        "observations"
+      ],
+      "properties": {
+        "capture_layout": {
+          "type": "string",
+          "enum": ["studio_multimic", "remote_multitrack", "single_room_mic", "unknown"]
+        },
+        "production": {"type": "string", "enum": ["polished", "edited", "raw", "unknown"]},
+        "expected_physical_speakers": {"type": ["integer", "null"], "minimum": 1},
+        "overlap": {"type": "string", "enum": ["low", "medium", "high", "unknown"]},
+        "music_or_effects": {"type": "boolean"},
+        "observations": {"type": "string", "minLength": 1}
+      }
+    },
+    "references": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["caption_or_transcript", "speaker_labels", "annotation_status"],
+      "properties": {
+        "caption_or_transcript": {
+          "type": "string",
+          "enum": ["publisher", "community", "automatic", "none", "unknown"]
+        },
+        "reference_url": {"type": "string", "format": "uri"},
+        "speaker_labels": {"type": "boolean"},
+        "annotation_status": {"type": "string", "enum": ["none", "provisional", "verified"]}
+      }
+    },
+    "truth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["important_entities", "important_events", "notes"],
+      "properties": {
+        "important_entities": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/truthTarget"}
+        },
+        "important_events": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/truthTarget"}
+        },
+        "notes": {"type": "string"}
+      }
+    },
+    "rights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "copyright_holder",
+        "license",
+        "license_url",
+        "local_processing",
+        "redistribution",
+        "review_notes",
+        "accessed_at"
+      ],
+      "properties": {
+        "copyright_holder": {"type": "string", "minLength": 1},
+        "license": {"type": "string", "minLength": 1},
+        "license_url": {"type": "string", "format": "uri"},
+        "local_processing": {"type": "string", "enum": ["permitted", "restricted", "unknown"]},
+        "redistribution": {"type": "string", "enum": ["permitted", "restricted", "unknown"]},
+        "review_notes": {"type": "string", "minLength": 1},
+        "accessed_at": {"type": "string", "format": "date"}
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["r0_status", "diagnostic_value", "risks"],
+      "properties": {
+        "r0_status": {"type": "string", "enum": ["recommended", "alternate", "rejected"]},
+        "diagnostic_value": {"type": "string", "minLength": 1},
+        "risks": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  },
+  "$defs": {
+    "truthTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "kind", "status"],
+      "properties": {
+        "label": {"type": "string", "minLength": 1},
+        "kind": {
+          "type": "string",
+          "enum": ["person", "character", "place", "faction", "item", "quest", "event"]
+        },
+        "status": {"type": "string", "enum": ["provisional", "verified"]},
+        "evidence": {"type": "string"}
+      }
+    }
+  }
+}
