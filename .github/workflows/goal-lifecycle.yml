@@ -18,18 +18,21 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          roles="reuse-research benchmark-research review-analysis vault-discovery"
+          # Roles are derived from the agent:* labels on open active goals rather
+          # than hard-coded, so a role added later is covered automatically.
+          rows=$(gh issue list --state open --label "goal:active" \
+            --json labels \
+            --jq '[.[].labels[].name | select(startswith("agent:"))]
+                  | group_by(.) | map("\(.[0]) \(length)") | .[]')
           status=0
-          for role in $roles; do
-            count=$(gh issue list --state open \
-              --label "agent:${role}" --label "goal:active" \
-              --json number --jq 'length')
+          while read -r role count; do
+            [ -z "${role:-}" ] && continue
             echo "${role}: ${count} active"
             if [ "$count" -gt 1 ]; then
               echo "::error::${role} has ${count} active goals; exactly one is allowed"
               status=1
             fi
-          done
+          done <<< "$rows"
           exit $status
 
   notify-tpm-on-completion:
@@ -46,7 +49,8 @@ jobs:
           LABELS: ${{ join(github.event.issue.labels.*.name, ' ') }}
         run: |
           set -euo pipefail
-          case "$LABELS" in *agent:*) ;; *) echo "not a specialist goal"; exit 0 ;; esac
+          case "$LABELS" in *agent:*) ;; *) echo "not a specialist issue"; exit 0 ;; esac
+          case "$LABELS" in *goal:*) ;; *) echo "not a lifecycle-labelled goal"; exit 0 ;; esac
 
           inbox=$(gh issue list --state open --label "tpm:inbox" \
             --json number --jq '.[0].number // empty')
