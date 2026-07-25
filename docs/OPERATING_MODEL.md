@@ -92,7 +92,8 @@ Self-merge is permitted only behind an independent gate. Copilot review detects 
 it does not assess whether a pull request delivered the outcome its goal promised, and a
 specialist that has spent an entire context implementing is the least reliable judge of
 that question. The goal validator runs as a separate process with a fresh context and
-posts a pass/block verdict; a `PreToolUse` hook blocks merge while the verdict blocks.
+posts a pass/block verdict bound to the PR's head commit; a `PreToolUse` hook refuses
+merge unless that verdict is an explicit pass for the current head.
 See `agents/goal-validator.md` and `docs/PARALLEL_EXECUTION.md`.
 
 The TPM intervenes only when review exposes architecture, milestone, product, safety, or
