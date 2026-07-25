@@ -1,0 +1,67 @@
+name: goal-lifecycle
+
+on:
+  issues:
+    types: [opened, closed, labeled, unlabeled, reopened]
+
+permissions:
+  issues: write
+
+jobs:
+  enforce-single-active-goal:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail if any role holds more than one active goal
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          roles="reuse-research benchmark-research review-analysis vault-discovery"
+          status=0
+          for role in $roles; do
+            count=$(gh issue list --state open \
+              --label "agent:${role}" --label "goal:active" \
+              --json number --jq 'length')
+            echo "${role}: ${count} active"
+            if [ "$count" -gt 1 ]; then
+              echo "::error::${role} has ${count} active goals; exactly one is allowed"
+              status=1
+            fi
+          done
+          exit $status
+
+  notify-tpm-on-completion:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post completed goal to the TPM inbox
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+          TITLE: ${{ github.event.issue.title }}
+          URL: ${{ github.event.issue.html_url }}
+          LABELS: ${{ join(github.event.issue.labels.*.name, ' ') }}
+        run: |
+          set -euo pipefail
+          case "$LABELS" in *agent:*) ;; *) echo "not a specialist goal"; exit 0 ;; esac
+
+          inbox=$(gh issue list --state open --label "tpm:inbox" \
+            --json number --jq '.[0].number // empty')
+          if [ -z "$inbox" ]; then
+            echo "::warning::no open issue labelled tpm:inbox; create one to close the loop"
+            exit 0
+          fi
+
+          {
+            printf 'Goal #%s closed: %s\n\n' "$ISSUE" "$TITLE"
+            printf '%s\n' "$URL"
+            printf 'Labels: %s\n\n' "$LABELS"
+            printf 'TPM: assess outcome, architecture impact, and milestone progress, '
+            printf 'then decide whether to activate the next substantial goal for this '
+            printf 'specialist.\n'
+          } > /tmp/tpm-note.md
+
+          gh issue comment "$inbox" --body-file /tmp/tpm-note.md
