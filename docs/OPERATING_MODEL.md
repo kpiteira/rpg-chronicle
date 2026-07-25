@@ -12,6 +12,11 @@ The project uses a goal-driven, asynchronous model:
 - GitHub pull requests are the implementation, review, and merge control plane;
 - repository documents are shared durable context.
 
+The user does not relay goal completion: closing a labelled goal issue posts to the
+`tpm:inbox` issue through `.github/workflows/goal-lifecycle.yml`. The same workflow fails
+when a role holds more than one active goal, so the invariant is enforced rather than
+merely documented.
+
 The TPM does not manually relay messages between agents. Specialists communicate
 through merged contracts, fixtures, research, decisions, risks, and linked GitHub
 artifacts.
@@ -25,6 +30,7 @@ artifacts.
 | Benchmark research | Evaluation corpus, preparation reproducibility, annotations, result definitions | Processor selection without comparative evidence |
 | Review and analysis | RPG understanding, evidence, uncertainty, attention-budget UX | ASR internals or vault layout |
 | Vault discovery | Vault evidence, sanitized structures, campaign-change and safety contracts | Modifying the real vault |
+| Goal validator | Independent pass/block verdict on goal satisfaction, evidence honesty, boundaries, privacy | Editing code, pushing commits, merging, or setting priorities |
 
 Shared architecture boundaries are TPM-owned. Specialists propose changes through their
 goal PR with consumer evidence and migration impact.
@@ -79,15 +85,23 @@ mechanics are not product-input questions.
 ## Pull-request ownership
 
 The specialist owns branch creation, commits, publication, Copilot review requests,
-waiting, comment triage, fixes and replies, re-review, checks, and GitHub merge. Review
-comments are advice to evaluate, not commands to apply blindly.
+waiting, comment triage, fixes and replies, re-review, checks, validation, and GitHub
+merge. Review comments are advice to evaluate, not commands to apply blindly.
+
+Self-merge is permitted only behind an independent gate. Copilot review detects defects;
+it does not assess whether a pull request delivered the outcome its goal promised, and a
+specialist that has spent an entire context implementing is the least reliable judge of
+that question. The goal validator runs as a separate process with a fresh context and
+posts a pass/block verdict; a `PreToolUse` hook blocks merge while the verdict blocks.
+See `agents/goal-validator.md` and `docs/PARALLEL_EXECUTION.md`.
 
 The TPM intervenes only when review exposes architecture, milestone, product, safety, or
 cross-workstream consequences beyond the active goal. The TPM does not become the PR
 operator.
 
 No role commits or merges directly to `main`. Branch protection should enforce pull
-requests and required checks when repository settings allow it.
+requests, branch currency, and the `verify` and `privacy` checks from
+`.github/workflows/checks.yml`.
 
 ## Outcome assessment
 

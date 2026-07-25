@@ -18,7 +18,10 @@ Exit criteria:
 - goal labels, issue forms, milestones, contribution flow, and PR templates exist;
 - `/goal` resolves exactly one substantial active goal per specialist;
 - the specialist-owned Copilot review and GitHub merge loop is documented;
-- privacy and copyright boundaries appear in research workflows.
+- privacy and copyright boundaries appear in research workflows;
+- CI enforces lint, tests, an end-to-end slice run, and the media/privacy guard;
+- goal completion notifies the TPM without the user relaying it;
+- an independent validator gates merge and cannot be bypassed by the implementer.
 
 ## M1 — R0 public vertical slice
 
@@ -36,6 +39,8 @@ Exit criteria:
 - one command produces the review package and can resume after interruption.
 
 ## M2 — R1 useful prototype
+
+**Target:** August 11, 2026. This is the live-game scope; see `docs/EXECUTION.md`.
 
 **Outcome:** Longer inputs produce hierarchical RPG summaries, important-name
 uncertainty, vocabulary correction, and summary-only review.
@@ -62,7 +67,7 @@ Exit criteria:
 
 ## M4 — R3 live-game candidate
 
-**Target:** August 11, 2026; August 18 is reserved for hardening.
+**Target:** undated. Scheduled after M2 produces evidence on real four-hour audio.
 
 **Outcome:** The system is reliable enough for a four-hour single-iPad recording and a
 safe vault-preview workflow.

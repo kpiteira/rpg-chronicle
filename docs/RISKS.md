@@ -13,3 +13,8 @@
 | Active goals become ambiguous or duplicate | High | Exactly one `agent:*` and `goal:active` issue per specialist; `/goal` fails closed on zero or multiple matches |
 | Autonomous PRs drift across architecture boundaries | High | Goal constraints, canonical contracts, Copilot review, decision records, and TPM outcome-level architecture assessment |
 | Review automation is mistaken for approval | Medium | Specialists must wait, triage every comment critically, rerun checks, and verify mergeability before GitHub merge |
+| Tests that assert declared fixture truth are mistaken for capability | Critical | Provider-agnostic invariant tests, provenance recorded in every artifact, validator tautology check, benchmarks never report fixture-provider output |
+| Implementing agent judges its own goal satisfaction | High | Fresh-context goal validator, `PreToolUse` merge gate that the implementer cannot override, verdict recorded on the PR |
+| Capture quality caps every downstream result | High | Permanent table microphone, one-time speaker enrollment, benchmark tier comparing iPad-only against table-mic audio for the same session |
+| Schedule pressure converts into unverified merges | High | August 11 scoped to R1, vault writes deferred, merge gate independent of the deadline |
+| Parallel specialists collide on shared files | Medium | Declared file ownership in `docs/PARALLEL_EXECUTION.md`, TPM-owned canonical model, small frequent merges, branch-currency check in CI |

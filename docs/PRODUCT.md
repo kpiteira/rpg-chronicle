@@ -6,7 +6,11 @@ Long tabletop RPG sessions contain valuable story, character, location, quest, a
 
 ## User
 
-The initial user records a roughly four-hour in-person RPG session using an iPad placed nearby. This is a personal project. Additional microphones or complex capture rituals are not acceptable initially.
+The initial user records a roughly four-hour in-person RPG session using an iPad placed nearby. This is a personal project. Complex per-session capture rituals are not acceptable. A permanently placed table microphone and a one-time thirty-second voice enrollment per player are acceptable, because neither adds a step to game night. See `docs/CAPTURE.md`.
+
+## Consent
+
+Everyone at the table is told that sessions are recorded and processed, and any player may have their audio, transcript, and voice profile deleted on request. Recordings and derived campaign data stay on local storage. The capture policy is normative, not advisory.
 
 ## Core promise
 
@@ -48,6 +52,7 @@ Targets:
 - Automate repeatable preparation and maintenance.
 - Confidence and consequence determine intervention.
 - Preserve original inputs and provenance.
+- Distinguish demonstrated capability from declared truth in every artifact and result.
 - Separate physical speakers from fictional characters.
 - Prefer a useful anonymous transcript over failed perfect diarization.
 - Earn custom implementation through measured need.
@@ -57,6 +62,6 @@ Targets:
 - Live transcription.
 - Perfect word-for-word transcripts.
 - Automatic recognition of every NPC voice.
-- Multi-microphone capture requirements.
+- Per-player microphones or headsets.
 - Fully autonomous destructive vault edits.
 - General-purpose meeting transcription product.

@@ -21,7 +21,8 @@ It must not contain private campaign data, voice profiles, downloaded copyrighte
 1. Read `AGENTS.md`.
 2. Read `docs/PRODUCT.md` and `docs/EXECUTION.md`.
 3. Select a role from `agents/`.
-4. Copy `config/paths.example.yaml` to a local ignored location and point it at external data.
+4. Read `docs/PARALLEL_EXECUTION.md` if you are running more than one role at once.
+5. Copy `config/paths.example.yaml` to a local ignored location and point it at external data.
 
 For parallel Codex work, the complete bootstrap prompt is:
 
@@ -50,5 +51,9 @@ python -m rpg_chronicle.cli run-fixture \
 ```
 
 The command writes a resumable canonical session, preserves the processor-native artifact,
-and produces `review-package.json` with evidence-backed scenes and a targeted attention
-queue.
+and produces `review-package.json` with a targeted attention queue.
+
+The analysis in this slice is **declared fixture truth replayed through the
+`AnalysisProvider` interface**, not model output. Every artifact records this in its
+`provenance` block. The slice demonstrates that the stage boundaries, evidence handling,
+and resumability work; it demonstrates nothing about analysis quality.

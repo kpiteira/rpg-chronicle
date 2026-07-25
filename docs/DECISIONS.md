@@ -37,3 +37,41 @@ GitHub merge. No agent commits or merges directly to `main`. After a specialist 
 completion to the user, the user notifies the TPM for outcome assessment and creation of
 the next goal when appropriate. This replaces the static repository task backlog and
 manual cross-agent handoffs.
+
+## D-008: Analysis is a replaceable provider
+
+Scene, summary, and review-question generation sits behind `AnalysisProvider`, exactly as
+transcription sits behind `TranscriptProvider`. The fixture analyzer is an implementation
+of that interface rather than a branch inside the pipeline, so a model-backed analyzer is
+a wiring change. Providers receive only canonical turns, which makes fixture and model
+providers comparable on identical input. Every artifact records which provider produced
+it and whether its analysis is declared truth.
+
+## D-009: Tests assert invariants, benchmarks assert quality
+
+Pipeline tests assert properties that must hold for any provider: claims cite turns that
+exist, evidence spans match cited turns, completed stages are not repeated. Tests never
+assert fixture summary text, because with a fixture provider that proves only that JSON
+was copied through and would still pass if the stage were deleted. Analysis quality is
+measured in `docs/EVALUATION.md` benchmarks against real audio.
+
+## D-010: Merge is gated by an independent validator
+
+A specialist may not merge its own pull request on its own assessment. A goal validator
+runs in a fresh context with only the goal issue, the diff, and the product boundaries,
+and posts a verdict to the pull request. A `PreToolUse` hook blocks `gh pr merge` while
+the latest verdict blocks. Copilot review is retained for defect detection; it is not a
+goal-satisfaction check. See `agents/goal-validator.md`.
+
+## D-011: August 11 targets R1
+
+The near-term deadline is scoped to a useful prototype on real audio with summary-first
+review, not to a live-game-ready system with vault writes. Vault application is the
+highest-risk and lowest early-value surface, and manual copying is an acceptable interim.
+Deadline pressure must never become a reason to relax the merge gate.
+
+## D-012: Capture is part of the product
+
+A permanently placed table microphone and one-time per-player voice enrollment are within
+the product constraint, because neither adds a step to game night. Recording consent and
+a deletion path are stated obligations. See `docs/CAPTURE.md`.
