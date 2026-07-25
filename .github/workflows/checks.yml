@@ -55,8 +55,9 @@ jobs:
       - name: Reject oversized files
         run: |
           set -euo pipefail
-          offenders=$(git ls-files | xargs -r -I{} \
-            sh -c 'test -f "{}" && [ "$(wc -c < "{}")" -gt 1048576 ] && echo "{}"' || true)
+          offenders=$(git ls-files -z | while IFS= read -r -d '' f; do
+            if [ -f "$f" ] && [ "$(wc -c < "$f")" -gt 1048576 ]; then printf '%s\n' "$f"; fi
+          done)
           if [ -n "$offenders" ]; then
             echo "Files over 1 MiB suggest committed runtime data:"; echo "$offenders"; exit 1
           fi
