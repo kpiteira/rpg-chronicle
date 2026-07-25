@@ -1,0 +1,62 @@
+name: checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Sync environment
+        run: uv sync --all-extras --dev
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Test
+        run: uv run pytest -q
+
+      - name: Vertical slice runs end to end
+        run: |
+          uv run rpg-chronicle run-fixture \
+            benchmarks/fixtures/r0_synthetic_session.json \
+            --output "${RUNNER_TEMP}/slice"
+          test -f "${RUNNER_TEMP}/slice/r0-synthetic-crossroads/review-package.json"
+
+      - name: Vertical slice resumes without redoing completed stages
+        run: |
+          uv run rpg-chronicle run-fixture \
+            benchmarks/fixtures/r0_synthetic_session.json \
+            --output "${RUNNER_TEMP}/slice"
+
+  privacy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reject media and vault content in the tree
+        run: |
+          set -euo pipefail
+          offenders=$(git ls-files \
+            | grep -Ei '\.(wav|mp3|m4a|flac|ogg|mp4|mov|aac|opus)$' || true)
+          if [ -n "$offenders" ]; then
+            echo "Media files must stay outside Git:"; echo "$offenders"; exit 1
+          fi
+
+      - name: Reject oversized files
+        run: |
+          set -euo pipefail
+          offenders=$(git ls-files | xargs -r -I{} \
+            sh -c 'test -f "{}" && [ "$(wc -c < "{}")" -gt 1048576 ] && echo "{}"' || true)
+          if [ -n "$offenders" ]; then
+            echo "Files over 1 MiB suggest committed runtime data:"; echo "$offenders"; exit 1
+          fi
