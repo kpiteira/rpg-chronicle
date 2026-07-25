@@ -59,8 +59,9 @@ measured in `docs/EVALUATION.md` benchmarks against real audio.
 
 A specialist may not merge its own pull request on its own assessment. A goal validator
 runs in a fresh context with only the goal issue, the diff, and the product boundaries,
-and posts a verdict to the pull request. A `PreToolUse` hook blocks `gh pr merge` while
-the latest verdict blocks. Copilot review is retained for defect detection; it is not a
+and posts a verdict to the pull request, bound to the PR's head commit. A `PreToolUse`
+hook refuses `gh pr merge` unless the latest verdict is an explicit pass for the current
+head. Copilot review is retained for defect detection; it is not a
 goal-satisfaction check. See `agents/goal-validator.md`.
 
 ## D-011: August 11 targets R1

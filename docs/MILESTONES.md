@@ -21,7 +21,9 @@ Exit criteria:
 - privacy and copyright boundaries appear in research workflows;
 - CI enforces lint, tests, an end-to-end slice run, and the media/privacy guard;
 - goal completion notifies the TPM without the user relaying it;
-- an independent validator gates merge and cannot be bypassed by the implementer.
+- an independent validator gates merge, failing closed in the implementing session;
+  branch protection on `main` is the enforcement layer outside the implementer's
+  identity.
 
 ## M1 — R0 public vertical slice
 

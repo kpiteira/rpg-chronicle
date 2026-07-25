@@ -136,7 +136,9 @@ context, by the goal validator:
 scripts/validate-goal.sh <pr-number>
 ```
 
-The script posts a JSON verdict to the pull request. A `PreToolUse` hook blocks
-`gh pr merge` while the latest verdict is `block`. Do not attempt to bypass the hook:
+The script posts a JSON verdict to the pull request, bound to the PR's head commit at
+validation time. A `PreToolUse` hook refuses `gh pr merge` unless the latest verdict is
+an explicit `pass` for the PR's current head commit — no verdict, a malformed verdict,
+and a verdict for a superseded commit all fail closed. Do not attempt to bypass the hook:
 fix the finding, or reply on the pull request with evidence and re-run the validator as a
 new process. See `agents/goal-validator.md` and `docs/PARALLEL_EXECUTION.md`.
