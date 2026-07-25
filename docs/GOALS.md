@@ -22,7 +22,9 @@ Lifecycle labels:
 - `goal:blocked` — execution cannot progress after safe alternatives are exhausted.
 
 An open issue must never carry more than one role label or more than one lifecycle
-label. Closing the issue represents completion or cancellation; do not add a redundant
+label. `.github/workflows/goal-lifecycle.yml` fails the check when a role holds more than
+one `goal:active` issue, so a misconfiguration is caught at labelling time rather than at
+the next `/goal`. Closing the issue represents completion or cancellation; do not add a redundant
 `goal:complete` label.
 
 ## Substantial-goal test
@@ -47,7 +49,8 @@ Use the specialist-goal issue form. Every active goal states:
 - outcome and why it matters now;
 - scope boundaries and architecture constraints;
 - durable outputs;
-- independently reproducible acceptance evidence;
+- independently reproducible acceptance evidence that tests behaviour rather than
+  restating declared truth;
 - dependencies and known risks;
 - genuine product questions that would justify interrupting the user;
 - completion requirement: merged GitHub PR that closes the issue.

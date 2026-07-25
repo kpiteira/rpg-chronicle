@@ -21,6 +21,7 @@ Supported role IDs:
 - `benchmark-research`
 - `review-analysis`
 - `vault-discovery`
+- `goal-validator`
 
 “TPM” maps to `technical-program-manager`; “review and analysis” maps to
 `review-analysis`; “benchmark,” “reuse,” and “vault” map to their corresponding role.
@@ -88,11 +89,16 @@ For every active goal, the specialist owns:
 8. rerunning relevant verification and requesting another review when changes are
    material or the reviewer requested changes;
 9. resolving review threads only after code or an evidence-backed reply addresses them;
-10. merging through GitHub only when acceptance evidence passes, review is handled,
-    required checks pass, and the PR is mergeable;
-11. confirming remote `main` contains the merge and the goal issue is closed.
+10. running `scripts/validate-goal.sh <pr>` and obtaining a passing validator verdict;
+11. merging through GitHub only when acceptance evidence passes, review is handled,
+    required checks pass, the validator verdict passes, and the PR is mergeable;
+12. confirming remote `main` contains the merge and the goal issue is closed.
 
-The specialist must never use a local merge into `main` as a substitute for GitHub.
+The specialist must never use a local merge into `main` as a substitute for GitHub. A
+`PreToolUse` hook blocks `gh pr merge` while the latest validator verdict blocks; the
+specialist must not attempt to work around it. A blocking verdict is answered with a fix
+or with evidence on the pull request, followed by a fresh validation run.
+
 Detailed commands and review expectations live in `CONTRIBUTING.md`.
 
 ## Shared product rules
@@ -105,9 +111,14 @@ Detailed commands and review expectations live in `CONTRIBUTING.md`.
 5. Document new foundational abstractions in `docs/DECISIONS.md`.
 6. Treat the canonical session model as the stable product boundary.
 7. Prefer benchmark evidence over reputation or architectural elegance.
-8. Never require manual audio cutting or full-transcript proofreading normally.
-9. Surface uncertainty according to consequence and confidence.
-10. Never silently overwrite authored vault content.
+8. Never assert declared fixture truth in a test and present it as capability. A test
+   that would still pass with the behaviour it names deleted is not evidence.
+9. Record in every artifact which provider produced it and whether its output is
+   declared truth or model output.
+10. Never require manual audio cutting or full-transcript proofreading normally.
+11. Surface uncertainty according to consequence and confidence.
+12. Never silently overwrite authored vault content.
+13. Honour the capture and consent policy in `docs/CAPTURE.md`.
 
 ## Definition of goal completion
 
@@ -117,10 +128,13 @@ A specialist goal is complete only when:
 - durable artifacts and verification are in the repository;
 - privacy, licensing, decisions, risks, and follow-ups are explicit;
 - all review feedback is implemented, rejected with evidence, or deferred explicitly;
+- the independent goal validator has returned a passing verdict on the final diff;
 - the PR is merged through GitHub and the goal issue is closed;
 - the specialist has reported the completed outcome to the user.
 
-The user then notifies the TPM. The TPM assesses milestone and architecture impact and
-creates the next substantial goal when appropriate.
+Closing the goal issue posts the outcome to the `tpm:inbox` issue automatically; the user
+does not relay completion. The TPM assesses milestone and architecture impact and creates
+the next substantial goal when appropriate.
 
-See `docs/OPERATING_MODEL.md` and `docs/GOALS.md` for the full governance model.
+See `docs/OPERATING_MODEL.md`, `docs/GOALS.md`, and `docs/PARALLEL_EXECUTION.md` for the
+full governance and concurrency model.

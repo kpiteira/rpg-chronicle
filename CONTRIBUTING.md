@@ -126,3 +126,17 @@ The PR description or comments should preserve:
 - implemented, rejected, and deferred feedback;
 - architecture/decision/risk impact;
 - follow-up goal candidates.
+
+## Validation before merge
+
+Copilot review is a defect check. Goal satisfaction is checked separately, in a fresh
+context, by the goal validator:
+
+```bash
+scripts/validate-goal.sh <pr-number>
+```
+
+The script posts a JSON verdict to the pull request. A `PreToolUse` hook blocks
+`gh pr merge` while the latest verdict is `block`. Do not attempt to bypass the hook:
+fix the finding, or reply on the pull request with evidence and re-run the validator as a
+new process. See `agents/goal-validator.md` and `docs/PARALLEL_EXECUTION.md`.
