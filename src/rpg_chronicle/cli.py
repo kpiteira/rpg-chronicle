@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
-from .pipeline import run_fixture_pipeline
-from .providers import FixtureTranscriptProvider
+from .pipeline import run_pipeline
+from .providers import FixtureAnalysisProvider, FixtureTranscriptProvider
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -21,12 +22,16 @@ def _parser() -> argparse.ArgumentParser:
 def main() -> None:
     args = _parser().parse_args()
     if args.command == "run-fixture":
-        session = run_fixture_pipeline(
+        session_id = json.loads(args.fixture.read_text())["session"]["id"]
+        session = run_pipeline(
             source=args.fixture,
             output_dir=args.output,
-            provider=FixtureTranscriptProvider(),
+            transcript_provider=FixtureTranscriptProvider(),
+            analysis_provider=FixtureAnalysisProvider(args.fixture),
+            session_id=session_id,
         )
         print(f"{session.session_id}: {session.status}")
+        print("analysis provider: fixture (declared truth, not model output)")
 
 
 if __name__ == "__main__":
