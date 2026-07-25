@@ -77,8 +77,16 @@ The gate is therefore mechanical, not procedural:
 2. `scripts/validate-goal.sh` runs the goal validator (`agents/goal-validator.md`) as a
    fresh headless Claude Code process with only the issue, the diff, and the product
    docs in context.
-3. The validator posts its verdict as a PR comment.
-4. A `PreToolUse` hook blocks `gh pr merge` while the latest verdict is `block`.
+3. The validator posts its verdict as a PR comment, bound to the PR's head commit at
+   validation time.
+4. A `PreToolUse` hook blocks `gh pr merge` unless the latest verdict is an explicit
+   `pass` recorded against the PR's *current* head commit. No verdict, a malformed
+   verdict, and a verdict for a superseded commit all fail closed. The same hook
+   refuses any `git push` whose destination is `main`, whatever the refspec spelling.
+
+The hook runs inside sessions that share one GitHub identity, so it deters drift
+rather than adversaries; the layer that cannot be talked past is branch protection on
+`main` requiring the `verify` and `privacy` checks and branch currency.
 
 A blocked verdict is not an authority to override. The specialist fixes the finding or
 argues it in a PR comment and re-runs the validator, which is a new process with a new

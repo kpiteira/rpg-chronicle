@@ -10,6 +10,8 @@ set -euo pipefail
 pr="${1:?usage: scripts/validate-goal.sh <pr-number>}"
 root=$(git rev-parse --show-toplevel)
 
+head_sha=$(gh pr view "$pr" --json headRefOid --jq .headRefOid)
+
 issue=$(gh pr view "$pr" --json body --jq '.body' \
   | grep -oE '(Closes|closes) #[0-9]+' | head -1 | grep -oE '[0-9]+' || true)
 
@@ -24,6 +26,13 @@ trap 'rm -rf "$workdir"' EXIT
 gh issue view "$issue" --json title,body,labels,milestone,comments > "$workdir/goal.json"
 gh pr diff "$pr" > "$workdir/pr.diff"
 gh pr checks "$pr" --json name,state > "$workdir/checks.json" || true
+
+diff_bytes=$(wc -c < "$workdir/pr.diff")
+if [ "$diff_bytes" -gt 400000 ]; then
+  echo "PR #${pr} diff is ${diff_bytes} bytes; too large for one validator context." >&2
+  echo "Split the PR. A verdict on a truncated diff would be theatre." >&2
+  exit 1
+fi
 
 verdict=$(claude -p \
   --append-system-prompt "$(cat "$root/agents/goal-validator.md")" \
@@ -49,7 +58,7 @@ PROMPT
 )
 
 {
-  echo "<!-- goal-validator -->"
+  echo "<!-- goal-validator sha:${head_sha} -->"
   echo '```json'
   printf '%s\n' "$verdict"
   echo '```'
@@ -58,5 +67,7 @@ PROMPT
 gh pr comment "$pr" --body-file "$workdir/comment.md"
 printf '%s\n' "$verdict"
 
-printf '%s' "$verdict" | grep -q '"verdict": *"block"' && exit 1
-exit 0
+# Fail closed: only an explicit pass exits 0. The merge-gate hook applies the
+# same rule, so a malformed verdict cannot drift through either layer.
+printf '%s' "$verdict" | grep -qE '"verdict": *"pass"' && exit 0
+exit 1

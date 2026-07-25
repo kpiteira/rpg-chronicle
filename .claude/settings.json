@@ -26,6 +26,7 @@
       "Bash(git push --force:*)",
       "Bash(git push origin main:*)",
       "Bash(git checkout main)",
+      "Bash(git switch main)",
       "Bash(git merge:*)",
       "Bash(gh pr merge --admin:*)",
       "Read(./config/paths.yaml)",
