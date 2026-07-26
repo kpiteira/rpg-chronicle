@@ -18,10 +18,20 @@
 # malformed verdict, or a verdict for a superseded commit all fail closed.
 set -uo pipefail
 
-here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+# Parameter expansion rather than `dirname`, so a restricted PATH does not stop
+# the hook before it can classify anything.
+here=${BASH_SOURCE[0]%/*}
+[ "$here" = "${BASH_SOURCE[0]}" ] && here="."
 
-decision=$(python3 "${here}/classify_command.py" 2>/dev/null) || decision="unparseable"
-[ -n "$decision" ] || decision="unparseable"
+# Checked up front so the refusal is the only thing on stderr. Letting the shell
+# report a missing interpreter first makes the reason for a block harder to read
+# at exactly the moment someone is trying to work out why.
+if ! command -v python3 >/dev/null 2>&1; then
+  decision="unparseable"
+else
+  decision=$(python3 "${here}/classify_command.py" 2>/dev/null) || decision="unparseable"
+  [ -n "$decision" ] || decision="unparseable"
+fi
 
 case "$decision" in
   allow)

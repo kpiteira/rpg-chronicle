@@ -80,6 +80,15 @@ def test_a_flag_value_is_not_read_as_a_pr_number() -> None:
     assert classify("gh pr merge --subject 7 --rebase") == "merge -"
 
 
+def test_an_end_of_options_marker_reveals_the_target() -> None:
+    """Raised by Copilot.
+
+    `gh` accepts `--` so a branch beginning with a dash can be named. Reading
+    it as an option left the gate resolving the current branch instead.
+    """
+    assert classify("gh pr merge --rebase -- -odd-branch") == "merge -odd-branch"
+
+
 @pytest.mark.parametrize(
     ("command", "expected"),
     [
@@ -236,6 +245,7 @@ def test_an_author_email_is_not_read_as_the_merge_target() -> None:
         ("""python3 -c 'import os; os.system("git push origin main")'""", "unparseable"),
         ("""python -c 'os.system("gh pr merge 7")'""", "unparseable"),
         ("python3 -c 'print(1)'", "allow"),
+        ("""eval -- "gh pr merge 7 --rebase" """, "merge 7"),
     ],
 )
 def test_interpreter_arguments_are_not_a_way_through(
