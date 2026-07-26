@@ -6,7 +6,9 @@ the repository holds durable product and technical truth.
 
 ## Roles and startup
 
-When the user says `You are the <role> agent. Get started.` or equivalent:
+When the user says `You are the <role> agent.` or equivalent (a trailing
+"Get started." is accepted but unnecessary — the bootstrap goal supplies the start
+directive; see `docs/PARALLEL_EXECUTION.md`):
 
 1. Normalize the role to one of the IDs below.
 2. Read this file and `agents/<role-id>.md` fully.

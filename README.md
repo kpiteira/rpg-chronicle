@@ -27,12 +27,13 @@ It must not contain private campaign data, voice profiles, downloaded copyrighte
 For parallel Codex work, the complete bootstrap prompt is:
 
 ```text
-You are the <role> agent. Get started.
+You are the <role> agent.
+/goal <the role's condition from docs/PARALLEL_EXECUTION.md>
 ```
 
-The repository routes that role through inherited instructions and durable shared
-context. Specialists then start from the bootstrap goal in
-`docs/PARALLEL_EXECUTION.md`, resolve their single active GitHub goal, and
+The first line selects the role, which the repository routes through inherited
+instructions and durable shared context. The second sets the native goal condition
+that drives the session. Specialists resolve their single active GitHub goal and
 own execution through Copilot-reviewed GitHub merge. See `docs/OPERATING_MODEL.md`,
 `docs/GOALS.md`, `docs/MILESTONES.md`, and `CONTRIBUTING.md`.
 
