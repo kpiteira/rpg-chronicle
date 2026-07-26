@@ -43,7 +43,16 @@ what that means, because prose cannot:
   so a consumer reading the field alone can tell machine-read truth from heard truth;
 - `evidence` must say what was observed;
 - `truth.method` must record how the truth was established, including which provider
-  produced any machine-assisted output.
+  produced any machine-assisted output;
+- `truth.contaminating_providers` must name every provider that helped build the truth
+  once any target is machine-assisted, so a scoring run can refuse to mark an engine
+  against its own output.
+
+`recording_conditions.capture_layout` states only what the recording establishes.
+`single_mixed_track` says there is no per-speaker channel to diarize from and claims
+nothing about where the speakers were; that belongs in `observations` with its evidence.
+`expected_physical_speakers` is the upper reading and `proven_distinct_speakers` the
+floor — the true count lies between.
 
 `kind: person` is a physical speaker; `kind: character` is the fiction they voice. Keeping
 them apart in the corpus is what lets a result distinguish the two later.

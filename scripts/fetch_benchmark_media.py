@@ -43,6 +43,9 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_DIR = ROOT / "benchmarks/manifests"
 DEFAULT_CACHE = ROOT / "benchmark-cache"
 CHUNK_BYTES = 1 << 20
+# Applies per socket operation, not to the whole transfer, so a large episode over a slow
+# link is fine while a host that stalls fails instead of hanging a verification tool.
+SOCKET_TIMEOUT_SECONDS = 60
 USER_AGENT = "rpg-chronicle-benchmark-fetch/0.1 (+https://github.com/kpiteira/rpg-chronicle)"
 # The same slug the schema requires of `id`, enforced here because this script will read a
 # manifest from anywhere the operator points it.
@@ -146,7 +149,13 @@ def load_manifest(identifier: str) -> dict:
 
 
 def cache_dir(explicit: str | None) -> Path:
-    """Resolve the private cache, never a repository directory the operator did not choose."""
+    """Resolve the cache: ``--cache``, else the environment, else ``benchmark-cache/``.
+
+    That last fallback is inside the repository. It is ignored by Git, so media landing
+    there is not committed by accident, but an operator who wants the media on other
+    storage has to say so -- point ``RPG_CHRONICLE_BENCHMARK_CACHE`` at the
+    ``paths.benchmark_cache`` from a private config.
+    """
     if explicit:
         return Path(explicit).expanduser()
     configured = os.environ.get("RPG_CHRONICLE_BENCHMARK_CACHE")
@@ -170,7 +179,8 @@ def download(url: str, destination: Path) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     partial = destination.with_suffix(destination.suffix + ".part")
     try:
-        with urllib.request.urlopen(build_request(url)) as response, partial.open("wb") as handle:
+        connection = urllib.request.urlopen(build_request(url), timeout=SOCKET_TIMEOUT_SECONDS)
+        with connection as response, partial.open("wb") as handle:
             while chunk := response.read(CHUNK_BYTES):
                 handle.write(chunk)
     except BaseException:

@@ -186,6 +186,33 @@ def test_a_second_mismatch_does_not_overwrite_the_first_quarantine(tmp_path: Pat
     assert first.read_bytes() == b"an earlier mismatch"
 
 
+def test_the_transfer_is_given_a_timeout_so_a_stalled_host_cannot_hang_it(
+    tmp_path: Path, monkeypatch
+) -> None:
+    """A verification tool that hangs forever fails quietly, which is the one thing it must not do."""
+    seen: dict[str, object] = {}
+
+    class _Empty:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc_info):
+            return False
+
+        def read(self, _size):
+            return b""
+
+    def _urlopen(_request, timeout=None):
+        seen["timeout"] = timeout
+        return _Empty()
+
+    monkeypatch.setattr(fetch.urllib.request, "urlopen", _urlopen)
+
+    fetch.download("https://example.invalid/probe.mp3", tmp_path / "probe.mp3")
+
+    assert isinstance(seen["timeout"], int | float) and seen["timeout"] > 0
+
+
 def test_the_request_identifies_itself_as_a_client_the_publisher_will_serve() -> None:
     """The publisher's host answers urllib's default agent with 406, so this is load-bearing."""
     request = fetch.build_request("https://example.invalid/probe.mp3")
@@ -207,7 +234,7 @@ def test_a_failed_transfer_leaves_no_partial_file(tmp_path: Path, monkeypatch) -
         def read(self, _size):
             raise TimeoutError("connection dropped")
 
-    monkeypatch.setattr(fetch.urllib.request, "urlopen", lambda _request: _Failing())
+    monkeypatch.setattr(fetch.urllib.request, "urlopen", lambda _request, timeout=None: _Failing())
     destination = tmp_path / "media" / "probe.mp3"
 
     with pytest.raises(TimeoutError):

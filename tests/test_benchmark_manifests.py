@@ -78,9 +78,13 @@ def test_every_verified_target_is_anchored_inside_the_excerpt_window() -> None:
         for target in targets:
             if target["status"] != "verified":
                 continue
-            assert start_ms <= target["anchor_ms"] < end_ms, target
-            assert target["basis"] in validator_script.VERIFIABLE_BASES, target
-            assert target["evidence"].strip(), target
+            anchor_ms = target.get("anchor_ms")
+            assert anchor_ms is not None, f"verified target has no anchor_ms: {target}"
+            assert start_ms <= anchor_ms < end_ms, f"anchor outside the window: {target}"
+            assert target.get("basis") in validator_script.VERIFIABLE_BASES, (
+                f"verified target is not based on the recording: {target}"
+            )
+            assert target.get("evidence", "").strip(), f"verified target has no evidence: {target}"
 
 
 def test_an_anchor_outside_the_window_is_rejected(tmp_path: Path) -> None:
@@ -114,26 +118,47 @@ def test_a_target_inferred_from_metadata_cannot_be_verified(tmp_path: Path) -> N
     assert any("its basis is not one of" in line for line in lines), lines
 
 
-def test_machine_assisted_and_by_ear_are_both_verifiable_and_stay_distinguishable(
-    tmp_path: Path,
+@pytest.mark.parametrize("basis", ["audio_observed", "audio_machine_assisted"])
+def test_a_target_read_from_the_recording_can_be_verified_either_way(
+    tmp_path: Path, basis: str
 ) -> None:
     """Tooling can verify a target; it may not pass itself off as a human ear.
 
-    The committed Hiddengrid targets are machine-assisted, and a consumer reading only the
-    enum has to be able to see that.
+    Both bases pass, so upgrading a target by listening to it never fails validation.
+    Keeping them separate is what lets a consumer reading only the enum tell them apart.
     """
     manifest = _hiddengrid()
-    bases = {
-        target["basis"]
-        for group in ("important_entities", "important_events")
-        for target in manifest["truth"][group]
-    }
-    assert bases == {"audio_machine_assisted"}
+    for group in ("important_entities", "important_events"):
+        for target in manifest["truth"][group]:
+            target["basis"] = basis
 
-    manifest["truth"]["important_entities"][0]["basis"] = "audio_observed"
-    exit_code, _ = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
 
-    assert exit_code == 0
+    assert exit_code == 0, lines
+
+
+def test_machine_assisted_truth_must_name_the_providers_it_cannot_score(tmp_path: Path) -> None:
+    """The contamination guard has to be checkable, not a sentence in a notes file."""
+    manifest = _hiddengrid()
+    del manifest["truth"]["contaminating_providers"]
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("truth.contaminating_providers is required" in line for line in lines), lines
+
+
+def test_truth_read_by_ear_alone_needs_no_contamination_list(tmp_path: Path) -> None:
+    """Nothing is contaminated when no provider was involved, so the rule stays off."""
+    manifest = _hiddengrid()
+    del manifest["truth"]["contaminating_providers"]
+    for group in ("important_entities", "important_events"):
+        for target in manifest["truth"][group]:
+            target["basis"] = "audio_observed"
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0, lines
 
 
 def test_a_proven_speaker_count_above_the_estimate_is_rejected(tmp_path: Path) -> None:
