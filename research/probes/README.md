@@ -159,6 +159,12 @@ is an observation about the engines rather than a fixture replay — the distinc
 
 ## Reading a result file
 
+- `canonical_turns` is complete; `native_artifact` is an **excerpt**. The committed copy
+  keeps the first four entries of each native list and records the true count under
+  `<key>_excerpted`. A whisper.cpp `-ojf` dump of a 50-second clip is 60 kB of token
+  probabilities that show nothing the first few do not, and it makes the diff
+  unreviewable. The complete artifact is written beside the audio by `--full-out`,
+  which is what `docs/ARCHITECTURE_BOUNDARIES.md` asks be retained.
 - `metrics.model_load_s` versus `metrics.inference_s` — a fixed load cost is most of a
   one-minute probe and nothing across four hours. Project from `inference_s`.
 - `metrics.peak_rss_mb` versus `peak_child_rss_mb` — `whisper-cpp-metal` does its work

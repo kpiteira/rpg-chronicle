@@ -15,20 +15,20 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 38.75,
-    "model_load_s": 2.012,
-    "inference_s": 36.738,
-    "realtime_factor": 1.29,
-    "inference_realtime_factor": 1.36,
-    "peak_rss_mb": 2469.9,
+    "wall_clock_s": 39.018,
+    "model_load_s": 2.025,
+    "inference_s": 36.993,
+    "realtime_factor": 1.28,
+    "inference_realtime_factor": 1.35,
+    "peak_rss_mb": 2471.7,
     "peak_child_rss_mb": 13.5,
-    "load_avg_1m_before": 5.47,
-    "load_avg_1m_after": 5.43
+    "load_avg_1m_before": 3.5,
+    "load_avg_1m_after": 4.37
   },
   "shape": {
     "produces_text": true,
-    "unit_count": 17,
-    "canonical_turn_count": 17,
+    "unit_count": 15,
+    "canonical_turn_count": 15,
     "speaker_span_count": null,
     "speaker_span_ms": null,
     "rejected_unit_count": 0,
@@ -42,19 +42,19 @@
       "SPEAKER_04",
       "SPEAKER_06"
     ],
-    "turns_with_confidence": 17,
-    "confidence_min": 0.0177,
-    "confidence_mean": 0.6301,
-    "total_speech_ms": 44520,
-    "characters_of_text": 839,
+    "turns_with_confidence": 15,
+    "confidence_min": 0.4572,
+    "confidence_mean": 0.7951,
+    "total_speech_ms": 44300,
+    "characters_of_text": 761,
     "speaker_attribution": {
-      "mean_overlap_ratio": 0.9,
+      "mean_overlap_ratio": 0.887,
       "min_overlap_ratio": 0.378,
       "turns_below_0_8_overlap": 3,
       "turns_with_no_speaker": 0,
-      "mean_coverage_ratio": 0.979,
-      "overlap_given_coverage": 0.919,
-      "total_unit_span_ms": 44520
+      "mean_coverage_ratio": 0.977,
+      "overlap_given_coverage": 0.908,
+      "total_unit_span_ms": 44300
     }
   },
   "diarization_source": {
@@ -100,62 +100,13 @@
             "start": 0.54,
             "end": 0.72,
             "probability": 0.9961507320404053
-          },
-          {
-            "word": " Ealthorn",
-            "start": 0.72,
-            "end": 1.2,
-            "probability": 0.6362407803535461
-          },
-          {
-            "word": " narrows",
-            "start": 1.2,
-            "end": 1.66,
-            "probability": 0.999491959810257
-          },
-          {
-            "word": " as",
-            "start": 1.66,
-            "end": 1.82,
-            "probability": 0.9999222755432129
-          },
-          {
-            "word": " it",
-            "start": 1.82,
-            "end": 1.94,
-            "probability": 0.9999815225601196
-          },
-          {
-            "word": " climbs",
-            "start": 1.94,
-            "end": 2.34,
-            "probability": 0.9998807907104492
-          },
-          {
-            "word": " toward",
-            "start": 2.34,
-            "end": 2.6,
-            "probability": 0.991929292678833
-          },
-          {
-            "word": " the",
-            "start": 2.6,
-            "end": 2.78,
-            "probability": 0.9995715022087097
-          },
-          {
-            "word": " Ashen",
-            "start": 2.78,
-            "end": 3.12,
-            "probability": 0.912966400384903
-          },
-          {
-            "word": " Spire.",
-            "start": 3.12,
-            "end": 3.54,
-            "probability": 0.9927857518196106
           }
-        ]
+        ],
+        "words_excerpted": {
+          "kept": 4,
+          "total": 13,
+          "note": "complete artifact written beside the audio via --full-out"
+        }
       },
       {
         "start": 3.94,
@@ -187,62 +138,13 @@
             "start": 4.74,
             "end": 4.94,
             "probability": 0.9996417760848999
-          },
-          {
-            "word": " up",
-            "start": 4.94,
-            "end": 5.08,
-            "probability": 0.999977707862854
-          },
-          {
-            "word": " and",
-            "start": 5.08,
-            "end": 5.24,
-            "probability": 0.9998810291290283
-          },
-          {
-            "word": " checks",
-            "start": 5.24,
-            "end": 5.52,
-            "probability": 0.9997648596763611
-          },
-          {
-            "word": " the",
-            "start": 5.52,
-            "end": 5.7,
-            "probability": 0.9999631643295288
-          },
-          {
-            "word": " sigil",
-            "start": 5.7,
-            "end": 6.04,
-            "probability": 0.9918450117111206
-          },
-          {
-            "word": " on",
-            "start": 6.04,
-            "end": 6.22,
-            "probability": 0.9999576807022095
-          },
-          {
-            "word": " her",
-            "start": 6.22,
-            "end": 6.38,
-            "probability": 0.9999717473983765
-          },
-          {
-            "word": " palm",
-            "start": 6.38,
-            "end": 6.7,
-            "probability": 0.9983483552932739
-          },
-          {
-            "word": " again.",
-            "start": 6.7,
-            "end": 7.04,
-            "probability": 0.9999487400054932
           }
-        ]
+        ],
+        "words_excerpted": {
+          "kept": 4,
+          "total": 13,
+          "note": "complete artifact written beside the audio via --full-out"
+        }
       },
       {
         "start": 7.5,
@@ -274,62 +176,13 @@
             "start": 8.32,
             "end": 8.74,
             "probability": 0.9999662637710571
-          },
-          {
-            "word": " moving",
-            "start": 8.74,
-            "end": 9.1,
-            "probability": 0.9999473094940186
-          },
-          {
-            "word": " on",
-            "start": 9.1,
-            "end": 9.3,
-            "probability": 0.9999791383743286
-          },
-          {
-            "word": " the",
-            "start": 9.3,
-            "end": 9.42,
-            "probability": 0.9998892545700073
-          },
-          {
-            "word": " ridge?",
-            "start": 9.42,
-            "end": 9.78,
-            "probability": 0.9906519651412964
-          },
-          {
-            "word": " I",
-            "start": 10.0,
-            "end": 10.22,
-            "probability": 0.9997573494911194
-          },
-          {
-            "word": " want",
-            "start": 10.22,
-            "end": 10.48,
-            "probability": 0.9999363422393799
-          },
-          {
-            "word": " a",
-            "start": 10.48,
-            "end": 10.58,
-            "probability": 0.9995205402374268
-          },
-          {
-            "word": " perception",
-            "start": 10.58,
-            "end": 11.06,
-            "probability": 0.9770479202270508
-          },
-          {
-            "word": " check.",
-            "start": 11.06,
-            "end": 11.48,
-            "probability": 0.9996682405471802
           }
-        ]
+        ],
+        "words_excerpted": {
+          "kept": 4,
+          "total": 13,
+          "note": "complete artifact written beside the audio via --full-out"
+        }
       },
       {
         "start": 11.98,
@@ -361,841 +214,20 @@
             "start": 12.96,
             "end": 13.16,
             "probability": 0.9998701810836792
-          },
-          {
-            "word": " is",
-            "start": 13.16,
-            "end": 13.34,
-            "probability": 0.999958872795105
-          },
-          {
-            "word": " loud",
-            "start": 13.34,
-            "end": 13.56,
-            "probability": 0.9999754428863525
-          },
-          {
-            "word": " enough",
-            "start": 13.56,
-            "end": 13.8,
-            "probability": 0.999995231628418
-          },
-          {
-            "word": " that",
-            "start": 13.8,
-            "end": 14.02,
-            "probability": 0.9999728202819824
-          },
-          {
-            "word": " you",
-            "start": 14.02,
-            "end": 14.18,
-            "probability": 0.9999862909317017
-          },
-          {
-            "word": " are",
-            "start": 14.18,
-            "end": 14.32,
-            "probability": 0.9999555349349976
-          },
-          {
-            "word": " at",
-            "start": 14.32,
-            "end": 14.52,
-            "probability": 0.9994233846664429
-          },
-          {
-            "word": " disadvantage.",
-            "start": 14.52,
-            "end": 15.18,
-            "probability": 0.9993854761123657
           }
-        ]
-      },
-      {
-        "start": 15.84,
-        "end": 17.76,
-        "text": " That is a 14. Not great.",
-        "avg_logprob": -0.2100715489350548,
-        "no_speech_prob": 5.384388139344221e-13,
-        "words": [
-          {
-            "word": " That",
-            "start": 15.84,
-            "end": 16.12,
-            "probability": 0.9997863173484802
-          },
-          {
-            "word": " is",
-            "start": 16.12,
-            "end": 16.24,
-            "probability": 0.9998427629470825
-          },
-          {
-            "word": " a",
-            "start": 16.24,
-            "end": 16.34,
-            "probability": 0.9999693632125854
-          },
-          {
-            "word": " 14.",
-            "start": 16.34,
-            "end": 16.72,
-            "probability": 0.7973592281341553
-          },
-          {
-            "word": " Not",
-            "start": 17.12,
-            "end": 17.4,
-            "probability": 0.9997758269309998
-          },
-          {
-            "word": " great.",
-            "start": 17.4,
-            "end": 17.76,
-            "probability": 0.9998584985733032
-          }
-        ]
-      },
-      {
-        "start": 18.42,
-        "end": 23.06,
-        "text": " Karikon keeps walking. He has no patience for ridge lines today.",
-        "avg_logprob": -0.2100715489350548,
-        "no_speech_prob": 5.384388139344221e-13,
-        "words": [
-          {
-            "word": " Karikon",
-            "start": 18.42,
-            "end": 18.98,
-            "probability": 0.3557881712913513
-          },
-          {
-            "word": " keeps",
-            "start": 18.98,
-            "end": 19.34,
-            "probability": 0.9995212554931641
-          },
-          {
-            "word": " walking.",
-            "start": 19.34,
-            "end": 19.8,
-            "probability": 0.898945152759552
-          },
-          {
-            "word": " He",
-            "start": 20.24,
-            "end": 20.76,
-            "probability": 0.9994072914123535
-          },
-          {
-            "word": " has",
-            "start": 20.76,
-            "end": 20.98,
-            "probability": 0.9999655485153198
-          },
-          {
-            "word": " no",
-            "start": 20.98,
-            "end": 21.24,
-            "probability": 0.9999271631240845
-          },
-          {
-            "word": " patience",
-            "start": 21.24,
-            "end": 21.68,
-            "probability": 0.9996190071105957
-          },
-          {
-            "word": " for",
-            "start": 21.68,
-            "end": 22.06,
-            "probability": 0.9999510049819946
-          },
-          {
-            "word": " ridge",
-            "start": 22.06,
-            "end": 22.38,
-            "probability": 0.5602629780769348
-          },
-          {
-            "word": " lines",
-            "start": 22.38,
-            "end": 22.66,
-            "probability": 0.9918448328971863
-          },
-          {
-            "word": " today.",
-            "start": 22.66,
-            "end": 23.06,
-            "probability": 0.9981449842453003
-          }
-        ]
-      },
-      {
-        "start": 23.5,
-        "end": 27.36,
-        "text": " Then you three reach the gate before the light goes. It is already open.",
-        "avg_logprob": -0.2100715489350548,
-        "no_speech_prob": 5.384388139344221e-13,
-        "words": [
-          {
-            "word": " Then",
-            "start": 23.5,
-            "end": 23.76,
-            "probability": 0.9993884563446045
-          },
-          {
-            "word": " you",
-            "start": 23.76,
-            "end": 23.94,
-            "probability": 0.9995123147964478
-          },
-          {
-            "word": " three",
-            "start": 23.94,
-            "end": 24.16,
-            "probability": 0.9916143417358398
-          },
-          {
-            "word": " reach",
-            "start": 24.16,
-            "end": 24.52,
-            "probability": 0.9998094439506531
-          },
-          {
-            "word": " the",
-            "start": 24.52,
-            "end": 24.68,
-            "probability": 0.9999622106552124
-          },
-          {
-            "word": " gate",
-            "start": 24.68,
-            "end": 24.9,
-            "probability": 0.9999463558197021
-          },
-          {
-            "word": " before",
-            "start": 24.9,
-            "end": 25.14,
-            "probability": 0.9999425411224365
-          },
-          {
-            "word": " the",
-            "start": 25.14,
-            "end": 25.32,
-            "probability": 0.9999804496765137
-          },
-          {
-            "word": " light",
-            "start": 25.32,
-            "end": 25.54,
-            "probability": 0.9995088577270508
-          },
-          {
-            "word": " goes.",
-            "start": 25.54,
-            "end": 25.94,
-            "probability": 0.9999555349349976
-          },
-          {
-            "word": " It",
-            "start": 26.2,
-            "end": 26.48,
-            "probability": 0.9999045133590698
-          },
-          {
-            "word": " is",
-            "start": 26.48,
-            "end": 26.62,
-            "probability": 0.9999752044677734
-          },
-          {
-            "word": " already",
-            "start": 26.62,
-            "end": 26.96,
-            "probability": 0.9999821186065674
-          },
-          {
-            "word": " open.",
-            "start": 26.96,
-            "end": 27.36,
-            "probability": 0.9999492168426514
-          }
-        ]
-      },
-      {
-        "start": 27.76,
-        "end": 29.68,
-        "text": " Eilera stops. Open how?",
-        "avg_logprob": -0.2100715489350548,
-        "no_speech_prob": 5.384388139344221e-13,
-        "words": [
-          {
-            "word": " Eilera",
-            "start": 27.76,
-            "end": 28.28,
-            "probability": 0.9996581872304281
-          },
-          {
-            "word": " stops.",
-            "start": 28.28,
-            "end": 28.78,
-            "probability": 0.9994663596153259
-          },
-          {
-            "word": " Open",
-            "start": 29.02,
-            "end": 29.4,
-            "probability": 0.999221682548523
-          },
-          {
-            "word": " how?",
-            "start": 29.4,
-            "end": 29.68,
-            "probability": 0.9939325451850891
-          }
-        ]
-      },
-      {
-        "start": 30.0,
-        "end": 31.86,
-        "text": " Forced open. Or left open?",
-        "avg_logprob": -0.18466614312436208,
-        "no_speech_prob": 1.9748456342449927e-12,
-        "words": [
-          {
-            "word": " Forced",
-            "start": 30.0,
-            "end": 30.46,
-            "probability": 0.7102416306734085
-          },
-          {
-            "word": " open.",
-            "start": 30.46,
-            "end": 30.84,
-            "probability": 0.8851126432418823
-          },
-          {
-            "word": " Or",
-            "start": 31.02,
-            "end": 31.24,
-            "probability": 0.8721091151237488
-          },
-          {
-            "word": " left",
-            "start": 31.24,
-            "end": 31.48,
-            "probability": 0.9580927491188049
-          },
-          {
-            "word": " open?",
-            "start": 31.48,
-            "end": 31.86,
-            "probability": 0.9811887145042419
-          }
-        ]
-      },
-      {
-        "start": 32.18,
-        "end": 37.28,
-        "text": " Left open. The bar is set neatly against the wall. As if by someone in her read.",
-        "avg_logprob": -0.18466614312436208,
-        "no_speech_prob": 1.9748456342449927e-12,
-        "words": [
-          {
-            "word": " Left",
-            "start": 32.18,
-            "end": 32.6,
-            "probability": 0.9705668091773987
-          },
-          {
-            "word": " open.",
-            "start": 32.6,
-            "end": 32.98,
-            "probability": 0.9960786700248718
-          },
-          {
-            "word": " The",
-            "start": 33.2,
-            "end": 33.46,
-            "probability": 0.9901188611984253
-          },
-          {
-            "word": " bar",
-            "start": 33.46,
-            "end": 33.7,
-            "probability": 0.9968957901000977
-          },
-          {
-            "word": " is",
-            "start": 33.7,
-            "end": 33.9,
-            "probability": 0.9981521964073181
-          },
-          {
-            "word": " set",
-            "start": 33.9,
-            "end": 34.14,
-            "probability": 0.9979694485664368
-          },
-          {
-            "word": " neatly",
-            "start": 34.14,
-            "end": 34.48,
-            "probability": 0.999497652053833
-          },
-          {
-            "word": " against",
-            "start": 34.48,
-            "end": 34.86,
-            "probability": 0.9985396862030029
-          },
-          {
-            "word": " the",
-            "start": 34.86,
-            "end": 35.04,
-            "probability": 0.9978712797164917
-          },
-          {
-            "word": " wall.",
-            "start": 35.04,
-            "end": 35.38,
-            "probability": 0.9981608986854553
-          },
-          {
-            "word": " As",
-            "start": 35.56,
-            "end": 35.8,
-            "probability": 0.9887000918388367
-          },
-          {
-            "word": " if",
-            "start": 35.8,
-            "end": 35.94,
-            "probability": 0.9988521337509155
-          },
-          {
-            "word": " by",
-            "start": 35.94,
-            "end": 36.14,
-            "probability": 0.9970037341117859
-          },
-          {
-            "word": " someone",
-            "start": 36.14,
-            "end": 36.54,
-            "probability": 0.9957213401794434
-          },
-          {
-            "word": " in",
-            "start": 36.54,
-            "end": 36.7,
-            "probability": 0.5447945594787598
-          },
-          {
-            "word": " her",
-            "start": 36.7,
-            "end": 36.94,
-            "probability": 0.37874993681907654
-          },
-          {
-            "word": " read.",
-            "start": 36.94,
-            "end": 37.28,
-            "probability": 0.5154098272323608
-          }
-        ]
-      },
-      {
-        "start": 37.78,
-        "end": 41.62,
-        "text": " Karikon says what everyone is thinking. That is worse.",
-        "avg_logprob": -0.18466614312436208,
-        "no_speech_prob": 1.9748456342449927e-12,
-        "words": [
-          {
-            "word": " Karikon",
-            "start": 37.78,
-            "end": 38.38,
-            "probability": 0.33280761539936066
-          },
-          {
-            "word": " says",
-            "start": 38.38,
-            "end": 38.64,
-            "probability": 0.994086503982544
-          },
-          {
-            "word": " what",
-            "start": 38.64,
-            "end": 38.94,
-            "probability": 0.9920471906661987
-          },
-          {
-            "word": " everyone",
-            "start": 38.94,
-            "end": 39.38,
-            "probability": 0.9903985261917114
-          },
-          {
-            "word": " is",
-            "start": 39.38,
-            "end": 39.7,
-            "probability": 0.9978711605072021
-          },
-          {
-            "word": " thinking.",
-            "start": 39.7,
-            "end": 40.1,
-            "probability": 0.9514515995979309
-          },
-          {
-            "word": " That",
-            "start": 40.62,
-            "end": 41.1,
-            "probability": 0.9904080033302307
-          },
-          {
-            "word": " is",
-            "start": 41.1,
-            "end": 41.28,
-            "probability": 0.9964607357978821
-          },
-          {
-            "word": " worse.",
-            "start": 41.28,
-            "end": 41.62,
-            "probability": 0.9747005105018616
-          }
-        ]
-      },
-      {
-        "start": 42.14,
-        "end": 45.44,
-        "text": " Bran wants to know if the warden of the spire is expecting us.",
-        "avg_logprob": -0.18466614312436208,
-        "no_speech_prob": 1.9748456342449927e-12,
-        "words": [
-          {
-            "word": " Bran",
-            "start": 42.14,
-            "end": 42.38,
-            "probability": 0.773711085319519
-          },
-          {
-            "word": " wants",
-            "start": 42.38,
-            "end": 42.76,
-            "probability": 0.9981791973114014
-          },
-          {
-            "word": " to",
-            "start": 42.76,
-            "end": 42.9,
-            "probability": 0.9993975162506104
-          },
-          {
-            "word": " know",
-            "start": 42.9,
-            "end": 43.06,
-            "probability": 0.9995267391204834
-          },
-          {
-            "word": " if",
-            "start": 43.06,
-            "end": 43.24,
-            "probability": 0.9971266388893127
-          },
-          {
-            "word": " the",
-            "start": 43.24,
-            "end": 43.38,
-            "probability": 0.9853847622871399
-          },
-          {
-            "word": " warden",
-            "start": 43.38,
-            "end": 43.72,
-            "probability": 0.8233037889003754
-          },
-          {
-            "word": " of",
-            "start": 43.72,
-            "end": 43.82,
-            "probability": 0.9984534978866577
-          },
-          {
-            "word": " the",
-            "start": 43.82,
-            "end": 43.94,
-            "probability": 0.9923000335693359
-          },
-          {
-            "word": " spire",
-            "start": 43.94,
-            "end": 44.34,
-            "probability": 0.915357381105423
-          },
-          {
-            "word": " is",
-            "start": 44.34,
-            "end": 44.52,
-            "probability": 0.998660683631897
-          },
-          {
-            "word": " expecting",
-            "start": 44.52,
-            "end": 45.02,
-            "probability": 0.9984244108200073
-          },
-          {
-            "word": " us.",
-            "start": 45.02,
-            "end": 45.44,
-            "probability": 0.9988732933998108
-          }
-        ]
-      },
-      {
-        "start": 45.68,
-        "end": 49.64,
-        "text": " You will find out. Something inside the courtyard says your name first.",
-        "avg_logprob": -0.18466614312436208,
-        "no_speech_prob": 1.9748456342449927e-12,
-        "words": [
-          {
-            "word": " You",
-            "start": 45.68,
-            "end": 46.0,
-            "probability": 0.9973210692405701
-          },
-          {
-            "word": " will",
-            "start": 46.0,
-            "end": 46.16,
-            "probability": 0.9974533915519714
-          },
-          {
-            "word": " find",
-            "start": 46.16,
-            "end": 46.46,
-            "probability": 0.9996261596679688
-          },
-          {
-            "word": " out.",
-            "start": 46.46,
-            "end": 46.84,
-            "probability": 0.9990660548210144
-          },
-          {
-            "word": " Something",
-            "start": 47.06,
-            "end": 47.52,
-            "probability": 0.9974513649940491
-          },
-          {
-            "word": " inside",
-            "start": 47.52,
-            "end": 47.84,
-            "probability": 0.9985756874084473
-          },
-          {
-            "word": " the",
-            "start": 47.84,
-            "end": 48.14,
-            "probability": 0.9986094236373901
-          },
-          {
-            "word": " courtyard",
-            "start": 48.14,
-            "end": 48.54,
-            "probability": 0.9920895099639893
-          },
-          {
-            "word": " says",
-            "start": 48.54,
-            "end": 48.84,
-            "probability": 0.9987308382987976
-          },
-          {
-            "word": " your",
-            "start": 48.84,
-            "end": 49.04,
-            "probability": 0.9980131387710571
-          },
-          {
-            "word": " name",
-            "start": 49.04,
-            "end": 49.3,
-            "probability": 0.9996606111526489
-          },
-          {
-            "word": " first.",
-            "start": 49.3,
-            "end": 49.64,
-            "probability": 0.9988369345664978
-          }
-        ]
-      },
-      {
-        "start": 49.64,
-        "end": 49.68,
-        "text": " Back to the threshold.",
-        "avg_logprob": -4.0344716972774926,
-        "no_speech_prob": 9.352350491265149e-12,
-        "words": [
-          {
-            "word": " Back",
-            "start": 49.64,
-            "end": 49.64,
-            "probability": 0.0036521980073302984
-          },
-          {
-            "word": " to",
-            "start": 49.64,
-            "end": 49.68,
-            "probability": 0.44492799043655396
-          },
-          {
-            "word": " the",
-            "start": 49.68,
-            "end": 49.68,
-            "probability": 0.3950943648815155
-          },
-          {
-            "word": " threshold.",
-            "start": 49.68,
-            "end": 49.68,
-            "probability": 1.4110556548985187e-05
-          }
-        ]
-      },
-      {
-        "start": 49.68,
-        "end": 49.78,
-        "text": " The pursued. A",
-        "avg_logprob": -4.0344716972774926,
-        "no_speech_prob": 9.352350491265149e-12,
-        "words": [
-          {
-            "word": " The",
-            "start": 49.68,
-            "end": 49.68,
-            "probability": 0.02942468971014023
-          },
-          {
-            "word": " pursued.",
-            "start": 49.68,
-            "end": 49.78,
-            "probability": 2.58318232226884e-06
-          },
-          {
-            "word": " A",
-            "start": 49.78,
-            "end": 49.78,
-            "probability": 0.010015635751187801
-          }
-        ]
-      },
-      {
-        "start": 49.78,
-        "end": 49.84,
-        "text": " 2 when the droid goes down.",
-        "avg_logprob": -4.0344716972774926,
-        "no_speech_prob": 9.352350491265149e-12,
-        "words": [
-          {
-            "word": " 2",
-            "start": 49.78,
-            "end": 49.78,
-            "probability": 0.000221300360863097
-          },
-          {
-            "word": " when",
-            "start": 49.78,
-            "end": 49.78,
-            "probability": 0.00034253994817845523
-          },
-          {
-            "word": " the",
-            "start": 49.78,
-            "end": 49.78,
-            "probability": 0.17758889496326447
-          },
-          {
-            "word": " droid",
-            "start": 49.78,
-            "end": 49.84,
-            "probability": 0.27778511204815004
-          },
-          {
-            "word": " goes",
-            "start": 49.84,
-            "end": 49.84,
-            "probability": 0.01728353090584278
-          },
-          {
-            "word": " down.",
-            "start": 49.84,
-            "end": 49.84,
-            "probability": 0.051444973796606064
-          }
-        ]
-      },
-      {
-        "start": 49.84,
-        "end": 49.94,
-        "text": " They're putting away as if she can.",
-        "avg_logprob": -4.0344716972774926,
-        "no_speech_prob": 9.352350491265149e-12,
-        "words": [
-          {
-            "word": " They're",
-            "start": 49.84,
-            "end": 49.94,
-            "probability": 0.033224507700651884
-          },
-          {
-            "word": " putting",
-            "start": 49.94,
-            "end": 49.94,
-            "probability": 0.0005009624874219298
-          },
-          {
-            "word": " away",
-            "start": 49.94,
-            "end": 49.94,
-            "probability": 0.002651965944096446
-          },
-          {
-            "word": " as",
-            "start": 49.94,
-            "end": 49.94,
-            "probability": 0.0015345461433753371
-          },
-          {
-            "word": " if",
-            "start": 49.94,
-            "end": 49.94,
-            "probability": 0.006270380690693855
-          },
-          {
-            "word": " she",
-            "start": 49.94,
-            "end": 49.94,
-            "probability": 0.007175793871283531
-          },
-          {
-            "word": " can.",
-            "start": 49.94,
-            "end": 49.94,
-            "probability": 0.026525240391492844
-          }
-        ]
+        ],
+        "words_excerpted": {
+          "kept": 4,
+          "total": 12,
+          "note": "complete artifact written beside the audio via --full-out"
+        }
       }
-    ]
+    ],
+    "segments_excerpted": {
+      "kept": 4,
+      "total": 15,
+      "note": "complete artifact written beside the audio via --full-out"
+    }
   },
   "canonical_turns": [
     {
@@ -1330,41 +362,21 @@
     },
     {
       "id": "t0013",
-      "start_ms": 49640,
-      "end_ms": 49680,
-      "text": "Back to the threshold.",
+      "start_ms": 49820,
+      "end_ms": 49880,
+      "text": "Don't you?",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.017695025974637284,
+      "confidence": 0.8280990514966291,
       "speaker_overlap_ratio": 1.0,
       "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0014",
-      "start_ms": 49680,
-      "end_ms": 49780,
-      "text": "The pursued. A",
+      "start_ms": 49880,
+      "end_ms": 49900,
+      "text": "Thank you.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.017695025974637284,
-      "speaker_overlap_ratio": 1.0,
-      "speaker_coverage_ratio": 1.0
-    },
-    {
-      "id": "t0015",
-      "start_ms": 49780,
-      "end_ms": 49840,
-      "text": "2 when the droid goes down.",
-      "physical_speaker": "SPEAKER_00",
-      "confidence": 0.017695025974637284,
-      "speaker_overlap_ratio": 1.0,
-      "speaker_coverage_ratio": 1.0
-    },
-    {
-      "id": "t0016",
-      "start_ms": 49840,
-      "end_ms": 49940,
-      "text": "They're putting away as if she can.",
-      "physical_speaker": "SPEAKER_00",
-      "confidence": 0.017695025974637284,
+      "confidence": 0.4572411645749649,
       "speaker_overlap_ratio": 1.0,
       "speaker_coverage_ratio": 1.0
     }

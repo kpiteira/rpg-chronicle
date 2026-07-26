@@ -94,6 +94,39 @@ def _ms(seconds: float) -> int:
     return round(seconds * 1000)
 
 
+# Keys holding the long per-unit lists inside an engine-native artifact. The committed
+# copy keeps a readable excerpt of these; the complete artifact goes to --full-out. Only
+# applied where the native lists duplicate what the canonical turns already carry.
+NATIVE_LIST_KEYS = ("segments", "sentences", "transcription", "words", "tokens")
+
+
+def excerpt_native(native: dict[str, Any], keep: int) -> dict[str, Any]:
+    """Shorten an engine-native artifact for committing, and say that it was shortened.
+
+    The full artifact matters for debugging and is retained beside the audio, per
+    ``docs/ARCHITECTURE_BOUNDARIES.md``. What the repository needs is enough to show the
+    output's shape -- a whisper.cpp ``-ojf`` dump of a 50-second clip is 60 kB of token
+    probabilities that demonstrate nothing the first few entries do not. Canonical turns
+    are kept in full; only the native lists are cut.
+    """
+    trimmed: dict[str, Any] = {}
+    for key, value in native.items():
+        if key in NATIVE_LIST_KEYS and isinstance(value, list) and len(value) > keep:
+            trimmed[key] = [
+                excerpt_native(v, keep) if isinstance(v, dict) else v for v in value[:keep]
+            ]
+            trimmed[f"{key}_excerpted"] = {
+                "kept": keep,
+                "total": len(value),
+                "note": "complete artifact written beside the audio via --full-out",
+            }
+        elif isinstance(value, dict):
+            trimmed[key] = excerpt_native(value, keep)
+        else:
+            trimmed[key] = value
+    return trimmed
+
+
 def _json_safe(value: Any) -> Any:
     """Replace non-finite floats with null, recursively.
 
@@ -507,6 +540,14 @@ def main() -> int:
         "it is how a redacted diarization run can still be fused into a later ASR run "
         "without the speaker timeline of restricted media entering the diff.",
     )
+    parser.add_argument(
+        "--native-excerpt",
+        type=int,
+        default=4,
+        help="how many entries of each engine-native list to keep in --out. The complete "
+        "artifact always goes to --full-out; this keeps the committed copy readable and "
+        "the diff reviewable.",
+    )
     parser.add_argument("--input-label", default=None, help="how the input is named in the result")
     args = parser.parse_args()
 
@@ -676,7 +717,12 @@ def main() -> int:
             "licence restricts derivatives. Metrics and output shape are aggregate."
         )
     else:
-        result["native_artifact"] = native
+        # A diarization run's segments are its only record -- no canonical turns carry
+        # the same information -- so excerpting them would throw the evidence away
+        # rather than trim a duplicate of it.
+        result["native_artifact"] = (
+            native if diarization_only else excerpt_native(native, args.native_excerpt)
+        )
         result["canonical_turns"] = turns
 
     args.out.parent.mkdir(parents=True, exist_ok=True)

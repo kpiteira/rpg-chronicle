@@ -52,12 +52,12 @@
         },
         "control_phrase_recall": 1.0,
         "truth_characters": 748,
-        "produced_characters": 855
+        "produced_characters": 775
       },
       "confidence": {
         "available": true,
-        "turns_scored": 17,
-        "overall_min_confidence": 0.0177,
+        "turns_scored": 15,
+        "overall_min_confidence": 0.4572,
         "mean_confidence_where_invented_noun_survived": null,
         "mean_confidence_where_invented_noun_was_lost": 0.8175,
         "truth_turns_excluded_as_mixed": 2,
@@ -122,12 +122,12 @@
         },
         "control_phrase_recall": 1.0,
         "truth_characters": 748,
-        "produced_characters": 1608
+        "produced_characters": 769
       },
       "confidence": {
         "available": true,
-        "turns_scored": 14,
-        "overall_min_confidence": 0.8117,
+        "turns_scored": 17,
+        "overall_min_confidence": 0.1027,
         "mean_confidence_where_invented_noun_survived": null,
         "mean_confidence_where_invented_noun_was_lost": 0.8187,
         "truth_turns_excluded_as_mixed": 2,

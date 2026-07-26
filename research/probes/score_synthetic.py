@@ -205,6 +205,14 @@ def main() -> int:
     scores = {}
     for path in args.result:
         result = json.loads(path.read_text())
+        # The documented invocation globs `synthetic-*.json`, which matches this
+        # script's own output on any run after the first. Skipping non-probe files keeps
+        # the reproduction command idempotent instead of failing the second time it runs.
+        if "stack" not in result:
+            continue
+        if result.get("outcome") == "failed":
+            scores[result["stack"]] = {"outcome": "failed", "error": result["error"]}
+            continue
         turns = result.get("canonical_turns", [])
         if result["stack"] == "sherpa-diarization":
             # Diarization emits spans without text; score the spans directly.

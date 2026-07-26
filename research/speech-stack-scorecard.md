@@ -249,13 +249,18 @@ Two consequences, and the second is the important one.
    |---|---|---|---|
    | `whisper-cpp-metal` | 0.936 | 0.952 | 0.827 |
    | `parakeet-mlx` | 0.961 | 0.976 | 0.918 |
-   | `mlx-whisper` | 0.819 | 0.820 | 0.812 |
-   | `faster-whisper-cpu` | 0.818 | **0.630** | 0.018 |
+   | `mlx-whisper` | 0.819 | **0.651** | 0.103 |
+   | `faster-whisper-cpu` | 0.818 | **0.795** | 0.457 |
 
-   Turns that mangled a proper noun score within 0.02 of a typical turn on three stacks,
-   and well *above* typical on faster-whisper. Every stack's minimum confidence is lower
-   than its name-losing turns score, so a low-confidence threshold surfaces other turns
-   first and reaches these last, if ever. Since `docs/PRODUCT.md` makes "confidence and
+   Turns that mangled a proper noun score within 0.02 of a typical turn on the two
+   stacks where they are lower, and *above* typical on the other two. Every stack's
+   minimum confidence sits well below what its name-losing turns score, so a
+   low-confidence threshold surfaces other turns first and reaches these last, if ever.
+
+   One caveat on these four numbers specifically: Whisper-family decoding is not
+   deterministic, and the corpus means for `mlx-whisper` and `faster-whisper-cpu` moved
+   by more than 0.1 between runs of this probe. The direction of the finding was stable
+   across every run; the second decimal place of those two rows was not. Since `docs/PRODUCT.md` makes "confidence and
    consequence determine intervention" a product principle, a review layer ranking
    questions by engine confidence will rank these errors as safe — inverting what it is
    for. Review prioritization needs a signal other than decoder confidence for
