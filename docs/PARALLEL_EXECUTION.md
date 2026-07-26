@@ -119,7 +119,7 @@ no benefit.
 |---|---|
 | `docs/` governance, `README.md`, `AGENTS.md`, `CONTRIBUTING.md`, `agents/`, `.github/` | TPM |
 | `scripts/validate-goal.sh`, `scripts/hooks/`, `scripts/setup-role-worktree.sh`, `scripts/install-bootstrap.sh` | TPM |
-| `research/`, transcription provider implementations | Reuse research |
+| `research/` per file by rule 1, transcription provider implementations | Reuse research by default — see below |
 | `benchmarks/manifests/`, `benchmarks/schema/`, `benchmarks/notes/`, `docs/EVALUATION.md`, `scripts/fetch_benchmark_media.py`, `scripts/validate_benchmark_manifests.py` | Benchmark research |
 | `src/rpg_chronicle/analysis/` and review code, `benchmarks/fixtures/`, `docs/UX.md`, `docs/ANALYSIS.md`, `scripts/generate_long_session.py` | Review and analysis |
 | `docs/VAULT_INTEGRATION.md`, vault adapter contracts | Vault discovery |
@@ -137,6 +137,22 @@ the rest of `benchmarks/` stays with benchmark research.
 
 The canonical session model is the one file everyone depends on. Changes to it go through
 the TPM with consumer evidence, exactly as the operating model states.
+
+### `research/`
+
+The directory is not one role's. It holds durable research artifacts, and rule 1 decides
+each file by the outcome it serves rather than by the folder it sits in:
+
+- `probes/`, `speech-stack-scorecard.md`, `runs/` and `real-audio-run.md` serve the
+  engine choice and its integration — **reuse research**;
+- `benchmark-candidates.md` serves the evaluation corpus — **benchmark research**, which
+  is also who has edited it: goal #11 corrected its source evidence (c23d03b) and
+  completed its Critical Role rights re-review (8735cc6).
+
+Reuse research is the default for a new file here, because most research is engine
+research. That default is a tie-break, not an override: a file that plainly serves
+another role's outcomes belongs to that role, and this row is the reason the table says
+"by rule 1" instead of naming an owner outright.
 
 ### `scripts/`
 
@@ -190,16 +206,19 @@ owned, under one convention:
 Distinct blocks at distinct offsets merge cleanly, and the comment makes a conflict that
 does occur resolvable by keeping both sides.
 
-The convention is forward-looking. The two entries already in the file — `*.part` and
-`*.mismatch` from goal #11, `benchmarks/fixtures/generated/` from goal #12 — predate it
-and do not follow it, and they are left alone deliberately: retrofitting a provenance
-comment onto them would mean editing another role's lines, which is the one thing the
-convention forbids.
+The convention is forward-looking. Everything already in the file predates it and does
+not follow it — the media and partial-fetch patterns from goal #11, the generated-fixture
+path from goal #12, and the base patterns from the initial commit. They are left alone
+deliberately: retrofitting a provenance comment onto them would mean editing another
+role's lines, which is the one thing the convention forbids. Use `git log -p -- .gitignore`
+to see who added what; a count written here would be stale by the next append, and
+restating one wrongly is how this section has already been corrected twice.
 
-`pyproject.toml`'s dependency groups follow the same convention for the same reason:
-#12 and #20 have each added one, each serving only itself. `[project]` metadata and tool
-configuration are not shared-append — those are the operating model's and go through the
-TPM.
+`pyproject.toml`'s dependency groups follow the same convention for the same reason: two
+roles have already changed them for their own needs and neither change interested anyone
+else — benchmark work added `jsonschema` to `dev` for manifest validation (61893c6), and
+#20 added the `speech` group (0355b3c). `[project]` metadata and tool configuration are
+not shared-append — those are the operating model's and go through the TPM.
 
 `uv.lock` is the sharper case and the convention does not help it, because it is
 regenerated wholesale rather than appended to: two roles adding a dependency in the same
