@@ -26,22 +26,26 @@ Parse failures are reported rather than swallowed. The gate treats an
 unresolved command as a block, so a tokenizer that cannot make sense of the
 input fails closed instead of waving it through.
 
-An interpreter's `-c` argument is classified in turn, since the substring match
-this replaces caught `sh -c "git push origin main"` and losing that would be a
-narrowing rather than a fix. Commands are compared by base name, so a pathed or
-wrapped invocation reaches the same guards.
+The guarded words are located anywhere in a command rather than at its head,
+which is what makes wrappers a non-issue: `nice -n 5`, `sudo -u karl`,
+`timeout 60`, `xargs` and anything else need no enumeration, because none of
+them can hide words the lexer has already separated. Commands are compared by
+base name, so invocation by path reaches the same guards. What a wrapper *can*
+hide is a command collapsed into one token, so an interpreter's `-c` argument
+and `eval`'s argument are classified in their own right.
 
-Known limit, stated precisely because the goal behind this module asked for
-every prior refusal to survive. A substring match refused *any* occurrence of
-the guarded text, including occurrences it had no business refusing -- that
-overreach is the defect being fixed, so the two cannot both hold. What is
+Known limit, stated precisely because the goal behind this module asked that
+every prior refusal survive. A substring match refused *any* occurrence of the
+guarded text, including occurrences it had no business refusing -- that
+overreach is the defect being fixed, so the two cannot hold in full. What is
 covered: shell separators, line breaks, command substitution, quoting, heredoc
-bodies, leading assignments, the wrappers in COMMAND_WRAPPERS, the interpreters
-in INTERPRETERS, and invocation by path. What is not: indirection this module
-does not model -- a script file, a heredoc piped to a shell, `python3 -c`,
-`xargs`, a `timeout`-style wrapper that takes its own arguments. The gate is a
-guardrail against an unvalidated merge happening by accident, not a barrier
-against one pursued deliberately, which no PreToolUse hook could be.
+bodies, assignments, wrappers with or without their own options, invocation by
+path, `git`'s own options between `git` and `push`, and one command nested
+inside another to three levels. What is not: a guarded command written to a
+script file and run, or reached through an indirection that reconstructs it at
+runtime. The gate is a guardrail against an unvalidated merge happening by
+accident, not a barrier against one pursued deliberately, which no PreToolUse
+hook could be.
 """
 
 from __future__ import annotations
@@ -61,20 +65,6 @@ SEPARATORS = {";", "&", "&&", "|", "||", "(", ")"}
 # Leading characters that introduce a command without being part of its name,
 # so `$(gh pr merge 7)` and a backticked variant still resolve to `gh`.
 COMMAND_PREFIX = "`$("
-
-# Words that precede the real command without changing it. Without these,
-# `env FOO=1 git push origin main` reads as a command named `env`.
-COMMAND_WRAPPERS = {
-    "builtin",
-    "command",
-    "env",
-    "eval",
-    "exec",
-    "nice",
-    "nohup",
-    "sudo",
-    "time",
-}
 
 # Flags that consume the following token, so a value is never mistaken for a
 # positional pull request argument.
@@ -96,8 +86,10 @@ VALUE_FLAGS = {
 # caught `sh -c "git push origin main"` by accident; this catches it on purpose.
 INTERPRETERS = {"sh", "bash", "zsh", "dash", "ksh"}
 
-ASSIGNMENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
 HEREDOC = re.compile(r"<<-?[ \t]*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
+
+# Characters after which a `#` begins a comment rather than continuing a word.
+WORD_BREAK = " \t\n;&|("
 
 
 def normalize_shell_text(command: str) -> str:
@@ -141,6 +133,12 @@ def normalize_shell_text(command: str) -> str:
             out.append(character)
             quote = character
             index += 1
+        elif character == "#" and (not out or out[-1] in WORD_BREAK):
+            # A comment reaches the end of its line. The words in it are not
+            # commands, and since guarded words are matched wherever they
+            # appear, leaving them in would refuse a call for describing one.
+            break_at = command.find("\n", index)
+            index = len(command) if break_at == -1 else break_at
         elif character == "<" and (heredoc := HEREDOC.match(command, index)):
             out.append(heredoc.group(0))
             pending.append(heredoc.group(2))
@@ -197,27 +195,45 @@ def segments(tokens: list[str]) -> list[list[str]]:
 
 
 def normalize(segment: list[str]) -> list[str]:
-    """Reduce a command to the words that name it.
-
-    A command is compared by its base name, so an absolute or relative path
-    reaches the same guards: `/usr/bin/git push origin main` names `git`.
-    """
+    """Strip the punctuation that introduces a command without naming it."""
     head = segment[0].lstrip(COMMAND_PREFIX)
-    rest = [head, *segment[1:]] if head else segment[1:]
-
-    index = 0
-    while index < len(rest) and (
-        ASSIGNMENT.match(rest[index]) or base_name(rest[index]) in COMMAND_WRAPPERS
-    ):
-        index += 1
-
-    if index >= len(rest):
-        return []
-    return [base_name(rest[index]), *rest[index + 1 :]]
+    return [head, *segment[1:]] if head else segment[1:]
 
 
 def base_name(word: str) -> str:
+    """`/usr/bin/git` and `git` are the same command."""
     return word.rsplit("/", 1)[-1]
+
+
+def find_merge(segment: list[str]) -> int | None:
+    """Where `gh pr merge` appears in a command, at any position.
+
+    Anchoring on the first word required every wrapper to be enumerated, and
+    each one that was not -- `nice -n 5`, `sudo -u karl`, `timeout 60`, `xargs`
+    -- silently dropped a refusal. Scanning for the words themselves needs no
+    such list. Quoting is already resolved, so a mention inside a string is a
+    single token and cannot match three adjacent words.
+    """
+    words = [base_name(word) for word in segment]
+    for index in range(len(words) - 2):
+        if words[index : index + 3] == ["gh", "pr", "merge"]:
+            return index
+    return None
+
+
+def find_push(segment: list[str]) -> int | None:
+    """Where a `git push` appears, allowing git's own options between the two.
+
+    `git -C /path push origin main` puts an argument between them.
+    """
+    words = [base_name(word) for word in segment]
+    if "git" not in words:
+        return None
+    start = words.index("git")
+    for index in range(start + 1, len(words)):
+        if words[index] == "push":
+            return index
+    return None
 
 
 def pushes_to_main(segment: list[str]) -> bool:
@@ -227,13 +243,13 @@ def pushes_to_main(segment: list[str]) -> bool:
     satisfies an allow rule for `git push origin` -- so the destination is
     matched here instead.
 
-    Every positional is checked, including the one naming the remote, so a
-    remote literally named `main` would be refused as though it were the branch.
-    That is a deliberate over-refusal: distinguishing the two means treating the
-    first positional as a remote, and a bypass hides behind any argument this
-    function decides not to inspect.
+    Every positional after `push` is checked, including the one naming the
+    remote, so a remote literally named `main` would be refused as though it
+    were the branch. That is a deliberate over-refusal: distinguishing the two
+    means treating the first positional as a remote, and a bypass hides behind
+    any argument this function decides not to inspect.
     """
-    for argument in segment[2:]:
+    for argument in segment:
         if argument.startswith("-"):
             continue
         destination = argument.rsplit(":", 1)[-1]
@@ -242,9 +258,9 @@ def pushes_to_main(segment: list[str]) -> bool:
     return False
 
 
-def merge_target(segment: list[str]) -> str:
+def merge_target(segment: list[str], start: int) -> str:
     """The pull request a `gh pr merge` names, or `-` when it names none."""
-    arguments = segment[3:]
+    arguments = segment[start + 3 :]
     index = 0
     while index < len(arguments):
         argument = arguments[index]
@@ -255,13 +271,23 @@ def merge_target(segment: list[str]) -> str:
     return "-"
 
 
-def interpreted_script(segment: list[str]) -> str | None:
-    """The script an interpreter was asked to run, if any."""
-    if segment and segment[0] in INTERPRETERS and "-c" in segment:
-        index = segment.index("-c") + 1
-        if index < len(segment):
-            return segment[index]
-    return None
+def interpreted_scripts(segment: list[str]) -> list[str]:
+    """Arguments this command will itself run as a command.
+
+    An interpreter's `-c` argument, and whatever `eval` was handed. Both arrive
+    as a single token once quoting is resolved, so they cannot be seen by
+    scanning words and have to be classified in their own right.
+    """
+    words = [base_name(word) for word in segment]
+    scripts = []
+    for index, word in enumerate(words):
+        if word in INTERPRETERS and "-c" in words[index:]:
+            target = words[index:].index("-c") + index + 1
+            if target < len(segment):
+                scripts.append(segment[target])
+        elif word == "eval" and index + 1 < len(segment):
+            scripts.append(segment[index + 1])
+    return scripts
 
 
 def classify(command: str, depth: int = 0) -> str:
@@ -285,11 +311,17 @@ def classify(command: str, depth: int = 0) -> str:
 
     merges: list[str] = []
     for segment in parsed:
-        if segment[:2] == ["git", "push"] and pushes_to_main(segment):
+        push = find_push(segment)
+        if push is not None and pushes_to_main(segment[push:]):
             return "push-main"
-        if segment[:3] == ["gh", "pr", "merge"]:
-            merges.append(merge_target(segment))
-        if depth < 3 and (script := interpreted_script(segment)):
+
+        merge = find_merge(segment)
+        if merge is not None:
+            merges.append(merge_target(segment, merge))
+
+        if depth >= 3:
+            continue
+        for script in interpreted_scripts(segment):
             nested = classify(script, depth + 1)
             if nested in ("push-main", "merge-multiple"):
                 return nested
