@@ -2,7 +2,7 @@
 
 ## Workspace
 
-The public GitHub repository is the software and durable knowledge home. Codex is the primary execution environment after bootstrap.
+The public GitHub repository is the software and durable knowledge home. Claude Code is the primary execution environment after bootstrap, with other tools used selectively; the operating model itself assumes no particular one (`docs/DECISIONS.md` D-016).
 
 ## Parallel roles
 

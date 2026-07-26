@@ -77,6 +77,27 @@ The TPM:
 The TPM may keep future ideas as `goal:proposed`, but should avoid building a detailed
 task inventory that becomes stale.
 
+## Amending a goal already in execution
+
+The goal text is the contract the validator measures the diff against, and it measures
+it as the text stands at validation time — not as it stood when the specialist picked it
+up. An edit therefore moves the target under work already done.
+
+An amendment to an active goal is safe when it:
+
+- **removes** a requirement;
+- **corrects a factual error** in the goal text;
+- **resolves an ambiguity** the specialist is blocked on.
+
+Adding an outcome is not. The goal text and the delivered work diverge, and the
+specialist is blocked by a gate for something it was never asked to do. Additions wait
+for the next goal, unless the specialist is idle or blocked and confirms it has not
+started.
+
+This is recorded because it happened. Four Hiddengrid truth items were added to goal #14
+while it was being executed, and the validator blocked PR #19 for work that was not in
+the goal when execution began. The gate was right; the amendment was the defect.
+
 ## Specialist lookup
 
 On `/goal`, a specialist queries open issues for its role and `goal:active`. Exactly one
