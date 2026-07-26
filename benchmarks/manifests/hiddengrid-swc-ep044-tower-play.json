@@ -179,7 +179,7 @@
         "status": "verified",
         "anchor_ms": 115920,
         "basis": "audio_observed",
-        "evidence": "From 00:01:55 to 00:02:26: 'go sleep and then I'm going to hit the tower', then 'Kat's going to drive me', then 'Screw it, then I'm going to go during the night'. This is the decision the session turns on, and it is made inside the window. A human listener reports hearing 'Cat's gonna drive me', which both decoders place at 00:02:05-00:02:06, so the phrase is now confirmed by ear as well as by machine."
+        "evidence": "From 00:01:55 to 00:02:26: 'go sleep and then I'm going to hit the tower', then 'Kat's going to drive me', then 'Screw it, then I'm going to go during the night'. This is the decision the session turns on, and it is made inside the window. A human listener reports hearing 'Cat's gonna drive me', which both decoders place at 00:02:05-00:02:06, so the phrase is now confirmed by ear as well as by machine. One inference sits inside that: the listener was asked about 00:02:08 and reported this sentence, so identifying it as the 00:02:05 line rests on the wording matching verbatim rather than on them naming a timestamp. It is the reading that fits, not a reading they confirmed."
       },
       {
         "label": "Pulse and Kat telephone James, who relays the request to Grey; Grey has James pass on the address and the pair drive over.",
