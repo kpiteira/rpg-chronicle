@@ -182,7 +182,10 @@ section is about:
 > surrounding episodes — manufacturing a name that may not be spoken. It is recorded as
 > unresolved. A human ear would settle it in five seconds, and none was available.
 
-An ear became available, and it did not settle it. See below.
+Two ears became available since, and neither settled it. The first answered about a different
+sentence; the second favours *Maria* but had been told so beforehand. Both are below, and the
+claim that five seconds of listening would settle this has now failed twice — not because
+listening is unreliable, but because of how the listening was asked for.
 
 The surname *Mercurial* appears in **no** decode of the window, by any model; the full
 name is first spoken at about 00:21:42. The negative control below is therefore stated
@@ -251,6 +254,33 @@ which is what the addendum asked for and what the timestamps then justified.
 The lesson is cheap to state and easy to forget: **when asking a person to adjudicate a
 machine's reading, give them the span, not a point.** A timestamp accurate to the second is
 not accurate enough to identify a sentence in overlapping speech.
+
+## A second listening, and what priming costs
+
+Added at B04, on the same token and nothing else. The operator went back to 00:02:08 with the
+span rather than the point — 00:01:55–00:02:26, the fix the previous section asked for — and
+reports *"nothing's going to happen to Maria in the meantime"*.
+
+So the ear now favours **Maria** and the machines favour **me**, four decodes to two. That is
+recorded as a `provisional` target of its own, basis `audio_observed`, and the manifest states
+in the item why it is not `verified`.
+
+The reason is the second half of the lesson, and it is less comfortable than the first. **The
+listener had been told the hypothesis before listening.** He was not asked "what is said here";
+he was asked whether *Maria* is said here. A report obtained that way cannot be weighed as an
+independent one, and this excerpt already demonstrates why: the first time he was asked about
+this token, knowing the same hypothesis, he reported a sentence from two seconds earlier. The
+priming did not merely bias the answer, it moved which sentence he answered about.
+
+Both readings now sit in the record with their conditions attached. Deciding it needs a
+listener who is given 00:01:55–00:02:26 and asked what is said, with no name in the question.
+That is a five-second job for anyone who has not read this file — which is now most people,
+and will stop being true the more this gets discussed.
+
+The effect on the negative control is stated rather than glossed. The control was written
+against the full name and stays intact: *Mercurial* is in no decode of this window. But the
+given name can no longer be described as absent, and the manifest's `truth.notes` was narrowed
+to say so.
 
 ## What a score here does and does not diagnose
 
