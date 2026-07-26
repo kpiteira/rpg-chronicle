@@ -181,6 +181,43 @@ def test_missing_tooling_refuses_everything(tmp_path: Path) -> None:
     assert "Could not parse this command" in result.stderr
 
 
+@pytest.mark.parametrize(
+    "decision",
+    [
+        "Traceback (most recent call last):",
+        "allow\nmerge 7",
+        "merge ",
+        "",
+    ],
+)
+def test_an_unrecognized_classifier_decision_is_refused(
+    tmp_path: Path, decision: str
+) -> None:
+    """Raised by Copilot on this pull request.
+
+    Only three decisions were handled by name and everything else fell through
+    to be read as a merge target. It failed closed by accident, because
+    `gh pr view` rejects nonsense; this pins it as intent.
+    """
+    sandbox = tmp_path / "hooks"
+    sandbox.mkdir()
+    (sandbox / "pre-merge-gate.sh").write_text(GATE.read_text())
+    stub = sandbox / "classify_command.py"
+    stub.write_text(f"print({decision!r})\n")
+
+    result = subprocess.run(
+        ["/bin/bash", str(sandbox / "pre-merge-gate.sh")],
+        input=json.dumps({"tool_input": {"command": "gh pr merge 7 --rebase"}}),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert result.returncode == 2
+    # Empty output trips the earlier unparseable guard; the rest trip the
+    # contract check. Both are refusals, which is the property being pinned.
+    assert "refusing to merge" in result.stderr or "Could not parse" in result.stderr
+
+
 def test_an_unparseable_guarded_command_is_refused(gate) -> None:
     code, stderr, _ = gate('gh pr merge 7 --body "unterminated')
     assert code == 2
