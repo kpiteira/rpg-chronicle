@@ -316,6 +316,40 @@ def test_an_interpreter_fed_from_stdin_is_refused_on_mention(
     assert classify(command) == expected
 
 
+@pytest.mark.parametrize(
+    ("command", "expected"),
+    [
+        # A word ending in a digit is a word, not a file descriptor: bash reads
+        # `main2>log` as `main2`, so stripping the digit invented a push to main.
+        ("git push origin main2>log", "allow"),
+        ("git push origin release2>log", "allow"),
+        # A run of digits standing alone against the operator is a descriptor.
+        ("git push origin main 2>/dev/null", "push-main"),
+    ],
+)
+def test_a_digit_ending_a_word_is_not_a_file_descriptor(
+    command: str, expected: str
+) -> None:
+    """Raised by Copilot."""
+    assert classify(command) == expected
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        "{ uv run pytest -q; }# gh pr merge 7 later",
+        "(uv run pytest -q)# gh pr merge 7 later",
+    ],
+)
+def test_a_comment_after_a_closing_bracket_is_still_a_comment(command: str) -> None:
+    """Also Copilot's: the word-break set omitted `)` and `}`.
+
+    A comment left as words would be read as a real merge, which is the
+    describing-a-command-blocks-the-session defect all over again.
+    """
+    assert classify(command) == "allow"
+
+
 def test_a_continued_line_is_one_command() -> None:
     assert classify("gh pr merge \\\n7 --rebase") == "merge 7"
 
