@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -130,18 +131,50 @@ def _semantic_errors(instance: dict) -> list[str]:
             "read without knowing how the truth was established"
         )
     source = instance["source"]
-    if verified and not (source.get("media_sha256") or source.get("content_fingerprint")):
+    fingerprint = source.get("content_fingerprint")
+    if verified and not (source.get("media_sha256") or fingerprint):
         errors.append(
             "verified truth needs a way to establish identity: source.media_sha256 for a "
             "source that serves stable bytes, or source.content_fingerprint for one that "
             "re-encodes. An anchor is an offset into a particular recording, and without "
             "either a reader cannot tell whether they are holding it"
         )
+    errors.extend(_fingerprint_errors(fingerprint))
     if machine_assisted and not instance["truth"].get("contaminating_providers"):
         errors.append(
             "truth.contaminating_providers is required once a target is machine-assisted; "
             "a provider that helped build the truth cannot be scored against it, and that "
             "has to be checkable rather than left to whoever reads the notes"
+        )
+    return errors
+
+
+def _fingerprint_errors(fingerprint: dict | None) -> list[str]:
+    """Check that a declared fingerprint is one a reader can actually use.
+
+    Presence satisfies the schema and proves nothing. The whole point of the field is that a
+    reader runs the fingerprint against their own copy, so a typoed path or a digest that
+    stopped matching leaves a manifest passing validation while its anchors are unusable -
+    which is the exact failure the field was added to close. Unlike media_sha256, this
+    digest is checkable here, because the file it names is committed in this repository.
+    """
+    if not fingerprint:
+        return []
+    errors: list[str] = []
+    path = ROOT / fingerprint["path"]
+    if not path.is_file():
+        errors.append(
+            f"source.content_fingerprint.path {fingerprint['path']!r} is not a file in this "
+            "repository; a fingerprint a reader cannot open establishes nothing"
+        )
+        return errors
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    if digest != fingerprint["sha256"]:
+        errors.append(
+            f"source.content_fingerprint.sha256 does not match {fingerprint['path']}: "
+            f"recorded {fingerprint['sha256']}, file is {digest}. The fingerprint is "
+            "committed here, so this digest is the one thing about identity that can be "
+            "checked outright, and it has to be right"
         )
     return errors
 

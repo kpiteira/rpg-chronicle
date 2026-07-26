@@ -66,21 +66,45 @@ SILENCE_FLOOR_DB = -120.0
 
 @dataclass(frozen=True)
 class Alignment:
-    """How two copies of a recording relate."""
+    """How two envelopes relate, in the units the envelopes are actually in.
+
+    ``lag_frames`` is frames and not seconds. An earlier version called it ``lag_seconds``,
+    which was true only because the coarse pass happens to use one-second frames; the fine
+    pass has always been in units of 10 ms, and a fingerprint written at any other coarse
+    resolution would have made every caller of this silently wrong. Converting is the
+    caller's job, because only the caller knows which envelope it asked for.
+    """
 
     correlation: float
-    lag_seconds: float
+    lag_frames: float
     frames_compared: int
 
-    @property
-    def same_recording(self) -> bool:
-        """Only meaningful on a fine alignment; see SAME_RECORDING_R for why."""
-        return self.correlation >= SAME_RECORDING_R
+    def lag_seconds(self, frame_ms: float) -> float:
+        """The lag in seconds, given the frame size the envelope was measured at."""
+        return self.lag_frames * frame_ms / 1000.0
 
     @property
     def peak_found(self) -> bool:
         """Whether a coarse pass located something worth refining."""
         return self.correlation >= COARSE_PEAK_FLOOR_R
+
+
+@dataclass(frozen=True)
+class Offset:
+    """The result of the fine pass: how well the copies agree, and by how much they differ.
+
+    Separate from Alignment because this one is in seconds, and mixing the two is exactly
+    the confusion the rename above was for.
+    """
+
+    correlation: float
+    offset_seconds: float
+    frames_compared: int
+
+    @property
+    def same_recording(self) -> bool:
+        """Judged on the fine pass only; see SAME_RECORDING_R for why."""
+        return self.correlation >= SAME_RECORDING_R
 
 
 def envelope(
@@ -150,10 +174,11 @@ def _pearson(a: list[float], b: list[float]) -> float:
 
 
 def align(reference: list[float], candidate: list[float], max_lag_frames: int) -> Alignment:
-    """Find the lag at which the candidate best reproduces the reference.
+    """Find the lag, in frames, at which the candidate best reproduces the reference.
 
-    A positive lag means the candidate is later than the reference: its content at time t
-    corresponds to the reference at t minus lag.
+    A positive lag means the candidate is later than the reference: its content at frame t
+    corresponds to the reference at t minus lag. The result is in frames, not seconds - see
+    Alignment - because this function is never told what a frame is worth.
     """
     best = Alignment(-1.0, 0.0, 0)
     for lag in range(-max_lag_frames, max_lag_frames + 1):
@@ -184,7 +209,6 @@ def write_fingerprint(path: Path, audio: Path, probe_start: float, probe_seconds
         "fine_probe_start_seconds": probe_start,
         "fine_probe_seconds": probe_seconds,
         "silence_floor_db": SILENCE_FLOOR_DB,
-        "same_recording_correlation": SAME_RECORDING_R,
         "coarse": [round(v, 1) for v in coarse],
         "fine": [round(v, 1) for v in fine],
     }
@@ -192,14 +216,22 @@ def write_fingerprint(path: Path, audio: Path, probe_start: float, probe_seconds
     return document
 
 
-def verify(audio: Path, fingerprint_path: Path) -> tuple[Alignment, Alignment | None]:
-    """Compare a local copy against a committed fingerprint, coarsely then finely."""
+def verify(audio: Path, fingerprint_path: Path) -> tuple[Alignment, Offset | None]:
+    """Compare a local copy against a committed fingerprint, coarsely then finely.
+
+    Every frame size comes from the fingerprint rather than from a constant here, including
+    the coarse one. The coarse search range used to be ``int(MAX_PLAUSIBLE_LAG_SECONDS)``,
+    which silently assumed one-second frames: a fingerprint written at 500 ms would have
+    searched 30 s instead of 60 and rejected genuine copies beyond that.
+    """
     document = json.loads(fingerprint_path.read_text(encoding="utf-8"))
+    coarse_frame_ms = float(document["coarse_frame_ms"])
+    coarse_frame_seconds = coarse_frame_ms / 1000.0
     coarse_reference = [float(v) for v in document["coarse"]]
     coarse = align(
         coarse_reference,
         envelope(audio, frame_ms=document["coarse_frame_ms"]),
-        max_lag_frames=int(MAX_PLAUSIBLE_LAG_SECONDS),
+        max_lag_frames=max(1, round(MAX_PLAUSIBLE_LAG_SECONDS / coarse_frame_seconds)),
     )
     if not coarse.peak_found:
         return coarse, None
@@ -208,14 +240,15 @@ def verify(audio: Path, fingerprint_path: Path) -> tuple[Alignment, Alignment | 
     # so the two windows describe the same moment before the offset is measured precisely.
     # The candidate window is widened by the search range on both sides, because a probe cut
     # to exactly the reference's length cannot be slid against it.
-    frame_seconds = float(document["fine_frame_ms"]) / 1000.0
+    fine_frame_seconds = float(document["fine_frame_ms"]) / 1000.0
     # The candidate window starts FINE_SEARCH_SECONDS early, so the expected lag is exactly
     # that much. Searching only that far puts the answer on the boundary, where a decoder
     # that seeks a few frames differently pushes the true peak outside the range and the
     # copy is wrongly rejected -- which is what happened to the 22 kHz copy before this
     # doubled. Searching twice as far leaves slack on both sides of the expected lag.
-    max_lag_frames = int(2 * FINE_SEARCH_SECONDS / frame_seconds)
-    probe_start = float(document["fine_probe_start_seconds"]) + coarse.lag_seconds
+    max_lag_frames = round(2 * FINE_SEARCH_SECONDS / fine_frame_seconds)
+    coarse_lag_seconds = coarse.lag_seconds(coarse_frame_ms)
+    probe_start = float(document["fine_probe_start_seconds"]) + coarse_lag_seconds
     fine_reference = [float(v) for v in document["fine"]]
     fine_candidate = envelope(
         audio,
@@ -226,8 +259,12 @@ def verify(audio: Path, fingerprint_path: Path) -> tuple[Alignment, Alignment | 
     fine = align(fine_reference, fine_candidate, max_lag_frames=max_lag_frames)
     # The candidate window began FINE_SEARCH_SECONDS early, so the lag it reports is
     # measured from there rather than from the probe start.
-    offset = coarse.lag_seconds - FINE_SEARCH_SECONDS + fine.lag_seconds * frame_seconds
-    return coarse, Alignment(fine.correlation, offset, fine.frames_compared)
+    offset = (
+        coarse_lag_seconds
+        - FINE_SEARCH_SECONDS
+        + fine.lag_seconds(float(document["fine_frame_ms"]))
+    )
+    return coarse, Offset(fine.correlation, offset, fine.frames_compared)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -255,9 +292,14 @@ def main(argv: list[str] | None = None) -> int:
         print(f"fine frames: {len(document['fine'])} at {document['fine_frame_ms']} ms")
         return 0
 
-    coarse, fine = verify(Path(args.audio), Path(args.against))
+    fingerprint_path = Path(args.against)
+    coarse_frame_ms = float(json.loads(fingerprint_path.read_text(encoding="utf-8"))["coarse_frame_ms"])
+    coarse, fine = verify(Path(args.audio), fingerprint_path)
     print(f"coarse correlation: {coarse.correlation:.4f} over {coarse.frames_compared} frames")
-    print(f"coarse lag: {coarse.lag_seconds:+.0f} s (locates the fine pass; does not judge)")
+    print(
+        f"coarse lag: {coarse.lag_seconds(coarse_frame_ms):+.0f} s "
+        "(locates the fine pass; does not judge)"
+    )
     if fine is None:
         print(f"DIFFERENT RECORDING: no alignment above {COARSE_PEAK_FLOOR_R} to refine")
         print("This copy does not follow the same loudness envelope. Committed anchors do")
@@ -269,12 +311,15 @@ def main(argv: list[str] | None = None) -> int:
         print("A coarse peak was found but the recordings do not agree closely once")
         print("aligned, so committed anchors cannot be trusted against this copy.")
         return 1
-    print(f"offset to apply: {fine.lag_seconds:+.3f} s")
+    print(f"offset to apply: {fine.offset_seconds:+.3f} s")
     print("SAME RECORDING")
-    if abs(fine.lag_seconds) < 0.05:
+    if abs(fine.offset_seconds) < 0.05:
         print("Anchors apply as committed; the offset is below the annotation's precision.")
     else:
-        print(f"Add {-fine.lag_seconds:+.3f} s to committed anchors to locate them in this copy.")
+        print(
+            f"Add {-fine.offset_seconds:+.3f} s to committed anchors "
+            "to locate them in this copy."
+        )
     return 0
 
 
