@@ -42,7 +42,7 @@ Durations come from each file's own metadata, never from a description.
 
 ### What it cannot
 
-- **The product's actual recording condition.** Every item in the corpus is remote play mixed to a single track: Hiddengrid gated and levelled, Mystic Horizon over Discord, Dice & Die over Roll20. Not one is a room with people in it and a microphone on the table. The corpus can say a pipeline handles online actual play; it cannot yet say anything about an iPad on a table four feet from four people.
+- **The product's actual recording condition.** Every item in the corpus is remote play mixed to a single track: Hiddengrid gated and levelled, Dice & Die over Roll20 by its own description, and Mystic Horizon remote by inference — its description credits a cast by handle and carries a Discord invite, but never says the session was played over Discord. Not one is a room with people in it and a microphone on the table. The corpus can say a pipeline handles online actual play; it cannot yet say anything about an iPad on a table four feet from four people.
 - **Deliberate degradation.** No item tests a known, controlled impairment.
 - **Campaign-arc continuity.** Whether understanding carries across sessions is untested. The rejected Oxventure lead was proposed for this and would have suited it, licence aside.
 - **Anything at all about the two new items' content.** They are admitted, not annotated. Their recording conditions are measured; their entities, events, and coherence are unknown.
@@ -86,9 +86,10 @@ is a benchmark-construction task, not a rights task, and it is the obvious next 
 role can do without asking anyone for anything.
 
 **Campaign-arc continuity.** The Mystic Horizon channel publishes a sixteen-episode
-campaign under the same CC BY mark as the admitted episode. Consecutive episodes there
-would give arc continuity with a rights position already determined — a much cheaper path
-than seeking permission from a commercial rights holder.
+campaign, and four of those episodes are confirmed CC BY in the table above. Consecutive
+episodes there would give arc continuity far more cheaply than seeking permission from a
+commercial rights holder — but each additional episode needs its own licence check first,
+because the licence is set per video and not per channel.
 
 ## Every candidate evaluated
 
@@ -100,7 +101,7 @@ carry their landing URL here so the determination is source-linked wherever it i
 |---|---|---|---|
 | KIX, *Our First Session* — [`PrNE4_ZHRig`](https://www.youtube.com/watch?v=PrNE4_ZHRig) | 3:24:46, was live | Standard YouTube | **Rejected** — no download right. Best diagnostic fit of all; worth asking permission. Manifest: `kix-dnd-amateurs-first-session` |
 | Amateur Hour, *D&D Edition Ep 1* — [`3Mv7fuK_NJI`](https://www.youtube.com/watch?v=3Mv7fuK_NJI) | 1:25:50 | Standard YouTube — no Creative Commons row in the page markup, and `yt-dlp` reports no licence field | **Rejected** — no download right, and at 1 h 26 m it fills no gap the corpus has, so it gets no manifest of its own |
-| Oxventure *Wyrdwood* ch. 1–4 — [`H39LNrL_VH0`](https://www.youtube.com/watch?v=H39LNrL_VH0), [`uAn2kSNRLuM`](https://www.youtube.com/watch?v=uAn2kSNRLuM), [`Pu-GlIu0Gqo`](https://www.youtube.com/watch?v=Pu-GlIu0Gqo), [`rT5VwYxJbf8`](https://www.youtube.com/watch?v=rT5VwYxJbf8) | 6:30:00 across 4 files | Standard YouTube | **Rejected** — no download right; commercial rights holder. Also would not have tested single-file duration. Manifest: `oxventure-wyrdwood-campaign` |
+| Oxventure *Wyrdwood* ch. 1–4 — [`H39LNrL_VH0`](https://www.youtube.com/watch?v=H39LNrL_VH0), [`uAn2kSNRLuM`](https://www.youtube.com/watch?v=uAn2kSNRLuM), [`Pu-GlIu0Gqo`](https://www.youtube.com/watch?v=Pu-GlIu0Gqo), [`rT5VwYxJbf8`](https://www.youtube.com/watch?v=rT5VwYxJbf8) | 6:29:42 across 4 files | Standard YouTube | **Rejected** — no download right; commercial rights holder. Also would not have tested single-file duration. Manifest: `oxventure-wyrdwood-campaign` |
 | SIR HORSE, *Mystic Horizon* ch. 1 ep. 1 — [`-ZzSFGgczrI`](https://www.youtube.com/watch?v=-ZzSFGgczrI) | 3:57:18, was live | **CC BY 3.0** | **Admitted** — multi-hour stress |
 | Dice & Die, *Lost Mine of Phandelver* ep. 1 — [`x0vglhb46sM`](https://www.youtube.com/watch?v=x0vglhb46sM) | 2:36:57 | **CC BY 3.0** | **Admitted** — unpolished amateur |
 | inwils, *Light of Xaryxis #1* — [`5EM_KEerz-k`](https://www.youtube.com/watch?v=5EM_KEerz-k) | 2:43:21 | **CC BY 3.0** — Creative Commons row present in the page markup, `yt-dlp` reports `Creative Commons Attribution license (reuse allowed)` | Not admitted — a viable third amateur item with an acceptable rights position, held back because it duplicates coverage the two admitted items already give. Admit it if either of those is withdrawn |
