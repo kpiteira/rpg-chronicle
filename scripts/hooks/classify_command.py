@@ -40,10 +40,12 @@ guarded text, including occurrences it had no business refusing -- that
 overreach is the defect being fixed, so the two cannot hold in full. What is
 covered: shell separators, line breaks, command substitution, quoting, heredoc
 bodies, assignments, wrappers with or without their own options, invocation by
-path, `git`'s own options between `git` and `push`, and one command nested
+path, `git`'s own options between `git` and `push`, and a shell command nested
 inside another to three levels. What is not: a guarded command written to a
-script file and run, or reached through an indirection that reconstructs it at
-runtime. The gate is a guardrail against an unvalidated merge happening by
+script file and run; one reconstructed at runtime; and one carried inside a
+*non-shell* interpreter, since `python3 -c 'os.system("git push origin main")'`
+is Python, not shell, and reading it as shell finds a quoted string rather than
+three words. The gate is a guardrail against an unvalidated merge happening by
 accident, not a barrier against one pursued deliberately, which no PreToolUse
 hook could be.
 """
@@ -59,8 +61,12 @@ import sys
 # worth blocking. They are deliberately loose; precision comes from the lexer.
 GUARDED_HINTS = ("gh pr merge", "git push")
 
-# Tokens that end one command and begin another.
-SEPARATORS = {";", "&", "&&", "|", "||", "(", ")"}
+# Characters that end one command and begin another. `shlex` returns a run of
+# them as a single token -- `);` and `)&&` are one token each -- so a token is a
+# separator when every character in it is one of these, rather than when it
+# equals a listed operator. Matching exact operators let `(… gh pr merge 7);
+# gh pr merge 8` read as one command, hiding the second merge behind the first.
+SEPARATOR_CHARACTERS = set("();<>|&")
 
 # Leading characters that introduce a command without being part of its name,
 # so `$(gh pr merge 7)` and a backticked variant still resolve to `gh`.
@@ -183,7 +189,7 @@ def segments(tokens: list[str]) -> list[list[str]]:
     found: list[list[str]] = []
     current: list[str] = []
     for token in tokens:
-        if token in SEPARATORS:
+        if token and set(token) <= SEPARATOR_CHARACTERS:
             if current:
                 found.append(current)
             current = []
@@ -205,35 +211,40 @@ def base_name(word: str) -> str:
     return word.rsplit("/", 1)[-1]
 
 
-def find_merge(segment: list[str]) -> int | None:
-    """Where `gh pr merge` appears in a command, at any position.
+def find_merges(segment: list[str]) -> list[int]:
+    """Every `gh pr merge` in a command, at any position.
 
     Anchoring on the first word required every wrapper to be enumerated, and
     each one that was not -- `nice -n 5`, `sudo -u karl`, `timeout 60`, `xargs`
     -- silently dropped a refusal. Scanning for the words themselves needs no
     such list. Quoting is already resolved, so a mention inside a string is a
     single token and cannot match three adjacent words.
+
+    All of them are reported, not the first: a segment that somehow holds two
+    merges must not have the second cleared by the first one's verdict.
     """
     words = [base_name(word) for word in segment]
-    for index in range(len(words) - 2):
-        if words[index : index + 3] == ["gh", "pr", "merge"]:
-            return index
-    return None
+    return [
+        index
+        for index in range(max(len(words) - 2, 0))
+        if words[index : index + 3] == ["gh", "pr", "merge"]
+    ]
 
 
-def find_push(segment: list[str]) -> int | None:
-    """Where a `git push` appears, allowing git's own options between the two.
+def find_pushes(segment: list[str]) -> list[int]:
+    """Every `git push`, allowing git's own options between the two words.
 
     `git -C /path push origin main` puts an argument between them.
     """
     words = [base_name(word) for word in segment]
-    if "git" not in words:
-        return None
-    start = words.index("git")
-    for index in range(start + 1, len(words)):
-        if words[index] == "push":
-            return index
-    return None
+    found = []
+    for start, word in enumerate(words):
+        if word != "git":
+            continue
+        found.extend(
+            index for index in range(start + 1, len(words)) if words[index] == "push"
+        )
+    return found
 
 
 def pushes_to_main(segment: list[str]) -> bool:
@@ -250,9 +261,12 @@ def pushes_to_main(segment: list[str]) -> bool:
     any argument this function decides not to inspect.
     """
     for argument in segment:
+        # `--all` and `--mirror` push every branch, main among them.
+        if argument in ("--all", "--mirror"):
+            return True
         if argument.startswith("-"):
             continue
-        destination = argument.rsplit(":", 1)[-1]
+        destination = argument.rsplit(":", 1)[-1].removeprefix("+")
         if destination.removeprefix("refs/heads/") == "main":
             return True
     return False
@@ -311,13 +325,10 @@ def classify(command: str, depth: int = 0) -> str:
 
     merges: list[str] = []
     for segment in parsed:
-        push = find_push(segment)
-        if push is not None and pushes_to_main(segment[push:]):
+        if any(pushes_to_main(segment[push:]) for push in find_pushes(segment)):
             return "push-main"
 
-        merge = find_merge(segment)
-        if merge is not None:
-            merges.append(merge_target(segment, merge))
+        merges.extend(merge_target(segment, merge) for merge in find_merges(segment))
 
         if depth >= 3:
             continue
