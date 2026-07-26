@@ -17,7 +17,7 @@
     "start_ms": 0,
     "end_ms": 600000,
     "timestamp_basis": "published_media_file",
-    "verification": "A 2026-07-26 fetch returned 127266240 bytes matching the digest recorded at B01: a 128 kbit/s CBR MP3, 16 kHz, nominally stereo, lasting 7954.009 s. Reproduce with `uv run python scripts/fetch_benchmark_media.py hiddengrid-swc-ep044-tower-play`. The window was kept at 0-600000 ms after measurement rather than by default: theme music occupies only 0:03-0:57, the recap ends at 1:50, and the remaining 82% of the window is live play. The episode post is dated 2013-11-29; the media file's own Last-Modified is 2014-05-24, so the published audio was uploaded or replaced months after the post."
+    "verification": "A 2026-07-26 fetch returned 127266240 bytes matching the digest recorded at B01: a 128 kbit/s CBR MP3, 16 kHz, nominally stereo, lasting 7954.009 s. Reproduce with `uv run python scripts/fetch_benchmark_media.py hiddengrid-swc-ep044-tower-play`. The window was kept at 0-600000 ms after measurement rather than by default: theme music occupies only 0:03-0:57, the recap ends at 1:50, and the remaining 82% of the window is live play. The episode post is dated 2013-11-29; the media file's own Last-Modified is 2014-05-24, so the published audio was uploaded or replaced months after the post. Re-check the post date without trusting this record: `curl -s <landing_url> | grep -o '<time[^>]*datetime=\"[^\"]*\"'` returned `datetime=\"2013-11-29T20:00:50-05:00\"` on 2026-07-26, and the neighbouring episode 043 post is dated a week earlier, consistent with the weekly cadence. The 140524 in the media filename matches the file's Last-Modified, not the post."
   },
   "recording_conditions": {
     "capture_layout": "single_mixed_track",
