@@ -31,6 +31,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 import urllib.error
 import urllib.request
@@ -42,6 +43,9 @@ MANIFEST_DIR = ROOT / "benchmarks/manifests"
 DEFAULT_CACHE = ROOT / "benchmark-cache"
 CHUNK_BYTES = 1 << 20
 USER_AGENT = "rpg-chronicle-benchmark-fetch/0.1 (+https://github.com/kpiteira/rpg-chronicle)"
+# The same slug the schema requires of `id`, enforced here because this script will read a
+# manifest from anywhere the operator points it.
+ID_PATTERN = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
 @dataclass(frozen=True)
@@ -95,6 +99,37 @@ def compare(source: dict, actual: Digest) -> Comparison:
         findings.append(f"size is {actual.size_bytes} bytes, manifest records {expected_bytes}")
         mismatched = True
     return Comparison(findings, mismatched)
+
+
+def cache_target(cache: Path, manifest: dict) -> Path:
+    """Place the media inside the cache, and refuse an id that could climb out of it.
+
+    The script accepts a manifest by path, so the id is not necessarily one this
+    repository reviewed. An id such as ``../../ssh`` would otherwise choose where the
+    download lands.
+    """
+    identifier = manifest["id"]
+    if not ID_PATTERN.fullmatch(identifier):
+        raise ValueError(
+            f"manifest id {identifier!r} is not a plain slug; refusing to build a cache "
+            "path from it"
+        )
+    filename = Path(manifest["source"]["media_url"]).name
+    if not filename or filename in {".", ".."}:
+        raise ValueError(
+            f"media_url {manifest['source']['media_url']!r} ends in no usable filename"
+        )
+    return cache / identifier / filename
+
+
+def quarantine_path(target: Path) -> Path:
+    """Name a quarantine file that does not overwrite evidence from an earlier run."""
+    candidate = target.with_suffix(target.suffix + ".mismatch")
+    index = 2
+    while candidate.exists():
+        candidate = target.with_suffix(f"{target.suffix}.mismatch.{index}")
+        index += 1
+    return candidate
 
 
 def load_manifest(identifier: str) -> dict:
@@ -154,7 +189,11 @@ def main(argv: list[str] | None = None) -> int:
 
     manifest = load_manifest(args.manifest)
     source = manifest["source"]
-    target = cache_dir(args.cache) / manifest["id"] / Path(source["media_url"]).name
+    try:
+        target = cache_target(cache_dir(args.cache), manifest)
+    except ValueError as error:
+        print(f"REFUSED: {error}")
+        return 1
 
     if target.exists():
         print(f"cached: {target}")
@@ -196,7 +235,7 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 1
 
-    quarantine = target.with_suffix(target.suffix + ".mismatch")
+    quarantine = quarantine_path(target)
     target.rename(quarantine)
     for finding in comparison.findings:
         print(f"MISMATCH: {finding}")

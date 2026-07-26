@@ -128,6 +128,37 @@ def test_verify_only_never_fetches_a_missing_file(
     assert "missing: " in capsys.readouterr().out
 
 
+@pytest.mark.parametrize("identifier", ["../escape", "probe/item", "probe item", "Probe-Item"])
+def test_an_id_that_could_climb_out_of_the_cache_is_refused(
+    tmp_path: Path, manifest_path: Path, capsys: pytest.CaptureFixture[str], identifier: str
+) -> None:
+    """The script reads a manifest from wherever it is pointed, so the id is not trusted."""
+    manifest = json.loads(manifest_path.read_text())
+    manifest["id"] = identifier
+    manifest_path.write_text(json.dumps(manifest))
+    cache = tmp_path / "cache"
+
+    exit_code = fetch.main([str(manifest_path), "--cache", str(cache)])
+
+    assert exit_code == 1
+    assert "REFUSED: manifest id" in capsys.readouterr().out
+    assert not cache.exists()
+
+
+def test_a_second_mismatch_does_not_overwrite_the_first_quarantine(tmp_path: Path) -> None:
+    """Quarantine exists to preserve evidence, so it must not land on earlier evidence."""
+    target = tmp_path / "probe.mp3"
+    target.write_bytes(MEDIA)
+    first = fetch.quarantine_path(target)
+    first.write_bytes(b"an earlier mismatch")
+
+    second = fetch.quarantine_path(target)
+
+    assert second != first
+    assert not second.exists()
+    assert first.read_bytes() == b"an earlier mismatch"
+
+
 def test_the_request_identifies_itself_as_a_client_the_publisher_will_serve() -> None:
     """The publisher's host answers urllib's default agent with 406, so this is load-bearing."""
     request = fetch.build_request("https://example.invalid/probe.mp3")
