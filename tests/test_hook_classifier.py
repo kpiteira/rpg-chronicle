@@ -119,6 +119,34 @@ def test_an_interpreted_script_is_classified_too(command: str, expected: str) ->
     assert classify(command) == expected
 
 
+@pytest.mark.parametrize(
+    ("command", "expected"),
+    [
+        ("/usr/bin/git push origin main", "push-main"),
+        ("./git push origin HEAD:main", "push-main"),
+        ("/usr/local/bin/gh pr merge 7 --rebase", "merge 7"),
+        ("/usr/bin/env /usr/bin/git push origin main", "push-main"),
+    ],
+)
+def test_a_command_invoked_by_path_is_still_recognized(
+    command: str, expected: str
+) -> None:
+    """Raised by Copilot: matching on the bare word missed pathed invocations."""
+    assert classify(command) == expected
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        "gh pr merge -R owner/repo 7 --rebase",
+        "gh pr merge --repo owner/repo 7 --rebase",
+    ],
+)
+def test_a_repo_flag_is_not_read_as_the_merge_target(command: str) -> None:
+    """Also Copilot's: `-R owner/repo` was misread as the pull request."""
+    assert classify(command) == "merge 7"
+
+
 def test_a_heredoc_marker_inside_quotes_does_not_swallow_later_lines() -> None:
     """Also from the validator: heredoc detection must respect quoting.
 
