@@ -24,9 +24,12 @@ GENERATOR_PATH = ROOT / "scripts" / "generate_long_session.py"
 
 
 def _load_generator():
+    """Import the generator from `scripts/`, which is not an installed package."""
     spec = importlib.util.spec_from_file_location("generate_long_session", GENERATOR_PATH)
+    # Checked before use so a missing or unloadable generator says so, rather than
+    # failing one line later with a TypeError about None.
+    assert spec is not None and spec.loader is not None, f"cannot load {GENERATOR_PATH}"
     module = importlib.util.module_from_spec(spec)
-    assert spec.loader is not None
     spec.loader.exec_module(module)
     return module
 
