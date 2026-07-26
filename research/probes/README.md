@@ -18,7 +18,7 @@ Two, deliberately different.
 | Input | Rights | What it is good for | What it cannot show |
 |---|---|---|---|
 | `synthetic-table-talk.wav` | generated locally by this repository; MIT | output shape, timestamp sanity, invented-proper-noun handling, speaker-count behaviour against known truth | anything about real acoustics — no noise, no overlap, no room |
-| Hiddengrid Episode 044, 0–600 s | CC BY-NC-ND 4.0, redistribution restricted | cost and behaviour on genuine multi-speaker recorded play | nothing may be committed but aggregates |
+| Hiddengrid Episode 044, 0–600 s | CC BY-NC-SA 3.0 Unported, redistribution restricted | cost and behaviour on genuine multi-speaker recorded play | nothing may be committed but aggregates |
 
 The Hiddengrid probe therefore runs with `--redact-text`, which withholds transcript
 text and the engine-native artifact and keeps only metrics and shape counts. The audio

@@ -296,7 +296,7 @@ def run_whisper_cpp_metal(audio: Path, ready: Ready) -> Probe:
     model = Path(os.environ.get("RPG_PROBE_WHISPER_CPP_MODEL", MODELS / "ggml-large-v3-turbo.bin"))
     # Never beside the input. The input may live inside the checkout, and whisper-cli
     # would then drop an unredacted transcript into the working tree where it could be
-    # committed by accident -- which for a CC BY-NC-ND source is the one outcome this
+    # committed by accident -- which for a redistribution-restricted source is the one
     # probe exists to avoid.
     scratch_dir = tempfile.TemporaryDirectory(prefix="rpg-whispercpp-")
     scratch = scratch_dir.name
@@ -569,7 +569,7 @@ def main() -> int:
         "--redact-text",
         action="store_true",
         help="omit transcript text and the engine-native artifact; keep shape and metrics. "
-        "Required for any input whose licence forbids distributing a derivative.",
+        "Required for any input whose redistribution is restricted.",
     )
     parser.add_argument(
         "--full-out",
@@ -755,7 +755,7 @@ def main() -> int:
     if args.redact_text:
         result["redaction"] = (
             "Transcript text and the engine-native artifact are withheld: the input's "
-            "licence restricts derivatives. Metrics and output shape are aggregate."
+            "redistribution is restricted. Metrics and output shape are aggregate."
         )
     else:
         # A diarization run's segments are its only record -- no canonical turns carry

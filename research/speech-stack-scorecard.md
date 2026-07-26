@@ -76,7 +76,7 @@ re-check.
 Measured on the 0–600 s window of Hiddengrid Episode 044 (`benchmarks/manifests/
 hiddengrid-swc-ep044-tower-play.json`), 16 kHz mono. Full results in
 `research/probes/results/`; text and engine-native artifacts are withheld there because
-the source is CC BY-NC-ND.
+this source's redistribution is restricted.
 
 | Stack | Wall clock | Realtime factor | Peak RSS | Units emitted | Unusable units | Load avg at start |
 |---|---|---|---|---|---|---|
@@ -213,7 +213,8 @@ Three things this table hides, and they matter:
 One limit of the committed evidence, imposed by the licence rather than chosen: the
 per-turn view — timestamps, speaker labels and confidence on each turn — is committed
 only for the synthetic clip. For Hiddengrid the diff carries aggregate shape counts,
-because its `canonical_turns` are a transcript and CC BY-NC-ND forbids distributing one.
+because its `canonical_turns` are a transcript, and this repository keeps full
+transcripts of restricted media out of Git regardless of licence.
 Normalizability on real audio is therefore demonstrated by counts here and by the
 unredacted `--full-out` copy on the machine that ran it.
 
@@ -411,11 +412,20 @@ threshold, and the count climbs with input length — 23 at 10 minutes, 32 at 20
 |---|---|---|---|---|---|---|
 | Labels on 600 s of Hiddengrid | 35 | 23 | 17 | 11 | 7 | 4 |
 
-So the count is tunable on real audio — but the episode has no verified speaker count
-(`benchmarks/manifests/hiddengrid-swc-ep044-tower-play.json` records
-`expected_physical_speakers: null`), so there is nothing to tune *toward*. And the one
-input where the truth is known is the one where no setting reaches it. Tuning this knob
-against a plausible-looking number would be fitting to a guess.
+So the count is tunable on real audio. What to tune it toward is the harder question,
+and the benchmark manifest — corrected by B02 after this sweep ran — now answers it only
+partly: `benchmarks/manifests/hiddengrid-swc-ep044-tower-play.json` records
+`expected_physical_speakers: 7` alongside `proven_distinct_speakers: 2`. Seven is a count
+of first-person speaking *roles* heard in the window; how many people hold those roles is
+a different question the audio barely answers, and only two are proven acoustically
+distinct.
+
+Threshold 0.8 produces exactly 7 labels. That coincidence is worth recording and worth
+not over-reading: matching a role count is not the same as recovering speakers, the
+manifest's own proven count is 2, and on the one input where truth *is* known by
+construction no threshold reaches it. Tuning to 0.8 because 7 looks right would be
+fitting to the number the manifest happens to name, which is exactly the move the
+synthetic result warns against.
 
 ### A number in the scored results that looks like good news, and is not
 
@@ -633,8 +643,15 @@ recorded evidence:
   and none is reproducible from the diff alone. The machine description in this
   document's header is a sixth: results record `arm64`, the macOS build string and
   `cpu_count: 12`, not the "Apple M4 Pro, 24 GB" the header states.
-- **The benchmark input remains restricted.** Hiddengrid Episode 044 is CC BY-NC-ND with
-  redistribution restricted; no audio, clip, or transcript of it appears in this
+- **The benchmark input remains restricted.** Hiddengrid Episode 044 is **CC BY-NC-SA
+  3.0 Unported** — B01 recorded it as CC BY-NC-ND 4.0 and B02 corrected that on
+  2026-07-26 against the episode page's `rel="license"` link. ShareAlike, unlike
+  NoDerivatives, *would* permit an attributed noncommercial derivative under the same
+  licence, so the redaction in this probe is stricter than the licence requires. It stays
+  that way on two independent grounds the manifest records: the recording embeds
+  Shadowrun material owned by Topps, which the site's licence cannot sublicense, and the
+  repository keeps media and full transcripts out of Git regardless of licence.
+  Redistribution is therefore restricted; no audio, clip, or transcript of it appears in this
   repository, and the probe results drawn from it carry only aggregate metrics.
 
 ## Rejected, and why the rejection might expire

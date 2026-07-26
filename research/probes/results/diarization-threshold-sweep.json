@@ -25,7 +25,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 2.911
+        "wall_clock_s": 3.19
       },
       "0.5": {
         "expected_speakers": 4,
@@ -44,7 +44,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 2.942
+        "wall_clock_s": 3.235
       },
       "0.6": {
         "expected_speakers": 4,
@@ -64,7 +64,7 @@
           "PLAYER_B": 2,
           "PLAYER_C": 2
         },
-        "wall_clock_s": 2.952
+        "wall_clock_s": 3.098
       },
       "0.7": {
         "expected_speakers": 4,
@@ -85,7 +85,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 2.953
+        "wall_clock_s": 3.329
       },
       "0.8": {
         "expected_speakers": 4,
@@ -106,7 +106,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 2.974
+        "wall_clock_s": 3.108
       },
       "0.9": {
         "expected_speakers": 4,
@@ -127,7 +127,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 2.952
+        "wall_clock_s": 3.348
       }
     },
     "forced_num_clusters_4": {
@@ -153,8 +153,8 @@
   },
   "restricted_clip": {
     "input": "hiddengrid-ep044-000-600.wav",
-    "truth_kind": "unknown -- the manifest records expected_physical_speakers: null",
-    "caveat": "label counts only; there is nothing to score against, and the licence forbids committing the spans",
+    "truth_kind": "partial -- the manifest records expected_physical_speakers: 7 (speaking roles) but proven_distinct_speakers: 2",
+    "caveat": "label counts only. Seven is a count of roles heard, not of people proven distinct, and there is no per-utterance truth to score against; the spans stay out of the repository because redistribution is restricted.",
     "by_threshold": {
       "0.4": {
         "labels": 35,

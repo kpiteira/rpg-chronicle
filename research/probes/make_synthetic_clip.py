@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Build a rights-clear multi-speaker clip with known truth, from a committed script.
 
-The Hiddengrid benchmark input is CC BY-NC-ND: its transcript cannot be committed, so
-probe evidence drawn from it has to stay aggregate. That is the right constraint but a
+The Hiddengrid benchmark input's redistribution is restricted: its transcript cannot be
+committed, so probe evidence drawn from it has to stay aggregate. That is the right constraint but a
 poor artifact -- a reader cannot see what a stack's output actually looks like.
 
 This generator solves that by synthesizing the clip locally with macOS ``say``. The

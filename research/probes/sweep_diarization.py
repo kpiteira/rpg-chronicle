@@ -13,10 +13,10 @@ Both are only worth as much as their reproducibility, so the sweep is a script r
 than something assembled by hand.
 
 The two inputs answer different questions. The synthetic clip has declared truth, so
-its runs are *scored*: fragmentation and collision can be told apart. The Hiddengrid
-window has no verified speaker count -- its manifest records
-``expected_physical_speakers: null`` -- so only the label count is observable, and this
-script deliberately reports nothing more for it.
+its runs are *scored*: fragmentation and collision can be told apart. For the Hiddengrid
+window the manifest records seven speaking *roles* but only two speakers proven
+acoustically distinct, so there is no per-utterance truth to score against; only the
+label count is observable, and this script deliberately reports nothing more for it.
 
 Usage:
     sweep_diarization.py --cache ~/.cache/rpg-chronicle/benchmark \
@@ -114,7 +114,7 @@ def sweep(args: argparse.Namespace, truth_turns: list[dict[str, Any]], work: Pat
             f"hiddengrid-th{threshold}",
         )
         # Label counts only. The spans themselves stay in the temp directory and out of
-        # the repository: the source is CC BY-NC-ND.
+        # the repository: this source's redistribution is restricted.
         restricted[threshold] = {
             "labels": result["shape"]["distinct_physical_speakers"],
             "speaker_spans": result["shape"]["speaker_span_count"],
@@ -140,10 +140,13 @@ def sweep(args: argparse.Namespace, truth_turns: list[dict[str, Any]], work: Pat
                 },
                 "restricted_clip": {
                     "input": args.restricted,
-                    "truth_kind": "unknown -- the manifest records "
-                    "expected_physical_speakers: null",
-                    "caveat": "label counts only; there is nothing to score against, and "
-                    "the licence forbids committing the spans",
+                    "truth_kind": "partial -- the manifest records "
+                    "expected_physical_speakers: 7 (speaking roles) but "
+                    "proven_distinct_speakers: 2",
+                    "caveat": "label counts only. Seven is a count of roles heard, not of "
+                    "people proven distinct, and there is no per-utterance truth to score "
+                    "against; the spans stay out of the repository because redistribution "
+                    "is restricted.",
                     "by_threshold": restricted,
                 },
             },
