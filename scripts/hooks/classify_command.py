@@ -119,8 +119,9 @@ COMMAND_FLAG = re.compile(r"^-[A-Za-z]*c$")
 
 HEREDOC = re.compile(r"<<-?[ \t]*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
 
-# Characters after which a `#` begins a comment rather than continuing a word.
-WORD_BREAK = " \t\n;&|("
+# Characters after which a `#` begins a comment rather than continuing a word,
+# and after which a run of digits stands alone rather than ending a word.
+WORD_BREAK = " \t\n;&|(){}"
 
 
 def normalize_shell_text(command: str) -> str:
@@ -188,11 +189,15 @@ def normalize_shell_text(command: str) -> str:
             index = heredoc.end()
         elif character in "<>":
             # A redirection and its target are not part of the command's
-            # arguments. The file descriptor, if written, is attached to the
-            # operator with no space -- which is how `2>` is told apart from a
-            # `7` that happens to precede a redirection.
-            while out and out[-1].isdigit():
-                out.pop()
+            # arguments. A file descriptor is a run of digits standing alone
+            # against the operator, which is how `2>` is told apart both from
+            # `7 >` and from a word that merely ends in a digit: bash reads
+            # `main2>log` as the word `main2`, not as descriptor 2.
+            start = len(out)
+            while start > 0 and out[start - 1].isdigit():
+                start -= 1
+            if start < len(out) and (start == 0 or out[start - 1] in WORD_BREAK):
+                del out[start:]
             index = skip_redirection(command, index)
         elif character == "\n":
             out.append(";")
