@@ -126,7 +126,11 @@
       "properties": {
         "copyright_holder": {"type": "string", "minLength": 1},
         "license": {"type": "string", "minLength": 1},
-        "license_url": {"type": "string", "format": "uri"},
+        "license_url": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "URL of the license document, or null when the source is all-rights-reserved and no license document exists."
+        },
         "local_processing": {"type": "string", "enum": ["permitted", "restricted", "unknown"]},
         "redistribution": {"type": "string", "enum": ["permitted", "restricted", "unknown"]},
         "review_notes": {"type": "string", "minLength": 1},

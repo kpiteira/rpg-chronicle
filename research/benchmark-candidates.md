@@ -1,6 +1,20 @@
 # B01 benchmark candidates and R0 recommendation
 
-Access review: 2026-07-24.
+Access review: 2026-07-24. Re-verified at integration on 2026-07-26:
+
+- The YouTube oEmbed endpoint confirms `P8pLvV3FjPc` as "The Draw of Destiny |
+  Critical Role | Campaign 3, Episode 1"; the official recap and the Omen Archive
+  index return HTTP 200.
+- A byte-range probe of the Hiddengrid MP3 returned `audio/mpeg` with a total of
+  exactly 127,266,240 bytes, matching the recorded fetch evidence without
+  re-downloading the file.
+- The Hiddengrid site still carries both the CC BY-NC-ND 4.0 notice and the Topps
+  ownership statement.
+- The community transcript URL as originally recorded
+  (`Transcript:The_Draw_of_Destiny`) does not exist; the CR wiki uses a subpage
+  pattern. The manifest now points at `The_Draw_of_Destiny/Transcript`
+  (MediaWiki pageid 27033). Fandom rejects non-browser clients, so automated
+  re-checks should use the MediaWiki API rather than page URLs.
 
 ## Outcome
 
