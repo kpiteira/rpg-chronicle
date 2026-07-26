@@ -184,6 +184,13 @@ Three things this table hides, and they matter:
    the speaker it overlaps most and records `speaker_overlap_ratio` alongside — because
    an ASR segment that straddles a speaker change gets a label that is an attribution
    rather than an observation, and the review layer needs to be able to tell.
+One limit of the committed evidence, imposed by the licence rather than chosen: the
+per-turn view — timestamps, speaker labels and confidence on each turn — is committed
+only for the synthetic clip. For Hiddengrid the diff carries aggregate shape counts,
+because its `canonical_turns` are a transcript and CC BY-NC-ND forbids distributing one.
+Normalizability on real audio is therefore demonstrated by counts here and by the
+unredacted `--full-out` copy on the machine that ran it.
+
 3. **Rejected units are real.** `TranscriptTurn.__post_init__` rejects empty text and
    non-positive spans. The probe reports what could not become a turn rather than
    dropping it; a `TranscriptProvider` will hit the same cases. On the 600 s
@@ -276,9 +283,16 @@ Two consequences, and the second is the important one.
    a 0.02 gap between "recovered the name" and "mangled the name". That number was an
    artifact: the scorer put a truth turn carrying one recovered and one lost noun into
    *both* buckets, which necessarily flattens the difference. The goal validator caught
-   it. With mixed turns excluded, no clean contrast can be computed on this clip at all
-   — because no coined noun survived anywhere, there are zero turns in the "recovered"
-   bucket.
+   it. With mixed turns excluded, no clean contrast can be computed on this clip at all.
+
+   Two things cause that, and an earlier draft credited only the first. Coined-noun
+   recall is zero, so nothing could enter the "recovered" bucket on that basis. But the
+   two truth turns whose nouns *did* survive — the ones carrying `Ashen Spire` and
+   `Warden` — are precisely the two excluded as mixed, because each also carries a coined
+   noun that was lost. So the bucket was structurally unreachable on this clip whatever
+   the recall had been. The clip needs a turn carrying a surviving name and no lost one
+   before this comparison can be run at all, which is a defect in the generator script
+   rather than a finding about the engines.
 
    What the clip does support is a comparison against each stack's own typical turn:
 
@@ -581,6 +595,13 @@ recorded evidence:
 - **ffmpeg** performs audio conversion in this pipeline. The Homebrew build reports
   `--enable-gpl --enable-version3` and `ffmpeg -L` states GPL v3, so it is copyleft: fine
   for a binary invoked as a subprocess, not fine to link into a distributed application.
+- **Five claims here are observations with neither a source link nor a committed
+  artifact**, and are listed so a reader knows which to re-check rather than trust: no
+  Metal or CUDA execution provider in the published sherpa-onnx wheel; Homebrew ffmpeg
+  reporting `--enable-gpl --enable-version3`; the absence of any Hugging Face token on
+  the probe machine; the flags `parakeet-cli --help` offers on Homebrew v1.9.1; and the
+  swap reading during the 40-minute run. All were observed at a terminal on 2026-07-26
+  and none is reproducible from the diff alone.
 - **The benchmark input remains restricted.** Hiddengrid Episode 044 is CC BY-NC-ND with
   redistribution restricted; no audio, clip, or transcript of it appears in this
   repository, and the probe results drawn from it carry only aggregate metrics.

@@ -216,3 +216,20 @@ is an observation about the engines rather than a fixture replay — the distinc
 A run that fails is still a result: the probe writes `"outcome": "failed"` with the
 error and the configuration that produced it, and exits non-zero.
 `results/scaling-parakeet-unchunked-1200s.json` is one, and it is deliberate.
+
+## Known limitations of this instrumentation
+
+Two fields are weaker than they look. Both were found in validation and are recorded
+rather than quietly left, because a metric that cannot fail is worse than no metric.
+
+- **`shape.has_timestamps` cannot be false.** It is `bool(turns) or bool(units)`, so any
+  stack that emits anything at all passes it. Read it as "this run produced output", not
+  as a capability check — the real timestamp evidence is the millisecond values on each
+  entry of `canonical_turns`. It should be derived from those or dropped; doing so means
+  regenerating every result, so it is left as a follow-up rather than changed in a way
+  that would leave the committed code and the committed numbers out of step.
+- **`speaker_coverage_ratio` overstates coverage where diarization spans overlap.** It
+  sums per-span overlaps and clamps at the unit span, so a unit spanned by two
+  simultaneous speakers counts that time twice before clamping. `overlap_given_coverage`
+  is correspondingly deflated. The direction of the comparison it supports holds, but its
+  third decimal does not, and the scorecard says so where it uses it.
