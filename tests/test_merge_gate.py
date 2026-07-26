@@ -1,0 +1,165 @@
+"""The pre-merge gate hook.
+
+`tests/test_hook_classifier.py` covers command recognition. This file covers the
+shell wiring around it: decision parsing, how a pull request is resolved, and
+each refusal. The goal validator's finding on the pull request that introduced
+these tests was that the wiring had none, and that the surviving defect lived
+there rather than in the classifier.
+
+`gh` is stubbed on PATH, so the gate is exercised without network access. The
+stub records its arguments, which is how the branch-resolution test proves the
+gate asks about the branch the merge names rather than the current one.
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+GATE = ROOT / "scripts/hooks/pre-merge-gate.sh"
+
+HEAD = "1111111111111111111111111111111111111111"
+STALE = "2222222222222222222222222222222222222222"
+
+GH_STUB = """#!/usr/bin/env python3
+import json, os, sys
+
+argv = sys.argv[1:]
+with open(os.environ["GH_CALL_LOG"], "a") as log:
+    log.write(" ".join(argv) + "\\n")
+
+if os.environ.get("GH_FAIL_VIEW") and argv[:2] == ["pr", "view"]:
+    sys.exit(1)
+
+if "--json" in argv:
+    field = argv[argv.index("--json") + 1]
+    if field == "number":
+        print(os.environ.get("GH_PR_NUMBER", "7"))
+    elif field == "headRefOid":
+        print(os.environ.get("GH_HEAD_SHA", ""))
+    elif field == "comments":
+        print(os.environ.get("GH_VERDICT", ""))
+sys.exit(0)
+"""
+
+
+@pytest.fixture
+def gate(tmp_path: Path):
+    """Run the gate with a stubbed `gh`, returning (exit code, stderr)."""
+    bin_dir = tmp_path / "bin"
+    bin_dir.mkdir()
+    stub = bin_dir / "gh"
+    stub.write_text(GH_STUB)
+    stub.chmod(0o755)
+    call_log = tmp_path / "gh-calls.log"
+    call_log.touch()
+
+    def run(command: str, **environment: str):
+        env = {
+            **os.environ,
+            "PATH": f"{bin_dir}{os.pathsep}{os.environ['PATH']}",
+            "GH_CALL_LOG": str(call_log),
+            "GH_HEAD_SHA": HEAD,
+            **environment,
+        }
+        result = subprocess.run(
+            ["bash", str(GATE)],
+            input=json.dumps({"tool_input": {"command": command}}),
+            capture_output=True,
+            text=True,
+            env=env,
+            check=False,  # a refusal is exit 2, and that is the thing under test
+        )
+        return result.returncode, result.stderr, call_log.read_text()
+
+    return run
+
+
+def verdict(sha: str, value: str = "pass") -> str:
+    return f'<!-- goal-validator sha:{sha} -->\n```json\n{{"verdict": "{value}"}}\n```'
+
+
+def test_an_ordinary_command_is_allowed(gate) -> None:
+    code, _, calls = gate("uv run pytest -q")
+    assert code == 0
+    assert calls == ""  # no reason to ask GitHub anything
+
+
+def test_a_push_to_main_is_refused(gate) -> None:
+    code, stderr, _ = gate("git push origin HEAD:main")
+    assert code == 2
+    assert "Refusing to push to main" in stderr
+
+
+def test_an_environment_prefix_does_not_hide_a_push_to_main(gate) -> None:
+    code, stderr, _ = gate("GIT_TRACE=1 git push origin main")
+    assert code == 2
+    assert "Refusing to push to main" in stderr
+
+
+def test_a_merge_with_a_passing_verdict_for_the_head_is_allowed(gate) -> None:
+    code, stderr, _ = gate("gh pr merge 7 --rebase", GH_VERDICT=verdict(HEAD))
+    assert code == 0, stderr
+
+
+def test_a_merge_without_a_verdict_is_refused(gate) -> None:
+    code, stderr, _ = gate("gh pr merge 7 --rebase", GH_VERDICT="")
+    assert code == 2
+    assert "No goal-validator verdict" in stderr
+
+
+def test_a_verdict_for_a_superseded_commit_is_refused(gate) -> None:
+    code, stderr, _ = gate("gh pr merge 7 --rebase", GH_VERDICT=verdict(STALE))
+    assert code == 2
+    assert "predates its current head commit" in stderr
+
+
+def test_a_blocking_verdict_is_refused(gate) -> None:
+    code, stderr, _ = gate(
+        "gh pr merge 7 --rebase", GH_VERDICT=verdict(HEAD, "block")
+    )
+    assert code == 2
+    assert "did not record an explicit pass" in stderr
+
+
+def test_an_unreadable_head_commit_is_refused(gate) -> None:
+    code, stderr, _ = gate("gh pr merge 7 --rebase", GH_HEAD_SHA="")
+    assert code == 2
+    assert "Cannot read the head commit" in stderr
+
+
+def test_an_unresolvable_pull_request_is_refused(gate) -> None:
+    code, stderr, _ = gate("gh pr merge 7 --rebase", GH_FAIL_VIEW="1")
+    assert code == 2
+    assert "Cannot identify the pull request" in stderr
+
+
+def test_a_merge_naming_a_branch_resolves_that_branch(gate) -> None:
+    """The defect the goal validator caught.
+
+    A branch-named merge was reported as naming nothing, so the gate resolved
+    the *current* branch and would have checked one pull request's verdict while
+    merging another.
+    """
+    code, stderr, calls = gate(
+        "gh pr merge codex/other/branch --rebase", GH_VERDICT=verdict(HEAD)
+    )
+    assert code == 0, stderr
+    assert "pr view codex/other/branch --json number" in calls
+
+
+def test_a_merge_naming_nothing_falls_back_to_the_current_branch(gate) -> None:
+    code, stderr, calls = gate("gh pr merge --rebase", GH_VERDICT=verdict(HEAD))
+    assert code == 0, stderr
+    assert "pr view --json number" in calls
+
+
+def test_an_unparseable_guarded_command_is_refused(gate) -> None:
+    code, stderr, _ = gate('gh pr merge 7 --body "unterminated')
+    assert code == 2
+    assert "Could not parse this command" in stderr
