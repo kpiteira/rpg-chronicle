@@ -56,9 +56,19 @@ Two qualifications. Nobody has listened to it, so its *suitability* rests on mea
 and the publisher's framing rather than on content. And it is remote play, so it tests
 duration without testing the room.
 
-The four-hour target is met at 3 h 57 m; the same channel publishes episodes up to
-4 h 19 m in the same campaign under the same licence, so more length is available without
-a new rights determination.
+The four-hour target is met at 3 h 57 m, and more length is available in the same campaign
+— but "same channel, so same licence" is exactly the assumption this goal forbids, so the
+siblings were checked one by one on 2026-07-26 rather than inferred:
+
+| Episode | Duration | Licence, checked per video |
+|---|---|---|
+| Ch. 1 Ep. 6 (`4YNOvKwO0lU`) | 4:18:49 | CC BY |
+| Ch. 1 Ep. 4 (`5LAVK0tpVEI`) | 4:14:22 | CC BY |
+| Ch. 1 Ep. 16 (`8yW4k-TNnBM`) | 3:47:55 | CC BY |
+| Ch. 1 Finale (`MIsnpf9L6Og`) | 3:14:38 | CC BY |
+
+Those four are cleared. The rest of the sixteen-episode campaign is **not** — a licence is
+set per video, and any further episode needs its own check before use.
 
 ## What it would take to close the remaining gaps
 
