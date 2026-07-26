@@ -215,6 +215,7 @@ def run_mlx_whisper(audio: Path, ready: Ready) -> Probe:
     import mlx_whisper
 
     repo = os.environ.get("RPG_PROBE_MLX_WHISPER", "mlx-community/whisper-large-v3-turbo")
+    CONFIGURATION.update({"model": repo, "word_timestamps": True})
     # mlx-whisper loads lazily inside transcribe(); there is no separable load step,
     # so the ready mark sits at the call and load time lands inside inference.
     ready()
@@ -242,6 +243,9 @@ def run_faster_whisper_cpu(audio: Path, ready: Ready) -> Probe:
     from faster_whisper import WhisperModel
 
     name = os.environ.get("RPG_PROBE_FASTER_WHISPER", "large-v3-turbo")
+    CONFIGURATION.update(
+        {"model": name, "device": "cpu", "compute_type": "int8", "word_timestamps": True}
+    )
     model = WhisperModel(name, device="cpu", compute_type="int8")
     ready()
     segments, info = model.transcribe(str(audio), word_timestamps=True)
@@ -312,6 +316,7 @@ def run_whisper_cpp_metal(audio: Path, ready: Ready) -> Probe:
         "-t",
         str(os.cpu_count() or 8),
     ]
+    CONFIGURATION.update({"model_file": model.name, "threads": cmd[-1], "json_flag": "-ojf"})
     # The CLI loads its own model, so load and inference are inseparable here.
     ready()
     try:
@@ -327,7 +332,15 @@ def run_whisper_cpp_metal(audio: Path, ready: Ready) -> Probe:
     # without carrying machine identity into the diff.
     redacted_cmd = [Path(part).name if "/" in part else part for part in cmd]
     payload.pop("params", None)
-    native = {"engine": "whisper.cpp", "model": model.name, "cli": redacted_cmd, **payload}
+    # `model_file`, not `model`: whisper.cpp's own JSON carries a `model` key holding
+    # architecture metadata, and spreading the payload last silently overwrote the
+    # basename this was meant to preserve.
+    native = {
+        "engine": "whisper.cpp",
+        "model_file": model.name,
+        "cli": redacted_cmd,
+        **payload,
+    }
     units = []
     for seg in payload.get("transcription", []):
         offsets = seg["offsets"]
@@ -346,8 +359,12 @@ def run_whisper_cpp_metal(audio: Path, ready: Ready) -> Probe:
                 "confidence": round(sum(scores) / len(scores), 6) if scores else None,
             }
         )
+    # Only substitute a directory that is actually a path. Under the documented
+    # `cd "$CACHE"` invocation the parent is ".", and replacing that rewrites every
+    # decimal point in the log into a placeholder.
+    audio_dir = str(audio.resolve().parent)
     native["stderr_tail"] = [
-        line.replace(scratch, "<scratch>").replace(str(audio.parent), "<audio-dir>")
+        line.replace(scratch, "<scratch>").replace(audio_dir, "<audio-dir>")
         for line in proc.stderr.strip().splitlines()[-12:]
     ]
     scratch_dir.cleanup()
@@ -391,6 +408,16 @@ def run_sherpa_diarization(audio: Path, ready: Ready) -> Probe:
         min_duration_on=0.3,
         min_duration_off=0.5,
     )
+    CONFIGURATION.update(
+        {
+            "segmentation_model": segmentation.name,
+            "embedding_model": embedding.name,
+            "cluster_threshold": threshold,
+            "num_clusters": num_clusters,
+            "threads": threads,
+            "env": ["RPG_PROBE_CLUSTER_THRESHOLD", "RPG_PROBE_NUM_CLUSTERS"],
+        }
+    )
     if not config.validate():
         raise SystemExit("sherpa-onnx rejected the diarization configuration")
 
@@ -426,6 +453,17 @@ def run_sherpa_diarization(audio: Path, ready: Ready) -> Probe:
         }
         for s in segments
     ]
+    # Spans overlap where the model hears two people at once, so their sum is not the
+    # amount of time anybody was speaking. The union is, and the difference between the
+    # two is itself the overlapped-speech estimate.
+    merged: list[list[int]] = []
+    for unit in sorted(units, key=lambda u: u["start_ms"]):
+        if merged and unit["start_ms"] <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], unit["end_ms"])
+        else:
+            merged.append([unit["start_ms"], unit["end_ms"]])
+    native["speech_union_ms"] = sum(end - start for start, end in merged)
+    native["span_sum_ms"] = sum(u["end_ms"] - u["start_ms"] for u in units)
     return native, units
 
 
@@ -664,9 +702,12 @@ def main() -> int:
             "unit_count": len(units),
             "canonical_turn_count": len(turns),
             "speaker_span_count": len(units) if diarization_only else None,
-            "speaker_span_ms": (
+            # Sum of spans, which double-counts overlapped speech. `speech_union_ms` in
+            # the native artifact is the time somebody was actually speaking.
+            "speaker_span_sum_ms": (
                 sum(u["end_ms"] - u["start_ms"] for u in units) if diarization_only else None
             ),
+            "speech_union_ms": native.get("speech_union_ms") if diarization_only else None,
             "rejected_unit_count": len(rejected),
             "rejected_units": rejected if not args.redact_text else len(rejected),
             # True whenever the stack timestamped anything, which a diarizer does even

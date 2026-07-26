@@ -15,22 +15,23 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 53.238,
+    "wall_clock_s": 53.425,
     "model_load_s": 0.001,
-    "inference_s": 53.237,
-    "realtime_factor": 22.54,
-    "inference_realtime_factor": 22.54,
-    "peak_rss_mb": 31.6,
-    "peak_child_rss_mb": 2201.6,
-    "load_avg_1m_before": 5.49,
-    "load_avg_1m_after": 4.41
+    "inference_s": 53.424,
+    "realtime_factor": 22.46,
+    "inference_realtime_factor": 22.46,
+    "peak_rss_mb": 31.8,
+    "peak_child_rss_mb": 2202.3,
+    "load_avg_1m_before": 4.5,
+    "load_avg_1m_after": 3.09
   },
   "shape": {
     "produces_text": true,
     "unit_count": 386,
     "canonical_turn_count": 386,
     "speaker_span_count": null,
-    "speaker_span_ms": null,
+    "speaker_span_sum_ms": null,
+    "speech_union_ms": null,
     "rejected_unit_count": 0,
     "rejected_units": 0,
     "has_timestamps": true,
@@ -43,6 +44,10 @@
     "characters_of_text": 13148
   },
   "diarization_source": null,
-  "configuration": {},
+  "configuration": {
+    "model_file": "ggml-large-v3-turbo.bin",
+    "threads": "12",
+    "json_flag": "-ojf"
+  },
   "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
 }

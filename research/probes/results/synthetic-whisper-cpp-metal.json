@@ -15,22 +15,23 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 2.382,
-    "model_load_s": 0.0,
-    "inference_s": 2.381,
-    "realtime_factor": 20.98,
-    "inference_realtime_factor": 20.99,
-    "peak_rss_mb": 26.9,
-    "peak_child_rss_mb": 1988.1,
-    "load_avg_1m_before": 3.72,
-    "load_avg_1m_after": 3.5
+    "wall_clock_s": 2.422,
+    "model_load_s": 0.001,
+    "inference_s": 2.421,
+    "realtime_factor": 20.63,
+    "inference_realtime_factor": 20.64,
+    "peak_rss_mb": 27.0,
+    "peak_child_rss_mb": 1988.8,
+    "load_avg_1m_before": 7.5,
+    "load_avg_1m_after": 7.5
   },
   "shape": {
     "produces_text": true,
     "unit_count": 13,
     "canonical_turn_count": 13,
     "speaker_span_count": null,
-    "speaker_span_ms": null,
+    "speaker_span_sum_ms": null,
+    "speech_union_ms": null,
     "rejected_unit_count": 0,
     "rejected_units": [],
     "has_timestamps": true,
@@ -61,9 +62,27 @@
     "path": "synthetic-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
-  "configuration": {},
+  "configuration": {
+    "model_file": "ggml-large-v3-turbo.bin",
+    "threads": "12",
+    "json_flag": "-ojf"
+  },
   "native_artifact": {
     "engine": "whisper.cpp",
+    "model_file": "ggml-large-v3-turbo.bin",
+    "cli": [
+      "whisper-cli",
+      "-m",
+      "ggml-large-v3-turbo.bin",
+      "-f",
+      "synthetic-table-talk.wav",
+      "-ojf",
+      "-of",
+      "synthetic-table-talk",
+      "-t",
+      "12"
+    ],
+    "systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
     "model": {
       "type": "large",
       "multilingual": true,
@@ -83,19 +102,6 @@
       "mels": 128,
       "ftype": 1
     },
-    "cli": [
-      "whisper-cli",
-      "-m",
-      "ggml-large-v3-turbo.bin",
-      "-f",
-      "synthetic-table-talk.wav",
-      "-ojf",
-      "-of",
-      "synthetic-table-talk",
-      "-t",
-      "12"
-    ],
-    "systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
     "result": {
       "language": "en"
     },
@@ -403,17 +409,17 @@
       "note": "complete artifact written beside the audio via --full-out"
     },
     "stderr_tail": [
-      "output_json: saving output to '<scratch>/synthetic-table-talk<audio-dir>json'",
+      "output_json: saving output to '<scratch>/synthetic-table-talk.json'",
       "",
-      "whisper_print_timings:     load time =   428<audio-dir>20 ms",
+      "whisper_print_timings:     load time =   465.13 ms",
       "whisper_print_timings:     fallbacks =   0 p /   0 h",
-      "whisper_print_timings:      mel time =     8<audio-dir>53 ms",
-      "whisper_print_timings:   sample time =   136<audio-dir>60 ms /  1034 runs (     0<audio-dir>13 ms per run)",
-      "whisper_print_timings:   encode time =  1000<audio-dir>29 ms /     2 runs (   500<audio-dir>15 ms per run)",
-      "whisper_print_timings:   decode time =     2<audio-dir>20 ms /     1 runs (     2<audio-dir>20 ms per run)",
-      "whisper_print_timings:   batchd time =   679<audio-dir>03 ms /  1026 runs (     0<audio-dir>66 ms per run)",
-      "whisper_print_timings:   prompt time =    12<audio-dir>76 ms /   132 runs (     0<audio-dir>10 ms per run)",
-      "whisper_print_timings:    total time =  2306<audio-dir>31 ms",
+      "whisper_print_timings:      mel time =     8.87 ms",
+      "whisper_print_timings:   sample time =   134.05 ms /  1034 runs (     0.13 ms per run)",
+      "whisper_print_timings:   encode time =   999.03 ms /     2 runs (   499.52 ms per run)",
+      "whisper_print_timings:   decode time =     2.34 ms /     1 runs (     2.34 ms per run)",
+      "whisper_print_timings:   batchd time =   666.59 ms /  1026 runs (     0.65 ms per run)",
+      "whisper_print_timings:   prompt time =    13.09 ms /   132 runs (     0.10 ms per run)",
+      "whisper_print_timings:    total time =  2326.73 ms",
       "ggml_metal_free: deallocating"
     ]
   },

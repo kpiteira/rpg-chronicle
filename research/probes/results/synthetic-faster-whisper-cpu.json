@@ -15,22 +15,23 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 39.018,
-    "model_load_s": 2.025,
-    "inference_s": 36.993,
-    "realtime_factor": 1.28,
-    "inference_realtime_factor": 1.35,
-    "peak_rss_mb": 2471.7,
-    "peak_child_rss_mb": 13.5,
-    "load_avg_1m_before": 3.5,
-    "load_avg_1m_after": 4.37
+    "wall_clock_s": 38.338,
+    "model_load_s": 2.105,
+    "inference_s": 36.233,
+    "realtime_factor": 1.3,
+    "inference_realtime_factor": 1.38,
+    "peak_rss_mb": 2471.0,
+    "peak_child_rss_mb": 13.4,
+    "load_avg_1m_before": 7.5,
+    "load_avg_1m_after": 6.66
   },
   "shape": {
     "produces_text": true,
     "unit_count": 15,
     "canonical_turn_count": 15,
     "speaker_span_count": null,
-    "speaker_span_ms": null,
+    "speaker_span_sum_ms": null,
+    "speech_union_ms": null,
     "rejected_unit_count": 0,
     "rejected_units": [],
     "has_timestamps": true,
@@ -43,10 +44,10 @@
       "SPEAKER_06"
     ],
     "turns_with_confidence": 15,
-    "confidence_min": 0.4572,
-    "confidence_mean": 0.7951,
-    "total_speech_ms": 44300,
-    "characters_of_text": 761,
+    "confidence_min": 0.0817,
+    "confidence_mean": 0.7415,
+    "total_speech_ms": 44500,
+    "characters_of_text": 770,
     "speaker_attribution": {
       "mean_overlap_ratio": 0.887,
       "min_overlap_ratio": 0.378,
@@ -54,14 +55,19 @@
       "turns_with_no_speaker": 0,
       "mean_coverage_ratio": 0.977,
       "overlap_given_coverage": 0.908,
-      "total_unit_span_ms": 44300
+      "total_unit_span_ms": 44500
     }
   },
   "diarization_source": {
     "path": "synthetic-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
-  "configuration": {},
+  "configuration": {
+    "model": "large-v3-turbo",
+    "device": "cpu",
+    "compute_type": "int8",
+    "word_timestamps": true
+  },
   "native_artifact": {
     "engine": "faster-whisper",
     "model": "large-v3-turbo",
@@ -362,21 +368,21 @@
     },
     {
       "id": "t0013",
-      "start_ms": 49820,
-      "end_ms": 49880,
-      "text": "Don't you?",
+      "start_ms": 49640,
+      "end_ms": 49760,
+      "text": "First.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.8280990514966291,
+      "confidence": 0.08165214437471914,
       "speaker_overlap_ratio": 1.0,
       "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0014",
-      "start_ms": 49880,
-      "end_ms": 49900,
-      "text": "Thank you.",
+      "start_ms": 49780,
+      "end_ms": 49940,
+      "text": "I'll see you next time.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.4572411645749649,
+      "confidence": 0.3997843924895174,
       "speaker_overlap_ratio": 1.0,
       "speaker_coverage_ratio": 1.0
     }

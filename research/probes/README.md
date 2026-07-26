@@ -72,7 +72,7 @@ mkdir -p "$CACHE"
 # Missing voices install from System Settings › Accessibility › Spoken Content ›
 # System Voice › Manage Voices. Substituting other voices is fine for output shape, but
 # the committed synthetic results will no longer be byte-comparable.
-research/probes/make_synthetic_clip.py --out-dir "$CACHE"
+$RPG_PROBE_PYTHON research/probes/make_synthetic_clip.py --out-dir "$CACHE"
 (cd "$CACHE" && /path/to/repo/research/probes/run_probe_battery.sh \
     synthetic-table-talk.wav synthetic /path/to/repo/research/probes/results)
 
@@ -102,7 +102,14 @@ These back the four-hour projection and the diarization findings. Every committe
 `scaling-*.json` comes from one of the commands below; the recognition realtime factors
 the wall-clock projection is taken from come from the `whispercpp` runs specifically.
 
+The battery script defaults to the probe venv; these commands do not, because they
+invoke the scripts directly. Set the interpreter first or every one of them fails on
+`import mlx_whisper`:
+
 ```bash
+export RPG_PROBE_PYTHON=~/.cache/rpg-chronicle/probe-venv/bin/python
+PROBE="$RPG_PROBE_PYTHON research/probes/speech_stack_probe.py"
+
 # the windows every scaling run uses
 for T in 1200 1800 2400; do
   ffmpeg -v error -ss 0 -t $T -i "$CACHE/hiddengrid-ep044.mp3" \
@@ -111,7 +118,7 @@ done
 
 # diarization memory against input length -- measured, not assumed
 for T in 1200 1800 2400; do
-  research/probes/speech_stack_probe.py --stack sherpa-diarization \
+  $PROBE --stack sherpa-diarization \
       --audio "$CACHE/scale-$T.wav" --redact-text \
       --out research/probes/results/scaling-diarization-${T}s.json \
       --input-label "hiddengrid-${T}s"
@@ -119,7 +126,7 @@ done
 
 # recognition at the same lengths, so the comparison is like for like
 for T in 1200 2400; do
-  research/probes/speech_stack_probe.py --stack whisper-cpp-metal \
+  $PROBE --stack whisper-cpp-metal \
       --audio "$CACHE/scale-$T.wav" --redact-text \
       --out research/probes/results/scaling-whispercpp-${T}s.json \
       --input-label "hiddengrid-${T}s"
@@ -127,7 +134,7 @@ for T in 1200 2400; do
   # RPG_PROBE_PARAKEET_CHUNK sets parakeet-mlx's chunk_duration in seconds. It is
   # required above ~10 minutes of audio and is recorded in each result's
   # `configuration` block, which survives redaction for exactly this reason.
-  RPG_PROBE_PARAKEET_CHUNK=120 research/probes/speech_stack_probe.py --stack parakeet-mlx \
+  RPG_PROBE_PARAKEET_CHUNK=120 $PROBE --stack parakeet-mlx \
       --audio "$CACHE/scale-$T.wav" --redact-text \
       --out research/probes/results/scaling-parakeet-chunked-${T}s.json \
       --input-label "hiddengrid-${T}s"
@@ -135,7 +142,7 @@ done
 
 # the failure the scorecard cites: parakeet-mlx with no chunk duration at 20 minutes.
 # Expected to exit non-zero and write a result with "outcome": "failed".
-research/probes/speech_stack_probe.py --stack parakeet-mlx \
+$PROBE --stack parakeet-mlx \
     --audio "$CACHE/scale-1200.wav" --redact-text \
     --out research/probes/results/scaling-parakeet-unchunked-1200s.json \
     --input-label "hiddengrid-1200s" || true
@@ -143,7 +150,7 @@ research/probes/speech_stack_probe.py --stack parakeet-mlx \
 # the diarization clustering sweep, which produces results/diarization-threshold-sweep.json
 # in one command: six thresholds against the synthetic clip's known speaker count, six
 # against the restricted window, and the forced num_clusters=4 run.
-research/probes/sweep_diarization.py --cache "$CACHE" \
+$RPG_PROBE_PYTHON research/probes/sweep_diarization.py --cache "$CACHE" \
     --out research/probes/results/diarization-threshold-sweep.json
 ```
 
@@ -156,7 +163,7 @@ enter the repository.
 ### Scoring against known truth
 
 ```bash
-research/probes/score_synthetic.py \
+$RPG_PROBE_PYTHON research/probes/score_synthetic.py \
     --truth "$CACHE/synthetic-table-talk-truth.json" \
     --result research/probes/results/synthetic-*.json \
     --out research/probes/results/synthetic-scores.json

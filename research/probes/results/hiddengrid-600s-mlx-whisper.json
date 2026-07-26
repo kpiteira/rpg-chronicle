@@ -15,24 +15,25 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 35.112,
-    "model_load_s": 1.861,
-    "inference_s": 33.251,
-    "realtime_factor": 17.09,
-    "inference_realtime_factor": 18.04,
-    "peak_rss_mb": 2102.6,
-    "peak_child_rss_mb": 15.8,
-    "load_avg_1m_before": 12.85,
-    "load_avg_1m_after": 9.34
+    "wall_clock_s": 44.262,
+    "model_load_s": 1.08,
+    "inference_s": 43.182,
+    "realtime_factor": 13.56,
+    "inference_realtime_factor": 13.89,
+    "peak_rss_mb": 2058.1,
+    "peak_child_rss_mb": 15.7,
+    "load_avg_1m_before": 12.59,
+    "load_avg_1m_after": 6.68
   },
   "shape": {
     "produces_text": true,
-    "unit_count": 226,
-    "canonical_turn_count": 225,
+    "unit_count": 450,
+    "canonical_turn_count": 346,
     "speaker_span_count": null,
-    "speaker_span_ms": null,
-    "rejected_unit_count": 1,
-    "rejected_units": 1,
+    "speaker_span_sum_ms": null,
+    "speech_union_ms": null,
+    "rejected_unit_count": 104,
+    "rejected_units": 104,
     "has_timestamps": true,
     "distinct_physical_speakers": 23,
     "physical_speakers": [
@@ -60,25 +61,28 @@
       "SPEAKER_27",
       "SPEAKER_29"
     ],
-    "turns_with_confidence": 225,
-    "confidence_min": 0.5509,
-    "confidence_mean": 0.7076,
-    "total_speech_ms": 351960,
-    "characters_of_text": 6341,
+    "turns_with_confidence": 341,
+    "confidence_min": 0.3016,
+    "confidence_mean": 0.6782,
+    "total_speech_ms": 317200,
+    "characters_of_text": 5704,
     "speaker_attribution": {
-      "mean_overlap_ratio": 0.802,
+      "mean_overlap_ratio": 0.636,
       "min_overlap_ratio": 0.0,
-      "turns_below_0_8_overlap": 84,
-      "turns_with_no_speaker": 9,
-      "mean_coverage_ratio": 0.87,
-      "overlap_given_coverage": 0.923,
-      "total_unit_span_ms": 351960
+      "turns_below_0_8_overlap": 215,
+      "turns_with_no_speaker": 123,
+      "mean_coverage_ratio": 0.667,
+      "overlap_given_coverage": 0.952,
+      "total_unit_span_ms": 317200
     }
   },
   "diarization_source": {
     "path": "hiddengrid-600s-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
-  "configuration": {},
+  "configuration": {
+    "model": "mlx-community/whisper-large-v3-turbo",
+    "word_timestamps": true
+  },
   "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
 }

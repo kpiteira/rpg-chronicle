@@ -26,9 +26,11 @@ third model plus a second inference pass.
 
 ### Why not Parakeet, which measured faster
 
-`parakeet-mlx` was the fastest and lightest thing probed, by a lot: 1.7x whisper.cpp's
-throughput on the 600 s window (36.8x realtime against 21.3x), widening to 3.7x at 40
-minutes, on a fifth of the memory.
+`parakeet-mlx` was the fastest and lightest thing probed, by a lot: 1.8x whisper.cpp's
+throughput on the 600 s window (41.0x realtime against 23.3x) on a fifth of the memory,
+widening to 3.7x throughput at 40 minutes — where the memory advantage narrows to about
+45% (1,100 MB against 2,419 MB), because chunked Parakeet grows and whisper.cpp barely
+does.
 It is not a close call on those axes and this recommendation does not pretend otherwise. It goes to whisper.cpp on four grounds, in
 order of weight:
 
@@ -71,17 +73,17 @@ the source is CC BY-NC-ND.
 
 | Stack | Wall clock | Realtime factor | Peak RSS | Units emitted | Unusable units | Load avg at start |
 |---|---|---|---|---|---|---|
-| `whisper-cpp-metal` | 28.1 s | 21.3x | 2,096 MB (child) | 302 | 1 | 9.3 |
-| `parakeet-mlx` | **16.3 s** | **36.8x** | **427 MB** | 158 | 0 | 16.2 |
-| `mlx-whisper` | 35.1 s | 17.1x | 2,103 MB | 226 | 1 | 12.8 |
-| `faster-whisper-cpu` | 183.9 s | 3.3x | 2,638 MB | 240 | 0 | 7.4 |
-| `sherpa-diarization` | 35.1 s | 17.1x | 3,654 MB | 208 spans | — | 5.4 |
+| `whisper-cpp-metal` | 25.8 s | 23.3x | 2,096 MB (child) | 302 | 1 | 6.7 |
+| `parakeet-mlx` | **14.7 s** | **41.0x** | **429 MB** | 158 | 0 | 15.4 |
+| `mlx-whisper` | 44.3 s | 13.6x | 2,058 MB | 450 | **104** | 12.6 |
+| `faster-whisper-cpu` | 163.9 s | 3.7x | 2,644 MB | 240 | 0 | 4.7 |
+| `sherpa-diarization` | 30.8 s | 19.5x | 3,654 MB | 208 spans | — | 6.7 |
 
 Three readings of that table, in order of how much they change the decision.
 
 **Parakeet is the fastest and lightest by a wide margin, and it still does not win.**
-It is 1.7x faster than whisper.cpp here and uses a fifth of the memory; on the longer
-inputs below the throughput gap widens to over 3x. But both are 20–45x
+It is 1.8x faster than whisper.cpp here and uses a fifth of the memory; on the longer
+inputs below the throughput gap widens to over 3x. But both are 20–41x
 realtime on a task that needs to finish overnight at worst, so neither speed nor memory
 is the product's binding constraint, and an advantage on a non-binding axis does not
 decide anything. Recording this plainly matters: the recommendation goes to the slower
@@ -91,8 +93,8 @@ engine, and a reader deserves to see the number that argues against it.
 section — the raw overlap comparison is confounded by unit span, and correcting for it
 shrinks a 0.24 gap to 0.08.
 
-**The CPU floor is real, not theoretical.** faster-whisper on CPU alone ran at 3.3x
-realtime — a four-hour session in roughly 73 minutes with no GPU at all. A stack that
+**The CPU floor is real, not theoretical.** faster-whisper on CPU alone ran at 3.7x
+realtime — a four-hour session in roughly 65 minutes with no GPU at all. A stack that
 degrades to that is portable in practice and not only on paper.
 
 Wall-clock figures are upper bounds: a second agent session was running on the same
@@ -107,9 +109,11 @@ The goal validator found that comparison confounded, and it was right. The corre
 is recorded here rather than quietly applied, because the original number is the kind
 that looks decisive and is not.
 
-**The confound.** The diarizer labelled 407,621 ms of the 600 s window as speech.
-Parakeet's units span 477,520 ms — 70 seconds *more* than any speaker was found
-speaking, because a sentence-level unit runs across the pauses inside it. Overlap is
+**The confound.** The diarizer's spans over the 600 s window total 407,621 ms. That is
+the *sum* of spans, which double-counts wherever the model hears two people at once; the
+union — the time anybody was actually speaking — is **384,502 ms**, and the probe now
+records both. Parakeet's units span 477,520 ms, which is 93 seconds *more* than anyone
+was speaking, because a sentence-level unit runs across the pauses inside it. Overlap is
 measured against the unit's own span, so Parakeet cannot reach 1.0 no matter how
 correctly every label is assigned. whisper.cpp's units total 389,060 ms, comfortably
 inside the diarized speech, so its ceiling is 1.0. The two engines were being scored
@@ -123,13 +127,17 @@ by coverage, which is attribution purity given what was diarized at all:
 | Stack | Unit span | Raw overlap | Coverage | Overlap given coverage |
 |---|---|---|---|---|
 | `whisper-cpp-metal` | 389,060 ms | 0.847 | 0.900 | **0.941** |
-| `faster-whisper-cpu` | 311,720 ms | 0.819 | 0.881 | 0.930 |
-| `mlx-whisper` | 351,960 ms | 0.802 | 0.870 | 0.923 |
+| `mlx-whisper` | 317,200 ms | 0.636 | 0.667 | 0.952 |
+| `faster-whisper-cpu` | 311,700 ms | 0.819 | 0.881 | 0.930 |
 | `parakeet-mlx` | 477,520 ms | 0.610 | 0.712 | 0.857 |
 
 **What survives.** whisper.cpp still attributes better than Parakeet, by 0.084 rather
-than 0.237, and it is now the best of the four rather than merely ahead of the one it
-was compared against. That is a real advantage pointing the same way as before, but a
+than 0.237. `mlx-whisper` scores highest on this corrected measure and should be
+discounted rather than believed: on this run it emitted 450 units of which **104 could
+not become turns at all**, so its coverage denominator is built from a much smaller set
+of usable units. Its unit count across three runs of identical audio was 213, 226 and
+450 — the volatility is itself the finding, and it disqualifies mlx-whisper more firmly
+than its speed does. That is a real advantage pointing the same way as before, but a
 modest one — and the honest reading is that the four recognizers cluster between 0.86
 and 0.94 on attribution purity, where the raw numbers suggested a chasm.
 
@@ -167,11 +175,11 @@ Three things this table hides, and they matter:
 3. **Rejected units are real.** `TranscriptTurn.__post_init__` rejects empty text and
    non-positive spans. The probe reports what could not become a turn rather than
    dropping it; a `TranscriptProvider` will hit the same cases. On the 600 s
-   window whisper.cpp produced 1 unusable unit out of 302 and mlx-whisper 1 out of 226,
-   and mlx-whisper rejected 3 of 20 on the synthetic clip. Most runs reject nothing at
-   all — Parakeet and faster-whisper rejected none anywhere — so this is occasional
-   rather than routine, which is exactly why a provider that assumed every segment
-   converts would pass its own tests and then fail on some real file.
+   window whisper.cpp produced 1 unusable unit out of 302, while mlx-whisper produced
+   **104 out of 450** on the same audio. Parakeet and faster-whisper rejected none
+   anywhere. So the rate is not a property of the pipeline but of the engine and the
+   run, which is exactly why a provider that assumed every segment converts would pass
+   its own tests and then meet a file where a quarter of them do not.
 
 ### What a `TranscriptProvider` would have to do
 
@@ -224,10 +232,25 @@ softens the result, and it does. Separated:
 | `mlx-whisper` | **0 of 4** | 2 of 2 | 4 of 4 |
 | `faster-whisper-cpu` | **0 of 4** | 2 of 2 | 4 of 4 |
 
-The real number is zero. Not one engine recovered a single coined proper noun, while
-every engine recovered every ordinary-word name and every control phrase. The failure is
-total and it is specific to invented vocabulary — it is not an engine defect but what a
-general-purpose recognizer with no campaign lexicon does.
+The real number is zero: not one engine recovered a single coined proper noun, while
+every engine recovered every ordinary-word name and every control phrase. But "zero
+recall" flattens a range worth seeing, so the probe commits what each engine produced
+instead (`what_was_produced_instead` in `synthetic-scores.json`):
+
+| Expected | whisper.cpp | parakeet-mlx | mlx-whisper / faster-whisper |
+|---|---|---|---|
+| `Vaelthorn` | Vealthorn | Veelthorn | Ealthorn |
+| `Ilyra` | Eilera | Eyleira | Eilera |
+| `Brann` | Bran | Bran | Bran |
+| `Korrigan` | Karikon | **Kari can** | Karikon |
+
+`Brann` → `Bran` is a one-letter homophone; `Korrigan` → `Kari can` is a word-boundary
+failure that turns a name into a clause. Calling all four the same kind of failure would
+be overstating it. What is true of all four is the part that matters here: **none is
+usable as an entity key without correction**, and a spelling that is nearly right is no
+more matchable than one that is wrong. The failure is specific to invented vocabulary and
+it is not an engine defect — it is what a general-purpose recognizer with no campaign
+lexicon does.
 
 Two consequences, and the second is the important one.
 
@@ -392,10 +415,10 @@ from `research/probes/results/scaling-*.json`.
 
 | Input | whisper.cpp | parakeet-mlx (chunked) | sherpa diarization |
 |---|---|---|---|
-| 10 min | 28.1 s (21.3x) / 2,096 MB | 16.3 s (36.8x) / 427 MB *(unchunked)* | 35.1 s (17.1x) / 3,654 MB |
-| 20 min | 53.2 s (22.5x) / 2,202 MB | 16.0 s (75.1x) / 1,122 MB | 61.2 s (19.6x) / 5,152 MB |
-| 30 min | — | — | 89.9 s (20.0x) / 5,851 MB |
-| 40 min | 111.8 s (21.5x) / 2,418 MB | 30.5 s (78.8x) / 1,099 MB | 118.4 s (20.3x) / 6,294 MB |
+| 10 min | 25.8 s (23.3x) / 2,096 MB | 14.7 s (41.0x) / 429 MB *(unchunked)* | 30.8 s (19.5x) / 3,654 MB |
+| 20 min | 53.4 s (22.5x) / 2,202 MB | 16.1 s (74.4x) / 1,123 MB | 55.5 s (21.6x) / 5,157 MB |
+| 30 min | — | — | 80.5 s (22.4x) / 5,972 MB |
+| 40 min | 111.9 s (21.4x) / 2,419 MB | 30.8 s (78.0x) / 1,100 MB | 105.3 s (22.8x) / 6,295 MB |
 
 At 20 minutes unchunked, Parakeet does not appear in this table because it does not run:
 `research/probes/results/scaling-parakeet-unchunked-1200s.json` records the failure,
@@ -404,42 +427,42 @@ greater than the maximum allowed buffer size of 14302248960 bytes`. Its chunked 
 above use `chunk_duration=120`, recorded in each result's `configuration` block.
 
 **Time is linear in input length.** Every stack held a stable realtime factor across a
-4x range — whisper.cpp within 21.3–22.5x, diarization within 17.1–20.3x. Residual
+4x range — whisper.cpp within 21.4–23.3x, diarization within 19.5–22.8x. Residual
 variation tracks the machine's load average rather than the input, which is why the load
 is recorded in every result. Chunked Parakeet is the exception in a good way: it gets
-*faster* per second of audio on longer inputs, 36.8x to 78.8x, because a fixed model-load
+*faster* per second of audio on longer inputs, 41.0x to 78.0x, because a fixed model-load
 cost spreads over more work.
 
 **Projected four-hour wall clock**, taking the *slowest* observed factor for each stage:
 
-- recognition, whisper.cpp at 21.3x → **11.3 minutes**
-- diarization, sherpa-onnx at 17.1x → **14.0 minutes**
-- **total, run sequentially: about 25 minutes for a four-hour session**, on a machine
+- recognition, whisper.cpp at 21.4x → **11.2 minutes**
+- diarization, sherpa-onnx at 19.5x → **12.3 minutes**
+- **total, run sequentially: about 24 minutes for a four-hour session**, on a machine
   that was busy throughout.
 
-For comparison, the same projection is 3.0 minutes for chunked Parakeet, and 73 minutes
+For comparison, the same projection is 3.1 minutes for chunked Parakeet, and 65 minutes
 for the CPU-only floor. Even the floor finishes a night's session inside an hour and a
 half.
 
 **Memory needs two different projections, because the two stages behave differently.**
 
 - *whisper.cpp is effectively constant.* Growth is 0.179 MB per second of audio, and it
-  is 0.175 MB/s between 10→20 minutes and 0.180 between 20→40, so a straight line is
+  is 0.177 MB/s between 10→20 minutes and 0.181 between 20→40, so a straight line is
   the right model. Four hours projects to **about 4.6 GB**. This is the internal 30-second
   windowing doing its job.
-- *sherpa-onnx diarization decelerates.* Growth per second of audio fell 5.00 → 2.50 →
-  1.17 → 0.74 MB across the four intervals, roughly halving each time. These are
+- *sherpa-onnx diarization decelerates.* Growth per second of audio fell 4.97 → 2.50 →
+  1.36 → 0.54 MB across the four intervals, roughly halving each time. These are
   *interval* slopes between consecutive measurements, not averages: the first is
-  (3653.6 − 898.6) MB ÷ (600 − 50) s, using the 50 s synthetic measurement as the low
+  (3653.6 − 922.3) MB ÷ (600 − 50) s, using the 50 s synthetic measurement as the low
   anchor. Dividing a single measurement by its own duration gives a different and
   less useful number. That gives a
   range rather than a number, and both ends are stated because the extrapolation is the
   weakest link in this projection:
-  - **lower bound ~6.7 GB**, if the halving continues;
-  - **upper bound ~15.1 GB**, if growth instead stays flat at the last observed rate.
+  - **lower bound ~6.6 GB**, if the halving continues;
+  - **upper bound ~12.8 GB**, if growth instead stays flat at the last observed rate.
 
 Run sequentially, peak memory is the larger stage, so a four-hour session should need
-**7–15 GB against the machine's 24 GB**. That fits, with less headroom than is
+**7–13 GB against the machine's 24 GB**. That fits, with less headroom than is
 comfortable — and the upper bound is the one to plan against.
 
 **Assumptions this projection makes, stated so they can be checked:**
@@ -449,7 +472,7 @@ comfortable — and the upper bound is the one to plan against.
 2. Speech density is comparable. Hiddengrid is an edited podcast; a real table has more
    silence, which should help both stages.
 3. The stages run sequentially. Running recognition and diarization concurrently would
-   halve the wall clock and *add* the memory, pushing the upper bound past 19 GB — and
+   halve the wall clock and *add* the memory, pushing the upper bound past 17 GB — and
    the machine was observed deep into swap during the 40-minute diarization run with a
    second agent session present. That swap reading came from `sysctl vm.swapusage` at the
    time and is **not** in any committed artifact — the probe records RSS and load average,
@@ -458,7 +481,7 @@ comfortable — and the upper bound is the one to plan against.
 4. No model reload per session; load time is under 2 s and irrelevant at this scale.
 
 **The escalation threshold in the goal was not reached.** A four-hour session processes
-in roughly 25 minutes inside the machine's memory, so cloud processing of private
+in roughly 24 minutes inside the machine's memory, so cloud processing of private
 recordings does not need to be put to the user.
 
 ## Scorecard
@@ -468,6 +491,13 @@ that could be wired behind `TranscriptProvider`. The second is applications that
 a nearby problem, whose value to this project is architectural evidence rather than
 code — the goal asked for reusable components, and honest scoring means saying which
 of these are not that.
+
+Coverage against the subjects named in `agents/reuse-research.md`: Handy, Squire,
+Speakr, Scriberr, noScribe, WhisperX and related diarization/alignment projects, and Omi
+are all below. The related-projects clause is read as pyannote.audio, sherpa-onnx,
+NVIDIA NeMo and WhisperKit/SpeakerKit; `faster-whisper`, `mlx-whisper`, `whisper.cpp`
+and `parakeet-mlx` were added because they are what the applications on that list
+actually run underneath.
 
 ### Components
 
@@ -560,7 +590,7 @@ the terms on which this recommendation should be revisited.
 **Switch the recognizer to `parakeet-mlx` when** any of:
 
 - a four-hour session on the target machine exceeds 30 minutes of recognition wall clock,
-  or recognition peak RSS exceeds 8 GB — Parakeet's measured 78.8x realtime and 1.1 GB
+  or recognition peak RSS exceeds 8 GB — Parakeet's measured 78.0x realtime and 1.1 GB
   at 40 minutes (chunked) buy real headroom the moment either becomes binding;
 - Parakeet's native token confidence is shown to separate wrong turns from right ones
   better than whisper.cpp's token probabilities on annotated audio. The synthetic clip

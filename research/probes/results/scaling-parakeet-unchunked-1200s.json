@@ -15,7 +15,7 @@
     "machine": "arm64",
     "platform": "macOS-26.3.1-arm64-arm-64bit"
   },
-  "failed_after_s": 1.659,
+  "failed_after_s": 1.495,
   "error_type": "RuntimeError",
   "error": "[metal::malloc] Attempting to allocate 14401440032 bytes which is greater than the maximum allowed buffer size of 14302248960 bytes."
 }

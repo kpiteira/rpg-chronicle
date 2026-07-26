@@ -15,22 +15,23 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 118.384,
-    "model_load_s": 0.311,
-    "inference_s": 118.073,
-    "realtime_factor": 20.27,
-    "inference_realtime_factor": 20.33,
-    "peak_rss_mb": 6293.7,
-    "peak_child_rss_mb": 13.4,
-    "load_avg_1m_before": 20.32,
-    "load_avg_1m_after": 20.57
+    "wall_clock_s": 105.332,
+    "model_load_s": 0.31,
+    "inference_s": 105.022,
+    "realtime_factor": 22.79,
+    "inference_realtime_factor": 22.85,
+    "peak_rss_mb": 6294.8,
+    "peak_child_rss_mb": 13.5,
+    "load_avg_1m_before": 17.21,
+    "load_avg_1m_after": 20.31
   },
   "shape": {
     "produces_text": false,
     "unit_count": 790,
     "canonical_turn_count": 0,
     "speaker_span_count": 790,
-    "speaker_span_ms": 1556801,
+    "speaker_span_sum_ms": 1556801,
+    "speech_union_ms": 1487244,
     "rejected_unit_count": 0,
     "rejected_units": 0,
     "has_timestamps": true,
@@ -90,6 +91,16 @@
     "characters_of_text": 0
   },
   "diarization_source": null,
-  "configuration": {},
+  "configuration": {
+    "segmentation_model": "model.onnx",
+    "embedding_model": "wespeaker_en_voxceleb_CAMPP.onnx",
+    "cluster_threshold": 0.5,
+    "num_clusters": -1,
+    "threads": 12,
+    "env": [
+      "RPG_PROBE_CLUSTER_THRESHOLD",
+      "RPG_PROBE_NUM_CLUSTERS"
+    ]
+  },
   "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
 }

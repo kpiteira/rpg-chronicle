@@ -15,61 +15,34 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 11.352,
-    "model_load_s": 0.595,
-    "inference_s": 10.757,
-    "realtime_factor": 4.4,
-    "inference_realtime_factor": 4.65,
-    "peak_rss_mb": 1941.5,
+    "wall_clock_s": 12.677,
+    "model_load_s": 0.614,
+    "inference_s": 12.062,
+    "realtime_factor": 3.94,
+    "inference_realtime_factor": 4.14,
+    "peak_rss_mb": 1947.0,
     "peak_child_rss_mb": 15.3,
-    "load_avg_1m_before": 3.85,
-    "load_avg_1m_after": 3.72
+    "load_avg_1m_before": 7.52,
+    "load_avg_1m_after": 7.5
   },
   "shape": {
     "produces_text": true,
-    "unit_count": 20,
-    "canonical_turn_count": 17,
+    "unit_count": 15,
+    "canonical_turn_count": 14,
     "speaker_span_count": null,
-    "speaker_span_ms": null,
-    "rejected_unit_count": 3,
+    "speaker_span_sum_ms": null,
+    "speech_union_ms": null,
+    "rejected_unit_count": 1,
     "rejected_units": [
       {
-        "index": 16,
+        "index": 14,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49760,
-          "end_ms": 49760,
+          "start_ms": 49920,
+          "end_ms": 49920,
           "text": "",
-          "confidence": 0.1027029516045375,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 17,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49760,
-          "end_ms": 49760,
-          "text": "",
-          "confidence": 0.1027029516045375,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 18,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49760,
-          "end_ms": 49760,
-          "text": "",
-          "confidence": 0.1027029516045375,
-          "no_speech_prob": 6.283935611445246e-12,
+          "confidence": 0.6554340339593471,
+          "no_speech_prob": 7.14081849206849e-11,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
           "speaker_coverage_ratio": 0.0
@@ -85,30 +58,33 @@
       "SPEAKER_04",
       "SPEAKER_06"
     ],
-    "turns_with_confidence": 17,
-    "confidence_min": 0.1027,
-    "confidence_mean": 0.6511,
-    "total_speech_ms": 44460,
-    "characters_of_text": 753,
+    "turns_with_confidence": 14,
+    "confidence_min": 0.8117,
+    "confidence_mean": 0.8273,
+    "total_speech_ms": 44640,
+    "characters_of_text": 1855,
     "speaker_attribution": {
-      "mean_overlap_ratio": 0.764,
+      "mean_overlap_ratio": 0.818,
       "min_overlap_ratio": 0.0,
-      "turns_below_0_8_overlap": 6,
-      "turns_with_no_speaker": 3,
-      "mean_coverage_ratio": 0.831,
-      "overlap_given_coverage": 0.919,
-      "total_unit_span_ms": 44460
+      "turns_below_0_8_overlap": 4,
+      "turns_with_no_speaker": 1,
+      "mean_coverage_ratio": 0.908,
+      "overlap_given_coverage": 0.901,
+      "total_unit_span_ms": 44640
     }
   },
   "diarization_source": {
     "path": "synthetic-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
-  "configuration": {},
+  "configuration": {
+    "model": "mlx-community/whisper-large-v3-turbo",
+    "word_timestamps": true
+  },
   "native_artifact": {
     "engine": "mlx-whisper",
     "model": "mlx-community/whisper-large-v3-turbo",
-    "text": " The road out of Ealthorn narrows as it climbs toward the Ashen Spire. Eilera draws her hood up and checks the sigil on her palm again. Does Bran see anything moving on the ridge? I want a perception check. Roll it. The wind is loud enough that you are at disadvantage. That is a 14. Not great. Karikon keeps walking. He has no patience for ridge lines today. Then you three reach the gate before the light goes. It is already open. Eilera stops. Open how? Forced open. Or left open? Left open. The bar is set neatly against the wall. As if by someone in her read. Karikon says what everyone is thinking. That is worse. Bran wants to know if the warden of the spire is expecting us. You will find out. Something inside the courtyard says your name first. Ew. Ew. Ew. Ew.",
+    "text": " The road out of Ealthorn narrows as it climbs toward the Ashen Spire. Eilera draws her hood up and checks the sigil on her palm again. Does Bran see anything moving on the ridge? I want a perception check. Roll it. The wind is loud enough that you are at disadvantage. That is a 14. Not great. Karikon keeps walking. He has no patience for ridge lines today. Then you three reach the gate before the light goes. It is already open. Eilera stops. Open how? Forced open. Or left open? Left open. The bar is set neatly against the wall. As if by someone in her read. Karikon says what everyone is thinking. That is worse. Bran wants to know if the warden of the spire is expecting us. You will find out. Something inside the courtyard says your name first. Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest",
     "segments": [
       {
         "id": 0,
@@ -325,7 +301,7 @@
     ],
     "segments_excerpted": {
       "kept": 4,
-      "total": 20,
+      "total": 15,
       "note": "complete artifact written beside the audio via --full-out"
     },
     "language": "en"
@@ -464,40 +440,10 @@
     {
       "id": "t0013",
       "start_ms": 49640,
-      "end_ms": 49680,
-      "text": "Ew.",
+      "end_ms": 49940,
+      "text": "Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest Rest",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.1027029516045375,
-      "speaker_overlap_ratio": 1.0,
-      "speaker_coverage_ratio": 1.0
-    },
-    {
-      "id": "t0014",
-      "start_ms": 49700,
-      "end_ms": 49720,
-      "text": "Ew.",
-      "physical_speaker": "SPEAKER_00",
-      "confidence": 0.1027029516045375,
-      "speaker_overlap_ratio": 1.0,
-      "speaker_coverage_ratio": 1.0
-    },
-    {
-      "id": "t0015",
-      "start_ms": 49740,
-      "end_ms": 49760,
-      "text": "Ew.",
-      "physical_speaker": "SPEAKER_00",
-      "confidence": 0.1027029516045375,
-      "speaker_overlap_ratio": 1.0,
-      "speaker_coverage_ratio": 1.0
-    },
-    {
-      "id": "t0019",
-      "start_ms": 49760,
-      "end_ms": 49800,
-      "text": "Ew.",
-      "physical_speaker": "SPEAKER_00",
-      "confidence": 0.1027029516045375,
+      "confidence": 0.9245391834572172,
       "speaker_overlap_ratio": 1.0,
       "speaker_coverage_ratio": 1.0
     }

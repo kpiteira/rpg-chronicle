@@ -15,22 +15,23 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 3.088,
-    "model_load_s": 0.349,
-    "inference_s": 2.739,
-    "realtime_factor": 16.18,
-    "inference_realtime_factor": 18.25,
-    "peak_rss_mb": 898.6,
-    "peak_child_rss_mb": 13.4,
-    "load_avg_1m_before": 2.96,
-    "load_avg_1m_after": 3.85
+    "wall_clock_s": 4.227,
+    "model_load_s": 0.372,
+    "inference_s": 3.854,
+    "realtime_factor": 11.82,
+    "inference_realtime_factor": 12.96,
+    "peak_rss_mb": 922.3,
+    "peak_child_rss_mb": 13.5,
+    "load_avg_1m_before": 5.83,
+    "load_avg_1m_after": 7.52
   },
   "shape": {
     "produces_text": false,
     "unit_count": 16,
     "canonical_turn_count": 0,
     "speaker_span_count": 16,
-    "speaker_span_ms": 47620,
+    "speaker_span_sum_ms": 47620,
+    "speech_union_ms": 46591,
     "rejected_unit_count": 0,
     "rejected_units": [],
     "has_timestamps": true,
@@ -50,7 +51,17 @@
     "characters_of_text": 0
   },
   "diarization_source": null,
-  "configuration": {},
+  "configuration": {
+    "segmentation_model": "model.onnx",
+    "embedding_model": "wespeaker_en_voxceleb_CAMPP.onnx",
+    "cluster_threshold": 0.5,
+    "num_clusters": -1,
+    "threads": 12,
+    "env": [
+      "RPG_PROBE_CLUSTER_THRESHOLD",
+      "RPG_PROBE_NUM_CLUSTERS"
+    ]
+  },
   "native_artifact": {
     "engine": "sherpa-onnx-offline-speaker-diarization",
     "segmentation_model": "model.onnx",
@@ -140,7 +151,9 @@
         "end": 49.96409606933594,
         "speaker": "SPEAKER_00"
       }
-    ]
+    ],
+    "speech_union_ms": 46591,
+    "span_sum_ms": 47620
   },
   "canonical_turns": []
 }

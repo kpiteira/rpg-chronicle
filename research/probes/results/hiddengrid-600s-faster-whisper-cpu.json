@@ -15,22 +15,23 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 183.933,
-    "model_load_s": 2.674,
-    "inference_s": 181.259,
-    "realtime_factor": 3.26,
-    "inference_realtime_factor": 3.31,
-    "peak_rss_mb": 2637.6,
-    "peak_child_rss_mb": 13.5,
-    "load_avg_1m_before": 7.41,
-    "load_avg_1m_after": 6.4
+    "wall_clock_s": 163.873,
+    "model_load_s": 1.942,
+    "inference_s": 161.931,
+    "realtime_factor": 3.66,
+    "inference_realtime_factor": 3.71,
+    "peak_rss_mb": 2644.0,
+    "peak_child_rss_mb": 13.4,
+    "load_avg_1m_before": 4.74,
+    "load_avg_1m_after": 5.72
   },
   "shape": {
     "produces_text": true,
     "unit_count": 240,
     "canonical_turn_count": 240,
     "speaker_span_count": null,
-    "speaker_span_ms": null,
+    "speaker_span_sum_ms": null,
+    "speech_union_ms": null,
     "rejected_unit_count": 0,
     "rejected_units": 0,
     "has_timestamps": true,
@@ -61,10 +62,10 @@
       "SPEAKER_29"
     ],
     "turns_with_confidence": 240,
-    "confidence_min": 0.2457,
-    "confidence_mean": 0.7061,
-    "total_speech_ms": 311720,
-    "characters_of_text": 5460,
+    "confidence_min": 0.2693,
+    "confidence_mean": 0.7062,
+    "total_speech_ms": 311700,
+    "characters_of_text": 5459,
     "speaker_attribution": {
       "mean_overlap_ratio": 0.819,
       "min_overlap_ratio": 0.0,
@@ -72,13 +73,18 @@
       "turns_with_no_speaker": 8,
       "mean_coverage_ratio": 0.881,
       "overlap_given_coverage": 0.93,
-      "total_unit_span_ms": 311720
+      "total_unit_span_ms": 311700
     }
   },
   "diarization_source": {
     "path": "hiddengrid-600s-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
-  "configuration": {},
+  "configuration": {
+    "model": "large-v3-turbo",
+    "device": "cpu",
+    "compute_type": "int8",
+    "word_timestamps": true
+  },
   "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
 }

@@ -2,6 +2,7 @@
   "scored_against": "synthetic-table-talk",
   "truth_kind": "declared truth, generated locally; no engine saw it",
   "caveat": "Synthetic non-overlapping text-to-speech. Sanity and failure modes only -- not a quality benchmark and not evidence about room audio.",
+  "how_to_read_mean_turn_purity": "For a stack with text, purity is computed over FUSED turns, and fusion has already collapsed each unit to one winning speaker. On a clip whose turns align with silences that makes purity ~1.0 almost by construction: it measures the fusion step, not the diarizer. The sherpa-onnx entry, scored against raw diarizer spans, is the one that describes diarization quality.",
   "scores": {
     "faster-whisper-cpu": {
       "speakers": {
@@ -30,6 +31,12 @@
           "Brann": false,
           "Korrigan": false
         },
+        "what_was_produced_instead": {
+          "Vaelthorn": "The road out of Ealthorn narrows as it climbs toward the Ashen Spire.",
+          "Ilyra": "Eilera draws her hood up and checks the sigil on her palm again.",
+          "Brann": "Does Bran see anything moving on the ridge? I want a perception check.",
+          "Korrigan": "Karikon keeps walking. He has no patience for ridge lines today."
+        },
         "english_word_name_recall": 1.0,
         "english_word_names_found": {
           "Ashen Spire": true,
@@ -52,12 +59,12 @@
         },
         "control_phrase_recall": 1.0,
         "truth_characters": 748,
-        "produced_characters": 775
+        "produced_characters": 784
       },
       "confidence": {
         "available": true,
         "turns_scored": 15,
-        "overall_min_confidence": 0.4572,
+        "overall_min_confidence": 0.0817,
         "mean_confidence_where_invented_noun_survived": null,
         "mean_confidence_where_invented_noun_was_lost": 0.8175,
         "truth_turns_excluded_as_mixed": 2,
@@ -100,6 +107,12 @@
           "Brann": false,
           "Korrigan": false
         },
+        "what_was_produced_instead": {
+          "Vaelthorn": "The road out of Ealthorn narrows as it climbs toward the Ashen Spire.",
+          "Ilyra": "Eilera draws her hood up and checks the sigil on her palm again.",
+          "Brann": "Does Bran see anything moving on the ridge? I want a perception check.",
+          "Korrigan": "Karikon keeps walking. He has no patience for ridge lines today."
+        },
         "english_word_name_recall": 1.0,
         "english_word_names_found": {
           "Ashen Spire": true,
@@ -122,12 +135,12 @@
         },
         "control_phrase_recall": 1.0,
         "truth_characters": 748,
-        "produced_characters": 769
+        "produced_characters": 1868
       },
       "confidence": {
         "available": true,
-        "turns_scored": 17,
-        "overall_min_confidence": 0.1027,
+        "turns_scored": 14,
+        "overall_min_confidence": 0.8117,
         "mean_confidence_where_invented_noun_survived": null,
         "mean_confidence_where_invented_noun_was_lost": 0.8187,
         "truth_turns_excluded_as_mixed": 2,
@@ -169,6 +182,12 @@
           "Ilyra": false,
           "Brann": false,
           "Korrigan": false
+        },
+        "what_was_produced_instead": {
+          "Vaelthorn": "The road out of Veelthorn narrows as it climbs toward the ashen spire.",
+          "Ilyra": "Eyleira draws her hood up and checks the sigil on her palm again.",
+          "Brann": "Does Bran see anything moving on the ridge? I want a perception check.",
+          "Korrigan": "Kari can keep walking. He had no patience for it line today."
         },
         "english_word_name_recall": 1.0,
         "english_word_names_found": {
@@ -259,6 +278,12 @@
           "Ilyra": false,
           "Brann": false,
           "Korrigan": false
+        },
+        "what_was_produced_instead": {
+          "Vaelthorn": "The road out of Vealthorn narrows as it climbs toward the Ashen Spire.",
+          "Ilyra": "Eilera draws her hood up and checks the sigil on her palm again.",
+          "Brann": "Does Bran see anything moving on the ridge? I want a perception check.",
+          "Korrigan": "Karikon keeps walking. He has no patience for ridge lines today."
         },
         "english_word_name_recall": 1.0,
         "english_word_names_found": {

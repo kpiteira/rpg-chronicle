@@ -92,6 +92,33 @@ def score_speakers(truth_turns: list[dict], predicted: list[dict]) -> dict[str, 
     }
 
 
+def coined_noun_context(truth_turns: list[dict], turns: list[dict]) -> dict[str, str]:
+    """What the engine produced where each coined noun should have been.
+
+    A recall figure says a name was lost; it does not say whether the engine returned a
+    near-homophone or something unrelated, and those are different problems for a
+    campaign vocabulary to solve. The clip is rights-clear, so the produced text can be
+    committed and the reader can judge for themselves.
+    """
+    context: dict[str, str] = {}
+    for noun in COINED_NOUNS:
+        for truth_turn in truth_turns:
+            if noun.lower() not in truth_turn["text"].lower():
+                continue
+            overlapping = [
+                t["text"]
+                for t in turns
+                if _overlap_ms(
+                    truth_turn["start_ms"], truth_turn["end_ms"], t["start_ms"], t["end_ms"]
+                )
+                > 0
+            ]
+            if overlapping:
+                context[noun] = " ".join(overlapping)
+            break
+    return context
+
+
 def score_text(truth_turns: list[dict], turns: list[dict]) -> dict[str, Any]:
     """Targeted lexical check, not word error rate.
 
@@ -115,6 +142,7 @@ def score_text(truth_turns: list[dict], turns: list[dict]) -> dict[str, Any]:
         # The headline number. Coined strings are the ones a lexicon cannot help with.
         "coined_noun_recall": round(sum(coined.values()) / len(coined), 3),
         "coined_nouns_found": coined,
+        "what_was_produced_instead": coined_noun_context(truth_turns, turns),
         # Reported separately so the two are never averaged into one flattering figure.
         "english_word_name_recall": round(sum(english.values()) / len(english), 3),
         "english_word_names_found": english,
@@ -238,6 +266,12 @@ def main() -> int:
         "truth_kind": "declared truth, generated locally; no engine saw it",
         "caveat": "Synthetic non-overlapping text-to-speech. Sanity and failure modes "
         "only -- not a quality benchmark and not evidence about room audio.",
+        "how_to_read_mean_turn_purity": "For a stack with text, purity is computed over "
+        "FUSED turns, and fusion has already collapsed each unit to one winning speaker. "
+        "On a clip whose turns align with silences that makes purity ~1.0 almost by "
+        "construction: it measures the fusion step, not the diarizer. The sherpa-onnx "
+        "entry, scored against raw diarizer spans, is the one that describes diarization "
+        "quality.",
         "scores": scores,
     }
     args.out.write_text(json.dumps(payload, indent=2) + "\n")

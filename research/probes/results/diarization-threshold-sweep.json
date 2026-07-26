@@ -25,7 +25,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 3.053
+        "wall_clock_s": 2.911
       },
       "0.5": {
         "expected_speakers": 4,
@@ -44,7 +44,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 3.492
+        "wall_clock_s": 2.942
       },
       "0.6": {
         "expected_speakers": 4,
@@ -64,7 +64,7 @@
           "PLAYER_B": 2,
           "PLAYER_C": 2
         },
-        "wall_clock_s": 3.532
+        "wall_clock_s": 2.952
       },
       "0.7": {
         "expected_speakers": 4,
@@ -85,7 +85,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 3.583
+        "wall_clock_s": 2.953
       },
       "0.8": {
         "expected_speakers": 4,
@@ -106,7 +106,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 3.635
+        "wall_clock_s": 2.974
       },
       "0.9": {
         "expected_speakers": 4,
@@ -127,7 +127,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 3.498
+        "wall_clock_s": 2.952
       }
     },
     "forced_num_clusters_4": {
