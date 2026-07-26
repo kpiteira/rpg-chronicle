@@ -127,6 +127,34 @@ license what the uploader owns, so Dungeons & Dragons material remains Wizards o
 And the licence covers the content, not the route by which a copy is obtained, which is
 separately subject to the platform's terms.
 
+## One window carries incidental personal content
+
+Flagged by the goal validator, and it is the only place committed text in this repository
+reproduces private conversation.
+
+**W2, roughly `00:42:15`–`00:42:52`.** A player's phone rings mid-scene and he recounts an
+argument with his brother about a missing portion of chicken, which ends with the brother
+telephoning the player's girlfriend to complain. It is 35 seconds, it is entirely out of
+fiction, and it is the reason W2 is diagnostically valuable — a system that reports this as
+campaign content has failed the test the window poses.
+
+What is and is not there, stated rather than assumed. No third party is named: they are "my
+brother", "my mom" and "my girlfriend". No contact detail, location, or identifying
+information appears. The publisher livestreamed it himself and licensed the result CC BY 3.0,
+so redistribution is permitted and this is a re-publication of something already public.
+
+Three things follow anyway.
+
+The window was chosen from acoustic measurement **before** anyone knew what was in it, which
+is what makes it evidence rather than a selected example — and also means nobody decided to
+include this. Second, the truth layer describes the event without reproducing it, so the
+diagnostic value does not depend on the verbatim text: the manifest's own event target is the
+scoreable artefact. Third, if the source is ever taken down, this text should go with it,
+because the licence rests on the publication and the publication would be gone.
+
+Whether the repository wants verbatim text of this kind at all is a policy question above
+this goal, and it is open rather than settled here.
+
 ## What does not go in here
 
 The full four-hour transcript. Repository policy keeps recordings and full transcripts out of

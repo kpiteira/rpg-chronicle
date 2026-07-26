@@ -56,8 +56,8 @@ segment.
 | Final hour | −26.7 dB | 23.7% | 13.3% | 86.9% |
 
 The recording is remarkably even. There is no ramp, no act structure, no post-production
-levelling — the session simply runs, and the final hour is 1.4 dB quieter and a third less
-loud than the first, which is fatigue rather than editing.
+levelling — the session simply runs, and the final hour is 1.4 dB quieter than the first with
+nearly a third less of it above -22 dB, which is fatigue rather than editing.
 
 ### 14% of the timeline yields no words, and none of it is silence
 
@@ -84,9 +84,11 @@ timeline carries no transcribable speech. It is laughter, dice, breath, typing, 
 which is what an unedited four-hour amateur stream is mostly made of.
 
 That matters for anyone reporting a number here. A system that transcribes this recording is
-being asked to stay coherent across roughly 34 minutes of non-speech distributed in 694 gaps,
-and a transcription cost measured against wall-clock duration will look far worse than one
-measured against speech.
+being asked to stay coherent across roughly 34 minutes of non-speech - 14.2% of 14239 seconds -
+of which 694 stretches run longer than two seconds. The two figures are different measurements
+and not the same one twice: the first counts uncovered seconds, the second counts runs. A
+transcription cost measured against wall-clock duration will look far worse than one measured
+against speech.
 
 ## Why these three windows
 
@@ -125,7 +127,7 @@ and last anchor. Two do.
 | Thread | First anchor | Last anchor | Span |
 |---|---|---|---|
 | The soul economy | 00:09:32 | 03:51:34 | **3 h 42 m 02 s** |
-| Reaper, a player addressed by name | 00:02:42 | 03:51:34 | **3 h 48 m 53 s** |
+| Reaper, a player addressed by name | 00:02:42 | 03:51:34 | **3 h 48 m 52 s** |
 | Scarlet dies, is revived, and it is explained an hour later | 00:36:37 | 03:17:28 | **2 h 40 m 51 s** |
 
 They are in `truth.threads`, and the validator enforces what makes them threads rather than

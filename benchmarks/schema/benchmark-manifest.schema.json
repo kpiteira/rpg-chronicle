@@ -144,7 +144,11 @@
         },
         "reference_url": {"type": "string", "format": "uri"},
         "speaker_labels": {"type": "boolean"},
-        "annotation_status": {"type": "string", "enum": ["none", "provisional", "verified"]}
+        "annotation_status": {
+          "type": "string",
+          "enum": ["none", "provisional", "verified"],
+          "description": "How far this item's own truth layer has got. verified means every target met the bar the corpus sets for verification - anchored, with evidence, from an observation of the recording - and it deliberately does not distinguish a human ear from tooling, because that distinction lives per target in basis and per item in truth.method. Read alone this enum therefore reads stronger than some items' evidence: an item can be verified with no audio_observed target anywhere in it. Anything deciding what a score means has to read truth.method, and anything reporting one has to say which."
+        }
       }
     },
     "truth": {

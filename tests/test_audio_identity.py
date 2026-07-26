@@ -156,6 +156,48 @@ def test_verify_reports_a_different_recording_without_refining_it(
     assert [call["frame_ms"] for call in calls] == [1000], "the fine pass must not have run"
 
 
+def test_a_copy_that_locates_but_does_not_agree_is_rejected(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The second gate: the coarse pass finds a peak and the fine pass still says no.
+
+    This is the subtler rejection and the one the tests were missing. A copy can share enough
+    gross shape to locate a lag - two recordings of the same room, a re-record, a copy with a
+    section replaced - and still fail to follow the sound closely once aligned. The verdict
+    has to come out negative there, which means Offset.same_recording has to be capable of
+    being False and not merely documented as such.
+    """
+    coarse_reference = _speechlike(400)
+    fingerprint = tmp_path / "fp.json"
+    fingerprint.write_text(
+        json.dumps(
+            {
+                "method": "rms_envelope_v1",
+                "coarse_frame_ms": 1000,
+                "fine_frame_ms": 10,
+                "fine_probe_start_seconds": 0.0,
+                "fine_probe_seconds": 1.0,
+                "coarse": coarse_reference,
+                "fine": _speechlike(100, seed=1),
+            }
+        )
+    )
+
+    def agrees_coarsely_only(path, frame_ms=1000, start_seconds=None, duration_seconds=None):
+        if frame_ms == 1000:
+            return list(coarse_reference)
+        return _speechlike(700, seed=99)
+
+    monkeypatch.setattr(identity, "envelope", agrees_coarsely_only)
+
+    coarse, fine = identity.verify(tmp_path / "copy.webm", fingerprint)
+
+    assert coarse.peak_found, "the coarse pass has to locate it, or this tests the other branch"
+    assert fine is not None, "and therefore has to reach the fine pass"
+    assert fine.correlation < identity.SAME_RECORDING_R
+    assert not fine.same_recording
+
+
 def test_the_coarse_search_range_follows_the_fingerprint_frame_size(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
