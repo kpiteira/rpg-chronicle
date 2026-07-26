@@ -1,8 +1,10 @@
 # Agent operating guide
 
 This repository is run by one Technical Program Manager (TPM) and long-lived specialist
-Codex agents. GitHub Issues hold goals; pull requests hold implementation and review;
-the repository holds durable product and technical truth.
+agents. GitHub Issues hold goals; pull requests hold implementation and review; the
+repository holds durable product and technical truth. Claude Code is the primary
+environment and others are used where they fit, so nothing in this guide depends on
+which one a session is running in (D-016).
 
 ## Roles and startup
 
@@ -82,7 +84,7 @@ in-scope alternatives before stopping.
 
 For every active goal, the specialist owns:
 
-1. creating `codex/<role-id>/<issue-number>-<slug>` from current remote `main`;
+1. creating `agent/<role-id>/<issue-number>-<slug>` from current remote `main`;
 2. making focused commits and keeping the branch current;
 3. running acceptance evidence and repository checks;
 4. pushing the branch and opening a PR that closes the goal issue;
@@ -104,6 +106,11 @@ The specialist must never use a local merge into `main` as a substitute for GitH
 `PreToolUse` hook blocks `gh pr merge` while the latest validator verdict blocks; the
 specialist must not attempt to work around it. A blocking verdict is answered with a fix
 or with evidence on the pull request, followed by a fresh validation run.
+
+That hook is best-effort by construction (D-015): it runs inside the session it
+constrains, so it stops an accident and not a decision. Branch protection on `main` is
+the layer that holds. The obligation above is therefore a rule the specialist keeps, not
+a barrier that keeps it.
 
 Detailed commands and review expectations live in `CONTRIBUTING.md`.
 

@@ -22,7 +22,7 @@ root=$(git rev-parse --show-toplevel)
 cd "$root"
 
 abs_dir="$(cd "$(dirname "$dir")" && pwd)/$(basename "$dir")"
-branch="codex/${role}/scratch"
+branch="agent/${role}/scratch"
 
 if git worktree list --porcelain | grep -qxF "worktree ${abs_dir}"; then
   echo "Worktree ${dir} already exists; skipping creation."

@@ -24,7 +24,7 @@ It must not contain private campaign data, voice profiles, downloaded copyrighte
 4. Read `docs/PARALLEL_EXECUTION.md` if you are running more than one role at once.
 5. Copy `config/paths.example.yaml` to a local ignored location and point it at external data.
 
-For parallel Codex work, the complete bootstrap prompt is:
+For parallel role sessions, the complete bootstrap prompt is:
 
 ```text
 You are the <role> agent.

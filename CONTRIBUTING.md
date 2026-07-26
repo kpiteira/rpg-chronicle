@@ -8,15 +8,17 @@ branch and a GitHub pull request, including documentation, governance, and TPM c
 Specialist goal branches use:
 
 ```text
-codex/<role-id>/<goal-issue-number>-<short-slug>
+agent/<role-id>/<goal-issue-number>-<short-slug>
 ```
 
 Create them from current remote `main`, not a stale local branch:
 
 ```bash
 git fetch origin
-git switch -c codex/<role-id>/<goal-issue-number>-<slug> origin/main
+git switch -c agent/<role-id>/<goal-issue-number>-<short-slug> origin/main
 ```
+
+The prefix names the operating model, not the tool running the session (D-016).
 
 ## Before implementation
 
@@ -142,3 +144,10 @@ an explicit `pass` for the PR's current head commit — no verdict, a malformed 
 and a verdict for a superseded commit all fail closed. Do not attempt to bypass the hook:
 fix the finding, or reply on the pull request with evidence and re-run the validator as a
 new process. See `agents/goal-validator.md` and `docs/PARALLEL_EXECUTION.md`.
+
+The hook is best-effort and D-015 records why. It runs inside the session it constrains
+and recognizes interpreters from a list, so a command shape absent from that list is not
+guarded. It exists to stop an unvalidated merge happening by accident. What actually
+holds is branch protection on `main`, requiring the `verify` and `privacy` checks and a
+current branch — so a specialist reading this section alone should not conclude that
+merging without a verdict is impossible, only that doing so deliberately is a choice.

@@ -4,9 +4,11 @@
 
 The software, public research, manifests, synthetic fixtures, and reproducible aggregate results live in a public GitHub repository. Private recordings, voices, campaign data, downloaded copyrighted audio, and vault contents remain external.
 
-## D-002: Codex as primary workspace
+## D-002: Codex as primary workspace — SUPERSEDED by D-016
 
-After bootstrap, Codex is the primary environment for research, implementation, review, and integration. Repository role files provide persistent agent context.
+*Historical. This records what was decided, not what to do now; D-016 replaces it.*
+
+This decision held that after bootstrap, Codex would be the primary environment for research, implementation, review, and integration, with repository role files providing persistent agent context. The role-files half of that survives in D-016; the choice of environment does not.
 
 ## D-003: Hybrid Path 3 to Path 2
 
@@ -130,3 +132,33 @@ runs inside the session it constrains. Branch protection is the boundary that ho
 without depending on the classifier being clever. Rule going forward: when a control's
 stated guarantee cannot be met, correct the statement rather than the evidence, and name
 the layer that does hold.
+
+## D-016: Claude Code is primary, and the protocol assumes no tool
+
+D-002 made Codex the primary environment after bootstrap. It is not, and has not been:
+every goal executed so far ran in Claude Code, and D-013 built the goal loop on a Claude
+Code primitive. The operator's intent is Claude Code as the primary environment with
+other tools used selectively where they fit.
+
+The repository had encoded the stale decision in the one place it is hardest to change
+later — the branch prefix, `codex/`, in three documents (`AGENTS.md`, `CONTRIBUTING.md`,
+`docs/PARALLEL_EXECUTION.md`) and the worktree setup script.
+The prefix becomes `agent/<role-id>/<issue-number>-<slug>`: tool-neutral, because work
+will genuinely come from more than one environment and a prefix naming either is wrong
+for the other. The three scratch branches that exist — reuse research, benchmark
+research and review analysis — were renamed to `agent/<role-id>/scratch` with
+`git branch -m`, which leaves their worktrees undisturbed. Vault discovery's appears in
+the setup recipe but has never been created, since no vault goal has run. In-flight goal
+branches keep the old prefix until they merge, because renaming a branch under a running
+session buys nothing. Nothing enforces the prefix, so this is a documentation change and
+not a migration.
+
+One consequence is left open rather than closed, and `docs/PARALLEL_EXECUTION.md` states
+it where a session bootstraps: D-013's native `/goal` loop has no equivalent outside
+Claude Code, so a goal executed elsewhere runs without the independent per-turn
+completion check the operating model depends on. Naming the gap is this decision's
+obligation; closing it is not, because nobody has yet tried to run a goal that way and a
+mechanism built before the first attempt would be built against a guess.
+
+Rule going forward: a decision that names a vendor should be re-read whenever the work
+stops matching it, and the places it leaked into should be listed when it is recorded.
