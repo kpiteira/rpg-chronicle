@@ -1,0 +1,79 @@
+{
+  "probe_version": "1",
+  "stack": "parakeet-mlx",
+  "provider_of_record": "parakeet-mlx",
+  "output_kind": "model output",
+  "input": {
+    "label": "hiddengrid-600s",
+    "duration_s": 600.0,
+    "sha256": "17a34a2bdf927c5f01b1efc1071a513d013db0fe32542a381781b22cfaace1c0"
+  },
+  "environment": {
+    "machine": "arm64",
+    "platform": "macOS-26.3.1-arm64-arm-64bit",
+    "python": "3.12.13",
+    "cpu_count": 12
+  },
+  "metrics": {
+    "wall_clock_s": 13.418,
+    "model_load_s": 1.12,
+    "inference_s": 12.298,
+    "realtime_factor": 44.72,
+    "inference_realtime_factor": 48.79,
+    "peak_rss_mb": 428.1,
+    "peak_child_rss_mb": 15.6,
+    "load_avg_1m_before": 10.92,
+    "load_avg_1m_after": 9.45
+  },
+  "shape": {
+    "produces_text": true,
+    "unit_count": 158,
+    "canonical_turn_count": 158,
+    "speaker_span_count": null,
+    "speaker_span_ms": null,
+    "rejected_unit_count": 0,
+    "rejected_units": 0,
+    "has_timestamps": true,
+    "distinct_physical_speakers": 22,
+    "physical_speakers": [
+      "SPEAKER_02",
+      "SPEAKER_03",
+      "SPEAKER_04",
+      "SPEAKER_05",
+      "SPEAKER_06",
+      "SPEAKER_07",
+      "SPEAKER_08",
+      "SPEAKER_09",
+      "SPEAKER_10",
+      "SPEAKER_11",
+      "SPEAKER_12",
+      "SPEAKER_14",
+      "SPEAKER_16",
+      "SPEAKER_17",
+      "SPEAKER_18",
+      "SPEAKER_19",
+      "SPEAKER_21",
+      "SPEAKER_22",
+      "SPEAKER_23",
+      "SPEAKER_25",
+      "SPEAKER_27",
+      "SPEAKER_29"
+    ],
+    "turns_with_confidence": 158,
+    "confidence_min": 0.8674,
+    "confidence_mean": 0.9665,
+    "total_speech_ms": 477520,
+    "characters_of_text": 5587,
+    "speaker_attribution": {
+      "mean_overlap_ratio": 0.61,
+      "min_overlap_ratio": 0.0,
+      "turns_below_0_8_overlap": 107,
+      "turns_with_no_speaker": 4
+    }
+  },
+  "diarization_source": {
+    "path": "hiddengrid-600s-sherpa-diarization.json",
+    "engine": "sherpa-onnx-offline-speaker-diarization"
+  },
+  "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
+}

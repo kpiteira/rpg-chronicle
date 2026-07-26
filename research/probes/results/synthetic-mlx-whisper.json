@@ -1,0 +1,2244 @@
+{
+  "probe_version": "1",
+  "stack": "mlx-whisper",
+  "provider_of_record": "mlx-whisper",
+  "output_kind": "model output",
+  "input": {
+    "label": "synthetic",
+    "duration_s": 49.97,
+    "sha256": "4f0d9c072d229352885e37e96a2dbbe8320ac774e55cbe6b28cdf5c99b0e1095"
+  },
+  "environment": {
+    "machine": "arm64",
+    "platform": "macOS-26.3.1-arm64-arm-64bit",
+    "python": "3.12.13",
+    "cpu_count": 12
+  },
+  "metrics": {
+    "wall_clock_s": 11.438,
+    "model_load_s": 0.593,
+    "inference_s": 10.845,
+    "realtime_factor": 4.37,
+    "inference_realtime_factor": 4.61,
+    "peak_rss_mb": 1941.0,
+    "peak_child_rss_mb": 15.4,
+    "load_avg_1m_before": 9.36,
+    "load_avg_1m_after": 8.63
+  },
+  "shape": {
+    "produces_text": true,
+    "unit_count": 41,
+    "canonical_turn_count": 15,
+    "speaker_span_count": null,
+    "speaker_span_ms": null,
+    "rejected_unit_count": 26,
+    "rejected_units": [
+      {
+        "index": 13,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 14,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 15,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 16,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 17,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 18,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 19,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 20,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 21,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 22,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 23,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 24,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49640,
+          "end_ms": 49640,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 25,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49680,
+          "end_ms": 49680,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 26,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49680,
+          "end_ms": 49680,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 27,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49680,
+          "end_ms": 49680,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 30,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49880,
+          "end_ms": 49880,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 31,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49880,
+          "end_ms": 49880,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 32,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49880,
+          "end_ms": 49880,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 33,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49880,
+          "end_ms": 49880,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 34,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49880,
+          "end_ms": 49880,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 35,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49880,
+          "end_ms": 49880,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 36,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49880,
+          "end_ms": 49880,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 37,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49880,
+          "end_ms": 49880,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 38,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49880,
+          "end_ms": 49880,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 39,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49880,
+          "end_ms": 49880,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 40,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49880,
+          "end_ms": 49880,
+          "text": "",
+          "confidence": 0.5370637980088185,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      }
+    ],
+    "has_timestamps": true,
+    "distinct_physical_speakers": 5,
+    "physical_speakers": [
+      "SPEAKER_00",
+      "SPEAKER_01",
+      "SPEAKER_02",
+      "SPEAKER_04",
+      "SPEAKER_06"
+    ],
+    "turns_with_confidence": 15,
+    "confidence_min": 0.5371,
+    "confidence_mean": 0.7821,
+    "total_speech_ms": 44540,
+    "characters_of_text": 781,
+    "speaker_attribution": {
+      "mean_overlap_ratio": 0.324,
+      "min_overlap_ratio": 0.0,
+      "turns_below_0_8_overlap": 29,
+      "turns_with_no_speaker": 26
+    }
+  },
+  "diarization_source": {
+    "path": "synthetic-sherpa-diarization.json",
+    "engine": "sherpa-onnx-offline-speaker-diarization"
+  },
+  "native_artifact": {
+    "engine": "mlx-whisper",
+    "model": "mlx-community/whisper-large-v3-turbo",
+    "text": " The road out of Ealthorn narrows as it climbs toward the Ashen Spire. Eilera draws her hood up and checks the sigil on her palm again. Does Bran see anything moving on the ridge? I want a perception check. Roll it. The wind is loud enough that you are at disadvantage. That is a 14. Not great. Karikon keeps walking. He has no patience for ridge lines today. Then you three reach the gate before the light goes. It is already open. Eilera stops. Open how? Forced open. Or left open? Left open. The bar is set neatly against the wall. As if by someone in her read. Karikon says what everyone is thinking. That is worse. Bran wants to know if the warden of the spire is expecting us. You will find out. Something inside the courtyard says your name first. We'll be right back. We'll be right back.",
+    "segments": [
+      {
+        "id": 0,
+        "seek": 0,
+        "start": 0.0,
+        "end": 3.54,
+        "text": " The road out of Ealthorn narrows as it climbs toward the Ashen Spire.",
+        "tokens": [
+          50365,
+          440,
+          3060,
+          484,
+          295,
+          462,
+          1302,
+          1865,
+          6397,
+          1509,
+          382,
+          309,
+          48439,
+          7361,
+          264,
+          1018,
+          2932,
+          1738,
+          621,
+          13,
+          50543
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.20865820359814075,
+        "compression_ratio": 1.552901023890785,
+        "no_speech_prob": 7.176603603921416e-13,
+        "words": [
+          {
+            "word": " The",
+            "start": 0.0,
+            "end": 0.12,
+            "probability": 0.9775390625
+          },
+          {
+            "word": " road",
+            "start": 0.12,
+            "end": 0.36,
+            "probability": 0.99609375
+          },
+          {
+            "word": " out",
+            "start": 0.36,
+            "end": 0.54,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " of",
+            "start": 0.54,
+            "end": 0.72,
+            "probability": 0.99609375
+          },
+          {
+            "word": " Ealthorn",
+            "start": 0.72,
+            "end": 1.2,
+            "probability": 0.576171875
+          },
+          {
+            "word": " narrows",
+            "start": 1.2,
+            "end": 1.66,
+            "probability": 1.0
+          },
+          {
+            "word": " as",
+            "start": 1.66,
+            "end": 1.82,
+            "probability": 1.0
+          },
+          {
+            "word": " it",
+            "start": 1.82,
+            "end": 1.94,
+            "probability": 1.0
+          },
+          {
+            "word": " climbs",
+            "start": 1.94,
+            "end": 2.34,
+            "probability": 1.0
+          },
+          {
+            "word": " toward",
+            "start": 2.34,
+            "end": 2.6,
+            "probability": 0.99267578125
+          },
+          {
+            "word": " the",
+            "start": 2.6,
+            "end": 2.78,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " Ashen",
+            "start": 2.78,
+            "end": 3.12,
+            "probability": 0.90087890625
+          },
+          {
+            "word": " Spire.",
+            "start": 3.12,
+            "end": 3.54,
+            "probability": 0.9912109375
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "seek": 0,
+        "start": 3.94,
+        "end": 7.06,
+        "text": " Eilera draws her hood up and checks the sigil on her palm again.",
+        "tokens": [
+          50562,
+          462,
+          388,
+          1663,
+          20045,
+          720,
+          13376,
+          493,
+          293,
+          13834,
+          264,
+          4556,
+          388,
+          322,
+          720,
+          17018,
+          797,
+          13,
+          50720
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.20865820359814075,
+        "compression_ratio": 1.552901023890785,
+        "no_speech_prob": 7.176603603921416e-13,
+        "words": [
+          {
+            "word": " Eilera",
+            "start": 3.94,
+            "end": 4.26,
+            "probability": 0.6396484375
+          },
+          {
+            "word": " draws",
+            "start": 4.26,
+            "end": 4.58,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " her",
+            "start": 4.58,
+            "end": 4.74,
+            "probability": 1.0
+          },
+          {
+            "word": " hood",
+            "start": 4.74,
+            "end": 4.94,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " up",
+            "start": 4.94,
+            "end": 5.08,
+            "probability": 1.0
+          },
+          {
+            "word": " and",
+            "start": 5.08,
+            "end": 5.24,
+            "probability": 1.0
+          },
+          {
+            "word": " checks",
+            "start": 5.24,
+            "end": 5.52,
+            "probability": 1.0
+          },
+          {
+            "word": " the",
+            "start": 5.52,
+            "end": 5.7,
+            "probability": 1.0
+          },
+          {
+            "word": " sigil",
+            "start": 5.7,
+            "end": 6.04,
+            "probability": 0.9931640625
+          },
+          {
+            "word": " on",
+            "start": 6.04,
+            "end": 6.22,
+            "probability": 1.0
+          },
+          {
+            "word": " her",
+            "start": 6.22,
+            "end": 6.38,
+            "probability": 1.0
+          },
+          {
+            "word": " palm",
+            "start": 6.38,
+            "end": 6.7,
+            "probability": 0.99853515625
+          },
+          {
+            "word": " again.",
+            "start": 6.7,
+            "end": 7.06,
+            "probability": 1.0
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "seek": 0,
+        "start": 7.5,
+        "end": 11.48,
+        "text": " Does Bran see anything moving on the ridge? I want a perception check.",
+        "tokens": [
+          50745,
+          4402,
+          45265,
+          536,
+          1340,
+          2684,
+          322,
+          264,
+          34651,
+          30,
+          286,
+          528,
+          257,
+          12860,
+          1520,
+          13,
+          50945
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.20865820359814075,
+        "compression_ratio": 1.552901023890785,
+        "no_speech_prob": 7.176603603921416e-13,
+        "words": [
+          {
+            "word": " Does",
+            "start": 7.5,
+            "end": 7.78,
+            "probability": 0.99853515625
+          },
+          {
+            "word": " Bran",
+            "start": 7.78,
+            "end": 8.02,
+            "probability": 0.69921875
+          },
+          {
+            "word": " see",
+            "start": 8.02,
+            "end": 8.32,
+            "probability": 0.99853515625
+          },
+          {
+            "word": " anything",
+            "start": 8.32,
+            "end": 8.76,
+            "probability": 1.0
+          },
+          {
+            "word": " moving",
+            "start": 8.76,
+            "end": 9.08,
+            "probability": 1.0
+          },
+          {
+            "word": " on",
+            "start": 9.08,
+            "end": 9.3,
+            "probability": 1.0
+          },
+          {
+            "word": " the",
+            "start": 9.3,
+            "end": 9.42,
+            "probability": 1.0
+          },
+          {
+            "word": " ridge?",
+            "start": 9.42,
+            "end": 9.78,
+            "probability": 0.98974609375
+          },
+          {
+            "word": " I",
+            "start": 10.0,
+            "end": 10.22,
+            "probability": 1.0
+          },
+          {
+            "word": " want",
+            "start": 10.22,
+            "end": 10.48,
+            "probability": 1.0
+          },
+          {
+            "word": " a",
+            "start": 10.48,
+            "end": 10.58,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " perception",
+            "start": 10.58,
+            "end": 11.06,
+            "probability": 0.9814453125
+          },
+          {
+            "word": " check.",
+            "start": 11.06,
+            "end": 11.48,
+            "probability": 0.99951171875
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "seek": 0,
+        "start": 11.98,
+        "end": 15.18,
+        "text": " Roll it. The wind is loud enough that you are at disadvantage.",
+        "tokens": [
+          50969,
+          9926,
+          309,
+          13,
+          440,
+          2468,
+          307,
+          6588,
+          1547,
+          300,
+          291,
+          366,
+          412,
+          24292,
+          13,
+          51124
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.20865820359814075,
+        "compression_ratio": 1.552901023890785,
+        "no_speech_prob": 7.176603603921416e-13,
+        "words": [
+          {
+            "word": " Roll",
+            "start": 11.98,
+            "end": 12.3,
+            "probability": 0.998046875
+          },
+          {
+            "word": " it.",
+            "start": 12.3,
+            "end": 12.52,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " The",
+            "start": 12.72,
+            "end": 12.96,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " wind",
+            "start": 12.96,
+            "end": 13.16,
+            "probability": 1.0
+          },
+          {
+            "word": " is",
+            "start": 13.16,
+            "end": 13.34,
+            "probability": 1.0
+          },
+          {
+            "word": " loud",
+            "start": 13.34,
+            "end": 13.58,
+            "probability": 1.0
+          },
+          {
+            "word": " enough",
+            "start": 13.58,
+            "end": 13.8,
+            "probability": 1.0
+          },
+          {
+            "word": " that",
+            "start": 13.8,
+            "end": 14.02,
+            "probability": 1.0
+          },
+          {
+            "word": " you",
+            "start": 14.02,
+            "end": 14.18,
+            "probability": 1.0
+          },
+          {
+            "word": " are",
+            "start": 14.18,
+            "end": 14.32,
+            "probability": 1.0
+          },
+          {
+            "word": " at",
+            "start": 14.32,
+            "end": 14.52,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " disadvantage.",
+            "start": 14.52,
+            "end": 15.18,
+            "probability": 0.99951171875
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "seek": 0,
+        "start": 15.76,
+        "end": 17.76,
+        "text": " That is a 14. Not great.",
+        "tokens": [
+          51161,
+          663,
+          307,
+          257,
+          3499,
+          13,
+          1726,
+          869,
+          13,
+          51260
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.20865820359814075,
+        "compression_ratio": 1.552901023890785,
+        "no_speech_prob": 7.176603603921416e-13,
+        "words": [
+          {
+            "word": " That",
+            "start": 15.76,
+            "end": 16.12,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " is",
+            "start": 16.12,
+            "end": 16.24,
+            "probability": 1.0
+          },
+          {
+            "word": " a",
+            "start": 16.24,
+            "end": 16.34,
+            "probability": 1.0
+          },
+          {
+            "word": " 14.",
+            "start": 16.34,
+            "end": 16.72,
+            "probability": 0.7783203125
+          },
+          {
+            "word": " Not",
+            "start": 17.1,
+            "end": 17.4,
+            "probability": 1.0
+          },
+          {
+            "word": " great.",
+            "start": 17.4,
+            "end": 17.76,
+            "probability": 1.0
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "seek": 0,
+        "start": 18.42,
+        "end": 23.06,
+        "text": " Karikon keeps walking. He has no patience for ridge lines today.",
+        "tokens": [
+          51283,
+          8009,
+          1035,
+          266,
+          5965,
+          4494,
+          13,
+          634,
+          575,
+          572,
+          14826,
+          337,
+          34651,
+          3876,
+          965,
+          13,
+          51523
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.20865820359814075,
+        "compression_ratio": 1.552901023890785,
+        "no_speech_prob": 7.176603603921416e-13,
+        "words": [
+          {
+            "word": " Karikon",
+            "start": 18.42,
+            "end": 18.98,
+            "probability": 0.330322265625
+          },
+          {
+            "word": " keeps",
+            "start": 18.98,
+            "end": 19.34,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " walking.",
+            "start": 19.34,
+            "end": 19.8,
+            "probability": 0.939453125
+          },
+          {
+            "word": " He",
+            "start": 20.24,
+            "end": 20.76,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " has",
+            "start": 20.76,
+            "end": 20.98,
+            "probability": 1.0
+          },
+          {
+            "word": " no",
+            "start": 20.98,
+            "end": 21.24,
+            "probability": 1.0
+          },
+          {
+            "word": " patience",
+            "start": 21.24,
+            "end": 21.7,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " for",
+            "start": 21.7,
+            "end": 22.06,
+            "probability": 1.0
+          },
+          {
+            "word": " ridge",
+            "start": 22.06,
+            "end": 22.38,
+            "probability": 0.57861328125
+          },
+          {
+            "word": " lines",
+            "start": 22.38,
+            "end": 22.66,
+            "probability": 0.99560546875
+          },
+          {
+            "word": " today.",
+            "start": 22.66,
+            "end": 23.06,
+            "probability": 0.99853515625
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "seek": 0,
+        "start": 23.5,
+        "end": 27.36,
+        "text": " Then you three reach the gate before the light goes. It is already open.",
+        "tokens": [
+          51545,
+          1396,
+          291,
+          1045,
+          2524,
+          264,
+          8539,
+          949,
+          264,
+          1442,
+          1709,
+          13,
+          467,
+          307,
+          1217,
+          1269,
+          13,
+          51736
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.20865820359814075,
+        "compression_ratio": 1.552901023890785,
+        "no_speech_prob": 7.176603603921416e-13,
+        "words": [
+          {
+            "word": " Then",
+            "start": 23.5,
+            "end": 23.76,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " you",
+            "start": 23.76,
+            "end": 23.94,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " three",
+            "start": 23.94,
+            "end": 24.16,
+            "probability": 0.9912109375
+          },
+          {
+            "word": " reach",
+            "start": 24.16,
+            "end": 24.52,
+            "probability": 1.0
+          },
+          {
+            "word": " the",
+            "start": 24.52,
+            "end": 24.68,
+            "probability": 1.0
+          },
+          {
+            "word": " gate",
+            "start": 24.68,
+            "end": 24.9,
+            "probability": 1.0
+          },
+          {
+            "word": " before",
+            "start": 24.9,
+            "end": 25.14,
+            "probability": 1.0
+          },
+          {
+            "word": " the",
+            "start": 25.14,
+            "end": 25.32,
+            "probability": 1.0
+          },
+          {
+            "word": " light",
+            "start": 25.32,
+            "end": 25.54,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " goes.",
+            "start": 25.54,
+            "end": 25.94,
+            "probability": 1.0
+          },
+          {
+            "word": " It",
+            "start": 26.22,
+            "end": 26.48,
+            "probability": 1.0
+          },
+          {
+            "word": " is",
+            "start": 26.48,
+            "end": 26.62,
+            "probability": 1.0
+          },
+          {
+            "word": " already",
+            "start": 26.62,
+            "end": 26.98,
+            "probability": 1.0
+          },
+          {
+            "word": " open.",
+            "start": 26.98,
+            "end": 27.36,
+            "probability": 1.0
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "seek": 0,
+        "start": 27.78,
+        "end": 29.68,
+        "text": " Eilera stops. Open how?",
+        "tokens": [
+          51761,
+          462,
+          388,
+          1663,
+          10094,
+          13,
+          7238,
+          577,
+          30,
+          51852
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.20865820359814075,
+        "compression_ratio": 1.552901023890785,
+        "no_speech_prob": 7.176603603921416e-13,
+        "words": [
+          {
+            "word": " Eilera",
+            "start": 27.78,
+            "end": 28.28,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " stops.",
+            "start": 28.28,
+            "end": 28.78,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " Open",
+            "start": 29.02,
+            "end": 29.4,
+            "probability": 0.9990234375
+          },
+          {
+            "word": " how?",
+            "start": 29.4,
+            "end": 29.68,
+            "probability": 0.99365234375
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "seek": 3000,
+        "start": 30.0,
+        "end": 31.86,
+        "text": " Forced open. Or left open?",
+        "tokens": [
+          50371,
+          1171,
+          1232,
+          1269,
+          13,
+          1610,
+          1411,
+          1269,
+          30,
+          50459
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.182957580290645,
+        "compression_ratio": 1.485,
+        "no_speech_prob": 1.6815404320705274e-12,
+        "words": [
+          {
+            "word": " Forced",
+            "start": 30.0,
+            "end": 30.46,
+            "probability": 0.7373046875
+          },
+          {
+            "word": " open.",
+            "start": 30.46,
+            "end": 30.84,
+            "probability": 0.890625
+          },
+          {
+            "word": " Or",
+            "start": 31.0,
+            "end": 31.24,
+            "probability": 0.8798828125
+          },
+          {
+            "word": " left",
+            "start": 31.24,
+            "end": 31.48,
+            "probability": 0.96142578125
+          },
+          {
+            "word": " open?",
+            "start": 31.48,
+            "end": 31.86,
+            "probability": 0.98486328125
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "seek": 3000,
+        "start": 32.18,
+        "end": 37.28,
+        "text": " Left open. The bar is set neatly against the wall. As if by someone in her read.",
+        "tokens": [
+          50484,
+          16405,
+          1269,
+          13,
+          440,
+          2159,
+          307,
+          992,
+          36634,
+          1970,
+          264,
+          2929,
+          13,
+          1018,
+          498,
+          538,
+          1580,
+          294,
+          720,
+          1401,
+          13,
+          50731
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.182957580290645,
+        "compression_ratio": 1.485,
+        "no_speech_prob": 1.6815404320705274e-12,
+        "words": [
+          {
+            "word": " Left",
+            "start": 32.18,
+            "end": 32.6,
+            "probability": 0.96826171875
+          },
+          {
+            "word": " open.",
+            "start": 32.6,
+            "end": 32.98,
+            "probability": 0.99560546875
+          },
+          {
+            "word": " The",
+            "start": 33.22,
+            "end": 33.46,
+            "probability": 0.98974609375
+          },
+          {
+            "word": " bar",
+            "start": 33.46,
+            "end": 33.7,
+            "probability": 0.9970703125
+          },
+          {
+            "word": " is",
+            "start": 33.7,
+            "end": 33.9,
+            "probability": 0.99853515625
+          },
+          {
+            "word": " set",
+            "start": 33.9,
+            "end": 34.14,
+            "probability": 0.99755859375
+          },
+          {
+            "word": " neatly",
+            "start": 34.14,
+            "end": 34.48,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " against",
+            "start": 34.48,
+            "end": 34.84,
+            "probability": 0.99853515625
+          },
+          {
+            "word": " the",
+            "start": 34.84,
+            "end": 35.04,
+            "probability": 0.998046875
+          },
+          {
+            "word": " wall.",
+            "start": 35.04,
+            "end": 35.38,
+            "probability": 0.99755859375
+          },
+          {
+            "word": " As",
+            "start": 35.58,
+            "end": 35.8,
+            "probability": 0.9853515625
+          },
+          {
+            "word": " if",
+            "start": 35.8,
+            "end": 35.94,
+            "probability": 0.99853515625
+          },
+          {
+            "word": " by",
+            "start": 35.94,
+            "end": 36.14,
+            "probability": 0.9970703125
+          },
+          {
+            "word": " someone",
+            "start": 36.14,
+            "end": 36.54,
+            "probability": 0.99609375
+          },
+          {
+            "word": " in",
+            "start": 36.54,
+            "end": 36.72,
+            "probability": 0.52783203125
+          },
+          {
+            "word": " her",
+            "start": 36.72,
+            "end": 36.94,
+            "probability": 0.356689453125
+          },
+          {
+            "word": " read.",
+            "start": 36.94,
+            "end": 37.28,
+            "probability": 0.43994140625
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "seek": 3000,
+        "start": 37.76,
+        "end": 41.62,
+        "text": " Karikon says what everyone is thinking. That is worse.",
+        "tokens": [
+          50752,
+          8009,
+          1035,
+          266,
+          1619,
+          437,
+          1518,
+          307,
+          1953,
+          13,
+          663,
+          307,
+          5324,
+          13,
+          50950
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.182957580290645,
+        "compression_ratio": 1.485,
+        "no_speech_prob": 1.6815404320705274e-12,
+        "words": [
+          {
+            "word": " Karikon",
+            "start": 37.76,
+            "end": 38.36,
+            "probability": 0.2880859375
+          },
+          {
+            "word": " says",
+            "start": 38.36,
+            "end": 38.64,
+            "probability": 0.9931640625
+          },
+          {
+            "word": " what",
+            "start": 38.64,
+            "end": 38.94,
+            "probability": 0.99267578125
+          },
+          {
+            "word": " everyone",
+            "start": 38.94,
+            "end": 39.38,
+            "probability": 0.98974609375
+          },
+          {
+            "word": " is",
+            "start": 39.38,
+            "end": 39.7,
+            "probability": 0.99755859375
+          },
+          {
+            "word": " thinking.",
+            "start": 39.7,
+            "end": 40.1,
+            "probability": 0.9736328125
+          },
+          {
+            "word": " That",
+            "start": 40.72,
+            "end": 41.12,
+            "probability": 0.98974609375
+          },
+          {
+            "word": " is",
+            "start": 41.12,
+            "end": 41.28,
+            "probability": 0.99609375
+          },
+          {
+            "word": " worse.",
+            "start": 41.28,
+            "end": 41.62,
+            "probability": 0.9716796875
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "seek": 3000,
+        "start": 42.12,
+        "end": 45.44,
+        "text": " Bran wants to know if the warden of the spire is expecting us.",
+        "tokens": [
+          50974,
+          45265,
+          2738,
+          281,
+          458,
+          498,
+          264,
+          15234,
+          268,
+          295,
+          264,
+          637,
+          621,
+          307,
+          9650,
+          505,
+          13,
+          51137
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.182957580290645,
+        "compression_ratio": 1.485,
+        "no_speech_prob": 1.6815404320705274e-12,
+        "words": [
+          {
+            "word": " Bran",
+            "start": 42.12,
+            "end": 42.4,
+            "probability": 0.83740234375
+          },
+          {
+            "word": " wants",
+            "start": 42.4,
+            "end": 42.76,
+            "probability": 0.998046875
+          },
+          {
+            "word": " to",
+            "start": 42.76,
+            "end": 42.9,
+            "probability": 0.9990234375
+          },
+          {
+            "word": " know",
+            "start": 42.9,
+            "end": 43.06,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " if",
+            "start": 43.06,
+            "end": 43.24,
+            "probability": 0.99658203125
+          },
+          {
+            "word": " the",
+            "start": 43.24,
+            "end": 43.38,
+            "probability": 0.9853515625
+          },
+          {
+            "word": " warden",
+            "start": 43.38,
+            "end": 43.72,
+            "probability": 0.8017578125
+          },
+          {
+            "word": " of",
+            "start": 43.72,
+            "end": 43.82,
+            "probability": 0.99853515625
+          },
+          {
+            "word": " the",
+            "start": 43.82,
+            "end": 43.94,
+            "probability": 0.9912109375
+          },
+          {
+            "word": " spire",
+            "start": 43.94,
+            "end": 44.34,
+            "probability": 0.9091796875
+          },
+          {
+            "word": " is",
+            "start": 44.34,
+            "end": 44.52,
+            "probability": 0.99853515625
+          },
+          {
+            "word": " expecting",
+            "start": 44.52,
+            "end": 45.02,
+            "probability": 0.99853515625
+          },
+          {
+            "word": " us.",
+            "start": 45.02,
+            "end": 45.44,
+            "probability": 0.9990234375
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "seek": 3000,
+        "start": 45.68,
+        "end": 49.64,
+        "text": " You will find out. Something inside the courtyard says your name first.",
+        "tokens": [
+          51137,
+          509,
+          486,
+          915,
+          484,
+          13,
+          6595,
+          1854,
+          264,
+          41364,
+          1619,
+          428,
+          1315,
+          700,
+          13,
+          51360
+        ],
+        "temperature": 0.0,
+        "avg_logprob": -0.182957580290645,
+        "compression_ratio": 1.485,
+        "no_speech_prob": 1.6815404320705274e-12,
+        "words": [
+          {
+            "word": " You",
+            "start": 45.68,
+            "end": 46.0,
+            "probability": 0.9970703125
+          },
+          {
+            "word": " will",
+            "start": 46.0,
+            "end": 46.16,
+            "probability": 0.99755859375
+          },
+          {
+            "word": " find",
+            "start": 46.16,
+            "end": 46.46,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " out.",
+            "start": 46.46,
+            "end": 46.82,
+            "probability": 0.9990234375
+          },
+          {
+            "word": " Something",
+            "start": 47.06,
+            "end": 47.52,
+            "probability": 0.9970703125
+          },
+          {
+            "word": " inside",
+            "start": 47.52,
+            "end": 47.84,
+            "probability": 0.998046875
+          },
+          {
+            "word": " the",
+            "start": 47.84,
+            "end": 48.14,
+            "probability": 0.998046875
+          },
+          {
+            "word": " courtyard",
+            "start": 48.14,
+            "end": 48.54,
+            "probability": 0.9921875
+          },
+          {
+            "word": " says",
+            "start": 48.54,
+            "end": 48.84,
+            "probability": 0.998046875
+          },
+          {
+            "word": " your",
+            "start": 48.84,
+            "end": 49.04,
+            "probability": 0.99755859375
+          },
+          {
+            "word": " name",
+            "start": 49.04,
+            "end": 49.3,
+            "probability": 0.99951171875
+          },
+          {
+            "word": " first.",
+            "start": 49.3,
+            "end": 49.64,
+            "probability": 0.99853515625
+          }
+        ]
+      },
+      {
+        "id": 13,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 14,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 15,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 16,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 17,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 18,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 19,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 20,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 21,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 22,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 23,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 24,
+        "seek": 4964,
+        "start": 49.64,
+        "end": 49.64,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 25,
+        "seek": 4964,
+        "start": 49.68,
+        "end": 49.68,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 26,
+        "seek": 4964,
+        "start": 49.68,
+        "end": 49.68,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 27,
+        "seek": 4964,
+        "start": 49.68,
+        "end": 49.68,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 28,
+        "seek": 4964,
+        "start": 49.68,
+        "end": 49.78,
+        "text": " We'll be right back.",
+        "tokens": [
+          50602,
+          492,
+          603,
+          312,
+          558,
+          646,
+          13,
+          50602
+        ],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": [
+          {
+            "word": " We'll",
+            "start": 49.68,
+            "end": 49.68,
+            "probability": 0.9619140625
+          },
+          {
+            "word": " be",
+            "start": 49.68,
+            "end": 49.68,
+            "probability": 0.99267578125
+          },
+          {
+            "word": " right",
+            "start": 49.68,
+            "end": 49.78,
+            "probability": 0.994140625
+          },
+          {
+            "word": " back.",
+            "start": 49.78,
+            "end": 49.78,
+            "probability": 0.99853515625
+          }
+        ]
+      },
+      {
+        "id": 29,
+        "seek": 4964,
+        "start": 49.78,
+        "end": 49.88,
+        "text": " We'll be right back.",
+        "tokens": [
+          50602,
+          492,
+          603,
+          312,
+          558,
+          646,
+          13,
+          50654
+        ],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": [
+          {
+            "word": " We'll",
+            "start": 49.78,
+            "end": 49.88,
+            "probability": 0.9619140625
+          },
+          {
+            "word": " be",
+            "start": 49.88,
+            "end": 49.88,
+            "probability": 0.99267578125
+          },
+          {
+            "word": " right",
+            "start": 49.88,
+            "end": 49.88,
+            "probability": 0.994140625
+          },
+          {
+            "word": " back.",
+            "start": 49.88,
+            "end": 49.88,
+            "probability": 0.9990234375
+          }
+        ]
+      },
+      {
+        "id": 30,
+        "seek": 4964,
+        "start": 49.88,
+        "end": 49.88,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 31,
+        "seek": 4964,
+        "start": 49.88,
+        "end": 49.88,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 32,
+        "seek": 4964,
+        "start": 49.88,
+        "end": 49.88,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 33,
+        "seek": 4964,
+        "start": 49.88,
+        "end": 49.88,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 34,
+        "seek": 4964,
+        "start": 49.88,
+        "end": 49.88,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 35,
+        "seek": 4964,
+        "start": 49.88,
+        "end": 49.88,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 36,
+        "seek": 4964,
+        "start": 49.88,
+        "end": 49.88,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 37,
+        "seek": 4964,
+        "start": 49.88,
+        "end": 49.88,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 38,
+        "seek": 4964,
+        "start": 49.88,
+        "end": 49.88,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 39,
+        "seek": 4964,
+        "start": 49.88,
+        "end": 49.88,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      },
+      {
+        "id": 40,
+        "seek": 4964,
+        "start": 49.88,
+        "end": 49.88,
+        "text": "",
+        "tokens": [],
+        "temperature": 1.0,
+        "avg_logprob": -0.6216383870442709,
+        "compression_ratio": 16.305555555555557,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": []
+      }
+    ],
+    "language": "en"
+  },
+  "canonical_turns": [
+    {
+      "id": "t0000",
+      "start_ms": 0,
+      "end_ms": 3540,
+      "text": "The road out of Ealthorn narrows as it climbs toward the Ashen Spire.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.8116726150163756
+    },
+    {
+      "id": "t0001",
+      "start_ms": 3940,
+      "end_ms": 7060,
+      "text": "Eilera draws her hood up and checks the sigil on her palm again.",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.8116726150163756
+    },
+    {
+      "id": "t0002",
+      "start_ms": 7500,
+      "end_ms": 11480,
+      "text": "Does Bran see anything moving on the ridge? I want a perception check.",
+      "physical_speaker": "SPEAKER_02",
+      "confidence": 0.8116726150163756
+    },
+    {
+      "id": "t0003",
+      "start_ms": 11980,
+      "end_ms": 15180,
+      "text": "Roll it. The wind is loud enough that you are at disadvantage.",
+      "physical_speaker": "SPEAKER_06",
+      "confidence": 0.8116726150163756
+    },
+    {
+      "id": "t0004",
+      "start_ms": 15760,
+      "end_ms": 17760,
+      "text": "That is a 14. Not great.",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.8116726150163756
+    },
+    {
+      "id": "t0005",
+      "start_ms": 18420,
+      "end_ms": 23060,
+      "text": "Karikon keeps walking. He has no patience for ridge lines today.",
+      "physical_speaker": "SPEAKER_06",
+      "confidence": 0.8116726150163756
+    },
+    {
+      "id": "t0006",
+      "start_ms": 23500,
+      "end_ms": 27360,
+      "text": "Then you three reach the gate before the light goes. It is already open.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.8116726150163756
+    },
+    {
+      "id": "t0007",
+      "start_ms": 27780,
+      "end_ms": 29680,
+      "text": "Eilera stops. Open how?",
+      "physical_speaker": "SPEAKER_04",
+      "confidence": 0.8116726150163756
+    },
+    {
+      "id": "t0008",
+      "start_ms": 30000,
+      "end_ms": 31860,
+      "text": "Forced open. Or left open?",
+      "physical_speaker": "SPEAKER_04",
+      "confidence": 0.8328034822694828
+    },
+    {
+      "id": "t0009",
+      "start_ms": 32180,
+      "end_ms": 37280,
+      "text": "Left open. The bar is set neatly against the wall. As if by someone in her read.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.8328034822694828
+    },
+    {
+      "id": "t0010",
+      "start_ms": 37760,
+      "end_ms": 41620,
+      "text": "Karikon says what everyone is thinking. That is worse.",
+      "physical_speaker": "SPEAKER_06",
+      "confidence": 0.8328034822694828
+    },
+    {
+      "id": "t0011",
+      "start_ms": 42120,
+      "end_ms": 45440,
+      "text": "Bran wants to know if the warden of the spire is expecting us.",
+      "physical_speaker": "SPEAKER_02",
+      "confidence": 0.8328034822694828
+    },
+    {
+      "id": "t0012",
+      "start_ms": 45680,
+      "end_ms": 49640,
+      "text": "You will find out. Something inside the courtyard says your name first.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.8328034822694828
+    },
+    {
+      "id": "t0028",
+      "start_ms": 49680,
+      "end_ms": 49780,
+      "text": "We'll be right back.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.5370637980088185
+    },
+    {
+      "id": "t0029",
+      "start_ms": 49780,
+      "end_ms": 49880,
+      "text": "We'll be right back.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.5370637980088185
+    }
+  ]
+}

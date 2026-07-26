@@ -1,0 +1,2064 @@
+{
+  "probe_version": "1",
+  "stack": "parakeet-mlx",
+  "provider_of_record": "parakeet-mlx",
+  "output_kind": "model output",
+  "input": {
+    "label": "synthetic",
+    "duration_s": 49.97,
+    "sha256": "4f0d9c072d229352885e37e96a2dbbe8320ac774e55cbe6b28cdf5c99b0e1095"
+  },
+  "environment": {
+    "machine": "arm64",
+    "platform": "macOS-26.3.1-arm64-arm-64bit",
+    "python": "3.12.13",
+    "cpu_count": 12
+  },
+  "metrics": {
+    "wall_clock_s": 2.383,
+    "model_load_s": 1.399,
+    "inference_s": 0.984,
+    "realtime_factor": 20.97,
+    "inference_realtime_factor": 50.79,
+    "peak_rss_mb": 789.8,
+    "peak_child_rss_mb": 15.2,
+    "load_avg_1m_before": 9.36,
+    "load_avg_1m_after": 9.36
+  },
+  "shape": {
+    "produces_text": true,
+    "unit_count": 23,
+    "canonical_turn_count": 23,
+    "speaker_span_count": null,
+    "speaker_span_ms": null,
+    "rejected_unit_count": 0,
+    "rejected_units": [],
+    "has_timestamps": true,
+    "distinct_physical_speakers": 5,
+    "physical_speakers": [
+      "SPEAKER_00",
+      "SPEAKER_01",
+      "SPEAKER_02",
+      "SPEAKER_04",
+      "SPEAKER_06"
+    ],
+    "turns_with_confidence": 23,
+    "confidence_min": 0.918,
+    "confidence_mean": 0.9761,
+    "total_speech_ms": 49440,
+    "characters_of_text": 734,
+    "speaker_attribution": {
+      "mean_overlap_ratio": 0.887,
+      "min_overlap_ratio": 0.525,
+      "turns_below_0_8_overlap": 5,
+      "turns_with_no_speaker": 0
+    }
+  },
+  "diarization_source": {
+    "path": "synthetic-sherpa-diarization.json",
+    "engine": "sherpa-onnx-offline-speaker-diarization"
+  },
+  "native_artifact": {
+    "engine": "parakeet-mlx",
+    "model": "mlx-community/parakeet-tdt-0.6b-v3",
+    "text": "The road out of Veelthorn narrows as it climbs toward the ashen spire. Eyleira draws her hood up and checks the sigil on her palm again. Does Bran see anything moving on the ridge? I want a perception check. Roll it. The wind is loud enough that you are at disadvantage. That is a 14. Not great. Kari can keep walking. He had no patience for it line today. Then you three reach the gate before the light goes. It is already open. Eyleira stops. Open how? Forced open. Or left open? Left open. The bar is set neatly against the wall, as if by someone and her read. Korikan says what everyone is thinking. That is worth it. Bran wants to know if the warden of the spire is expecting us. You will find out. Something inside the courtyard says your name first.",
+    "sentences": [
+      {
+        "text": " The road out of Veelthorn narrows as it climbs toward the ashen spire.",
+        "start": 0.0,
+        "end": 3.7600000000000002,
+        "confidence": 0.9749904737800719,
+        "tokens": [
+          {
+            "text": " The",
+            "start": 0.0,
+            "end": 0.08,
+            "confidence": 0.997807502746582
+          },
+          {
+            "text": " ro",
+            "start": 0.08,
+            "end": 0.16,
+            "confidence": 0.9973759651184082
+          },
+          {
+            "text": "ad",
+            "start": 0.16,
+            "end": 0.32,
+            "confidence": 0.9983065724372864
+          },
+          {
+            "text": " out",
+            "start": 0.32,
+            "end": 0.48,
+            "confidence": 0.9924604296684265
+          },
+          {
+            "text": " of",
+            "start": 0.48,
+            "end": 0.64,
+            "confidence": 0.9981123208999634
+          },
+          {
+            "text": " Ve",
+            "start": 0.64,
+            "end": 0.72,
+            "confidence": 0.8699657320976257
+          },
+          {
+            "text": "elt",
+            "start": 0.88,
+            "end": 0.96,
+            "confidence": 0.8120270371437073
+          },
+          {
+            "text": "h",
+            "start": 1.04,
+            "end": 1.12,
+            "confidence": 0.908023476600647
+          },
+          {
+            "text": "orn",
+            "start": 1.12,
+            "end": 1.28,
+            "confidence": 0.9668593406677246
+          },
+          {
+            "text": " nar",
+            "start": 1.36,
+            "end": 1.52,
+            "confidence": 0.9992735981941223
+          },
+          {
+            "text": "ro",
+            "start": 1.52,
+            "end": 1.68,
+            "confidence": 0.9999990463256836
+          },
+          {
+            "text": "ws",
+            "start": 1.68,
+            "end": 1.76,
+            "confidence": 0.9999828338623047
+          },
+          {
+            "text": " as",
+            "start": 1.76,
+            "end": 1.92,
+            "confidence": 0.9999897480010986
+          },
+          {
+            "text": " it",
+            "start": 1.92,
+            "end": 2.0,
+            "confidence": 0.9999508857727051
+          },
+          {
+            "text": " c",
+            "start": 2.0,
+            "end": 2.08,
+            "confidence": 0.9999579191207886
+          },
+          {
+            "text": "lim",
+            "start": 2.08,
+            "end": 2.16,
+            "confidence": 0.9999991059303284
+          },
+          {
+            "text": "b",
+            "start": 2.16,
+            "end": 2.24,
+            "confidence": 0.9999662637710571
+          },
+          {
+            "text": "s",
+            "start": 2.24,
+            "end": 2.4000000000000004,
+            "confidence": 0.9999932646751404
+          },
+          {
+            "text": " to",
+            "start": 2.4,
+            "end": 2.48,
+            "confidence": 0.9998831152915955
+          },
+          {
+            "text": "ward",
+            "start": 2.48,
+            "end": 2.64,
+            "confidence": 0.9999682307243347
+          },
+          {
+            "text": " the",
+            "start": 2.64,
+            "end": 2.8000000000000003,
+            "confidence": 0.9998066425323486
+          },
+          {
+            "text": " as",
+            "start": 2.8000000000000003,
+            "end": 2.9600000000000004,
+            "confidence": 0.9213501811027527
+          },
+          {
+            "text": "hen",
+            "start": 2.96,
+            "end": 3.12,
+            "confidence": 0.9991756081581116
+          },
+          {
+            "text": " sp",
+            "start": 3.2,
+            "end": 3.3600000000000003,
+            "confidence": 0.9307799935340881
+          },
+          {
+            "text": "ire",
+            "start": 3.36,
+            "end": 3.52,
+            "confidence": 0.9966559410095215
+          },
+          {
+            "text": ".",
+            "start": 3.6,
+            "end": 3.7600000000000002,
+            "confidence": 0.9942363500595093
+          }
+        ]
+      },
+      {
+        "text": " Eyleira draws her hood up and checks the sigil on her palm again.",
+        "start": 3.7600000000000002,
+        "end": 7.44,
+        "confidence": 0.9802753456068828,
+        "tokens": [
+          {
+            "text": " E",
+            "start": 3.7600000000000002,
+            "end": 3.8400000000000003,
+            "confidence": 0.8997234106063843
+          },
+          {
+            "text": "y",
+            "start": 3.84,
+            "end": 4.0,
+            "confidence": 0.9678130149841309
+          },
+          {
+            "text": "le",
+            "start": 4.0,
+            "end": 4.16,
+            "confidence": 0.8217065930366516
+          },
+          {
+            "text": "ira",
+            "start": 4.24,
+            "end": 4.32,
+            "confidence": 0.8728770613670349
+          },
+          {
+            "text": " dra",
+            "start": 4.4,
+            "end": 4.5600000000000005,
+            "confidence": 0.9997469782829285
+          },
+          {
+            "text": "ws",
+            "start": 4.5600000000000005,
+            "end": 4.640000000000001,
+            "confidence": 0.9997901916503906
+          },
+          {
+            "text": " her",
+            "start": 4.64,
+            "end": 4.72,
+            "confidence": 0.99993896484375
+          },
+          {
+            "text": " ho",
+            "start": 4.72,
+            "end": 4.8,
+            "confidence": 0.9998171925544739
+          },
+          {
+            "text": "od",
+            "start": 4.8,
+            "end": 4.96,
+            "confidence": 0.9996016025543213
+          },
+          {
+            "text": " up",
+            "start": 4.96,
+            "end": 5.12,
+            "confidence": 0.9998515844345093
+          },
+          {
+            "text": " and",
+            "start": 5.12,
+            "end": 5.28,
+            "confidence": 0.9999961256980896
+          },
+          {
+            "text": " che",
+            "start": 5.28,
+            "end": 5.36,
+            "confidence": 0.9999856948852539
+          },
+          {
+            "text": "c",
+            "start": 5.36,
+            "end": 5.44,
+            "confidence": 0.9999250769615173
+          },
+          {
+            "text": "ks",
+            "start": 5.44,
+            "end": 5.5200000000000005,
+            "confidence": 0.999999463558197
+          },
+          {
+            "text": " the",
+            "start": 5.5200000000000005,
+            "end": 5.680000000000001,
+            "confidence": 0.9998735785484314
+          },
+          {
+            "text": " sig",
+            "start": 5.68,
+            "end": 5.84,
+            "confidence": 0.998918354511261
+          },
+          {
+            "text": "il",
+            "start": 6.08,
+            "end": 6.24,
+            "confidence": 0.9967116713523865
+          },
+          {
+            "text": " on",
+            "start": 6.24,
+            "end": 6.32,
+            "confidence": 0.9999243021011353
+          },
+          {
+            "text": " her",
+            "start": 6.32,
+            "end": 6.48,
+            "confidence": 0.9998962879180908
+          },
+          {
+            "text": " pal",
+            "start": 6.48,
+            "end": 6.640000000000001,
+            "confidence": 0.9999797940254211
+          },
+          {
+            "text": "m",
+            "start": 6.640000000000001,
+            "end": 6.800000000000001,
+            "confidence": 0.9999641180038452
+          },
+          {
+            "text": " aga",
+            "start": 6.8,
+            "end": 7.04,
+            "confidence": 0.9998359084129333
+          },
+          {
+            "text": "in",
+            "start": 7.04,
+            "end": 7.2,
+            "confidence": 0.9999905824661255
+          },
+          {
+            "text": ".",
+            "start": 7.2,
+            "end": 7.44,
+            "confidence": 0.998853325843811
+          }
+        ]
+      },
+      {
+        "text": " Does Bran see anything moving on the ridge?",
+        "start": 7.44,
+        "end": 10.08,
+        "confidence": 0.9981500022444655,
+        "tokens": [
+          {
+            "text": " Do",
+            "start": 7.44,
+            "end": 7.6000000000000005,
+            "confidence": 0.9995075464248657
+          },
+          {
+            "text": "es",
+            "start": 7.6000000000000005,
+            "end": 7.840000000000001,
+            "confidence": 0.9999797344207764
+          },
+          {
+            "text": " B",
+            "start": 7.84,
+            "end": 8.0,
+            "confidence": 0.987726628780365
+          },
+          {
+            "text": "ran",
+            "start": 8.0,
+            "end": 8.24,
+            "confidence": 0.9984183311462402
+          },
+          {
+            "text": " see",
+            "start": 8.24,
+            "end": 8.48,
+            "confidence": 0.9999837875366211
+          },
+          {
+            "text": " an",
+            "start": 8.48,
+            "end": 8.56,
+            "confidence": 0.9999738335609436
+          },
+          {
+            "text": "yt",
+            "start": 8.56,
+            "end": 8.72,
+            "confidence": 0.9999999403953552
+          },
+          {
+            "text": "hing",
+            "start": 8.72,
+            "end": 8.88,
+            "confidence": 1.0
+          },
+          {
+            "text": " mov",
+            "start": 8.88,
+            "end": 9.040000000000001,
+            "confidence": 0.9999672174453735
+          },
+          {
+            "text": "ing",
+            "start": 9.040000000000001,
+            "end": 9.200000000000001,
+            "confidence": 0.999998927116394
+          },
+          {
+            "text": " on",
+            "start": 9.200000000000001,
+            "end": 9.280000000000001,
+            "confidence": 0.9999804496765137
+          },
+          {
+            "text": " the",
+            "start": 9.28,
+            "end": 9.52,
+            "confidence": 0.999888002872467
+          },
+          {
+            "text": " rid",
+            "start": 9.52,
+            "end": 9.68,
+            "confidence": 0.9995465874671936
+          },
+          {
+            "text": "ge",
+            "start": 9.68,
+            "end": 9.92,
+            "confidence": 0.9999983310699463
+          },
+          {
+            "text": "?",
+            "start": 9.92,
+            "end": 10.08,
+            "confidence": 0.9874123334884644
+          }
+        ]
+      },
+      {
+        "text": " I want a perception check.",
+        "start": 10.08,
+        "end": 11.92,
+        "confidence": 0.9981514567499639,
+        "tokens": [
+          {
+            "text": " I",
+            "start": 10.08,
+            "end": 10.32,
+            "confidence": 0.9994234442710876
+          },
+          {
+            "text": " want",
+            "start": 10.32,
+            "end": 10.48,
+            "confidence": 0.9995248913764954
+          },
+          {
+            "text": " a",
+            "start": 10.48,
+            "end": 10.72,
+            "confidence": 0.9996187090873718
+          },
+          {
+            "text": " per",
+            "start": 10.72,
+            "end": 10.88,
+            "confidence": 0.9996486902236938
+          },
+          {
+            "text": "cep",
+            "start": 10.88,
+            "end": 11.120000000000001,
+            "confidence": 0.9999905824661255
+          },
+          {
+            "text": "tion",
+            "start": 11.120000000000001,
+            "end": 11.360000000000001,
+            "confidence": 0.9999335408210754
+          },
+          {
+            "text": " che",
+            "start": 11.36,
+            "end": 11.52,
+            "confidence": 0.9928659796714783
+          },
+          {
+            "text": "ck",
+            "start": 11.52,
+            "end": 11.68,
+            "confidence": 0.9998288750648499
+          },
+          {
+            "text": ".",
+            "start": 11.68,
+            "end": 11.92,
+            "confidence": 0.9925667643547058
+          }
+        ]
+      },
+      {
+        "text": " Roll it.",
+        "start": 11.92,
+        "end": 12.72,
+        "confidence": 0.9789120257362219,
+        "tokens": [
+          {
+            "text": " R",
+            "start": 11.92,
+            "end": 12.16,
+            "confidence": 0.996334433555603
+          },
+          {
+            "text": "oll",
+            "start": 12.16,
+            "end": 12.4,
+            "confidence": 0.9994465112686157
+          },
+          {
+            "text": " it",
+            "start": 12.4,
+            "end": 12.56,
+            "confidence": 0.9998123049736023
+          },
+          {
+            "text": ".",
+            "start": 12.56,
+            "end": 12.72,
+            "confidence": 0.9223409295082092
+          }
+        ]
+      },
+      {
+        "text": " The wind is loud enough that you are at disadvantage.",
+        "start": 12.72,
+        "end": 15.84,
+        "confidence": 0.9992952061177375,
+        "tokens": [
+          {
+            "text": " The",
+            "start": 12.72,
+            "end": 12.88,
+            "confidence": 0.998603105545044
+          },
+          {
+            "text": " w",
+            "start": 12.88,
+            "end": 13.040000000000001,
+            "confidence": 0.9998793005943298
+          },
+          {
+            "text": "ind",
+            "start": 13.040000000000001,
+            "end": 13.200000000000001,
+            "confidence": 0.999995768070221
+          },
+          {
+            "text": " is",
+            "start": 13.200000000000001,
+            "end": 13.360000000000001,
+            "confidence": 0.9999620914459229
+          },
+          {
+            "text": " lo",
+            "start": 13.36,
+            "end": 13.44,
+            "confidence": 0.9999796152114868
+          },
+          {
+            "text": "ud",
+            "start": 13.44,
+            "end": 13.6,
+            "confidence": 0.9999961256980896
+          },
+          {
+            "text": " en",
+            "start": 13.6,
+            "end": 13.76,
+            "confidence": 0.9999970197677612
+          },
+          {
+            "text": "ough",
+            "start": 13.76,
+            "end": 13.92,
+            "confidence": 1.0
+          },
+          {
+            "text": " that",
+            "start": 13.92,
+            "end": 14.08,
+            "confidence": 0.999854564666748
+          },
+          {
+            "text": " you",
+            "start": 14.08,
+            "end": 14.16,
+            "confidence": 0.9999855756759644
+          },
+          {
+            "text": " are",
+            "start": 14.16,
+            "end": 14.32,
+            "confidence": 0.9999445676803589
+          },
+          {
+            "text": " at",
+            "start": 14.32,
+            "end": 14.48,
+            "confidence": 0.996235728263855
+          },
+          {
+            "text": " dis",
+            "start": 14.64,
+            "end": 14.8,
+            "confidence": 0.9995306730270386
+          },
+          {
+            "text": "ad",
+            "start": 14.8,
+            "end": 15.040000000000001,
+            "confidence": 0.999998927116394
+          },
+          {
+            "text": "van",
+            "start": 15.040000000000001,
+            "end": 15.200000000000001,
+            "confidence": 0.9999983906745911
+          },
+          {
+            "text": "ta",
+            "start": 15.200000000000001,
+            "end": 15.360000000000001,
+            "confidence": 0.9958743453025818
+          },
+          {
+            "text": "ge",
+            "start": 15.36,
+            "end": 15.6,
+            "confidence": 0.9999995827674866
+          },
+          {
+            "text": ".",
+            "start": 15.6,
+            "end": 15.84,
+            "confidence": 0.9974937438964844
+          }
+        ]
+      },
+      {
+        "text": " That is a 14.",
+        "start": 15.84,
+        "end": 17.2,
+        "confidence": 0.9780671369834641,
+        "tokens": [
+          {
+            "text": " That",
+            "start": 15.84,
+            "end": 16.0,
+            "confidence": 0.997843861579895
+          },
+          {
+            "text": " is",
+            "start": 16.0,
+            "end": 16.16,
+            "confidence": 0.9997478723526001
+          },
+          {
+            "text": " a",
+            "start": 16.16,
+            "end": 16.32,
+            "confidence": 0.9836822152137756
+          },
+          {
+            "text": " ",
+            "start": 16.32,
+            "end": 16.48,
+            "confidence": 0.9614847302436829
+          },
+          {
+            "text": "1",
+            "start": 16.48,
+            "end": 16.64,
+            "confidence": 0.9972658157348633
+          },
+          {
+            "text": "4",
+            "start": 16.64,
+            "end": 16.88,
+            "confidence": 0.9998813271522522
+          },
+          {
+            "text": ".",
+            "start": 17.04,
+            "end": 17.2,
+            "confidence": 0.9100620150566101
+          }
+        ]
+      },
+      {
+        "text": " Not great.",
+        "start": 17.2,
+        "end": 18.240000000000002,
+        "confidence": 0.9976885429435403,
+        "tokens": [
+          {
+            "text": " N",
+            "start": 17.2,
+            "end": 17.36,
+            "confidence": 0.9986118078231812
+          },
+          {
+            "text": "ot",
+            "start": 17.36,
+            "end": 17.599999999999998,
+            "confidence": 0.9999937415122986
+          },
+          {
+            "text": " gre",
+            "start": 17.6,
+            "end": 17.76,
+            "confidence": 0.9998535513877869
+          },
+          {
+            "text": "at",
+            "start": 17.76,
+            "end": 17.92,
+            "confidence": 0.9999896883964539
+          },
+          {
+            "text": ".",
+            "start": 17.92,
+            "end": 18.240000000000002,
+            "confidence": 0.9900315403938293
+          }
+        ]
+      },
+      {
+        "text": " Kari can keep walking.",
+        "start": 18.240000000000002,
+        "end": 20.560000000000002,
+        "confidence": 0.9384773866172823,
+        "tokens": [
+          {
+            "text": " K",
+            "start": 18.240000000000002,
+            "end": 18.400000000000002,
+            "confidence": 0.8343226313591003
+          },
+          {
+            "text": "ari",
+            "start": 18.400000000000002,
+            "end": 18.48,
+            "confidence": 0.7657790184020996
+          },
+          {
+            "text": " can",
+            "start": 18.96,
+            "end": 19.12,
+            "confidence": 0.9503363966941833
+          },
+          {
+            "text": " ke",
+            "start": 19.2,
+            "end": 19.279999999999998,
+            "confidence": 0.9991078972816467
+          },
+          {
+            "text": "ep",
+            "start": 19.28,
+            "end": 19.44,
+            "confidence": 0.9888966679573059
+          },
+          {
+            "text": " w",
+            "start": 19.6,
+            "end": 19.76,
+            "confidence": 0.9084718823432922
+          },
+          {
+            "text": "al",
+            "start": 19.76,
+            "end": 19.84,
+            "confidence": 0.9968340396881104
+          },
+          {
+            "text": "k",
+            "start": 19.84,
+            "end": 20.0,
+            "confidence": 0.9997266530990601
+          },
+          {
+            "text": "ing",
+            "start": 20.0,
+            "end": 20.24,
+            "confidence": 0.9999687671661377
+          },
+          {
+            "text": ".",
+            "start": 20.240000000000002,
+            "end": 20.560000000000002,
+            "confidence": 0.9757934808731079
+          }
+        ]
+      },
+      {
+        "text": " He had no patience for it line today.",
+        "start": 20.56,
+        "end": 23.44,
+        "confidence": 0.9528812416332028,
+        "tokens": [
+          {
+            "text": " He",
+            "start": 20.56,
+            "end": 20.799999999999997,
+            "confidence": 0.9942783117294312
+          },
+          {
+            "text": " had",
+            "start": 20.8,
+            "end": 21.12,
+            "confidence": 0.9256256222724915
+          },
+          {
+            "text": " no",
+            "start": 21.12,
+            "end": 21.36,
+            "confidence": 0.9995690584182739
+          },
+          {
+            "text": " pat",
+            "start": 21.36,
+            "end": 21.599999999999998,
+            "confidence": 0.9936693906784058
+          },
+          {
+            "text": "ien",
+            "start": 21.6,
+            "end": 21.76,
+            "confidence": 0.997940719127655
+          },
+          {
+            "text": "ce",
+            "start": 21.76,
+            "end": 21.76,
+            "confidence": 0.999820351600647
+          },
+          {
+            "text": " for",
+            "start": 21.84,
+            "end": 22.08,
+            "confidence": 0.9987717866897583
+          },
+          {
+            "text": " it",
+            "start": 22.080000000000002,
+            "end": 22.240000000000002,
+            "confidence": 0.7908816337585449
+          },
+          {
+            "text": " l",
+            "start": 22.400000000000002,
+            "end": 22.560000000000002,
+            "confidence": 0.8190838694572449
+          },
+          {
+            "text": "ine",
+            "start": 22.64,
+            "end": 22.72,
+            "confidence": 0.920696496963501
+          },
+          {
+            "text": " tod",
+            "start": 22.88,
+            "end": 23.04,
+            "confidence": 0.9859185814857483
+          },
+          {
+            "text": "ay",
+            "start": 23.04,
+            "end": 23.279999999999998,
+            "confidence": 0.999998152256012
+          },
+          {
+            "text": ".",
+            "start": 23.28,
+            "end": 23.44,
+            "confidence": 0.9968193769454956
+          }
+        ]
+      },
+      {
+        "text": " Then you three reach the gate before the light goes.",
+        "start": 23.44,
+        "end": 26.32,
+        "confidence": 0.9943789792443097,
+        "tokens": [
+          {
+            "text": " T",
+            "start": 23.44,
+            "end": 23.6,
+            "confidence": 0.9987500309944153
+          },
+          {
+            "text": "hen",
+            "start": 23.6,
+            "end": 23.76,
+            "confidence": 0.999981164932251
+          },
+          {
+            "text": " you",
+            "start": 23.76,
+            "end": 24.0,
+            "confidence": 0.9869322180747986
+          },
+          {
+            "text": " th",
+            "start": 24.0,
+            "end": 24.16,
+            "confidence": 0.9783251881599426
+          },
+          {
+            "text": "ree",
+            "start": 24.16,
+            "end": 24.32,
+            "confidence": 0.9998157620429993
+          },
+          {
+            "text": " re",
+            "start": 24.32,
+            "end": 24.4,
+            "confidence": 0.9998813271522522
+          },
+          {
+            "text": "ach",
+            "start": 24.400000000000002,
+            "end": 24.560000000000002,
+            "confidence": 0.999931275844574
+          },
+          {
+            "text": " the",
+            "start": 24.560000000000002,
+            "end": 24.64,
+            "confidence": 0.999936580657959
+          },
+          {
+            "text": " g",
+            "start": 24.64,
+            "end": 24.8,
+            "confidence": 0.9999227523803711
+          },
+          {
+            "text": "ate",
+            "start": 24.8,
+            "end": 24.96,
+            "confidence": 0.9999549984931946
+          },
+          {
+            "text": " be",
+            "start": 24.96,
+            "end": 25.04,
+            "confidence": 0.9999604821205139
+          },
+          {
+            "text": "for",
+            "start": 25.04,
+            "end": 25.2,
+            "confidence": 0.9999976754188538
+          },
+          {
+            "text": "e",
+            "start": 25.2,
+            "end": 25.279999999999998,
+            "confidence": 0.9999831914901733
+          },
+          {
+            "text": " the",
+            "start": 25.28,
+            "end": 25.44,
+            "confidence": 0.9999664425849915
+          },
+          {
+            "text": " lig",
+            "start": 25.44,
+            "end": 25.6,
+            "confidence": 0.9998360276222229
+          },
+          {
+            "text": "ht",
+            "start": 25.6,
+            "end": 25.76,
+            "confidence": 0.9998319149017334
+          },
+          {
+            "text": " go",
+            "start": 25.76,
+            "end": 25.92,
+            "confidence": 0.9999366402626038
+          },
+          {
+            "text": "es",
+            "start": 25.92,
+            "end": 26.080000000000002,
+            "confidence": 0.9999943971633911
+          },
+          {
+            "text": ".",
+            "start": 26.080000000000002,
+            "end": 26.32,
+            "confidence": 0.9326610565185547
+          }
+        ]
+      },
+      {
+        "text": " It is already open.",
+        "start": 26.32,
+        "end": 27.76,
+        "confidence": 0.999289951312722,
+        "tokens": [
+          {
+            "text": " It",
+            "start": 26.32,
+            "end": 26.48,
+            "confidence": 0.998593270778656
+          },
+          {
+            "text": " is",
+            "start": 26.48,
+            "end": 26.64,
+            "confidence": 0.9999553561210632
+          },
+          {
+            "text": " al",
+            "start": 26.64,
+            "end": 26.8,
+            "confidence": 0.9999948740005493
+          },
+          {
+            "text": "re",
+            "start": 26.8,
+            "end": 26.96,
+            "confidence": 0.999999463558197
+          },
+          {
+            "text": "ady",
+            "start": 26.96,
+            "end": 27.12,
+            "confidence": 1.0
+          },
+          {
+            "text": " op",
+            "start": 27.12,
+            "end": 27.28,
+            "confidence": 0.999998152256012
+          },
+          {
+            "text": "en",
+            "start": 27.28,
+            "end": 27.44,
+            "confidence": 0.9999999403953552
+          },
+          {
+            "text": ".",
+            "start": 27.44,
+            "end": 27.76,
+            "confidence": 0.9957864284515381
+          }
+        ]
+      },
+      {
+        "text": " Eyleira stops.",
+        "start": 27.76,
+        "end": 29.04,
+        "confidence": 0.9180170378008697,
+        "tokens": [
+          {
+            "text": " E",
+            "start": 27.76,
+            "end": 27.84,
+            "confidence": 0.8971564769744873
+          },
+          {
+            "text": "y",
+            "start": 27.84,
+            "end": 28.0,
+            "confidence": 0.974019467830658
+          },
+          {
+            "text": "le",
+            "start": 28.0,
+            "end": 28.16,
+            "confidence": 0.8036767244338989
+          },
+          {
+            "text": "ira",
+            "start": 28.32,
+            "end": 28.48,
+            "confidence": 0.8289264440536499
+          },
+          {
+            "text": " stop",
+            "start": 28.48,
+            "end": 28.72,
+            "confidence": 0.9989175796508789
+          },
+          {
+            "text": "s",
+            "start": 28.72,
+            "end": 28.88,
+            "confidence": 0.9999887347221375
+          },
+          {
+            "text": ".",
+            "start": 28.88,
+            "end": 29.04,
+            "confidence": 0.9449247121810913
+          }
+        ]
+      },
+      {
+        "text": " Open how?",
+        "start": 29.04,
+        "end": 29.919999999999998,
+        "confidence": 0.9767694330127694,
+        "tokens": [
+          {
+            "text": " O",
+            "start": 29.04,
+            "end": 29.2,
+            "confidence": 0.9929468035697937
+          },
+          {
+            "text": "pen",
+            "start": 29.2,
+            "end": 29.36,
+            "confidence": 0.999739944934845
+          },
+          {
+            "text": " how",
+            "start": 29.52,
+            "end": 29.84,
+            "confidence": 0.9777195453643799
+          },
+          {
+            "text": "?",
+            "start": 29.84,
+            "end": 29.919999999999998,
+            "confidence": 0.9378662705421448
+          }
+        ]
+      },
+      {
+        "text": " Forced open.",
+        "start": 30.080000000000002,
+        "end": 31.04,
+        "confidence": 0.9670007706834456,
+        "tokens": [
+          {
+            "text": " For",
+            "start": 30.080000000000002,
+            "end": 30.32,
+            "confidence": 0.9876484274864197
+          },
+          {
+            "text": "ced",
+            "start": 30.32,
+            "end": 30.56,
+            "confidence": 0.9957625865936279
+          },
+          {
+            "text": " op",
+            "start": 30.560000000000002,
+            "end": 30.720000000000002,
+            "confidence": 0.9993872046470642
+          },
+          {
+            "text": "en",
+            "start": 30.72,
+            "end": 30.88,
+            "confidence": 0.9999483227729797
+          },
+          {
+            "text": ".",
+            "start": 30.88,
+            "end": 31.04,
+            "confidence": 0.8603290319442749
+          }
+        ]
+      },
+      {
+        "text": " Or left open?",
+        "start": 31.04,
+        "end": 32.32,
+        "confidence": 0.9860768122604361,
+        "tokens": [
+          {
+            "text": " Or",
+            "start": 31.04,
+            "end": 31.279999999999998,
+            "confidence": 0.9977133274078369
+          },
+          {
+            "text": " le",
+            "start": 31.28,
+            "end": 31.44,
+            "confidence": 0.9997749924659729
+          },
+          {
+            "text": "ft",
+            "start": 31.44,
+            "end": 31.6,
+            "confidence": 0.9999979138374329
+          },
+          {
+            "text": " op",
+            "start": 31.6,
+            "end": 31.84,
+            "confidence": 0.9999035596847534
+          },
+          {
+            "text": "en",
+            "start": 31.84,
+            "end": 32.08,
+            "confidence": 0.9999975562095642
+          },
+          {
+            "text": "?",
+            "start": 32.08,
+            "end": 32.32,
+            "confidence": 0.9217227101325989
+          }
+        ]
+      },
+      {
+        "text": " Left open.",
+        "start": 32.32,
+        "end": 33.279999999999994,
+        "confidence": 0.990553760269122,
+        "tokens": [
+          {
+            "text": " Le",
+            "start": 32.32,
+            "end": 32.56,
+            "confidence": 0.993321418762207
+          },
+          {
+            "text": "ft",
+            "start": 32.56,
+            "end": 32.72,
+            "confidence": 0.9999937415122986
+          },
+          {
+            "text": " op",
+            "start": 32.72,
+            "end": 32.879999999999995,
+            "confidence": 0.9996993541717529
+          },
+          {
+            "text": "en",
+            "start": 32.88,
+            "end": 33.120000000000005,
+            "confidence": 0.9999985694885254
+          },
+          {
+            "text": ".",
+            "start": 33.12,
+            "end": 33.279999999999994,
+            "confidence": 0.9603607058525085
+          }
+        ]
+      },
+      {
+        "text": " The bar is set neatly against the wall, as if by someone and her read.",
+        "start": 33.28,
+        "end": 37.68,
+        "confidence": 0.9826801226379095,
+        "tokens": [
+          {
+            "text": " The",
+            "start": 33.28,
+            "end": 33.52,
+            "confidence": 0.9988046884536743
+          },
+          {
+            "text": " bar",
+            "start": 33.52,
+            "end": 33.760000000000005,
+            "confidence": 0.9999889135360718
+          },
+          {
+            "text": " is",
+            "start": 33.76,
+            "end": 33.919999999999995,
+            "confidence": 0.9999704360961914
+          },
+          {
+            "text": " set",
+            "start": 33.92,
+            "end": 34.160000000000004,
+            "confidence": 0.9999849796295166
+          },
+          {
+            "text": " ne",
+            "start": 34.160000000000004,
+            "end": 34.32,
+            "confidence": 0.9999852180480957
+          },
+          {
+            "text": "at",
+            "start": 34.32,
+            "end": 34.48,
+            "confidence": 0.999998152256012
+          },
+          {
+            "text": "ly",
+            "start": 34.480000000000004,
+            "end": 34.64,
+            "confidence": 0.9999996423721313
+          },
+          {
+            "text": " aga",
+            "start": 34.64,
+            "end": 34.8,
+            "confidence": 0.9999985098838806
+          },
+          {
+            "text": "inst",
+            "start": 34.800000000000004,
+            "end": 34.96,
+            "confidence": 0.9999998807907104
+          },
+          {
+            "text": " the",
+            "start": 34.96,
+            "end": 35.12,
+            "confidence": 0.999994695186615
+          },
+          {
+            "text": " w",
+            "start": 35.12,
+            "end": 35.279999999999994,
+            "confidence": 0.9999703168869019
+          },
+          {
+            "text": "all",
+            "start": 35.28,
+            "end": 35.44,
+            "confidence": 0.9999997019767761
+          },
+          {
+            "text": ",",
+            "start": 35.44,
+            "end": 35.599999999999994,
+            "confidence": 0.9561468362808228
+          },
+          {
+            "text": " as",
+            "start": 35.6,
+            "end": 35.84,
+            "confidence": 0.9999694228172302
+          },
+          {
+            "text": " if",
+            "start": 35.84,
+            "end": 36.0,
+            "confidence": 0.999933660030365
+          },
+          {
+            "text": " by",
+            "start": 36.0,
+            "end": 36.16,
+            "confidence": 0.9997279047966003
+          },
+          {
+            "text": " some",
+            "start": 36.160000000000004,
+            "end": 36.32,
+            "confidence": 0.9999746680259705
+          },
+          {
+            "text": "one",
+            "start": 36.32,
+            "end": 36.48,
+            "confidence": 0.9954761862754822
+          },
+          {
+            "text": " and",
+            "start": 36.480000000000004,
+            "end": 36.720000000000006,
+            "confidence": 0.9135276079177856
+          },
+          {
+            "text": " her",
+            "start": 36.72,
+            "end": 36.879999999999995,
+            "confidence": 0.9235638976097107
+          },
+          {
+            "text": " re",
+            "start": 37.04,
+            "end": 37.28,
+            "confidence": 0.9033046364784241
+          },
+          {
+            "text": "ad",
+            "start": 37.28,
+            "end": 37.44,
+            "confidence": 0.930087149143219
+          },
+          {
+            "text": ".",
+            "start": 37.44,
+            "end": 37.68,
+            "confidence": 0.993381917476654
+          }
+        ]
+      },
+      {
+        "text": " Korikan says what everyone is thinking.",
+        "start": 37.68,
+        "end": 40.800000000000004,
+        "confidence": 0.9186500520582835,
+        "tokens": [
+          {
+            "text": " K",
+            "start": 37.68,
+            "end": 37.839999999999996,
+            "confidence": 0.8287531137466431
+          },
+          {
+            "text": "or",
+            "start": 37.84,
+            "end": 37.92,
+            "confidence": 0.7353370785713196
+          },
+          {
+            "text": "ik",
+            "start": 38.08,
+            "end": 38.16,
+            "confidence": 0.7167302966117859
+          },
+          {
+            "text": "an",
+            "start": 38.32,
+            "end": 38.48,
+            "confidence": 0.8855910301208496
+          },
+          {
+            "text": " sa",
+            "start": 38.480000000000004,
+            "end": 38.64,
+            "confidence": 0.9349006414413452
+          },
+          {
+            "text": "ys",
+            "start": 38.64,
+            "end": 38.72,
+            "confidence": 0.9998630881309509
+          },
+          {
+            "text": " what",
+            "start": 38.88,
+            "end": 39.120000000000005,
+            "confidence": 0.9755991101264954
+          },
+          {
+            "text": " ever",
+            "start": 39.12,
+            "end": 39.279999999999994,
+            "confidence": 0.9984496831893921
+          },
+          {
+            "text": "y",
+            "start": 39.28,
+            "end": 39.36,
+            "confidence": 0.9999057054519653
+          },
+          {
+            "text": "one",
+            "start": 39.36,
+            "end": 39.519999999999996,
+            "confidence": 0.9976961612701416
+          },
+          {
+            "text": " is",
+            "start": 39.52,
+            "end": 39.68,
+            "confidence": 0.9851674437522888
+          },
+          {
+            "text": " think",
+            "start": 39.92,
+            "end": 40.08,
+            "confidence": 0.9318769574165344
+          },
+          {
+            "text": "ing",
+            "start": 40.08,
+            "end": 40.239999999999995,
+            "confidence": 0.9898804426193237
+          },
+          {
+            "text": ".",
+            "start": 40.56,
+            "end": 40.800000000000004,
+            "confidence": 0.9547475576400757
+          }
+        ]
+      },
+      {
+        "text": " That is worth it.",
+        "start": 40.800000000000004,
+        "end": 41.839999999999996,
+        "confidence": 0.9386384111867688,
+        "tokens": [
+          {
+            "text": " That",
+            "start": 40.800000000000004,
+            "end": 41.040000000000006,
+            "confidence": 0.9928812384605408
+          },
+          {
+            "text": " is",
+            "start": 41.04,
+            "end": 41.199999999999996,
+            "confidence": 0.9757325053215027
+          },
+          {
+            "text": " w",
+            "start": 41.36,
+            "end": 41.519999999999996,
+            "confidence": 0.8914437294006348
+          },
+          {
+            "text": "orth",
+            "start": 41.52,
+            "end": 41.6,
+            "confidence": 0.9957162737846375
+          },
+          {
+            "text": " it",
+            "start": 41.68,
+            "end": 41.76,
+            "confidence": 0.8247148990631104
+          },
+          {
+            "text": ".",
+            "start": 41.76,
+            "end": 41.839999999999996,
+            "confidence": 0.9643362164497375
+          }
+        ]
+      },
+      {
+        "text": " Bran wants to know if the warden of the spire is expecting us.",
+        "start": 42.08,
+        "end": 45.760000000000005,
+        "confidence": 0.9952822159562025,
+        "tokens": [
+          {
+            "text": " B",
+            "start": 42.08,
+            "end": 42.239999999999995,
+            "confidence": 0.9851899743080139
+          },
+          {
+            "text": "ran",
+            "start": 42.24,
+            "end": 42.480000000000004,
+            "confidence": 0.9953315258026123
+          },
+          {
+            "text": " w",
+            "start": 42.56,
+            "end": 42.64,
+            "confidence": 0.9996156096458435
+          },
+          {
+            "text": "ants",
+            "start": 42.64,
+            "end": 42.8,
+            "confidence": 0.9999769330024719
+          },
+          {
+            "text": " to",
+            "start": 42.800000000000004,
+            "end": 42.88,
+            "confidence": 0.9999598264694214
+          },
+          {
+            "text": " know",
+            "start": 42.88,
+            "end": 43.04,
+            "confidence": 0.999845027923584
+          },
+          {
+            "text": " if",
+            "start": 43.04,
+            "end": 43.199999999999996,
+            "confidence": 0.9998394250869751
+          },
+          {
+            "text": " the",
+            "start": 43.2,
+            "end": 43.36,
+            "confidence": 0.9987832903862
+          },
+          {
+            "text": " war",
+            "start": 43.36,
+            "end": 43.519999999999996,
+            "confidence": 0.9706133008003235
+          },
+          {
+            "text": "den",
+            "start": 43.52,
+            "end": 43.68,
+            "confidence": 0.9932302236557007
+          },
+          {
+            "text": " of",
+            "start": 43.76,
+            "end": 43.839999999999996,
+            "confidence": 0.9999591708183289
+          },
+          {
+            "text": " the",
+            "start": 43.84,
+            "end": 44.0,
+            "confidence": 0.9976556897163391
+          },
+          {
+            "text": " sp",
+            "start": 44.0,
+            "end": 44.16,
+            "confidence": 0.9846488237380981
+          },
+          {
+            "text": "ire",
+            "start": 44.160000000000004,
+            "end": 44.32,
+            "confidence": 0.9969360828399658
+          },
+          {
+            "text": " is",
+            "start": 44.480000000000004,
+            "end": 44.720000000000006,
+            "confidence": 0.9996925592422485
+          },
+          {
+            "text": " ex",
+            "start": 44.72,
+            "end": 44.879999999999995,
+            "confidence": 0.9999704360961914
+          },
+          {
+            "text": "pect",
+            "start": 44.88,
+            "end": 45.04,
+            "confidence": 0.9998961091041565
+          },
+          {
+            "text": "ing",
+            "start": 45.04,
+            "end": 45.36,
+            "confidence": 0.9999274611473083
+          },
+          {
+            "text": " us",
+            "start": 45.36,
+            "end": 45.519999999999996,
+            "confidence": 0.9999370574951172
+          },
+          {
+            "text": ".",
+            "start": 45.52,
+            "end": 45.760000000000005,
+            "confidence": 0.9852351546287537
+          }
+        ]
+      },
+      {
+        "text": " You will find out.",
+        "start": 45.76,
+        "end": 47.120000000000005,
+        "confidence": 0.9873752358904083,
+        "tokens": [
+          {
+            "text": " You",
+            "start": 45.76,
+            "end": 46.08,
+            "confidence": 0.9991310238838196
+          },
+          {
+            "text": " will",
+            "start": 46.08,
+            "end": 46.32,
+            "confidence": 0.9998782873153687
+          },
+          {
+            "text": " f",
+            "start": 46.32,
+            "end": 46.48,
+            "confidence": 0.9999961853027344
+          },
+          {
+            "text": "ind",
+            "start": 46.480000000000004,
+            "end": 46.720000000000006,
+            "confidence": 0.999997615814209
+          },
+          {
+            "text": " out",
+            "start": 46.72,
+            "end": 46.879999999999995,
+            "confidence": 0.9999758005142212
+          },
+          {
+            "text": ".",
+            "start": 46.88,
+            "end": 47.120000000000005,
+            "confidence": 0.9275493025779724
+          }
+        ]
+      },
+      {
+        "text": " Something inside the courtyard says your name first.",
+        "start": 47.12,
+        "end": 49.839999999999996,
+        "confidence": 0.9996710458948004,
+        "tokens": [
+          {
+            "text": " Som",
+            "start": 47.12,
+            "end": 47.199999999999996,
+            "confidence": 0.9982654452323914
+          },
+          {
+            "text": "et",
+            "start": 47.2,
+            "end": 47.36,
+            "confidence": 0.9999998807907104
+          },
+          {
+            "text": "hing",
+            "start": 47.36,
+            "end": 47.519999999999996,
+            "confidence": 1.0
+          },
+          {
+            "text": " ins",
+            "start": 47.52,
+            "end": 47.760000000000005,
+            "confidence": 0.9999773502349854
+          },
+          {
+            "text": "ide",
+            "start": 47.76,
+            "end": 47.919999999999995,
+            "confidence": 0.9999997019767761
+          },
+          {
+            "text": " the",
+            "start": 47.92,
+            "end": 48.08,
+            "confidence": 0.9999579787254333
+          },
+          {
+            "text": " co",
+            "start": 48.08,
+            "end": 48.239999999999995,
+            "confidence": 0.9994496703147888
+          },
+          {
+            "text": "ur",
+            "start": 48.24,
+            "end": 48.4,
+            "confidence": 0.9997279047966003
+          },
+          {
+            "text": "ty",
+            "start": 48.4,
+            "end": 48.559999999999995,
+            "confidence": 0.99986332654953
+          },
+          {
+            "text": "ard",
+            "start": 48.56,
+            "end": 48.72,
+            "confidence": 0.9999982118606567
+          },
+          {
+            "text": " sa",
+            "start": 48.72,
+            "end": 48.8,
+            "confidence": 0.9997411966323853
+          },
+          {
+            "text": "ys",
+            "start": 48.800000000000004,
+            "end": 48.96,
+            "confidence": 0.9999961256980896
+          },
+          {
+            "text": " your",
+            "start": 48.96,
+            "end": 49.2,
+            "confidence": 0.9989976286888123
+          },
+          {
+            "text": " n",
+            "start": 49.2,
+            "end": 49.28,
+            "confidence": 0.999980092048645
+          },
+          {
+            "text": "ame",
+            "start": 49.28,
+            "end": 49.52,
+            "confidence": 0.999999463558197
+          },
+          {
+            "text": " first",
+            "start": 49.52,
+            "end": 49.760000000000005,
+            "confidence": 0.9999491572380066
+          },
+          {
+            "text": ".",
+            "start": 49.76,
+            "end": 49.839999999999996,
+            "confidence": 0.9985070824623108
+          }
+        ]
+      }
+    ]
+  },
+  "canonical_turns": [
+    {
+      "id": "t0000",
+      "start_ms": 0,
+      "end_ms": 3760,
+      "text": "The road out of Veelthorn narrows as it climbs toward the ashen spire.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.9749904737800719
+    },
+    {
+      "id": "t0001",
+      "start_ms": 3760,
+      "end_ms": 7440,
+      "text": "Eyleira draws her hood up and checks the sigil on her palm again.",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.9802753456068828
+    },
+    {
+      "id": "t0002",
+      "start_ms": 7440,
+      "end_ms": 10080,
+      "text": "Does Bran see anything moving on the ridge?",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.9981500022444655
+    },
+    {
+      "id": "t0003",
+      "start_ms": 10080,
+      "end_ms": 11920,
+      "text": "I want a perception check.",
+      "physical_speaker": "SPEAKER_02",
+      "confidence": 0.9981514567499639
+    },
+    {
+      "id": "t0004",
+      "start_ms": 11920,
+      "end_ms": 12720,
+      "text": "Roll it.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.9789120257362219
+    },
+    {
+      "id": "t0005",
+      "start_ms": 12720,
+      "end_ms": 15840,
+      "text": "The wind is loud enough that you are at disadvantage.",
+      "physical_speaker": "SPEAKER_06",
+      "confidence": 0.9992952061177375
+    },
+    {
+      "id": "t0006",
+      "start_ms": 15840,
+      "end_ms": 17200,
+      "text": "That is a 14.",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.9780671369834641
+    },
+    {
+      "id": "t0007",
+      "start_ms": 17200,
+      "end_ms": 18240,
+      "text": "Not great.",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.9976885429435403
+    },
+    {
+      "id": "t0008",
+      "start_ms": 18240,
+      "end_ms": 20560,
+      "text": "Kari can keep walking.",
+      "physical_speaker": "SPEAKER_06",
+      "confidence": 0.9384773866172823
+    },
+    {
+      "id": "t0009",
+      "start_ms": 20560,
+      "end_ms": 23440,
+      "text": "He had no patience for it line today.",
+      "physical_speaker": "SPEAKER_06",
+      "confidence": 0.9528812416332028
+    },
+    {
+      "id": "t0010",
+      "start_ms": 23440,
+      "end_ms": 26320,
+      "text": "Then you three reach the gate before the light goes.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.9943789792443097
+    },
+    {
+      "id": "t0011",
+      "start_ms": 26320,
+      "end_ms": 27760,
+      "text": "It is already open.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.999289951312722
+    },
+    {
+      "id": "t0012",
+      "start_ms": 27760,
+      "end_ms": 29040,
+      "text": "Eyleira stops.",
+      "physical_speaker": "SPEAKER_04",
+      "confidence": 0.9180170378008697
+    },
+    {
+      "id": "t0013",
+      "start_ms": 29040,
+      "end_ms": 29920,
+      "text": "Open how?",
+      "physical_speaker": "SPEAKER_04",
+      "confidence": 0.9767694330127694
+    },
+    {
+      "id": "t0014",
+      "start_ms": 30080,
+      "end_ms": 31040,
+      "text": "Forced open.",
+      "physical_speaker": "SPEAKER_04",
+      "confidence": 0.9670007706834456
+    },
+    {
+      "id": "t0015",
+      "start_ms": 31040,
+      "end_ms": 32320,
+      "text": "Or left open?",
+      "physical_speaker": "SPEAKER_04",
+      "confidence": 0.9860768122604361
+    },
+    {
+      "id": "t0016",
+      "start_ms": 32320,
+      "end_ms": 33280,
+      "text": "Left open.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.990553760269122
+    },
+    {
+      "id": "t0017",
+      "start_ms": 33280,
+      "end_ms": 37680,
+      "text": "The bar is set neatly against the wall, as if by someone and her read.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.9826801226379095
+    },
+    {
+      "id": "t0018",
+      "start_ms": 37680,
+      "end_ms": 40800,
+      "text": "Korikan says what everyone is thinking.",
+      "physical_speaker": "SPEAKER_06",
+      "confidence": 0.9186500520582835
+    },
+    {
+      "id": "t0019",
+      "start_ms": 40800,
+      "end_ms": 41840,
+      "text": "That is worth it.",
+      "physical_speaker": "SPEAKER_06",
+      "confidence": 0.9386384111867688
+    },
+    {
+      "id": "t0020",
+      "start_ms": 42080,
+      "end_ms": 45760,
+      "text": "Bran wants to know if the warden of the spire is expecting us.",
+      "physical_speaker": "SPEAKER_02",
+      "confidence": 0.9952822159562025
+    },
+    {
+      "id": "t0021",
+      "start_ms": 45760,
+      "end_ms": 47120,
+      "text": "You will find out.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.9873752358904083
+    },
+    {
+      "id": "t0022",
+      "start_ms": 47120,
+      "end_ms": 49840,
+      "text": "Something inside the courtyard says your name first.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.9996710458948004
+    }
+  ]
+}

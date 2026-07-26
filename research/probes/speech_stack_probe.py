@@ -100,7 +100,14 @@ def run_parakeet_mlx(audio: Path, ready: Ready) -> Probe:
     repo = os.environ.get("RPG_PROBE_PARAKEET", "mlx-community/parakeet-tdt-0.6b-v3")
     model = from_pretrained(repo)
     ready()
-    result = model.transcribe(audio)
+    # Without chunking, parakeet-mlx builds one mel tensor for the whole file and dies
+    # on Metal's maximum buffer size somewhere between 10 and 20 minutes of audio. Long
+    # sessions therefore require an explicit chunk_duration, which is a real integration
+    # obligation rather than a default -- so it is exposed here and recorded in the
+    # result instead of being hidden inside a default value.
+    chunk = os.environ.get("RPG_PROBE_PARAKEET_CHUNK")
+    extra = {"chunk_duration": float(chunk)} if chunk else {}
+    result = model.transcribe(audio, **extra)
 
     sentences = [
         {
@@ -120,7 +127,13 @@ def run_parakeet_mlx(audio: Path, ready: Ready) -> Probe:
         }
         for sentence in result.sentences
     ]
-    native = {"engine": "parakeet-mlx", "model": repo, "text": result.text, "sentences": sentences}
+    native = {
+        "engine": "parakeet-mlx",
+        "model": repo,
+        "chunk_duration_s": extra.get("chunk_duration"),
+        "text": result.text,
+        "sentences": sentences,
+    }
     units = [
         {
             "start_ms": _ms(s["start"]),

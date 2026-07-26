@@ -1,0 +1,239 @@
+{
+  "scored_against": "synthetic-table-talk",
+  "truth_kind": "declared truth, generated locally; no engine saw it",
+  "caveat": "Synthetic non-overlapping text-to-speech. Sanity and failure modes only -- not a quality benchmark and not evidence about room audio.",
+  "scores": {
+    "faster-whisper-cpu": {
+      "speakers": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 5,
+        "mean_turn_purity": 1.0,
+        "min_turn_purity": 1.0,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        }
+      },
+      "text": {
+        "invented_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false,
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_noun_recall": 0.333,
+        "control_phrases_found": {
+          "perception check": true,
+          "disadvantage": true,
+          "courtyard": true,
+          "ridge": true
+        },
+        "control_phrase_recall": 1.0,
+        "truth_characters": 748,
+        "produced_characters": 812
+      },
+      "confidence": {
+        "available": true,
+        "turns_scored": 18,
+        "overall_min_confidence": 0.0947,
+        "mean_confidence_where_invented_noun_survived": 0.821,
+        "mean_confidence_where_invented_noun_was_lost": 0.8183,
+        "lost_nouns": [
+          "Brann",
+          "Ilyra",
+          "Korrigan",
+          "Vaelthorn"
+        ]
+      }
+    },
+    "mlx-whisper": {
+      "speakers": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 5,
+        "mean_turn_purity": 1.0,
+        "min_turn_purity": 1.0,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        }
+      },
+      "text": {
+        "invented_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false,
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_noun_recall": 0.333,
+        "control_phrases_found": {
+          "perception check": true,
+          "disadvantage": true,
+          "courtyard": true,
+          "ridge": true
+        },
+        "control_phrase_recall": 1.0,
+        "truth_characters": 748,
+        "produced_characters": 795
+      },
+      "confidence": {
+        "available": true,
+        "turns_scored": 15,
+        "overall_min_confidence": 0.5371,
+        "mean_confidence_where_invented_noun_survived": 0.8222,
+        "mean_confidence_where_invented_noun_was_lost": 0.8196,
+        "lost_nouns": [
+          "Brann",
+          "Ilyra",
+          "Korrigan",
+          "Vaelthorn"
+        ]
+      }
+    },
+    "parakeet-mlx": {
+      "speakers": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 5,
+        "mean_turn_purity": 0.952,
+        "min_turn_purity": 0.606,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_01",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        }
+      },
+      "text": {
+        "invented_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false,
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_noun_recall": 0.333,
+        "control_phrases_found": {
+          "perception check": true,
+          "disadvantage": true,
+          "courtyard": true,
+          "ridge": true
+        },
+        "control_phrase_recall": 1.0,
+        "truth_characters": 748,
+        "produced_characters": 756
+      },
+      "confidence": {
+        "available": true,
+        "turns_scored": 23,
+        "overall_min_confidence": 0.918,
+        "mean_confidence_where_invented_noun_survived": 0.9851,
+        "mean_confidence_where_invented_noun_was_lost": 0.9649,
+        "lost_nouns": [
+          "Brann",
+          "Ilyra",
+          "Korrigan",
+          "Vaelthorn"
+        ]
+      }
+    },
+    "sherpa-diarization": {
+      "speakers": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 6,
+        "mean_turn_purity": 0.923,
+        "min_turn_purity": 0.463,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        }
+      }
+    },
+    "whisper-cpp-metal": {
+      "speakers": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 5,
+        "mean_turn_purity": 0.997,
+        "min_turn_purity": 0.969,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        }
+      },
+      "text": {
+        "invented_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false,
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_noun_recall": 0.333,
+        "control_phrases_found": {
+          "perception check": true,
+          "disadvantage": true,
+          "courtyard": true,
+          "ridge": true
+        },
+        "control_phrase_recall": 1.0,
+        "truth_characters": 748,
+        "produced_characters": 754
+      },
+      "confidence": {
+        "available": true,
+        "turns_scored": 13,
+        "overall_min_confidence": 0.8266,
+        "mean_confidence_where_invented_noun_survived": 0.9659,
+        "mean_confidence_where_invented_noun_was_lost": 0.946,
+        "lost_nouns": [
+          "Brann",
+          "Ilyra",
+          "Korrigan",
+          "Vaelthorn"
+        ]
+      }
+    }
+  }
+}
