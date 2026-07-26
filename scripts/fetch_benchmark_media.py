@@ -37,6 +37,7 @@ import urllib.error
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_DIR = ROOT / "benchmarks/manifests"
@@ -114,11 +115,13 @@ def cache_target(cache: Path, manifest: dict) -> Path:
             f"manifest id {identifier!r} is not a plain slug; refusing to build a cache "
             "path from it"
         )
-    filename = Path(manifest["source"]["media_url"]).name
+    media_url = manifest["source"]["media_url"]
+    # Take the basename of the URL's path only. A query or fragment is addressing, not a
+    # filename: keeping it would put `?` in the path, which Windows rejects outright, and
+    # would key the cache on query details rather than on the file being fetched.
+    filename = Path(urlsplit(media_url).path).name
     if not filename or filename in {".", ".."}:
-        raise ValueError(
-            f"media_url {manifest['source']['media_url']!r} ends in no usable filename"
-        )
+        raise ValueError(f"media_url {media_url!r} ends in no usable filename")
     return cache / identifier / filename
 
 
