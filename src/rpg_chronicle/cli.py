@@ -279,6 +279,9 @@ def _run_report(args: argparse.Namespace, session: Any, provider: Any, wall_s: f
     """
     native = session.processor_artifacts
     turns = session.turns
+    cited: set[str] = set()
+    for claim in list(session.scenes) + list(session.review_questions):
+        cited |= set(claim.evidence.turn_ids)
     spans = [turn.end_ms - turn.start_ms for turn in turns]
     scored = [turn.confidence for turn in turns if turn.confidence is not None]
     labelled = [turn.physical_speaker for turn in turns if turn.physical_speaker]
@@ -286,7 +289,14 @@ def _run_report(args: argparse.Namespace, session: Any, provider: Any, wall_s: f
         "session_id": session.session_id,
         "audio": args.audio.name,
         "status": session.status,
-        "output_kind": "model output",
+        # Follows the provider actually used. Hardcoding "model output" would have
+        # labelled a fixture-backed run's declared truth as something a model produced,
+        # which is the exact confusion shared rule 9 exists to prevent.
+        "output_kind": (
+            "declared truth"
+            if session.provenance.get("analysis_is_declared_truth")
+            else "model output"
+        ),
         "transcript_provider": session.provenance.get("transcript_provider"),
         "analysis_provider": session.provenance.get("analysis_provider"),
         "analysis_is_declared_truth": session.provenance.get("analysis_is_declared_truth"),
@@ -301,6 +311,16 @@ def _run_report(args: argparse.Namespace, session: Any, provider: Any, wall_s: f
         "confidence_min": round(min(scored), 4) if scored else None,
         "scenes": len(session.scenes),
         "review_questions": len(session.review_questions),
+        # Evidence integrity as counts. `model.evidence_for` already refuses a claim
+        # citing a turn the session lacks, so `claims_citing_missing_turns` is 0 or the
+        # run did not finish -- but recording it means the report carries the check
+        # rather than a document asserting somebody performed it.
+        "claims": len(session.scenes) + len(session.review_questions),
+        "distinct_cited_turn_ids": len(cited),
+        "claims_citing_missing_turns": len(cited - {turn.id for turn in turns}),
+        "turns_with_timestamps": sum(
+            1 for turn in turns if turn.end_ms > turn.start_ms >= 0
+        ),
         "processor_artifacts": dict(native),
         "contains_recognized_text": False,
     }

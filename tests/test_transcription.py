@@ -102,6 +102,21 @@ def test_attribution_without_spans_yields_no_speaker() -> None:
     assert result.label is None and result.coverage == 0.0
 
 
+def test_purity_never_exceeds_one_when_same_label_spans_overlap() -> None:
+    """Two spans carrying one label can both overlap a segment; the share must stay a share.
+
+    Without clamping the winner as well as the total, `winning` sums past the segment
+    and purity comes out above 1.0 -- a ratio that would quietly discredit every other
+    number in the artifact.
+    """
+    segment = RecognizedSegment(start_ms=0, end_ms=1000, text="x")
+    overlapping_same_label = [SpeakerSpan(0, 800, "A"), SpeakerSpan(400, 1000, "A")]
+    result = attribute(segment, overlapping_same_label)
+    assert result.label == "A"
+    assert result.coverage <= 1.0
+    assert result.purity <= 1.0
+
+
 def test_unusable_segments_are_reported_rather_than_dropped(tmp_path: Path) -> None:
     """An engine emitting empty segments must leave a trace, not a shorter transcript."""
     provider = SpeechTranscriptProvider(

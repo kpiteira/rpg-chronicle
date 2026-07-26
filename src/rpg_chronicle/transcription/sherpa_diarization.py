@@ -46,8 +46,7 @@ INSTALL_HINT = (
 )
 MODEL_HINT = (
     "Fetch the segmentation and embedding models as described in "
-    "research/probes/README.md, or point --diarization-models at the directory holding "
-    "them."
+    "research/probes/README.md, or point --model-dir at the directory holding them."
 )
 
 
@@ -75,13 +74,18 @@ class SherpaDiarizationEngine:
         self._threads = threads or os.cpu_count() or 4
 
     def preflight(self) -> None:
-        try:
-            import sherpa_onnx  # noqa: F401
-        except ImportError as error:
-            raise EngineUnavailableError(
-                f"engine {self.name!r} requires the sherpa-onnx package, which is not "
-                f"importable. {INSTALL_HINT}"
-            ) from error
+        # Every module `diarize` imports, not just the headline one. soundfile in
+        # particular fails at import when libsndfile is absent, and discovering that
+        # after recognition has already run is exactly the failure preflight exists to
+        # prevent.
+        for module in ("sherpa_onnx", "numpy", "soundfile"):
+            try:
+                __import__(module)
+            except ImportError as error:
+                raise EngineUnavailableError(
+                    f"engine {self.name!r} requires the {module!r} package, which is "
+                    f"not importable. {INSTALL_HINT}"
+                ) from error
         require_model_file(self._segmentation, engine_name=self.name, install_hint=MODEL_HINT)
         require_model_file(self._embedding, engine_name=self.name, install_hint=MODEL_HINT)
 

@@ -88,6 +88,11 @@ def attribute(segment: RecognizedSegment, spans: list[SpeakerSpan]) -> Attributi
     # can pass 1.0, and the clamp is why coverage is an upper bound on how much of the
     # turn was really attributable.
     covered = min(sum(per_speaker.values()), span_ms)
+    # `winning` is a sum too, so two overlapping spans carrying the same label can push
+    # it past the segment and yield a purity above 1.0 -- a ratio that would quietly
+    # discredit every other number in the artifact. Clamp both, and clamp the ratio to
+    # the share it is supposed to be.
+    winning = min(winning, covered)
     return Attribution(
         label=label,
         coverage=round(covered / span_ms, 3),

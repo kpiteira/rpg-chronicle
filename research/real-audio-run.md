@@ -45,29 +45,39 @@ and no words.
 | | |
 |---|---|
 | Input | Hiddengrid Ep. 044, 0–600 s, 16 kHz mono |
-| Wall clock | **162 s** for 600 s of audio |
+| Wall clock | **160 s** for 600 s of audio |
 | Recognized segments | 302 |
 | Canonical turns | **301** |
 | Segments that could not become turns | 1, reported not dropped |
 | Turns with timestamps | 301 of 301 |
 | Turns with confidence | 301 of 301 |
 | Turns with a speaker label | 292 of 301 |
+| Claims, and distinct turn ids they cite | 6, citing 72 |
+| Claims citing a turn that does not exist | 0 |
 | Distinct speaker labels | 23 |
 | Total turn span | 389,060 ms |
-| Scenes | 6 |
-| Review questions | 4 |
+| Scenes | 3 |
+| Review questions | 3 |
 
-The turn count, total span and label count reproduce R01's probe figures on the same
-window exactly (301 turns, 389,060 ms, 23 labels). The probe and the product now agree,
-which is the narrow thing this run was for.
+Three figures reproduce R01's probe on the same window exactly — 301 turns, 389,060 ms
+of total span, 23 distinct labels. That is the narrow thing this run was for: the probe
+and the product agree about what the engines produced.
+
+One figure differs and the difference is the point. The scorecard recorded 10 turns with
+no speaker label; this run has 9. Same audio, same engines, same settings — the
+attribution *rule* changed. R01's probe gave each turn the label of the single
+longest-overlapping span; this uses the greatest total overlap per speaker, so one turn
+that the old rule left unlabelled now resolves. "Exactly" applies to what the engines
+emitted, not to what normalization did with it.
 
 ### Evidence integrity
 
-The 10 claims in the review package cite 87 distinct turn ids. Every one resolves to a
-turn the session contains — checked after the run, and enforced during it by
-`model.evidence_for`, which raises rather than dropping a claim that cites a turn the
-session does not have. A run that had produced an unsupported claim would have failed
-loudly; this one did not produce any.
+The committed report carries this as counts rather than as a claim in prose:
+`claims: 6`, `distinct_cited_turn_ids: 72`, `claims_citing_missing_turns: 0`, and
+`turns_with_timestamps: 301` of 301. Enforced during the run by `model.evidence_for`,
+which raises rather than dropping a claim citing a turn the session lacks — so a run that
+produced an unsupported claim would have failed loudly instead of finishing quietly
+shorter.
 
 ## Resumption
 
@@ -76,13 +86,24 @@ timing the resume.
 
 | Run | What happened | Wall clock |
 |---|---|---|
-| 1 | transcription completed, analysis failed (deliberately invalid model) | 96 s |
-| 2 | resumed: transcription reused, analysis ran | 93 s |
-| — | full path from scratch, for comparison | 162 s |
+| 1 | transcription completed, analysis failed (deliberately invalid model) | 84 s |
+| 2 | resumed: transcription reused, analysis ran | 135 s |
+| — | full path from scratch, for comparison | 160 s |
 
-The arithmetic reconciles: 162 s of full run minus 93 s of analysis leaves ~69 s of
-transcription, which run 2 did not pay again. Re-running an already-complete session
-costs **1 s** — it rebuilds the review package and stops.
+Run 1 paid for transcription and lost only the analysis. Run 2 did not pay for
+transcription again: it started from 301 turns already on disk. Re-running an
+*already complete* session costs **1 s** — it rebuilds the review package and stops.
+
+Wall clock is the weaker half of this evidence, because the analysis call is a network
+round trip whose duration varies by more than the transcription stage costs. The
+`research/runs/*.json` pair is the stronger half: identical `turns`, `turns_with_speaker`
+and `turns_with_timestamps` across both runs, from a transcript that was computed once.
+
+Scene and question counts differ between the two runs — 3 and 3 against 4 and 3 — and
+they differ between repeats of the *same unresumed* command too. That is the analysis
+model being non-deterministic, not the resume losing anything; the transcript underneath
+is identical. Nothing downstream should read a scene count as a stable property of a
+recording.
 
 `tests/test_transcription.py` proves the mechanism rather than the timing: two tests
 count recognizer invocations across a resumed run, and both fail if the `if not

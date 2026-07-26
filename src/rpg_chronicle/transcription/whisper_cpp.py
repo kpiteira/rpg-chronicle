@@ -22,7 +22,7 @@ import json
 import os
 import subprocess
 import tempfile
-from pathlib import Path
+from pathlib import Path, PurePath
 from typing import Any
 
 from .engine import (
@@ -54,6 +54,17 @@ MODEL_HINT = (
     "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin` "
     "into the model directory, or point --whisper-model at an existing ggml model."
 )
+
+
+def _basename(part: str) -> str:
+    """Reduce a command argument to a basename if it looks like a path.
+
+    The engine-native artifact is retained for debugging and may travel; absolute paths
+    in it would carry the operator's home directory and the location of restricted audio
+    along with them.
+    """
+    candidate = PurePath(part)
+    return candidate.name if len(candidate.parts) > 1 else part
 
 
 def _segment_confidence(segment: dict[str, Any]) -> float | None:
@@ -122,9 +133,10 @@ class WhisperCppEngine:
             try:
                 process = subprocess.run(command, check=True, capture_output=True, text=True)
             except subprocess.CalledProcessError as error:
+                tail = (error.stderr or "").strip().splitlines()
                 raise EngineResponseError(
                     f"{self.name} exited {error.returncode}. Last output: "
-                    f"{(error.stderr or '').strip().splitlines()[-1:] or ['(none)']}"
+                    f"{tail[-1] if tail else '(none)'}"
                 ) from error
 
             output = Path(f"{prefix}.json")
@@ -159,7 +171,9 @@ class WhisperCppEngine:
             "model_file": self._model.name,
             "threads": self._threads,
             "language": self._language,
-            "cli": [Path(part).name if "/" in part else part for part in command],
+            # PurePath handles the separator for whatever platform this ran on; the
+            # earlier "/" test would have recorded full operator paths on Windows.
+            "cli": [_basename(part) for part in command],
             "segment_count": len(segments),
             "result": payload.get("result", {}),
             "systeminfo": payload.get("systeminfo"),

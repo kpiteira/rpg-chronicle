@@ -6,7 +6,7 @@
   "transcript_provider": "whisper.cpp+sherpa-onnx-offline-speaker-diarization",
   "analysis_provider": "model-analysis",
   "analysis_is_declared_truth": false,
-  "wall_clock_s": 162.0,
+  "wall_clock_s": 159.7,
   "turns": 301,
   "total_turn_span_ms": 389060,
   "turns_with_confidence": 301,
@@ -15,8 +15,12 @@
   "speaker_labels_are": "cluster identifiers, not people; marked unreliable",
   "confidence_mean": 0.9314,
   "confidence_min": 0.508,
-  "scenes": 6,
-  "review_questions": 4,
+  "scenes": 3,
+  "review_questions": 3,
+  "claims": 6,
+  "distinct_cited_turn_ids": 72,
+  "claims_citing_missing_turns": 0,
+  "turns_with_timestamps": 301,
   "processor_artifacts": {
     "transcript": "processor-native/transcript.json",
     "analysis": "processor-native/analysis.json"
