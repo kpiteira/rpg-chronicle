@@ -4,31 +4,45 @@
 # Exit 0  -> allow the tool call.
 # Exit 2  -> block the tool call; stderr is returned to the agent as the reason.
 #
-# Guard 1: any `git push` whose destination ref is main is refused. Permission
-# prefix rules cannot see refspecs -- `git push origin HEAD:main` satisfies an
-# allow rule for `git push origin` -- so the destination is matched here.
+# Command recognition is delegated to scripts/hooks/classify_command.py, which
+# tokenizes with shlex so that a guarded command quoted as data stays data.
 #
+# Guard 1: any `git push` whose destination ref is main is refused.
 # Guard 2: `gh pr merge` is refused unless the latest goal-validator verdict is
-# an explicit pass recorded against the PR's current head commit. No verdict,
-# a malformed verdict, or a verdict for a superseded commit all fail closed.
+# an explicit pass recorded against the PR's current head commit. No verdict, a
+# malformed verdict, or a verdict for a superseded commit all fail closed.
 set -uo pipefail
 
-payload=$(cat)
-command=$(printf '%s' "$payload" | python3 -c 'import json,sys; print(json.load(sys.stdin).get("tool_input",{}).get("command",""))' 2>/dev/null || true)
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-if printf '%s' "$command" | grep -qE 'git push[^;|&]*[ :](refs/heads/)?main([^[:alnum:]/_-]|$)'; then
-  echo "Refusing to push to main. Land changes through a pull request." >&2
-  exit 2
-fi
+decision=$(python3 "${here}/classify_command.py" 2>/dev/null) || decision="unparseable"
+[ -n "$decision" ] || decision="unparseable"
 
-case "$command" in
-  *"gh pr merge"*) ;;
-  *) exit 0 ;;
+case "$decision" in
+  allow)
+    exit 0
+    ;;
+  push-main)
+    echo "Refusing to push to main. Land changes through a pull request." >&2
+    exit 2
+    ;;
+  unparseable)
+    echo "Could not parse this command well enough to clear it past the merge gate." >&2
+    echo "Simplify the command, or quote its arguments, and try again." >&2
+    exit 2
+    ;;
 esac
 
-pr=$(gh pr view --json number --jq .number 2>/dev/null || true)
+pr=${decision#merge }
+
+# `gh pr merge` accepts a branch name as well as a number. When the command
+# names no PR the gate resolves one from the current branch, as before.
+if [ "$pr" = "-" ]; then
+  pr=$(gh pr view --json number --jq .number 2>/dev/null || true)
+fi
+
 if [ -z "$pr" ]; then
-  echo "Cannot identify the pull request for this branch; refusing to merge." >&2
+  echo "Cannot identify the pull request for this merge; refusing to merge." >&2
   exit 2
 fi
 
