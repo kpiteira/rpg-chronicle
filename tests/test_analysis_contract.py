@@ -11,13 +11,20 @@ from pathlib import Path
 
 import pytest
 
+from rpg_chronicle.analysis.provider import ModelAnalysisProvider
 from rpg_chronicle.model import TranscriptTurn, UnsupportedEvidenceError, evidence_for
 from rpg_chronicle.providers import FixtureAnalysisProvider, FixtureTranscriptProvider
+
+from .fake_backend import FakeBackend
 
 FIXTURE = Path(__file__).parents[1] / "benchmarks" / "fixtures" / "r0_synthetic_session.json"
 
 PROVIDERS = [
     pytest.param(lambda: FixtureAnalysisProvider(FIXTURE), id="fixture-analysis"),
+    # The model-backed provider inherits this suite, driven through a fake backend so
+    # the contract is checked without a vendor. A real backend changes what the model
+    # says, not which of these properties must hold.
+    pytest.param(lambda: ModelAnalysisProvider(FakeBackend()), id="model-analysis"),
 ]
 
 
