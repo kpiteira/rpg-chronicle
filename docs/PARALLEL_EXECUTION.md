@@ -27,7 +27,7 @@ At the start of each goal the specialist rebranches from current `origin/main` o
 
 ## Starting a session
 
-One-time per role, from the repository root:
+One-time per specialist role (the TPM and goal validator do not use worktrees this way), from the repository root:
 
 ```bash
 scripts/setup-role-worktree.sh review-analysis
