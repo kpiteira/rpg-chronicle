@@ -77,6 +77,29 @@ def _semantic_errors(instance: dict) -> list[str]:
             f"expected_physical_speakers {expected_speakers}; the proven count is a floor"
         )
 
+    anchors = {
+        target["anchor_ms"]
+        for _, target in _truth_targets(instance)
+        if target.get("anchor_ms") is not None
+    }
+    for index, thread in enumerate(instance.get("truth", {}).get("threads", [])):
+        path = f"truth.threads[{index}]"
+        first, last = thread["first_anchor_ms"], thread["last_anchor_ms"]
+        if last <= first:
+            errors.append(f"{path}.last_anchor_ms must be later than first_anchor_ms")
+        for name, value in (("first_anchor_ms", first), ("last_anchor_ms", last)):
+            if not start_ms <= value < end_ms:
+                errors.append(
+                    f"{path}.{name} {value} is outside the excerpt window "
+                    f"[{start_ms}, {end_ms})"
+                )
+            elif value not in anchors:
+                errors.append(
+                    f"{path}.{name} {value} is not the anchor of any truth target; a thread "
+                    "has to be held up by the observations at its ends, or it is an assertion "
+                    "that something was still live with nothing showing that it was"
+                )
+
     verified = False
     machine_assisted = False
     for path, target in _truth_targets(instance):
@@ -106,11 +129,13 @@ def _semantic_errors(instance: dict) -> list[str]:
             "truth.method is required once a target is verified, so a score is never "
             "read without knowing how the truth was established"
         )
-    if verified and not instance["source"].get("media_sha256"):
+    source = instance["source"]
+    if verified and not (source.get("media_sha256") or source.get("content_fingerprint")):
         errors.append(
-            "source.media_sha256 is required once a target is verified; an anchor is an "
-            "offset into particular bytes, and without a digest nobody can tell whether "
-            "they still have those bytes"
+            "verified truth needs a way to establish identity: source.media_sha256 for a "
+            "source that serves stable bytes, or source.content_fingerprint for one that "
+            "re-encodes. An anchor is an offset into a particular recording, and without "
+            "either a reader cannot tell whether they are holding it"
         )
     if machine_assisted and not instance["truth"].get("contaminating_providers"):
         errors.append(
