@@ -75,8 +75,50 @@ ffmpeg -v error -ss 0 -t 600 -i "$CACHE/hiddengrid-ep044.mp3" \
     /path/to/repo/research/probes/results --redact-text)
 ```
 
+The battery also writes an unredacted copy of every result into `probe-full/` beside the
+audio, outside the checkout. That copy exists so the speaker-fusion step has segments to
+work with when the committed result is redacted; never move it into the repository.
+
 Run the battery on an otherwise idle machine. Each result records the one-minute load
-average before and after its run; a result taken under load describes the load.
+average before and after its run; a result taken under load describes the load. The
+figures committed here were taken on a machine also running a second agent session, so
+the wall-clock numbers are upper bounds — peak memory is unaffected by contention.
+
+### Scaling and tuning runs
+
+Two extra sweeps back the four-hour projection and the diarization findings:
+
+```bash
+# memory against input length -- the projection rests on this being measured, not assumed
+for T in 1200 1800 2400; do
+  ffmpeg -v error -ss 0 -t $T -i "$CACHE/hiddengrid-ep044.mp3" \
+      -ac 1 -ar 16000 -c:a pcm_s16le "$CACHE/scale-$T.wav" -y
+  research/probes/speech_stack_probe.py --stack sherpa-diarization \
+      --audio "$CACHE/scale-$T.wav" --redact-text \
+      --out research/probes/results/scaling-diarization-${T}s.json \
+      --input-label "hiddengrid-${T}s"
+done
+
+# clustering threshold, against the synthetic clip's known speaker count
+for TH in 0.4 0.5 0.6 0.7 0.8 0.9; do
+  RPG_PROBE_CLUSTER_THRESHOLD=$TH research/probes/speech_stack_probe.py \
+      --stack sherpa-diarization --audio "$CACHE/synthetic-table-talk.wav" \
+      --out "$CACHE/probe-full/sweep/syn-th$TH.json" --input-label "synthetic-th$TH"
+done
+```
+
+### Scoring against known truth
+
+```bash
+research/probes/score_synthetic.py \
+    --truth "$CACHE/synthetic-table-talk-truth.json" \
+    --result research/probes/results/synthetic-*.json \
+    --out research/probes/results/synthetic-scores.json
+```
+
+The truth file is the generator's own script. No engine ever sees it, so the comparison
+is an observation about the engines rather than a fixture replay — the distinction
+`agents/goal-validator.md` polices.
 
 ## Reading a result file
 
