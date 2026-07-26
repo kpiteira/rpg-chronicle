@@ -3,13 +3,14 @@
 
 Reads a PreToolUse payload on stdin and prints exactly one decision line:
 
-    allow             no guarded command in this call
-    push-main         a `git push` whose destination ref is main
-    merge <target>    a `gh pr merge`, with the pull request it names
-    merge -           a `gh pr merge` naming no pull request
-    merge-multiple    more than one `gh pr merge` in a single call
-    unparseable       the command could not be tokenized and its raw text
-                      mentions a guarded command
+    allow                    no guarded command in this call
+    push-main                a `git push` whose destination ref is main
+    merge <target>           a `gh pr merge`, with the pull request it names
+    merge <target> <repo>    the same, with the repository it names
+    merge -                  a `gh pr merge` naming no pull request
+    merge-multiple           more than one `gh pr merge` in a single call
+    unparseable              the command could not be resolved, and its text
+                             mentions a guarded command
 
 `<target>` is passed through exactly as written -- a number, a pull URL, or a
 branch name -- because `gh pr view` accepts all three. The gate resolves it.
@@ -89,9 +90,19 @@ VALUE_FLAGS = {
     "--repo",
 }
 
-# Interpreters whose `-c` argument is itself a command. The old substring match
-# caught `sh -c "git push origin main"` by accident; this catches it on purpose.
+# Interpreters whose `-c` argument is itself a shell command, and so can be
+# classified in its own right. The old substring match caught
+# `sh -c "git push origin main"` by accident; this catches it on purpose.
 INTERPRETERS = {"sh", "bash", "zsh", "dash", "ksh"}
+
+# Interpreters whose `-c` argument is code in another language. It cannot be
+# read as shell -- `python3 -c 'os.system("git push origin main")'` yields a
+# quoted string, not three words -- so such an argument is refused when it so
+# much as mentions a guarded command, rather than parsed.
+CODE_INTERPRETERS = {"python", "python3", "perl", "ruby", "node"}
+
+# `-c`, and combined short flags ending in it: `bash -lc '...'`.
+COMMAND_FLAG = re.compile(r"^-[A-Za-z]*c$")
 
 HEREDOC = re.compile(r"<<-?[ \t]*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
 
@@ -281,35 +292,56 @@ def pushes_to_main(segment: list[str]) -> bool:
 
 
 def merge_target(segment: list[str], start: int) -> str:
-    """The pull request a `gh pr merge` names, or `-` when it names none."""
+    """What a `gh pr merge` names: its pull request, and its repository.
+
+    Returned as `<target>` or `<target> <repo>`, with `-` for a pull request the
+    command does not name. The repository has to travel with the target: the
+    gate resolves what the command named, and resolving `7` against the wrong
+    repository is the same wrong-pull-request defect in a new place.
+    """
     arguments = segment[start + 3 :]
+    target = "-"
+    repo = ""
     index = 0
     while index < len(arguments):
         argument = arguments[index]
         if argument.startswith("-"):
+            if argument in ("-R", "--repo") and index + 1 < len(arguments):
+                repo = arguments[index + 1]
             index += 2 if argument in VALUE_FLAGS else 1
             continue
-        return argument
-    return "-"
+        if target == "-":
+            target = argument
+        index += 1
+    return f"{target} {repo}" if repo else target
 
 
-def interpreted_scripts(segment: list[str]) -> list[str]:
-    """Arguments this command will itself run as a command.
+def command_argument(segment: list[str], start: int) -> int | None:
+    """Index of the argument following an interpreter's `-c`, if present."""
+    for index in range(start + 1, len(segment)):
+        if COMMAND_FLAG.match(segment[index]) and index + 1 < len(segment):
+            return index + 1
+    return None
 
-    An interpreter's `-c` argument, and whatever `eval` was handed. Both arrive
-    as a single token once quoting is resolved, so they cannot be seen by
-    scanning words and have to be classified in their own right.
+
+def interpreted_scripts(segment: list[str]) -> tuple[list[str], list[str]]:
+    """Arguments this command will itself run.
+
+    Returns shell text to classify in its own right, and foreign code that can
+    only be scanned for a mention. Both arrive as a single token once quoting is
+    resolved, so neither can be seen by scanning words.
     """
     words = [base_name(word) for word in segment]
-    scripts = []
+    shell: list[str] = []
+    foreign: list[str] = []
     for index, word in enumerate(words):
-        if word in INTERPRETERS and "-c" in words[index:]:
-            target = words[index:].index("-c") + index + 1
-            if target < len(segment):
-                scripts.append(segment[target])
+        if word in INTERPRETERS and (at := command_argument(segment, index)):
+            shell.append(segment[at])
+        elif word in CODE_INTERPRETERS and (at := command_argument(segment, index)):
+            foreign.append(segment[at])
         elif word == "eval" and index + 1 < len(segment):
-            scripts.append(segment[index + 1])
-    return scripts
+            shell.append(segment[index + 1])
+    return shell, foreign
 
 
 def classify(command: str, depth: int = 0) -> str:
@@ -341,11 +373,15 @@ def classify(command: str, depth: int = 0) -> str:
 
         merges.extend(merge_target(segment, merge) for merge in find_merges(segment))
 
+        shell, foreign = interpreted_scripts(segment)
+        if any(hint in code for code in foreign for hint in GUARDED_HINTS):
+            return "unparseable"
+
         if depth >= 3:
             continue
-        for script in interpreted_scripts(segment):
+        for script in shell:
             nested = classify(script, depth + 1)
-            if nested in ("push-main", "merge-multiple"):
+            if nested in ("push-main", "merge-multiple", "unparseable"):
                 return nested
             if nested.startswith("merge "):
                 merges.append(nested[len("merge ") :])

@@ -157,11 +157,17 @@ def test_a_command_invoked_by_path_is_still_recognized(
     [
         "gh pr merge -R owner/repo 7 --rebase",
         "gh pr merge --repo owner/repo 7 --rebase",
+        "gh pr merge 7 -R owner/repo --rebase",
     ],
 )
-def test_a_repo_flag_is_not_read_as_the_merge_target(command: str) -> None:
-    """Also Copilot's: `-R owner/repo` was misread as the pull request."""
-    assert classify(command) == "merge 7"
+def test_a_repo_flag_travels_with_the_merge_target(command: str) -> None:
+    """Copilot's, then the goal validator's.
+
+    `-R owner/repo` was first misread as the pull request itself, and then
+    parsed but dropped -- so the gate resolved `7` against whichever repository
+    it happened to be standing in. That is the wrong-pull-request defect again.
+    """
+    assert classify(command) == "merge 7 owner/repo"
 
 
 @pytest.mark.parametrize(
@@ -220,6 +226,29 @@ def test_nesting_beyond_one_level_is_classified() -> None:
 
 def test_an_author_email_is_not_read_as_the_merge_target() -> None:
     assert classify("gh pr merge --author-email a@b.c --rebase") == "merge -"
+
+
+@pytest.mark.parametrize(
+    ("command", "expected"),
+    [
+        ("bash -lc 'gh pr merge 7 --rebase'", "merge 7"),
+        ("sh -ec 'git push origin main'", "push-main"),
+        ("""python3 -c 'import os; os.system("git push origin main")'""", "unparseable"),
+        ("""python -c 'os.system("gh pr merge 7")'""", "unparseable"),
+        ("python3 -c 'print(1)'", "allow"),
+    ],
+)
+def test_interpreter_arguments_are_not_a_way_through(
+    command: str, expected: str
+) -> None:
+    """Raised by the goal validator.
+
+    A combined short flag hid a shell command, and code in another language
+    cannot be read as shell at all -- so foreign code that mentions a guarded
+    command is refused rather than parsed, which is what the substring match
+    did and what the goal requires be kept.
+    """
+    assert classify(command) == expected
 
 
 def test_a_heredoc_marker_inside_quotes_does_not_swallow_later_lines() -> None:
