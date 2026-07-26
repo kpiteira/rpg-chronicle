@@ -83,20 +83,37 @@ def test_a_flag_value_is_not_read_as_a_pr_number() -> None:
 @pytest.mark.parametrize(
     ("command", "expected"),
     [
+        # Assignments and flagless wrappers.
         ("GIT_TRACE=1 git push origin main", "push-main"),
         ("env GIT_TRACE=1 git push origin main", "push-main"),
         ("sudo git push origin HEAD:main", "push-main"),
         ("command gh pr merge 7 --rebase", "merge 7"),
         ("nohup gh pr merge 7 --rebase", "merge 7"),
+        # Wrappers carrying their own options, which anchoring on the first
+        # word missed. Every one of these was refused by the substring match.
+        ("nice -n 5 gh pr merge 7 --rebase", "merge 7"),
+        ("sudo -u karl git push origin main", "push-main"),
+        ("env -i git push origin main", "push-main"),
+        ("command -p gh pr merge 7 --rebase", "merge 7"),
+        ("time -p gh pr merge 7 --rebase", "merge 7"),
+        ("timeout 60 git push origin main", "push-main"),
+        ("xargs gh pr merge 7 --rebase", "merge 7"),
+        # A command collapsed into a single token by quoting.
+        ('eval "gh pr merge 7 --rebase"', "merge 7"),
+        ('eval "git push origin main"', "push-main"),
+        # git's own options sit between the two words.
+        ("git -C /tmp/repo push origin main", "push-main"),
     ],
 )
 def test_wrappers_and_assignments_do_not_hide_a_command(
     command: str, expected: str
 ) -> None:
-    """A fail-closed regression the goal validator caught.
+    """Fail-closed regressions the goal validator caught, in two rounds.
 
-    The substring match this classifier replaced caught these; matching on the
-    first two tokens alone did not.
+    The substring match this classifier replaced refused every one of these.
+    The first attempt anchored on the command's first word and enumerated the
+    wrappers to skip, which silently dropped each wrapper not on the list; the
+    words are now located anywhere in the command, so no list is needed.
     """
     assert classify(command) == expected
 
