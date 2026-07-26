@@ -145,11 +145,13 @@ later — the branch prefix, `codex/`, in three documents (`AGENTS.md`, `CONTRIB
 `docs/PARALLEL_EXECUTION.md`) and the worktree setup script.
 The prefix becomes `agent/<role-id>/<issue-number>-<slug>`: tool-neutral, because work
 will genuinely come from more than one environment and a prefix naming either is wrong
-for the other. The three long-lived scratch branches were renamed to `agent/`, which
-`git branch -m` does without disturbing a worktree; in-flight goal branches are left to
-merge and expire under the old prefix, because renaming a branch under a running session
-buys nothing. Nothing enforces the prefix, so this is a documentation change and not a
-migration.
+for the other. The three scratch branches that exist — reuse research, benchmark
+research and review analysis — were renamed to `agent/<role-id>/scratch` with
+`git branch -m`, which leaves their worktrees undisturbed. Vault discovery's appears in
+the setup recipe but has never been created, since no vault goal has run. In-flight goal
+branches keep the old prefix until they merge, because renaming a branch under a running
+session buys nothing. Nothing enforces the prefix, so this is a documentation change and
+not a migration.
 
 One consequence is left open rather than closed, and `docs/PARALLEL_EXECUTION.md` states
 it where a session bootstraps: D-013's native `/goal` loop has no equivalent outside
