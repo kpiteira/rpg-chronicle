@@ -371,7 +371,12 @@ class ModelAnalysisProvider:
             window_user_prompt(window.turns, index=window.index, total=total),
         )
         where = f"window {window.index + 1}"
-        scenes = _object_list(payload, "scenes", where=where, required=True)
+        # A window may legitimately contain no scene. Twenty minutes of rules
+        # argument, a meal break, or a stretch of pure table talk is a real thing a
+        # four-hour recording contains, and demanding a story-bearing scene from it
+        # would either abort the run or invite the model to invent one. The invariant
+        # that matters is at session level -- see `analyze` -- not per window.
+        scenes = _object_list(payload, "scenes", where=where)
         questions = _object_list(payload, "questions", where=where)
 
         # Cited ids are checked against the excerpt the model was shown, not the whole
@@ -478,6 +483,15 @@ class ModelAnalysisProvider:
                         evidence=evidence_for(turns_by_id, list(ids)),
                     )
                 )
+
+        # The session-level invariant an individual window is not held to. A pass that
+        # found no scene anywhere in a transcript has not analysed it, whatever it
+        # wrote in the summary.
+        if not scenes:
+            raise AnalysisFormatError(
+                f"no scene was recovered from any of {len(windows)} window(s); "
+                "an analysis pass that finds no scene in the whole session has failed"
+            )
 
         questions = self._bounded_questions(drafts, turns_by_id)
 

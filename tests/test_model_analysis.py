@@ -13,7 +13,12 @@ from pathlib import Path
 
 import pytest
 
-from rpg_chronicle.analysis.backend import BackendCredentialError, BackendUnavailableError
+from rpg_chronicle.analysis.backend import (
+    BackendCredentialError,
+    BackendUnavailableError,
+    ModelResponse,
+    TokenUsage,
+)
 from rpg_chronicle.analysis.decompose import TokenBudget
 from rpg_chronicle.analysis.provider import (
     AnalysisFormatError,
@@ -352,7 +357,9 @@ _GOOD_SCENE = {"title": "A scene", "summary": "It happened.", "turn_ids": ["turn
 
 MALFORMED_REPLIES = {
     "not-json": "not json at all",
-    "no-scenes": _reply([]),
+    # A session in which no window found a scene is a failed analysis. A single
+    # *window* without one is legitimate and is tested separately below.
+    "no-scenes-anywhere": _reply([]),
     "scene-without-citation": _reply([{"title": "t", "summary": "s"}]),
     "scene-without-title": _reply([{"summary": "s", "turn_ids": ["turn-001"]}]),
     "confidence-out-of-range": _reply([_GOOD_SCENE], [_question(confidence=5)]),
@@ -386,6 +393,42 @@ def test_malformed_model_output_is_rejected_rather_than_repaired(reply, turns):
     provider = ModelAnalysisProvider(ScriptedBackend(replies=[reply]))
     with pytest.raises(AnalysisFormatError):
         provider.analyze(turns)
+
+
+def test_a_window_with_no_scene_does_not_abort_the_session():
+    """Twenty minutes of rules argument is a real thing a recording contains.
+
+    Demanding a story-bearing scene from every window would abort a four-hour run
+    over a meal break, or invite the model to invent a scene to satisfy the schema.
+    The invariant belongs at session level.
+    """
+
+    class SceneInFirstWindowOnly(FakeBackend):
+        seen = 0
+
+        def complete(self, request):
+            type(self).seen += 1
+            if type(self).seen == 2:
+                return ModelResponse(
+                    text=json.dumps(
+                        {
+                            "window_summary": "Rules argument and a meal break.",
+                            "scenes": [],
+                            "questions": [],
+                        }
+                    ),
+                    usage=TokenUsage(input_tokens=10, output_tokens=10),
+                    wall_ms=1,
+                )
+            return super().complete(request)
+
+    provider = ModelAnalysisProvider(
+        SceneInFirstWindowOnly(),
+        budget=TokenBudget(max_input_tokens=4_000, prompt_overhead_tokens=500, overlap_turns=0),
+    )
+    result = provider.analyze(_long_turns(120))
+    assert provider.cost.windows > 2
+    assert result.scenes, "scenes from the other windows must survive"
 
 
 @pytest.mark.parametrize("questions", [None, []], ids=["absent", "empty"])

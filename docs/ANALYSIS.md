@@ -290,6 +290,22 @@ An unparseable reply is retried once, and the retry is counted in the cost repor
 unsupported claim is never retried — retrying that would be sampling until the model
 stops getting caught.
 
+### What the credential-absent path does and does not demonstrate
+
+`require_env_credential` reads a key from the environment, and fails naming the variable
+and never its value. It is exercised by a backend double that declares a required key.
+
+**No shipped backend calls it.** The one working backend is subscription-mediated: the
+credential is held by the CLI, not by this repository or its environment. So the env-key
+path is proved for the backend that comes next, not for one that exists — worth stating
+plainly rather than leaving to be read as "the credential path is covered". What *is*
+demonstrated on the real backend is the unavailable path: with the executable off
+`PATH`, the run fails with a clear message and writes nothing at all.
+
+The stronger guarantee — that an unusable backend leaves no partial artifact — is an
+ordering, and it is tested as one in `tests/test_cli_wiring.py`: the CLI preflights
+before `run_pipeline`, which writes the canonical session the moment it is called.
+
 ## Proposed decision entry — not adopted here
 
 `docs/DECISIONS.md` is TPM-owned and this goal does not write to it. The following is
