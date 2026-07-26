@@ -31,24 +31,26 @@ throughput on the 600 s window (41.0x realtime against 23.3x) on a fifth of the 
 widening to 3.7x throughput at 40 minutes — where the memory advantage narrows to about
 45% (1,100 MB against 2,419 MB), because chunked Parakeet grows and whisper.cpp barely
 does.
-It is not a close call on those axes and this recommendation does not pretend otherwise. It goes to whisper.cpp on four grounds, in
-order of weight:
+It is not a close call on those axes and this recommendation does not pretend otherwise.
+It goes to whisper.cpp on four grounds, in order of weight. The first two are
+categorical; the third is a measured margin that an earlier draft of this document
+overstated and led with.
 
-1. **Speaker attribution — a real but smaller advantage than the raw numbers suggest.**
-   Parakeet's unit is a sentence; whisper.cpp's is a shorter decoder segment. Raw mean
-   speaker overlap was 0.85 for whisper.cpp against 0.61 for Parakeet, but that
-   comparison is confounded and the corrected figures are 0.94 against 0.86 — see
-   "Speaker attribution, corrected" below, which sets out both the confound and what
-   survives it. `docs/PRODUCT.md` requires separating physical speakers, and whisper.cpp
-   is still ahead, but this reason carries less weight than the raw gap implied.
-2. **Long audio works by default.** Parakeet-mlx builds one tensor for the whole file
+1. **Long audio works by default.** Parakeet-mlx builds one tensor for the whole file
    and **fails outright at 20 minutes** — Metal refused a 14.4 GB allocation against a
    14.3 GB limit. It handles four hours only once an explicit `chunk_duration` is set,
    which is fine when you know, and a silent cliff when you do not. whisper.cpp windows
    internally and needed no parameter at any length probed.
-3. **The portability floor.** MLX is Apple Silicon and nothing else. whisper.cpp runs
+2. **The portability floor.** MLX is Apple Silicon and nothing else. whisper.cpp runs
    the same workload on CPU, CUDA, ROCm and Vulkan from one codebase, and the CPU floor
    was measured, not assumed.
+3. **Speaker attribution — a real but modest advantage.** Parakeet's unit is a sentence;
+   whisper.cpp's is a shorter decoder segment. Raw mean speaker overlap was 0.85 for
+   whisper.cpp against 0.61 for Parakeet, but that comparison is confounded and the
+   corrected figures are 0.94 against 0.86 — see "Speaker attribution, corrected" below.
+   `docs/PRODUCT.md` requires separating physical speakers and whisper.cpp is still
+   ahead, but 0.084 is not the chasm the raw numbers implied, which is why this sits
+   third rather than first.
 4. **Licence and obligation.** MIT throughout, against Apache-2.0 code over a CC-BY-4.0
    model that carries an attribution obligation into anything shipping its output.
 
@@ -80,9 +82,13 @@ the source is CC BY-NC-ND.
 |---|---|---|---|---|---|---|
 | `whisper-cpp-metal` | 25.8 s | 23.3x | 2,096 MB (child) | 302 | 1 | 6.7 |
 | `parakeet-mlx` | **14.7 s** | **41.0x** | **429 MB** | 158 | 0 | 15.4 |
-| `mlx-whisper` | 44.3 s | 13.6x | 2,058 MB | 450 | **104** | 12.6 |
+| `mlx-whisper` † | 44.3 s | 13.6x | 2,058 MB | 450 | **104** | 12.6 |
 | `faster-whisper-cpu` | 163.9 s | 3.7x | 2,644 MB | 240 | 0 | 4.7 |
 | `sherpa-diarization` | 30.8 s | 19.5x | 3,654 MB | 208 spans | — | 6.7 |
+
+† Partly degenerate: this stack's committed synthetic counterpart ends in a
+`Rest Rest Rest…` repetition loop, so its wall clock includes time spent producing
+nothing. Do not quote 44.3 s or 13.6x as this engine's throughput.
 
 Three readings of that table, in order of how much they change the decision.
 
@@ -319,7 +325,9 @@ Two consequences, and the second is the important one.
 
    Turns that mangled a proper noun score within 0.02 of a typical turn on three stacks
    (0.016 on whisper.cpp, 0.015 on Parakeet, 0.008 on mlx-whisper) and 0.08 *above*
-   typical on faster-whisper. Every stack's minimum confidence sits at
+   typical on faster-whisper — whose corpus mean is dragged down to 0.742 by two
+   degenerate low-confidence tail turns, so its inverted gap says more about those two
+   turns than about the name-losing ones. Every stack's minimum confidence sits at
    or below what its name-losing turns score — 0.082 against 0.818 on faster-whisper — so
    a low-confidence threshold surfaces other turns first and reaches these last, if ever.
 
