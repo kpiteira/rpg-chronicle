@@ -62,6 +62,12 @@ acceptance — that absence is itself a finding, recorded in
 CACHE=~/.cache/rpg-chronicle/benchmark
 mkdir -p "$CACHE"
 
+# Every command below runs the probe scripts directly rather than through
+# run_probe_battery.sh, which is the only one that finds the venv on its own. Set this
+# first or the first script fails on `import mlx_whisper`.
+export RPG_PROBE_PYTHON=~/.cache/rpg-chronicle/probe-venv/bin/python
+PROBE="$RPG_PROBE_PYTHON research/probes/speech_stack_probe.py"
+
 # rights-clear input, generated locally, full output committed.
 #
 # Needs macOS and four system voices: Daniel, Samantha, Karen, Ralph. Check first --
@@ -102,14 +108,10 @@ These back the four-hour projection and the diarization findings. Every committe
 `scaling-*.json` comes from one of the commands below; the recognition realtime factors
 the wall-clock projection is taken from come from the `whispercpp` runs specifically.
 
-The battery script defaults to the probe venv; these commands do not, because they
-invoke the scripts directly. Set the interpreter first or every one of them fails on
-`import mlx_whisper`:
+These continue from the block above and reuse its `$CACHE`, `$RPG_PROBE_PYTHON` and
+`$PROBE`.
 
 ```bash
-export RPG_PROBE_PYTHON=~/.cache/rpg-chronicle/probe-venv/bin/python
-PROBE="$RPG_PROBE_PYTHON research/probes/speech_stack_probe.py"
-
 # the windows every scaling run uses
 for T in 1200 1800 2400; do
   ffmpeg -v error -ss 0 -t $T -i "$CACHE/hiddengrid-ep044.mp3" \

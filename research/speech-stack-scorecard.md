@@ -122,7 +122,12 @@ against different maxima.
 **The correction.** `speaker_coverage_ratio` — the share of a unit that *any* speaker
 covers — was already computed per unit but never aggregated, which is why the confound
 was invisible in the committed evidence. It is now reported, along with overlap divided
-by coverage, which is attribution purity given what was diarized at all:
+by coverage, which is attribution purity given what was diarized at all.
+
+Read the last column as a summary rather than a statistic: it is the ratio of two
+aggregate means, not the mean of per-unit ratios, so the third decimal carries less
+information than it appears to. It is used here only to order stacks that the raw column
+ordered misleadingly.
 
 | Stack | Unit span | Raw overlap | Coverage | Overlap given coverage |
 |---|---|---|---|---|
@@ -133,11 +138,13 @@ by coverage, which is attribution purity given what was diarized at all:
 
 **What survives.** whisper.cpp still attributes better than Parakeet, by 0.084 rather
 than 0.237. `mlx-whisper` scores highest on this corrected measure and should be
-discounted rather than believed: on this run it emitted 450 units of which **104 could
-not become turns at all**, so its coverage denominator is built from a much smaller set
-of usable units. Its unit count across three runs of identical audio was 213, 226 and
-450 — the volatility is itself the finding, and it disqualifies mlx-whisper more firmly
-than its speed does. That is a real advantage pointing the same way as before, but a
+discounted rather than believed: in the committed run it emitted 450 units of which
+**104 could not become turns at all**, so its coverage denominator is built from a much
+smaller set of usable units than the others'. Earlier runs of the same audio during this
+goal produced 213 and 226 units with 1 unusable; those runs were overwritten by later
+regenerations and are **not** in this diff, so treat the swing as an observation rather
+than as evidence — the committed 450/104 stands on its own, and it is enough to
+discount the row. That is a real advantage pointing the same way as before, but a
 modest one — and the honest reading is that the four recognizers cluster between 0.86
 and 0.94 on attribution purity, where the raw numbers suggested a chasm.
 
@@ -274,18 +281,21 @@ Two consequences, and the second is the important one.
    |---|---|---|---|
    | `whisper-cpp-metal` | 0.936 | 0.952 | 0.827 |
    | `parakeet-mlx` | 0.961 | 0.976 | 0.918 |
-   | `mlx-whisper` | 0.819 | **0.651** | 0.103 |
-   | `faster-whisper-cpu` | 0.818 | **0.795** | 0.457 |
+   | `mlx-whisper` | 0.819 | 0.827 | 0.812 |
+   | `faster-whisper-cpu` | 0.818 | **0.742** | 0.082 |
 
-   Turns that mangled a proper noun score within 0.02 of a typical turn on the two
-   stacks where they are lower, and *above* typical on the other two. Every stack's
-   minimum confidence sits well below what its name-losing turns score, so a
-   low-confidence threshold surfaces other turns first and reaches these last, if ever.
+   Turns that mangled a proper noun score within 0.01 of a typical turn on three stacks,
+   and 0.08 *above* typical on faster-whisper. Every stack's minimum confidence sits at
+   or below what its name-losing turns score — 0.082 against 0.818 on faster-whisper — so
+   a low-confidence threshold surfaces other turns first and reaches these last, if ever.
 
-   One caveat on these four numbers specifically: Whisper-family decoding is not
-   deterministic, and the corpus means for `mlx-whisper` and `faster-whisper-cpu` moved
-   by more than 0.1 between runs of this probe. The direction of the finding was stable
-   across every run; the second decimal place of those two rows was not. Since `docs/PRODUCT.md` makes "confidence and
+   A caveat on these four rows specifically, stated with its real size: Whisper-family
+   decoding is not deterministic, and re-running this probe moved `faster-whisper-cpu`'s
+   corpus mean between 0.63 and 0.80 and its minimum between 0.02 and 0.46 across runs.
+   That is a swing of most of the range, not of a decimal place. The *direction* held in
+   every run — name-losing turns never scored low enough to be flagged — and that is the
+   only part of this table worth relying on. Only the run committed in
+   `research/probes/results/` is reproducible from this diff. Since `docs/PRODUCT.md` makes "confidence and
    consequence determine intervention" a product principle, a review layer ranking
    questions by engine confidence will rank these errors as safe — inverting what it is
    for. Review prioritization needs a signal other than decoder confidence for
