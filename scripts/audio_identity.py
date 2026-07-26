@@ -62,6 +62,11 @@ MAX_PLAUSIBLE_LAG_SECONDS = 60.0
 # about a second, so this only has to cover its rounding plus a margin.
 FINE_SEARCH_SECONDS = 3.0
 SILENCE_FLOOR_DB = -120.0
+# Fewer overlapping frames than this and a correlation is noise, so no lag with less is
+# considered. The consequence is worth naming rather than leaving implicit: a candidate too
+# short to give this much overlap anywhere produces no comparison at all, which is a
+# different answer from "different recording" and has to be reported as one.
+MIN_OVERLAP_FRAMES = 30
 
 
 @dataclass(frozen=True)
@@ -84,9 +89,19 @@ class Alignment:
         return self.lag_frames * frame_ms / 1000.0
 
     @property
+    def comparable(self) -> bool:
+        """Whether any lag gave enough overlap to correlate at all.
+
+        False means the candidate is too short to judge against this reference, not that it
+        is a different recording. Conflating the two would have the tool tell someone
+        verifying a 20-second clip that they hold the wrong video.
+        """
+        return self.frames_compared >= MIN_OVERLAP_FRAMES
+
+    @property
     def peak_found(self) -> bool:
         """Whether a coarse pass located something worth refining."""
-        return self.correlation >= COARSE_PEAK_FLOOR_R
+        return self.comparable and self.correlation >= COARSE_PEAK_FLOOR_R
 
 
 @dataclass(frozen=True)
@@ -187,7 +202,7 @@ def align(reference: list[float], candidate: list[float], max_lag_frames: int) -
         else:
             left, right = reference[-lag:], candidate[: len(candidate) + lag]
         overlap = min(len(left), len(right))
-        if overlap < 30:
+        if overlap < MIN_OVERLAP_FRAMES:
             continue
         r = _pearson(left[:overlap], right[:overlap])
         if r > best.correlation:
@@ -300,6 +315,16 @@ def main(argv: list[str] | None = None) -> int:
         f"coarse lag: {coarse.lag_seconds(coarse_frame_ms):+.0f} s "
         "(locates the fine pass; does not judge)"
     )
+    if not coarse.comparable:
+        print("TOO SHORT TO JUDGE: no lag gave enough overlap to correlate")
+        print(
+            f"This needs at least {MIN_OVERLAP_FRAMES} overlapping frames at "
+            f"{coarse_frame_ms:.0f} ms, so about "
+            f"{MIN_OVERLAP_FRAMES * coarse_frame_ms / 1000:.0f} s of audio. That is a"
+        )
+        print("statement about this input, not about the recording: an excerpt cannot be")
+        print("identified this way, and a full copy can.")
+        return 1
     if fine is None:
         print(f"DIFFERENT RECORDING: no alignment above {COARSE_PEAK_FLOOR_R} to refine")
         print("This copy does not follow the same loudness envelope. Committed anchors do")

@@ -156,6 +156,35 @@ def test_verify_reports_a_different_recording_without_refining_it(
     assert [call["frame_ms"] for call in calls] == [1000], "the fine pass must not have run"
 
 
+def test_a_candidate_too_short_to_correlate_is_not_called_a_different_recording() -> None:
+    """"Too short to judge" and "different recording" are different answers.
+
+    align() ignores any lag with less than MIN_OVERLAP_FRAMES of overlap, so a candidate
+    shorter than that gives no comparison at all. Before this was separated out, that came
+    back as a confident DIFFERENT RECORDING - which would tell someone verifying a
+    twenty-second clip that they were holding the wrong video.
+    """
+    reference = _speechlike(600)
+    too_short = reference[: identity.MIN_OVERLAP_FRAMES - 1]
+
+    result = identity.align(reference, too_short, max_lag_frames=50)
+
+    assert result.frames_compared == 0
+    assert not result.comparable
+    assert not result.peak_found, "and it must not be reported as a located peak either"
+
+
+def test_a_candidate_just_long_enough_is_judged() -> None:
+    """The boundary in the other direction, so the check above is not simply refusing work."""
+    reference = _speechlike(600)
+    just_long_enough = reference[: identity.MIN_OVERLAP_FRAMES]
+
+    result = identity.align(reference, just_long_enough, max_lag_frames=50)
+
+    assert result.comparable
+    assert result.correlation > 0.999
+
+
 def test_a_copy_that_locates_but_does_not_agree_is_rejected(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -279,7 +308,15 @@ def test_the_filter_chain_actually_decodes(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize("name", sorted(OBSERVED_GAP))
 def test_thresholds_sit_between_the_observed_extremes(name: str) -> None:
-    """The thresholds are measurements, not preferences, and this pins the measurement.
+    """A tripwire on the constants, and not the measurement it refers to.
+
+    Worth being exact about what this does, because the earlier docstring said it pinned the
+    measurement and it cannot: the bounds are literals transcribed from runs that needed four
+    hours of audio, and nothing here re-derives them. Moving a threshold outside the gap those
+    runs found fails, which is the point - it forces whoever moves it to go back to
+    benchmarks/notes/recording-identity.md rather than nudge a number. What actually holds the
+    discrimination is elsewhere in this file, where a different recording is rejected and a
+    copy that locates without agreeing is rejected too.
 
     The upper bound of each gap is the worst a genuine copy managed on that pass. The lower
     bound is the best either different recording managed, and one of those two was a different
