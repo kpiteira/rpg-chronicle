@@ -161,7 +161,7 @@
         "label": "The episode opens with the theme song, and the host's welcome begins over the music.",
         "kind": "event",
         "status": "verified",
-        "anchor_ms": 0,
+        "anchor_ms": 2880,
         "basis": "audio_machine_assisted",
         "evidence": "Continuous non-silent audio from 00:00:03 to 00:00:57 by silence detection at -40 dB; the welcome starts at 00:00:28, so speech and music overlap for about 29 s. None of this is campaign content, and a chronicle that reports it as such has misread the episode's furniture for its story."
       },
