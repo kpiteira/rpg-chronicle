@@ -186,6 +186,12 @@ owned, under one convention:
 Distinct blocks at distinct offsets merge cleanly, and the comment makes a conflict that
 does occur resolvable by keeping both sides.
 
+The convention is forward-looking. The two entries already in the file — `*.part` and
+`*.mismatch` from goal #11, `benchmarks/fixtures/generated/` from goal #12 — predate it
+and do not follow it, and they are left alone deliberately: retrofitting a provenance
+comment onto them would mean editing another role's lines, which is the one thing the
+convention forbids.
+
 Two shapes were considered and rejected:
 
 - **A `.gitignore` per owned directory.** This relocates the ownership question instead

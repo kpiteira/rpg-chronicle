@@ -82,10 +82,12 @@ on synthetic input and unsatisfied on the public excerpt the milestone names.
   its redistribution is restricted independently of the licence because Shadowrun
   rights sit with a third party. A 2026-07-26 fetch verified the excerpt reproducibly
   without committing the media.
-- Three candidates carry multi-hour excerpts: `mystic-horizon` (3 h 57 m),
-  `kix-dnd-amateurs-first-session` (3 h 25 m) and `dice-and-die-lmop-e01` (2 h 37 m).
-  Two of those are CC BY 3.0 — `mystic-horizon` and `dice-and-die` — so either licence
-  would permit a committed reference transcript for annotated windows.
+- Four candidates carry multi-hour excerpts: `mystic-horizon` (3 h 57 m),
+  `kix-dnd-amateurs-first-session` (3 h 25 m), `dice-and-die-lmop-e01` (2 h 37 m) and
+  `oxventure-wyrdwood-campaign` chapter 1 (2 h 05 m). Only two are CC BY 3.0 —
+  `mystic-horizon` and `dice-and-die` — so only those two licences would permit a
+  committed reference transcript for annotated windows. The other two are Standard
+  YouTube Licence with local processing recorded as restricted.
   `mystic-horizon` is the longest, is the only one tiered `multi_hour_stress`, and is
   the closest in duration to a real session; goal #21 is annotating it. `dice-and-die`
   is the fallback if that annotation proves impractical, not a rejected candidate.
