@@ -244,8 +244,10 @@ hashes it.
 `same_recording_correlation: 0.98` from before the threshold was settled at 0.90, while
 nothing ever read the field. The field is gone rather than corrected: a threshold belongs to
 the tool, and a copy of it in the data can only drift. The fingerprint was regenerated, which
-changed its digest, which the validator would now have caught in the four places that
-reference it.
+changed its digest — recorded in four places and, at that point, checked in one. The manifest's
+copy is the validator's business. The three transcript windows each carry their own and nothing
+looked at them, so `tests/test_benchmark_transcripts.py` now does, along with the declaration
+in those files that they are not a reference. Both mutations were confirmed to fail.
 
 ## What this does and does not establish
 
