@@ -221,6 +221,14 @@ def test_an_unrecognized_classifier_decision_is_refused(
     assert "refusing to merge" in result.stderr or "Could not parse" in result.stderr
 
 
+def test_merging_two_pull_requests_in_one_call_is_refused(gate) -> None:
+    code, stderr, _ = gate(
+        "gh pr merge 7 --rebase && gh pr merge 8 --rebase", GH_VERDICT=verdict(HEAD)
+    )
+    assert code == 2
+    assert "more than one pull request" in stderr
+
+
 def test_an_unparseable_guarded_command_is_refused(gate) -> None:
     code, stderr, _ = gate('gh pr merge 7 --body "unterminated')
     assert code == 2

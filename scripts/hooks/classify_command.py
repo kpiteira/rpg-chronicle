@@ -7,6 +7,7 @@ Reads a PreToolUse payload on stdin and prints exactly one decision line:
     push-main         a `git push` whose destination ref is main
     merge <target>    a `gh pr merge`, with the pull request it names
     merge -           a `gh pr merge` naming no pull request
+    merge-multiple    more than one `gh pr merge` in a single call
     unparseable       the command could not be tokenized and its raw text
                       mentions a guarded command
 
@@ -27,13 +28,20 @@ input fails closed instead of waving it through.
 
 An interpreter's `-c` argument is classified in turn, since the substring match
 this replaces caught `sh -c "git push origin main"` and losing that would be a
-narrowing rather than a fix.
+narrowing rather than a fix. Commands are compared by base name, so a pathed or
+wrapped invocation reaches the same guards.
 
-Known limit: this classifies commands, it does not sandbox them. A guarded
-command reached through a script file, a heredoc fed to an interpreter, or any
-indirection this module does not model is not detected. The gate is a guardrail
-against an unvalidated merge happening by accident, not a barrier against one
-pursued deliberately, which no PreToolUse hook could be.
+Known limit, stated precisely because the goal behind this module asked for
+every prior refusal to survive. A substring match refused *any* occurrence of
+the guarded text, including occurrences it had no business refusing -- that
+overreach is the defect being fixed, so the two cannot both hold. What is
+covered: shell separators, line breaks, command substitution, quoting, heredoc
+bodies, leading assignments, the wrappers in COMMAND_WRAPPERS, the interpreters
+in INTERPRETERS, and invocation by path. What is not: indirection this module
+does not model -- a script file, a heredoc piped to a shell, `python3 -c`,
+`xargs`, a `timeout`-style wrapper that takes its own arguments. The gate is a
+guardrail against an unvalidated merge happening by accident, not a barrier
+against one pursued deliberately, which no PreToolUse hook could be.
 """
 
 from __future__ import annotations
@@ -79,6 +87,7 @@ VALUE_FLAGS = {
     "-F",
     "--field",
     "--match-head-commit",
+    "--author-email",
     "-R",
     "--repo",
 }
@@ -260,20 +269,26 @@ def classify(command: str, depth: int = 0) -> str:
     except ValueError:
         return "unparseable" if any(h in body for h in GUARDED_HINTS) else "allow"
 
-    merge = None
+    merges: list[str] = []
     for segment in parsed:
         if segment[:2] == ["git", "push"] and pushes_to_main(segment):
             return "push-main"
-        if segment[:3] == ["gh", "pr", "merge"] and merge is None:
-            merge = merge_target(segment)
+        if segment[:3] == ["gh", "pr", "merge"]:
+            merges.append(merge_target(segment))
         if depth < 3 and (script := interpreted_script(segment)):
             nested = classify(script, depth + 1)
-            if nested == "push-main":
+            if nested in ("push-main", "merge-multiple"):
                 return nested
-            if nested.startswith("merge ") and merge is None:
-                merge = nested[len("merge ") :]
+            if nested.startswith("merge "):
+                merges.append(nested[len("merge ") :])
 
-    return f"merge {merge}" if merge is not None else "allow"
+    if not merges:
+        return "allow"
+    if len(merges) > 1:
+        # One verdict is checked per call, so a call that merges twice would
+        # clear the second on the first one's evidence.
+        return "merge-multiple"
+    return f"merge {merges[0]}"
 
 
 def main() -> int:
