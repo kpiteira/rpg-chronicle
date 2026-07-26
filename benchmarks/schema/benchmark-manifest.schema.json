@@ -105,7 +105,7 @@
         "overlap": {"type": "string", "enum": ["low", "medium", "high", "unknown"]},
         "music_or_effects": {
           "type": ["boolean", "null"],
-          "description": "Whether music or effects appear in the recording. null means not assessed - a candidate ruled out on rights before anyone listened has nothing to report here, and false would claim an observation that was never made."
+          "description": "Whether music or effects appear in the recording. null means the question was not answered, which covers both cases the corpus uses it for: a candidate ruled out on rights before anyone listened, and a recording assessed only by sampling. false claims an end-to-end inspection, so use it only when one was done."
         },
         "observations": {"type": "string", "minLength": 1}
       }

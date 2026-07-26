@@ -24,7 +24,7 @@
     "proven_distinct_speakers": null,
     "overlap": "unknown",
     "music_or_effects": null,
-    "observations": "Not assessed. The candidate failed the rights check first and nothing was downloaded or measured, so no claim is made about production values, however evident they may be from the channel's reputation. Reputation is not measurement, and this project prefers benchmark evidence to it."
+    "observations": "Not assessed. The candidate failed the rights check first and nothing was downloaded or measured, so no claim is made about production values, however evident they may be from the channel's reputation. Reputation is not measurement, and this project prefers benchmark evidence to it. The same caution applies to corpus_tier: polished_professional is a proposed classification from the publisher's reputation, not an assessment, and the schema has no value for 'tier not established'. Read it as where this candidate would sit if it were ever admitted."
   },
   "references": {
     "caption_or_transcript": "unknown",

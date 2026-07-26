@@ -60,7 +60,7 @@ def _semantic_errors(instance: dict) -> list[str]:
     rights = instance["rights"]
     if rights["local_processing"] == "permitted" and not rights.get("license_url"):
         errors.append(
-            "rights.local_processing is permitted but rights.license_url is absent; a claim "
+            "rights.local_processing is permitted but rights.license_url is null or empty; a claim "
             "that a licence allows processing has to point at the licence that says so"
         )
 
