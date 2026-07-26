@@ -40,3 +40,14 @@ Start small:
 - One intentionally degraded sample
 
 Create careful reference annotations only for short, representative sections and important entities/events.
+
+## Annotation provenance
+
+Truth is only worth what its provenance says it is, so every annotated item records how it was made.
+
+- A target is `verified` only when it was observed in the recording, anchored to a time inside the excerpt window. A target taken from a title, description, or index stays `provisional` no matter how confident it looks.
+- `truth.method` names the procedure and any provider whose output contributed. `scripts/validate_benchmark_manifests.py` refuses a manifest that verifies a target without it.
+- Machine-assisted annotation is legitimate and must be declared. An engine that helped build the truth cannot be scored against it without stating the dependency in the result, because it is being marked against its own output.
+- Where decoders disagree and no human ear settled it, record the disagreement rather than a winner. An unresolved item is information; a guessed one is not.
+
+The first annotated item is `benchmarks/manifests/hiddengrid-swc-ep044-tower-play.json`, whose limits are written up in `benchmarks/notes/hiddengrid-swc-ep044-tower-play.md`. Read a per-item note before reporting any number against it.

@@ -16,6 +16,36 @@ cannot be decoded, a field path for a schema violation, and `<semantic>` for a r
 schema cannot express. One bad file fails the run with exit status 1 without hiding the
 findings for the other manifests.
 
+## Fetching the media
+
+A manifest that records `source.media_sha256` and `source.media_bytes` can be reproduced:
+
+```bash
+export RPG_CHRONICLE_BENCHMARK_CACHE=/your/private/benchmark/cache
+uv run python scripts/fetch_benchmark_media.py <manifest id>
+```
+
+The script downloads into the private cache, digests the result, and compares it with the
+manifest. On a difference it quarantines the download as `*.mismatch` and exits non-zero:
+the recorded digest is not updated and no other source is substituted, because every truth
+anchor is an offset into the recorded bytes. Report the difference on the benchmark goal
+issue instead.
+
+## Truth targets
+
+A target is `verified` only when it was observed in the recording. The validator enforces
+what that means, because prose cannot:
+
+- `anchor_ms` is required and must fall inside the excerpt window;
+- `basis` must be `audio_observed` — a target inferred from a title, description, or index
+  stays `provisional`, whatever the annotator believes;
+- `evidence` must say what was observed;
+- `truth.method` must record how the truth was established, including which provider
+  produced any machine-assisted output.
+
+`kind: person` is a physical speaker; `kind: character` is the fiction they voice. Keeping
+them apart in the corpus is what lets a result distinguish the two later.
+
 ## Scope
 
 The schema keeps source identity and access evidence, a logical excerpt, recording
@@ -39,11 +69,21 @@ default `benchmark-cache/`, `audio/`, `artifacts/`, and common media extensions.
 - `critical-role-c3e01-jrusar-introductions.json`: polished studio video, strong public
   navigation and transcript aids, but no recorded redistribution permission.
 - `hiddengrid-swc-ep044-tower-play.json`: archived amateur online actual play with an
-  explicit CC BY-NC-ND 4.0 notice and direct published audio.
+  explicit Creative Commons notice and direct published audio. B01 recorded that notice as
+  CC BY-NC-ND 4.0; B02 checked the episode page's raw HTML and corrected it to
+  CC BY-NC-SA 3.0 Unported.
 
 The Hiddengrid excerpt is the R0 recommendation because the direct source and explicit
-license make acquisition reproducible. B02 must retain the original download privately,
-process it noncommercially, use the manifest's logical time window, attribute the
-creator, and avoid publishing a clip or other adapted audio unless separate permission
-is obtained. Its timestamps and truth targets remain provisional until B02 performs a
-fresh-cache listen-through and checksum report.
+license make acquisition reproducible. Retain the original download privately, process it
+noncommercially, use the manifest's logical time window, attribute the creator, and do not
+publish a clip or other adapted audio without separate permission — ShareAlike would allow
+an attributed noncommercial derivative, but the recording also embeds Shadowrun material
+owned by Topps, which the site's licence cannot sublicense.
+
+B02 completed the listen-through: the fetch is checksum-verified, the 0–600 000 ms window
+was kept on measured grounds rather than by default, and the truth targets are anchored
+observations instead of title-derived guesses. Read
+[`../notes/hiddengrid-swc-ep044-tower-play.md`](../notes/hiddengrid-swc-ep044-tower-play.md)
+before scoring anything against it: annotation there is machine-assisted, and the note
+names the engines that therefore cannot be scored against it without declaring the
+dependency. The Critical Role candidate's targets remain provisional and metadata-derived.

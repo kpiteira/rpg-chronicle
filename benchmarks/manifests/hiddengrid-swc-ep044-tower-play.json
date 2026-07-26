@@ -4,61 +4,219 @@
   "title": "Hiddengrid Episode 044: Maria Mercurial session 6, Tower Play",
   "corpus_tier": "amateur_online",
   "source": {
-    "landing_url": "https://www.hiddengrid.com/category/podcast/feed/",
+    "landing_url": "https://www.hiddengrid.com/episode-044-maria-mercurial-session-6-tower-play/",
     "media_url": "https://www.hiddengrid.com/wp-content/Podcast/HIDDENGRID_EP044_S028_P01_140524.mp3",
     "publisher": "Hiddengrid: The Sixth World Chronicles",
-    "published_at": "2014-05-24",
+    "published_at": "2013-11-29",
     "accessed_at": "2026-07-26",
-    "episode_duration_ms": 7954009
+    "episode_duration_ms": 7954009,
+    "media_bytes": 127266240,
+    "media_sha256": "2a0f5272568b772fe9bcfd9371231484b153dc79e755564490a69b2552ac37e9"
   },
   "excerpt": {
     "start_ms": 0,
     "end_ms": 600000,
     "timestamp_basis": "published_media_file",
-    "verification": "A 2026-07-24 fetch returned a 127266240-byte MP3 lasting 7954.009375 seconds (SHA-256 2a0f5272568b772fe9bcfd9371231484b153dc79e755564490a69b2552ac37e9); the 0–600 second window is within the published file."
+    "verification": "A 2026-07-26 fetch returned 127266240 bytes matching the digest recorded at B01: a 128 kbit/s CBR MP3, 16 kHz, nominally stereo, lasting 7954.009 s. Reproduce with `uv run python scripts/fetch_benchmark_media.py hiddengrid-swc-ep044-tower-play`. The window was kept at 0-600000 ms after measurement rather than by default: theme music occupies only 0:03-0:57, the recap ends at 1:50, and the remaining 82% of the window is live play. The episode post is dated 2013-11-29; the media file's own Last-Modified is 2014-05-24, so the published audio was uploaded or replaced months after the post."
   },
   "recording_conditions": {
-    "capture_layout": "unknown",
+    "capture_layout": "remote_mixdown",
     "production": "edited",
-    "expected_physical_speakers": null,
-    "overlap": "unknown",
+    "expected_physical_speakers": 7,
+    "overlap": "medium",
     "music_or_effects": true,
-    "observations": "Independent full-cast Shadowrun actual-play podcast. Capture topology and speaker count require verification; it should be less acoustically controlled than the studio candidate."
+    "observations": "Measured from the file: one mixed track (the two channels differ by 34 dB, so there is no per-speaker channel to diarize from), 16 kHz sampling, so nothing survives above 8 kHz and energy above 7 kHz sits 26 dB down; integrated loudness -19.2 LUFS, 8.2 LU range, true peak +0.2 dBFS, so the audio was levelled and limited in post. Gaps between utterances fall to near-digital silence (1.05% of samples in the window are exactly zero, 4.6% below -78 dBFS), which an open microphone in a shared room does not produce; this is gated or noise-suppressed per speaker. That rules out a raw single-room capture but does not by itself prove remote play: the remote reading rests on the publisher's online-play format, players referred to by handle, and one player being 'AFK' at 00:17:00. Whether the endpoints were also recorded separately before mixdown cannot be determined from the published file. Seven distinct first-person role-holders speak inside the window: the game master and the players of Kat, Pulse, James, Gray, Freya and Gartog. Adjacent-turn exchanges prove at least five of them are different people (Kat and Pulse argue at 00:02:35, Kat and James hold a phone call at 00:04:04, James and Gray talk in the same room at 00:04:10, Freya and the game master trade jokes at 00:05:51). No voice-print separation was performed, so one person voicing two of the seven roles cannot be excluded; treat 7 as role-holders heard and 5 as the proven floor. Music: the theme song runs 00:00:03-00:00:57 and the host's welcome starts at 00:00:28 over it, so the first 29 s of speech in the window is mixed with music. Overlap is rated medium from laughter and interjections over the recap (00:01:10-00:01:49 carries no detectable pause) rather than from sustained cross-talk."
   },
   "references": {
     "caption_or_transcript": "none",
     "speaker_labels": false,
-    "annotation_status": "none"
+    "annotation_status": "verified"
   },
   "truth": {
+    "method": "Machine-assisted listen-through on 2026-07-26, not a human ear. The window was decoded twice by different implementations and model families - whisper.cpp large-v3-turbo (beam 5) and openai-whisper medium.en - both run locally on the private copy, and structure was measured with ffmpeg silence, loudness and spectral analysis rather than by any model. A target was verified only where both decodes carry it and a timestamp locates it; where they disagree, the disagreement is stated in the evidence instead of being resolved by guesswork. Contested passages were re-decoded by four more local models (whisper base.en, ggml small.en, ggml small multilingual, and large-v3-turbo at beam 8) and the split reported rather than voted away. Proper-noun spellings that no decode can settle are flagged as such, and two - Entei and nuyen - take their spelling from the publisher's episode tags and Shadowrun setting vocabulary respectively, with the audio only establishing that the word is spoken. This provenance matters for scoring: see benchmarks/notes/hiddengrid-swc-ep044-tower-play.md for what this item can and cannot diagnose, including the engines it must not be used to score without declaring the dependency.",
     "important_entities": [
-      {"label": "Maria Mercurial", "kind": "character", "status": "provisional"}
+      {
+        "label": "Jacob",
+        "kind": "person",
+        "status": "verified",
+        "anchor_ms": 69900,
+        "basis": "audio_observed",
+        "evidence": "A player is addressed by first name at 00:01:09, 'Jacob, you stole my line', after another player takes his joke. Both decodes agree on the name. It is not among the handles the publisher tags on this episode, and the spelling cannot be settled by ear."
+      },
+      {
+        "label": "Entei",
+        "kind": "person",
+        "status": "verified",
+        "anchor_ms": 222860,
+        "basis": "audio_observed",
+        "evidence": "At 00:03:42 a player says he will phone 'Ante's character, James', naming the person at the table and the character separately in one breath. Both decodes render the handle as 'Ante'; the publisher tags this episode Entei, which fixes the spelling of a name the audio alone leaves open."
+      },
+      {
+        "label": "The game master, credited by the publisher as nulloperations",
+        "kind": "person",
+        "status": "verified",
+        "anchor_ms": 365500,
+        "basis": "audio_observed",
+        "evidence": "One voice opens the episode at 00:00:28 with 'welcome to another episode', sets every scene, adjudicates every test, and at 00:06:05 says 'as the game master, I'm not doing rituals' (one decode hears 'aim master'). The role is observed in the audio; the credit is the publisher's."
+      },
+      {
+        "label": "Kat",
+        "kind": "character",
+        "status": "verified",
+        "anchor_ms": 252400,
+        "basis": "audio_observed",
+        "evidence": "Named in the phone call at 00:04:12, 'It's Kat', and again at 00:07:08 when the game master moves 'Kat and Pulse' to the building. Kat and Cat are homophones and the decodes produced both, so the audio establishes the character but not the spelling."
+      },
+      {
+        "label": "Pulse",
+        "kind": "character",
+        "status": "verified",
+        "anchor_ms": 428680,
+        "basis": "audio_observed",
+        "evidence": "The game master places 'Kat and Pulse' outside the building at 00:07:08. The same player says at 00:01:55 that he is going to hit the tower with Kat driving, which ties the name to the plan formed earlier in the window."
+      },
+      {
+        "label": "James",
+        "kind": "character",
+        "status": "verified",
+        "anchor_ms": 244700,
+        "basis": "audio_observed",
+        "evidence": "Introduced at 00:03:42 as Entei's character and addressed in the in-fiction phone call at 00:04:04, 'Hey, James, where the hell are you guys?'. Both decodes agree."
+      },
+      {
+        "label": "Gray",
+        "kind": "character",
+        "status": "verified",
+        "anchor_ms": 269280,
+        "basis": "audio_observed",
+        "evidence": "The character who hired the team, reached through James at 00:04:29 ('Gray said to call him when we were done') and whose apartment the group gathers in at 00:08:16. The decodes split between Gray and Greg, one engine using both within the window; accept either spelling as a hit."
+      },
+      {
+        "label": "Freya",
+        "kind": "character",
+        "status": "verified",
+        "anchor_ms": 331460,
+        "basis": "audio_observed",
+        "evidence": "At 00:05:31 a player narrates Freya in the other room taking aspirin for the headache the ritual left her, then claims the stun damage in the first person at 00:05:46."
+      },
+      {
+        "label": "Gartog",
+        "kind": "character",
+        "status": "verified",
+        "anchor_ms": 526220,
+        "basis": "audio_observed",
+        "evidence": "At 00:08:46 a player takes Gartog into a spare bedroom to swap the cyberdeck cases. Every decode produced a different name - Gartog, Gartok, Garntak, Garth - so the character is verified and the spelling is not. Score any of those renderings as a hit; the point of the target is that no engine resolved it."
+      },
+      {
+        "label": "The dragon holding the kidnapped target",
+        "kind": "character",
+        "status": "verified",
+        "anchor_ms": 53480,
+        "basis": "audio_observed",
+        "evidence": "At 00:00:53 a player summarises the situation as a pop princess 'kidnapped by a dragon'. The antagonist is never given a name inside the window, and this mention sits inside the recap, so it is knowledge stated here about events that happened earlier."
+      },
+      {
+        "label": "The tower",
+        "kind": "place",
+        "status": "verified",
+        "anchor_ms": 124180,
+        "basis": "audio_observed",
+        "evidence": "The objective the session's plan is built around: 'I'm going to hit the tower' at 00:02:04, after the recap places a tower in the vision the ritual produced."
+      },
+      {
+        "label": "The factory",
+        "kind": "place",
+        "status": "verified",
+        "anchor_ms": 135440,
+        "basis": "audio_observed",
+        "evidence": "The location already searched, at 00:02:15, 'it took me all day to search the factory'. It is what the group is done with, and it bounds what they still have to do."
+      },
+      {
+        "label": "Stuffer Shack",
+        "kind": "place",
+        "status": "verified",
+        "anchor_ms": 586000,
+        "basis": "audio_observed",
+        "evidence": "The game master asks at 00:09:46 whether the character can drive to the nearby Stuffer Shack for a repair kit. Neither decode produced the setting's form, offering 'stuffer shack' and 'Steffer Shack', so this probes Shadowrun vocabulary rather than plain transcription."
+      },
+      {
+        "label": "nuyen",
+        "kind": "item",
+        "status": "verified",
+        "anchor_ms": 170240,
+        "basis": "audio_observed",
+        "evidence": "The fee under discussion at 00:02:50 is 2,500 nuyen. Both decodes wrote 'new yen'. The audio establishes the spoken word and the amount; the spelling is the Shadowrun setting's. A target whose correct form neither engine produced is worth more than one they both got right."
+      }
     ],
     "important_events": [
       {
-        "label": "Session 6 tower sequence begins.",
+        "label": "The episode opens with the theme song, and the host's welcome begins over the music.",
         "kind": "event",
-        "status": "provisional"
+        "status": "verified",
+        "anchor_ms": 0,
+        "basis": "audio_observed",
+        "evidence": "Continuous non-silent audio from 00:00:03 to 00:00:57 by silence detection at -40 dB; the welcome starts at 00:00:28, so speech and music overlap for about 29 s. None of this is campaign content, and a chronicle that reports it as such has misread the episode's furniture for its story."
+      },
+      {
+        "label": "The game master recaps the previous session: the team's protection target, a kidnapped pop star, is held by a dragon, and a ritual produced a vision of a desolate area with a big-box building and a tower.",
+        "kind": "event",
+        "status": "verified",
+        "anchor_ms": 36180,
+        "basis": "audio_observed",
+        "evidence": "Game master narration from 00:00:36 to 00:01:50, with players interjecting. These events happened before the window. The recap is the only place the window states them, so a system must attribute them as recalled rather than as occurring here."
+      },
+      {
+        "label": "Pulse decides to hit the tower that night rather than wait for morning, and Kat agrees to drive him.",
+        "kind": "event",
+        "status": "verified",
+        "anchor_ms": 115920,
+        "basis": "audio_observed",
+        "evidence": "From 00:01:55 to 00:02:26: 'go sleep and then I'm going to hit the tower', 'Kat's going to drive me', then 'Screw it, then I'm going to go during the night'. This is the decision the session turns on, and it is made inside the window."
+      },
+      {
+        "label": "Pulse and Kat telephone James, who relays the request to Gray; Gray has James pass on the address and the pair drive over.",
+        "kind": "event",
+        "status": "verified",
+        "anchor_ms": 216280,
+        "basis": "audio_observed",
+        "evidence": "From 00:03:36 to 00:05:20. The exchange runs through a character relaying a call to another character in the same room, so speaker attribution and character attribution come apart here more sharply than anywhere else in the window."
+      },
+      {
+        "label": "Freya recovers stun damage from the ritual; the game master grants an in-fiction hour and calls for Body plus Willpower tests.",
+        "kind": "event",
+        "status": "verified",
+        "anchor_ms": 331460,
+        "basis": "audio_observed",
+        "evidence": "From 00:05:31 to 00:07:05, including 'body plus willpower, your hits reduce your stun damage'. Table mechanics that a chronicle should recognise as rules talk rather than as story."
+      },
+      {
+        "label": "Gartog starts transplanting the good cyberdeck into the shell of the old case; with no electronics kit on hand the game master sets the attempt at a -2 modifier.",
+        "kind": "event",
+        "status": "verified",
+        "anchor_ms": 526220,
+        "basis": "audio_observed",
+        "evidence": "From 00:08:46 to 00:09:53: the case swap is described, the game master asks for an electronics build-repair kit, the player has none, and the penalty is set. The attempt itself is resolved after the window ends."
       }
     ],
-    "notes": "Only episode-title targets are recorded at B01. B02 must listen, identify speakers, and create evidence-timestamped truth before this candidate is scored."
+    "notes": "The name Mercurial appears in no decode of this window; the full name is first spoken at about 00:21:42, well outside it. Inside the window the kidnapped target is 'our pop princess' and 'she', so the episode's title entity is deliberately absent from the truth targets and serves as a negative control: an analysis that reports 'Maria Mercurial' from this window is drawing on metadata or on prior sessions rather than on the audio, and should be scored as an unsupported claim unless it says where the name came from. One qualification, recorded because it cuts against the control: at 00:02:08 two of six decodes hear 'nothing happens to Maria in the time frame' where four hear 'nothing happens to me'. The bare given name may or may not be spoken there; it could not be settled without a human ear, and it is left unresolved rather than decided. The 'Tower Play' framing is a second metadata trap - the group plans the tower run here and reaches the tower later in the episode."
   },
   "rights": {
     "copyright_holder": "Hiddengrid contributors; Shadowrun rights remain with The Topps Company, Inc.",
-    "license": "Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International",
-    "license_url": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "license": "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported",
+    "license_url": "https://creativecommons.org/licenses/by-nc-sa/3.0/",
     "local_processing": "permitted",
     "redistribution": "restricted",
-    "review_notes": "The source site applies CC BY-NC-ND 4.0 and separately identifies Topps ownership of Shadowrun material. For R0, retain the original privately, process noncommercially, attribute the source, and select the time window logically. Do not publish a clip, modified audio, or transcript without further rights review.",
+    "review_notes": "Correction recorded at B02: B01 recorded CC BY-NC-ND 4.0, but the episode page carries a rel=\"license\" link to creativecommons.org/licenses/by-nc-sa/3.0/deed.en_US and the text 'This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License', checked against the page's raw HTML on 2026-07-26. ShareAlike, unlike NoDerivatives, would permit an attributed noncommercial derivative under the same licence. Redistribution stays restricted anyway, on two independent grounds: the recording embeds Shadowrun material owned by Topps, which the site's own licence cannot sublicense, and the project's repository policy keeps media and full transcripts out of Git regardless of licence. Local noncommercial processing is permitted; retain the original privately, attribute the source, and select the window logically rather than by writing a clipped file. Nothing derived from this audio - clip, transcript, or annotation quoting beyond what anchors a truth item - belongs in the repository.",
     "accessed_at": "2026-07-26"
   },
   "selection": {
     "r0_status": "recommended",
-    "diagnostic_value": "An explicitly licensed, directly downloadable independent actual-play source provides a reproducible first real probe and contrasts with polished studio production.",
+    "diagnostic_value": "The only real audio in the corpus with a verified fetch and a listened-through truth section. In ten minutes it exercises music over speech, a recap that states prior-session events inside the window, an explicit player-to-character mapping spoken aloud, a relayed in-fiction phone call, Shadowrun vocabulary that both reference decoders got wrong, and a named entity that the episode title supplies but the audio does not.",
     "risks": [
-      "NoDerivatives makes redistribution of a clipped or transformed artifact unsafe without permission.",
-      "Capture layout, speaker count, and excerpt truth content are not yet independently verified.",
-      "It is an online podcast, not the target single-room iPad condition."
+      "Truth is machine-assisted, not human-verified by ear. Any engine used to build it - whisper large-v3-turbo, whisper medium.en - carries an undeclared advantage when scored against it; see the notes file before reporting a score.",
+      "One mixed 16 kHz track with no per-speaker channel and a proven floor of five distinct speakers means diarization can be probed but not scored precisely.",
+      "It is an online podcast with post-production levelling and gating, not the target single-room iPad condition, and the corpus still lacks that tier.",
+      "The publisher serves the file from its own host; link rot or a re-encode would invalidate every anchor recorded here, which is why the digest is recorded and checked rather than assumed."
     ]
   }
 }
