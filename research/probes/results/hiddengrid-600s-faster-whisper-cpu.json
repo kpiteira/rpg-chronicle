@@ -15,20 +15,20 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 162.695,
-    "model_load_s": 2.097,
-    "inference_s": 160.598,
-    "realtime_factor": 3.69,
-    "inference_realtime_factor": 3.74,
-    "peak_rss_mb": 2644.6,
-    "peak_child_rss_mb": 13.6,
-    "load_avg_1m_before": 4.41,
-    "load_avg_1m_after": 6.21
+    "wall_clock_s": 164.313,
+    "model_load_s": 2.083,
+    "inference_s": 162.23,
+    "realtime_factor": 3.65,
+    "inference_realtime_factor": 3.7,
+    "peak_rss_mb": 2643.0,
+    "peak_child_rss_mb": 13.5,
+    "load_avg_1m_before": 5.17,
+    "load_avg_1m_after": 4.88
   },
   "shape": {
     "produces_text": true,
-    "unit_count": 241,
-    "canonical_turn_count": 241,
+    "unit_count": 240,
+    "canonical_turn_count": 240,
     "speaker_span_count": null,
     "speaker_span_ms": null,
     "rejected_unit_count": 0,
@@ -60,21 +60,25 @@
       "SPEAKER_27",
       "SPEAKER_29"
     ],
-    "turns_with_confidence": 241,
-    "confidence_min": 0.3201,
-    "confidence_mean": 0.7048,
-    "total_speech_ms": 311760,
-    "characters_of_text": 5490,
+    "turns_with_confidence": 240,
+    "confidence_min": 0.1984,
+    "confidence_mean": 0.7059,
+    "total_speech_ms": 311700,
+    "characters_of_text": 5459,
     "speaker_attribution": {
-      "mean_overlap_ratio": 0.815,
+      "mean_overlap_ratio": 0.819,
       "min_overlap_ratio": 0.0,
-      "turns_below_0_8_overlap": 87,
-      "turns_with_no_speaker": 9
+      "turns_below_0_8_overlap": 86,
+      "turns_with_no_speaker": 8,
+      "mean_coverage_ratio": 0.881,
+      "overlap_given_coverage": 0.93,
+      "total_unit_span_ms": 311700
     }
   },
   "diarization_source": {
     "path": "hiddengrid-600s-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
+  "configuration": {},
   "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
 }

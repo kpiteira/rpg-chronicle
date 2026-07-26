@@ -26,9 +26,17 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-# Invented proper nouns from the generator script. General-purpose ASR has no lexicon
-# for these, and the product's campaign vocabulary exists precisely because of it.
-INVENTED_NOUNS = ["Vaelthorn", "Ilyra", "Brann", "Korrigan", "Ashen Spire", "Warden"]
+# Two different things, kept apart on purpose.
+#
+# COINED are strings no English lexicon contains. A recognizer has to reconstruct them
+# from phonemes alone, which is the case the product's campaign vocabulary exists for.
+#
+# ENGLISH_NAMES are proper nouns built from ordinary words. A recognizer can produce
+# them without knowing they are names, so scoring them together with the coined ones
+# flatters the result -- "Ashen Spire" recovered says nothing about "Vaelthorn".
+COINED_NOUNS = ["Vaelthorn", "Ilyra", "Brann", "Korrigan"]
+ENGLISH_NAMES = ["Ashen Spire", "Warden"]
+INVENTED_NOUNS = COINED_NOUNS + ENGLISH_NAMES
 
 
 def _overlap_ms(a_start: int, a_end: int, b_start: int, b_end: int) -> int:
@@ -100,7 +108,16 @@ def score_text(truth_turns: list[dict], turns: list[dict]) -> dict[str, Any]:
     control = ["perception check", "disadvantage", "courtyard", "ridge"]
     control_found = {phrase: phrase in normalized for phrase in control}
 
+    coined = {n: found[n] for n in COINED_NOUNS}
+    english = {n: found[n] for n in ENGLISH_NAMES}
+
     return {
+        # The headline number. Coined strings are the ones a lexicon cannot help with.
+        "coined_noun_recall": round(sum(coined.values()) / len(coined), 3),
+        "coined_nouns_found": coined,
+        # Reported separately so the two are never averaged into one flattering figure.
+        "english_word_name_recall": round(sum(english.values()) / len(english), 3),
+        "english_word_names_found": english,
         "invented_nouns_found": found,
         "invented_noun_recall": round(sum(found.values()) / len(found), 3),
         "control_phrases_found": control_found,

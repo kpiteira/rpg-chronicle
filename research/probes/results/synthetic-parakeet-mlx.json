@@ -15,15 +15,15 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 2.383,
-    "model_load_s": 1.399,
-    "inference_s": 0.984,
-    "realtime_factor": 20.97,
-    "inference_realtime_factor": 50.79,
-    "peak_rss_mb": 789.8,
-    "peak_child_rss_mb": 15.2,
-    "load_avg_1m_before": 9.36,
-    "load_avg_1m_after": 9.36
+    "wall_clock_s": 2.172,
+    "model_load_s": 1.124,
+    "inference_s": 1.048,
+    "realtime_factor": 23.01,
+    "inference_realtime_factor": 47.67,
+    "peak_rss_mb": 811.9,
+    "peak_child_rss_mb": 15.4,
+    "load_avg_1m_before": 7.23,
+    "load_avg_1m_after": 7.23
   },
   "shape": {
     "produces_text": true,
@@ -51,16 +51,25 @@
       "mean_overlap_ratio": 0.887,
       "min_overlap_ratio": 0.525,
       "turns_below_0_8_overlap": 5,
-      "turns_with_no_speaker": 0
+      "turns_with_no_speaker": 0,
+      "mean_coverage_ratio": 0.922,
+      "overlap_given_coverage": 0.962,
+      "total_unit_span_ms": 49440
     }
   },
   "diarization_source": {
     "path": "synthetic-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
+  "configuration": {
+    "model": "mlx-community/parakeet-tdt-0.6b-v3",
+    "chunk_duration_s": null,
+    "chunk_env": "RPG_PROBE_PARAKEET_CHUNK"
+  },
   "native_artifact": {
     "engine": "parakeet-mlx",
     "model": "mlx-community/parakeet-tdt-0.6b-v3",
+    "chunk_duration_s": null,
     "text": "The road out of Veelthorn narrows as it climbs toward the ashen spire. Eyleira draws her hood up and checks the sigil on her palm again. Does Bran see anything moving on the ridge? I want a perception check. Roll it. The wind is loud enough that you are at disadvantage. That is a 14. Not great. Kari can keep walking. He had no patience for it line today. Then you three reach the gate before the light goes. It is already open. Eyleira stops. Open how? Forced open. Or left open? Left open. The bar is set neatly against the wall, as if by someone and her read. Korikan says what everyone is thinking. That is worth it. Bran wants to know if the warden of the spire is expecting us. You will find out. Something inside the courtyard says your name first.",
     "sentences": [
       {
@@ -1882,7 +1891,9 @@
       "end_ms": 3760,
       "text": "The road out of Veelthorn narrows as it climbs toward the ashen spire.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.9749904737800719
+      "confidence": 0.9749904737800719,
+      "speaker_overlap_ratio": 0.992,
+      "speaker_coverage_ratio": 0.992
     },
     {
       "id": "t0001",
@@ -1890,7 +1901,9 @@
       "end_ms": 7440,
       "text": "Eyleira draws her hood up and checks the sigil on her palm again.",
       "physical_speaker": "SPEAKER_01",
-      "confidence": 0.9802753456068828
+      "confidence": 0.9802753456068828,
+      "speaker_overlap_ratio": 0.954,
+      "speaker_coverage_ratio": 0.954
     },
     {
       "id": "t0002",
@@ -1898,7 +1911,9 @@
       "end_ms": 10080,
       "text": "Does Bran see anything moving on the ridge?",
       "physical_speaker": "SPEAKER_01",
-      "confidence": 0.9981500022444655
+      "confidence": 0.9981500022444655,
+      "speaker_overlap_ratio": 0.6,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0003",
@@ -1906,7 +1921,9 @@
       "end_ms": 11920,
       "text": "I want a perception check.",
       "physical_speaker": "SPEAKER_02",
-      "confidence": 0.9981514567499639
+      "confidence": 0.9981514567499639,
+      "speaker_overlap_ratio": 0.83,
+      "speaker_coverage_ratio": 0.83
     },
     {
       "id": "t0004",
@@ -1914,7 +1931,9 @@
       "end_ms": 12720,
       "text": "Roll it.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.9789120257362219
+      "confidence": 0.9789120257362219,
+      "speaker_overlap_ratio": 0.843,
+      "speaker_coverage_ratio": 0.843
     },
     {
       "id": "t0005",
@@ -1922,7 +1941,9 @@
       "end_ms": 15840,
       "text": "The wind is loud enough that you are at disadvantage.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.9992952061177375
+      "confidence": 0.9992952061177375,
+      "speaker_overlap_ratio": 0.525,
+      "speaker_coverage_ratio": 0.925
     },
     {
       "id": "t0006",
@@ -1930,7 +1951,9 @@
       "end_ms": 17200,
       "text": "That is a 14.",
       "physical_speaker": "SPEAKER_01",
-      "confidence": 0.9780671369834641
+      "confidence": 0.9780671369834641,
+      "speaker_overlap_ratio": 0.924,
+      "speaker_coverage_ratio": 0.924
     },
     {
       "id": "t0007",
@@ -1938,7 +1961,9 @@
       "end_ms": 18240,
       "text": "Not great.",
       "physical_speaker": "SPEAKER_01",
-      "confidence": 0.9976885429435403
+      "confidence": 0.9976885429435403,
+      "speaker_overlap_ratio": 0.756,
+      "speaker_coverage_ratio": 0.756
     },
     {
       "id": "t0008",
@@ -1946,7 +1971,9 @@
       "end_ms": 20560,
       "text": "Kari can keep walking.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.9384773866172823
+      "confidence": 0.9384773866172823,
+      "speaker_overlap_ratio": 0.734,
+      "speaker_coverage_ratio": 0.734
     },
     {
       "id": "t0009",
@@ -1954,7 +1981,9 @@
       "end_ms": 23440,
       "text": "He had no patience for it line today.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.9528812416332028
+      "confidence": 0.9528812416332028,
+      "speaker_overlap_ratio": 0.949,
+      "speaker_coverage_ratio": 0.949
     },
     {
       "id": "t0010",
@@ -1962,7 +1991,9 @@
       "end_ms": 26320,
       "text": "Then you three reach the gate before the light goes.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.9943789792443097
+      "confidence": 0.9943789792443097,
+      "speaker_overlap_ratio": 0.954,
+      "speaker_coverage_ratio": 0.954
     },
     {
       "id": "t0011",
@@ -1970,7 +2001,9 @@
       "end_ms": 27760,
       "text": "It is already open.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.999289951312722
+      "confidence": 0.999289951312722,
+      "speaker_overlap_ratio": 0.857,
+      "speaker_coverage_ratio": 0.857
     },
     {
       "id": "t0012",
@@ -1978,7 +2011,9 @@
       "end_ms": 29040,
       "text": "Eyleira stops.",
       "physical_speaker": "SPEAKER_04",
-      "confidence": 0.9180170378008697
+      "confidence": 0.9180170378008697,
+      "speaker_overlap_ratio": 0.91,
+      "speaker_coverage_ratio": 0.91
     },
     {
       "id": "t0013",
@@ -1986,7 +2021,9 @@
       "end_ms": 29920,
       "text": "Open how?",
       "physical_speaker": "SPEAKER_04",
-      "confidence": 0.9767694330127694
+      "confidence": 0.9767694330127694,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0014",
@@ -1994,7 +2031,9 @@
       "end_ms": 31040,
       "text": "Forced open.",
       "physical_speaker": "SPEAKER_04",
-      "confidence": 0.9670007706834456
+      "confidence": 0.9670007706834456,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0015",
@@ -2002,7 +2041,9 @@
       "end_ms": 32320,
       "text": "Or left open?",
       "physical_speaker": "SPEAKER_04",
-      "confidence": 0.9860768122604361
+      "confidence": 0.9860768122604361,
+      "speaker_overlap_ratio": 0.77,
+      "speaker_coverage_ratio": 0.77
     },
     {
       "id": "t0016",
@@ -2010,7 +2051,9 @@
       "end_ms": 33280,
       "text": "Left open.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.990553760269122
+      "confidence": 0.990553760269122,
+      "speaker_overlap_ratio": 0.972,
+      "speaker_coverage_ratio": 0.972
     },
     {
       "id": "t0017",
@@ -2018,7 +2061,9 @@
       "end_ms": 37680,
       "text": "The bar is set neatly against the wall, as if by someone and her read.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.9826801226379095
+      "confidence": 0.9826801226379095,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0018",
@@ -2026,7 +2071,9 @@
       "end_ms": 40800,
       "text": "Korikan says what everyone is thinking.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.9186500520582835
+      "confidence": 0.9186500520582835,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0019",
@@ -2034,7 +2081,9 @@
       "end_ms": 41840,
       "text": "That is worth it.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.9386384111867688
+      "confidence": 0.9386384111867688,
+      "speaker_overlap_ratio": 0.959,
+      "speaker_coverage_ratio": 0.959
     },
     {
       "id": "t0020",
@@ -2042,7 +2091,9 @@
       "end_ms": 45760,
       "text": "Bran wants to know if the warden of the spire is expecting us.",
       "physical_speaker": "SPEAKER_02",
-      "confidence": 0.9952822159562025
+      "confidence": 0.9952822159562025,
+      "speaker_overlap_ratio": 0.931,
+      "speaker_coverage_ratio": 0.931
     },
     {
       "id": "t0021",
@@ -2050,7 +2101,9 @@
       "end_ms": 47120,
       "text": "You will find out.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.9873752358904083
+      "confidence": 0.9873752358904083,
+      "speaker_overlap_ratio": 0.949,
+      "speaker_coverage_ratio": 0.949
     },
     {
       "id": "t0022",
@@ -2058,7 +2111,9 @@
       "end_ms": 49840,
       "text": "Something inside the courtyard says your name first.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.9996710458948004
+      "confidence": 0.9996710458948004,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     }
   ]
 }

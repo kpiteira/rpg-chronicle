@@ -43,6 +43,9 @@ brew install whisper-cpp
 mkdir -p ~/.cache/rpg-chronicle/models && cd ~/.cache/rpg-chronicle/models
 curl -sSL -O https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-segmentation-models/sherpa-onnx-pyannote-segmentation-3-0.tar.bz2
 tar xjf sherpa-onnx-pyannote-segmentation-3-0.tar.bz2
+# "recongition" is not a typo in this file -- it is the upstream release tag, misspelled
+# by k2-fsa. Verified 2026-07-26: the misspelling returns 206, the correct spelling 404s.
+# Do not "fix" it.
 curl -sSL -o wespeaker_en_voxceleb_CAMPP.onnx \
     'https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-recongition-models/wespeaker_en_voxceleb_CAM%2B%2B.onnx'
 curl -sSL -O https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-large-v3-turbo.bin
@@ -86,18 +89,47 @@ the wall-clock numbers are upper bounds — peak memory is unaffected by content
 
 ### Scaling and tuning runs
 
-Two extra sweeps back the four-hour projection and the diarization findings:
+These back the four-hour projection and the diarization findings. Every committed
+`scaling-*.json` comes from one of the commands below; the recognition realtime factors
+the wall-clock projection is taken from come from the `whispercpp` runs specifically.
 
 ```bash
-# memory against input length -- the projection rests on this being measured, not assumed
+# the windows every scaling run uses
 for T in 1200 1800 2400; do
   ffmpeg -v error -ss 0 -t $T -i "$CACHE/hiddengrid-ep044.mp3" \
       -ac 1 -ar 16000 -c:a pcm_s16le "$CACHE/scale-$T.wav" -y
+done
+
+# diarization memory against input length -- measured, not assumed
+for T in 1200 1800 2400; do
   research/probes/speech_stack_probe.py --stack sherpa-diarization \
       --audio "$CACHE/scale-$T.wav" --redact-text \
       --out research/probes/results/scaling-diarization-${T}s.json \
       --input-label "hiddengrid-${T}s"
 done
+
+# recognition at the same lengths, so the comparison is like for like
+for T in 1200 2400; do
+  research/probes/speech_stack_probe.py --stack whisper-cpp-metal \
+      --audio "$CACHE/scale-$T.wav" --redact-text \
+      --out research/probes/results/scaling-whispercpp-${T}s.json \
+      --input-label "hiddengrid-${T}s"
+
+  # RPG_PROBE_PARAKEET_CHUNK sets parakeet-mlx's chunk_duration in seconds. It is
+  # required above ~10 minutes of audio and is recorded in each result's
+  # `configuration` block, which survives redaction for exactly this reason.
+  RPG_PROBE_PARAKEET_CHUNK=120 research/probes/speech_stack_probe.py --stack parakeet-mlx \
+      --audio "$CACHE/scale-$T.wav" --redact-text \
+      --out research/probes/results/scaling-parakeet-chunked-${T}s.json \
+      --input-label "hiddengrid-${T}s"
+done
+
+# the failure the scorecard cites: parakeet-mlx with no chunk duration at 20 minutes.
+# Expected to exit non-zero and write a result with "outcome": "failed".
+research/probes/speech_stack_probe.py --stack parakeet-mlx \
+    --audio "$CACHE/scale-1200.wav" --redact-text \
+    --out research/probes/results/scaling-parakeet-unchunked-1200s.json \
+    --input-label "hiddengrid-1200s" || true
 
 # clustering threshold, against the synthetic clip's known speaker count
 for TH in 0.4 0.5 0.6 0.7 0.8 0.9; do

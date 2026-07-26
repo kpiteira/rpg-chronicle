@@ -2,6 +2,7 @@
   "probe": "sherpa-onnx offline speaker diarization, clustering threshold sweep",
   "output_kind": "model output",
   "provider_of_record": "sherpa-onnx pyannote-segmentation-3.0 + wespeaker CAM++",
+  "reproduce": "research/probes/README.md, \"Scaling and tuning runs\"",
   "why": "Establishes whether tuning recovers the true speaker count, and which failure mode each setting produces. Fragmentation (one person, several labels) is recoverable; collision (several people, one label) fabricates attribution.",
   "synthetic_clip": {
     "truth_kind": "declared truth, generated locally; no engine saw it",
@@ -177,7 +178,7 @@
       "0.5": {
         "labels": 23,
         "speaker_spans": 208,
-        "note": "from the default-threshold battery run, hiddengrid-600s-sherpa-diarization.json"
+        "note": "the default; taken from hiddengrid-600s-sherpa-diarization.json"
       }
     }
   }

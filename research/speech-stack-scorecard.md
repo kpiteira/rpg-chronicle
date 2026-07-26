@@ -26,17 +26,19 @@ third model plus a second inference pass.
 
 ### Why not Parakeet, which measured faster
 
-`parakeet-mlx` was the fastest and lightest thing probed, by a lot: 1.9x whisper.cpp's
-throughput on the 600 s window (44.7x realtime against 23.3x) and a fifth of its memory.
+`parakeet-mlx` was the fastest and lightest thing probed, by a lot: 1.6x whisper.cpp's
+throughput on the 600 s window (36.8x realtime against 23.3x), widening to 3.7x at 40
+minutes, on a fifth of the memory.
 It is not a close call on those axes and this recommendation does not pretend otherwise. It goes to whisper.cpp on four grounds, in
 order of weight:
 
-1. **Speaker attribution, which is the axis that binds.** Parakeet's unit is a sentence;
-   whisper.cpp's is a shorter decoder segment. Coarser units straddle more speaker
-   changes, and the measured mean speaker overlap was 0.85 for whisper.cpp against 0.61
-   for Parakeet on identical audio. Two thirds of Parakeet's turns carry a speaker label
-   that covers only part of the turn. `docs/PRODUCT.md` requires separating physical
-   speakers; speed does not trade against that.
+1. **Speaker attribution — a real but smaller advantage than the raw numbers suggest.**
+   Parakeet's unit is a sentence; whisper.cpp's is a shorter decoder segment. Raw mean
+   speaker overlap was 0.85 for whisper.cpp against 0.61 for Parakeet, but that
+   comparison is confounded and the corrected figures are 0.94 against 0.86 — see
+   "Speaker attribution, corrected" below, which sets out both the confound and what
+   survives it. `docs/PRODUCT.md` requires separating physical speakers, and whisper.cpp
+   is still ahead, but this reason carries less weight than the raw gap implied.
 2. **Long audio works by default.** Parakeet-mlx builds one tensor for the whole file
    and **fails outright at 20 minutes** — Metal refused a 14.4 GB allocation against a
    14.3 GB limit. It handles four hours only once an explicit `chunk_duration` is set,
@@ -67,32 +69,27 @@ hiddengrid-swc-ep044-tower-play.json`), 16 kHz mono. Full results in
 `research/probes/results/`; text and engine-native artifacts are withheld there because
 the source is CC BY-NC-ND.
 
-| Stack | Wall clock | Realtime factor | Model load | Peak RSS | Units emitted | Mean speaker overlap | Load avg at start |
-|---|---|---|---|---|---|---|---|
-| `whisper-cpp-metal` | 25.7 s | 23.3x | not separable (CLI) | 2,095 MB (child) | 302 | **0.85** | 6.1 |
-| `parakeet-mlx` | **13.4 s** | **44.7x** | 1.1 s | **428 MB** | 158 | 0.61 | 10.9 |
-| `mlx-whisper` | 40.7 s | 14.8x | not separable | 2,064 MB | 389 | 0.73 | 9.4 |
-| `faster-whisper-cpu` | 162.7 s | 3.7x | 2.1 s | 2,645 MB | 241 | 0.81 | 4.4 |
-| `sherpa-diarization` | 28.9 s | 20.7x | 0.4 s | 3,651 MB | 208 spans | — | 7.0 |
+| Stack | Wall clock | Realtime factor | Peak RSS | Units emitted | Unusable units | Load avg at start |
+|---|---|---|---|---|---|---|
+| `whisper-cpp-metal` | 25.8 s | 23.3x | 2,095 MB (child) | 302 | 1 | 7.3 |
+| `parakeet-mlx` | **16.3 s** | **36.8x** | **419 MB** | 158 | 0 | 13.6 |
+| `mlx-whisper` | 32.6 s | 18.4x | 2,093 MB | 213 | 1 | 11.4 |
+| `faster-whisper-cpu` | 164.3 s | 3.6x | 2,643 MB | 240 | 0 | 5.2 |
+| `sherpa-diarization` | 30.0 s | 20.0x | 3,658 MB | 208 spans | — | 5.7 |
 
 Three readings of that table, in order of how much they change the decision.
 
 **Parakeet is the fastest and lightest by a wide margin, and it still does not win.**
-It is 1.9x faster than whisper.cpp and uses a fifth of the memory. But both are 20–45x
+It is 1.6x faster than whisper.cpp here and uses a fifth of the memory; on the longer
+inputs below the throughput gap widens to over 3x. But both are 20–45x
 realtime on a task that needs to finish overnight at worst, so neither speed nor memory
 is the product's binding constraint, and an advantage on a non-binding axis does not
 decide anything. Recording this plainly matters: the recommendation goes to the slower
 engine, and a reader deserves to see the number that argues against it.
 
-**Speaker attribution splits them, and that axis does bind.** whisper.cpp emitted 302
-units where Parakeet emitted 158 for the same audio, because Parakeet's unit is a
-sentence and whisper.cpp's is a shorter decoder segment. Coarser units straddle more
-speaker changes: mean speaker overlap 0.85 against 0.61, with 90 of 301 whisper.cpp
-turns below 0.8 overlap against 107 of 158 for Parakeet. Two thirds of Parakeet's turns
-carry a speaker label that describes most of the turn rather than all of it. Since the
-product must "separate physical speakers from fictional characters"
-(`docs/PRODUCT.md`), this is the axis that limits outcomes, and the finer segmentation
-is worth more than the speed.
+**Speaker attribution splits them, but by less than the raw numbers say.** See the next
+section — the raw overlap comparison is confounded by unit span, and correcting for it
+shrinks a 0.24 gap to 0.08.
 
 **The CPU floor is real, not theoretical.** faster-whisper on CPU alone ran at 3.7x
 realtime — a four-hour session in roughly 65 minutes with no GPU at all. A stack that
@@ -101,6 +98,46 @@ degrades to that is portable in practice and not only on paper.
 Wall-clock figures are upper bounds: a second agent session was running on the same
 machine throughout, at the load averages recorded in the last column. Peak memory is
 unaffected by contention.
+
+### Speaker attribution, corrected
+
+The first version of this scorecard led with raw mean speaker overlap — 0.85 for
+whisper.cpp against 0.61 for Parakeet — as the main reason to prefer the slower engine.
+The goal validator found that comparison confounded, and it was right. The correction
+is recorded here rather than quietly applied, because the original number is the kind
+that looks decisive and is not.
+
+**The confound.** The diarizer labelled 407,621 ms of the 600 s window as speech.
+Parakeet's units span 477,520 ms — 70 seconds *more* than any speaker was found
+speaking, because a sentence-level unit runs across the pauses inside it. Overlap is
+measured against the unit's own span, so Parakeet cannot reach 1.0 no matter how
+correctly every label is assigned. whisper.cpp's units total 389,060 ms, comfortably
+inside the diarized speech, so its ceiling is 1.0. The two engines were being scored
+against different maxima.
+
+**The correction.** `speaker_coverage_ratio` — the share of a unit that *any* speaker
+covers — was already computed per unit but never aggregated, which is why the confound
+was invisible in the committed evidence. It is now reported, along with overlap divided
+by coverage, which is attribution purity given what was diarized at all:
+
+| Stack | Unit span | Raw overlap | Coverage | Overlap given coverage |
+|---|---|---|---|---|
+| `whisper-cpp-metal` | 389,060 ms | 0.847 | 0.900 | **0.941** |
+| `faster-whisper-cpu` | 311,700 ms | 0.819 | 0.881 | 0.930 |
+| `mlx-whisper` | 314,900 ms | 0.785 | 0.860 | 0.913 |
+| `parakeet-mlx` | 477,520 ms | 0.610 | 0.712 | 0.857 |
+
+**What survives.** whisper.cpp still attributes better than Parakeet, by 0.084 rather
+than 0.237, and it is now the best of the four rather than merely ahead of the one it
+was compared against. That is a real advantage pointing the same way as before, but a
+modest one — and the honest reading is that the four recognizers cluster between 0.86
+and 0.94 on attribution purity, where the raw numbers suggested a chasm.
+
+**What the low coverage means, since it is not purely an artifact.** A unit spanning
+28% non-speaker time is a genuinely worse carrier for a single speaker label: attach one
+name to it and the label describes silence and possibly a second voice as well. So
+Parakeet's coarse units are a real liability for attribution — just a *different* one
+from misattribution, and a third of the size the first number implied.
 
 ### Output shape and normalizability
 
@@ -129,10 +166,10 @@ Three things this table hides, and they matter:
    rather than an observation, and the review layer needs to be able to tell.
 3. **Rejected units are real.** `TranscriptTurn.__post_init__` rejects empty text and
    non-positive spans. The probe reports what could not become a turn rather than
-   dropping it; a `TranscriptProvider` will hit the same cases. On the 600 s window
-   whisper.cpp produced 1 unusable unit out of 302 and mlx-whisper produced 47 out of
-   389 — a further point against mlx-whisper and a reminder that this is not a
-   theoretical concern.
+   dropping it; a `TranscriptProvider` will hit the same cases. On the 600 s
+   window whisper.cpp produced 1 unusable unit out of 302 and mlx-whisper 1 out of 213;
+   the count is small but non-zero on every Whisper-family run, so a provider that
+   assumed every segment converts would be wrong on its first real file.
 
 ### What a `TranscriptProvider` would have to do
 
@@ -170,21 +207,30 @@ On the rights-clear synthetic clip — where the truth is the generator's script
 engine ever sees — all four recognizers failed identically on the thing this product
 exists to capture.
 
-| Stack | Invented proper nouns recovered | Control phrases recovered | Mean confidence where the name survived | Mean confidence where it was lost |
-|---|---|---|---|---|
-| `whisper-cpp-metal` | 2 of 6 (0.33) | 4 of 4 (1.00) | 0.966 | 0.946 |
-| `parakeet-mlx` | 2 of 6 (0.33) | 4 of 4 (1.00) | 0.985 | 0.965 |
-| `mlx-whisper` | 2 of 6 (0.33) | 4 of 4 (1.00) | 0.822 | 0.820 |
-| `faster-whisper-cpu` | 2 of 6 (0.33) | 4 of 4 (1.00) | 0.821 | 0.818 |
+The clip's proper nouns come in two kinds, and they must not be averaged together. Four
+are **coined** — `Vaelthorn`, `Ilyra`, `Brann`, `Korrigan` — strings no English lexicon
+contains, which a recognizer has to reconstruct from phonemes alone. Two are **names
+built from ordinary words** — `Ashen Spire`, `Warden` — which a recognizer can produce
+without knowing they are names at all. An earlier version of this table scored all six
+together and reported "2 of 6 recovered"; the goal validator pointed out that this
+softens the result, and it does. Separated:
 
-`Vaelthorn`, `Ilyra`, `Brann` and `Korrigan` were lost by every engine; the ordinary
-English control phrases were recovered by every engine. The failure is specific to
-invented vocabulary and it is not an engine defect — it is what a general-purpose
-recognizer with no campaign lexicon does.
+| Stack | **Coined nouns recovered** | English-word names | Control phrases | Confidence where name survived | where it was lost |
+|---|---|---|---|---|---|
+| `whisper-cpp-metal` | **0 of 4** | 2 of 2 | 4 of 4 | 0.966 | 0.946 |
+| `parakeet-mlx` | **0 of 4** | 2 of 2 | 4 of 4 | 0.985 | 0.965 |
+| `mlx-whisper` | **0 of 4** | 2 of 2 | 4 of 4 | 0.822 | 0.820 |
+| `faster-whisper-cpu` | **0 of 4** | 2 of 2 | 4 of 4 | 0.821 | 0.818 |
+
+The real number is zero. Not one engine recovered a single coined proper noun, while
+every engine recovered every ordinary-word name and every control phrase. The failure is
+total and it is specific to invented vocabulary — it is not an engine defect but what a
+general-purpose recognizer with no campaign lexicon does.
 
 Two consequences, and the second is the important one.
 
-1. **Engine choice cannot fix this.** Four engines, two model families, one result.
+1. **Engine choice cannot fix this.** Four engines, two model families, zero coined
+   nouns recovered between them.
    Swapping recognizers is not the lever; campaign vocabulary is. That is already an
    owned concern in `docs/ARCHITECTURE_BOUNDARIES.md` ("campaign vocabulary and
    correction history"), and this measurement is the first evidence of how much work it
@@ -256,7 +302,7 @@ setup prompt around it.
 
 The 600 s Hiddengrid window produced **23 distinct speaker labels** at the default
 threshold, and the count climbs with input length — 23 at 10 minutes, 32 at 20, 39 at
-30, on a podcast with a handful of participants. Sweeping the threshold does move it:
+30, 46 at 40, on a podcast with a handful of participants. Sweeping the threshold does move it:
 
 | Threshold | 0.4 | 0.5 (default) | 0.6 | 0.7 | 0.8 | 0.9 |
 |---|---|---|---|---|---|---|
@@ -267,6 +313,23 @@ So the count is tunable on real audio — but the episode has no verified speake
 `expected_physical_speakers: null`), so there is nothing to tune *toward*. And the one
 input where the truth is known is the one where no setting reaches it. Tuning this knob
 against a plausible-looking number would be fitting to a guess.
+
+### A number in the scored results that looks like good news, and is not
+
+`research/probes/results/synthetic-scores.json` reports a mean turn purity of 1.0 with
+zero colliding labels for the Whisper-family stacks on the synthetic clip. Read
+straight, that contradicts this whole section. It should not be read straight.
+
+Purity there is computed over *fused* turns, and fusion has already collapsed each ASR
+unit to a single winning speaker. On a clip whose turn boundaries line up with silences,
+each truth turn overlaps exactly one fused unit, so purity is 1.0 almost by
+construction — it is measuring the fusion step, not the diarizer. The same metric run
+against the raw diarizer spans, which is the honest comparison, gives 0.923 with six
+labels for four speakers.
+
+Where fused purity is genuinely informative is *between* stacks on the same diarization,
+because it then reflects unit granularity rather than diarization quality. That is the
+comparison in the cost section, and it comes with its own confound, handled there.
 
 ### One honest caveat about the synthetic evidence
 
@@ -307,42 +370,54 @@ from `research/probes/results/scaling-*.json`.
 
 | Input | whisper.cpp | parakeet-mlx (chunked) | sherpa diarization |
 |---|---|---|---|
-| 10 min | 25.7 s (23.3x) / 2,095 MB | 13.4 s (44.7x) / 428 MB | 28.9 s (20.7x) / 3,651 MB |
-| 20 min | 67.3 s (17.8x) / 2,203 MB | 22.8 s (52.6x) / 886 MB | 59.8 s (20.1x) / 5,150 MB |
-| 30 min | — | — | 91.8 s (19.6x) / 6,000 MB |
-| 40 min | 119.5 s (20.1x) / 2,418 MB | 44.4 s (54.1x) / 1,109 MB | 123.0 s (19.5x) / 6,395 MB |
+| 10 min | 25.8 s (23.3x) / 2,095 MB | 16.3 s (36.8x) / 419 MB *(unchunked)* | 30.0 s (20.0x) / 3,658 MB |
+| 20 min | 53.2 s (22.6x) / 2,203 MB | 16.2 s (74.2x) / 1,153 MB | 61.2 s (19.6x) / 5,166 MB |
+| 30 min | — | — | 84.0 s (21.4x) / 6,003 MB |
+| 40 min | 111.7 s (21.5x) / 2,418 MB | 30.5 s (78.6x) / 1,099 MB | 115.5 s (20.8x) / 6,325 MB |
+
+At 20 minutes unchunked, Parakeet does not appear in this table because it does not run:
+`research/probes/results/scaling-parakeet-unchunked-1200s.json` records the failure,
+1.5 s in, with `[metal::malloc] Attempting to allocate 14401440032 bytes which is
+greater than the maximum allowed buffer size of 14302248960 bytes`. Its chunked figures
+above use `chunk_duration=120`, recorded in each result's `configuration` block.
 
 **Time is linear in input length.** Every stack held a stable realtime factor across a
-4x range. The variation in whisper.cpp's figures (17.8x to 23.3x) tracks the machine's
-load average at the time — 6.1, 27.4 and 28.2 — not the input, which is why the load is
-recorded in every result.
+4x range — whisper.cpp within 21.5–23.3x, diarization within 19.6–21.4x. Residual
+variation tracks the machine's load average rather than the input, which is why the load
+is recorded in every result. Chunked Parakeet is the exception in a good way: it gets
+*faster* per second of audio on longer inputs, 36.8x to 78.6x, because a fixed model-load
+cost spreads over more work.
 
 **Projected four-hour wall clock**, taking the *slowest* observed factor for each stage:
 
-- recognition, whisper.cpp at 17.8x → **13.5 minutes**
-- diarization, sherpa-onnx at 19.5x → **12.3 minutes**
-- **total, run sequentially: about 26 minutes for a four-hour session**, on a machine
-  that was busy throughout. On an idle machine it should be nearer 20.
+- recognition, whisper.cpp at 21.5x → **11.2 minutes**
+- diarization, sherpa-onnx at 19.6x → **12.3 minutes**
+- **total, run sequentially: about 23 minutes for a four-hour session**, on a machine
+  that was busy throughout.
 
-For comparison, the same projection is 4.4 minutes for chunked Parakeet, and 65 minutes
+For comparison, the same projection is 3.2 minutes for chunked Parakeet, and 66 minutes
 for the CPU-only floor. Even the floor finishes a night's session inside an hour and a
 half.
 
 **Memory needs two different projections, because the two stages behave differently.**
 
 - *whisper.cpp is effectively constant.* Growth is 0.179 MB per second of audio, and it
-  is the same rate between 10→20 minutes and 20→40 minutes, so a straight line is the
-  right model. Four hours projects to **about 4.6 GB**. This is the internal 30-second
+  is the same rate to three decimals between 10→20 minutes and 20→40 minutes, so a
+  straight line is the right model. Four hours projects to **about 4.6 GB**. This is the internal 30-second
   windowing doing its job.
-- *sherpa-onnx diarization decelerates.* Growth per second of audio fell 5.01 → 2.50 →
-  1.42 → 0.66 MB across the four intervals, roughly halving each time. That gives a
+- *sherpa-onnx diarization decelerates.* Growth per second of audio fell 5.02 → 2.51 →
+  1.40 → 0.54 MB across the four intervals, roughly halving each time. These are
+  *interval* slopes between consecutive measurements, not averages: the first is
+  (3658.5 − 895.2) MB ÷ (600 − 50) s, using the 50 s synthetic measurement as the low
+  anchor. Dividing a single measurement by its own duration gives a different and
+  less useful number. That gives a
   range rather than a number, and both ends are stated because the extrapolation is the
   weakest link in this projection:
-  - **lower bound ~6.8 GB**, if the halving continues;
-  - **upper bound ~14.3 GB**, if growth instead stays flat at the last observed rate.
+  - **lower bound ~6.6 GB**, if the halving continues;
+  - **upper bound ~12.8 GB**, if growth instead stays flat at the last observed rate.
 
 Run sequentially, peak memory is the larger stage, so a four-hour session should need
-**7–14 GB against the machine's 24 GB**. That fits, with less headroom than is
+**7–13 GB against the machine's 24 GB**. That fits, with less headroom than is
 comfortable — and the upper bound is the one to plan against.
 
 **Assumptions this projection makes, stated so they can be checked:**
@@ -352,13 +427,13 @@ comfortable — and the upper bound is the one to plan against.
 2. Speech density is comparable. Hiddengrid is an edited podcast; a real table has more
    silence, which should help both stages.
 3. The stages run sequentially. Running recognition and diarization concurrently would
-   halve the wall clock and *add* the memory, pushing the upper bound past 16 GB — and
+   halve the wall clock and *add* the memory, pushing the upper bound past 17 GB — and
    at 40 minutes this machine was already 11 GB into swap with a second agent session
    running. Sequential is the recommended default.
 4. No model reload per session; load time is under 2 s and irrelevant at this scale.
 
 **The escalation threshold in the goal was not reached.** A four-hour session processes
-in roughly 26 minutes inside the machine's memory, so cloud processing of private
+in roughly 23 minutes inside the machine's memory, so cloud processing of private
 recordings does not need to be put to the user.
 
 ## Scorecard
@@ -477,7 +552,7 @@ since 2025-11-19 before depending on it.
 At that point the Swift toolchain stops being a cost and Core ML/ANE stops being
 unreachable.
 
-**Replace the whole recognizer tier when** invented-proper-noun recall stays near 0.33
+**Replace the whole recognizer tier when** coined-proper-noun recall stays at zero
 *after* campaign vocabulary is in place. That would mean the problem is the acoustic
 model rather than the lexicon, and fine-tuning or a different model family becomes the
 lever instead of more vocabulary.
@@ -524,9 +599,9 @@ not schedule.
    borrowable today. Speaker identity is not, and the highest-value next probe is
    pyannote's community pipeline against sherpa-onnx on B02's annotated audio — which
    also settles whether the account gate is worth accepting.
-4. **Campaign vocabulary has a measured job to do.** Invented-proper-noun recall of 0.33
-   is the number for it to beat, and this scorecard's synthetic clip is a cheap,
-   rights-clear regression input for measuring progress.
+4. **Campaign vocabulary has a measured job to do.** Coined-proper-noun recall is
+   currently zero of four, and this scorecard's synthetic clip is a cheap, rights-clear
+   regression input for measuring progress against it.
 5. **`docs/STATUS.md` records that no provisional engine is selected.** That is now out
    of date, and `docs/` is TPM territory, so it is flagged here rather than edited.
 6. **A tier-3 benchmark input does not exist.** Every conclusion about the target

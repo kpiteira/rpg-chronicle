@@ -15,20 +15,20 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 38.707,
-    "model_load_s": 2.138,
-    "inference_s": 36.569,
+    "wall_clock_s": 38.881,
+    "model_load_s": 2.044,
+    "inference_s": 36.837,
     "realtime_factor": 1.29,
-    "inference_realtime_factor": 1.37,
-    "peak_rss_mb": 2470.3,
-    "peak_child_rss_mb": 13.4,
-    "load_avg_1m_before": 8.1,
-    "load_avg_1m_after": 6.98
+    "inference_realtime_factor": 1.36,
+    "peak_rss_mb": 2471.3,
+    "peak_child_rss_mb": 13.5,
+    "load_avg_1m_before": 6.07,
+    "load_avg_1m_after": 5.7
   },
   "shape": {
     "produces_text": true,
-    "unit_count": 18,
-    "canonical_turn_count": 18,
+    "unit_count": 15,
+    "canonical_turn_count": 15,
     "speaker_span_count": null,
     "speaker_span_ms": null,
     "rejected_unit_count": 0,
@@ -42,22 +42,26 @@
       "SPEAKER_04",
       "SPEAKER_06"
     ],
-    "turns_with_confidence": 18,
-    "confidence_min": 0.0947,
-    "confidence_mean": 0.6175,
-    "total_speech_ms": 44500,
-    "characters_of_text": 795,
+    "turns_with_confidence": 15,
+    "confidence_min": 0.0472,
+    "confidence_mean": 0.7157,
+    "total_speech_ms": 44520,
+    "characters_of_text": 766,
     "speaker_attribution": {
-      "mean_overlap_ratio": 0.906,
+      "mean_overlap_ratio": 0.887,
       "min_overlap_ratio": 0.378,
       "turns_below_0_8_overlap": 3,
-      "turns_with_no_speaker": 0
+      "turns_with_no_speaker": 0,
+      "mean_coverage_ratio": 0.977,
+      "overlap_given_coverage": 0.908,
+      "total_unit_span_ms": 44520
     }
   },
   "diarization_source": {
     "path": "synthetic-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
+  "configuration": {},
   "native_artifact": {
     "engine": "faster-whisper",
     "model": "large-v3-turbo",
@@ -1037,124 +1041,49 @@
       },
       {
         "start": 49.64,
-        "end": 49.68,
-        "text": " The post.",
-        "avg_logprob": -2.3565218702275703,
-        "no_speech_prob": 9.352350491265149e-12,
-        "words": [
-          {
-            "word": " The",
-            "start": 49.64,
-            "end": 49.68,
-            "probability": 0.009081431664526463
-          },
-          {
-            "word": " post.",
-            "start": 49.68,
-            "end": 49.68,
-            "probability": 0.001925016171298921
-          }
-        ]
-      },
-      {
-        "start": 49.7,
-        "end": 49.78,
-        "text": " The post.",
-        "avg_logprob": -2.3565218702275703,
-        "no_speech_prob": 9.352350491265149e-12,
-        "words": [
-          {
-            "word": " The",
-            "start": 49.7,
-            "end": 49.72,
-            "probability": 0.13837756216526031
-          },
-          {
-            "word": " post.",
-            "start": 49.72,
-            "end": 49.78,
-            "probability": 0.9294548630714417
-          }
-        ]
-      },
-      {
-        "start": 49.78,
         "end": 49.86,
-        "text": " The post.",
-        "avg_logprob": -2.3565218702275703,
+        "text": " He'll be the first.",
+        "avg_logprob": -3.052436048334295,
         "no_speech_prob": 9.352350491265149e-12,
         "words": [
           {
-            "word": " The",
-            "start": 49.78,
-            "end": 49.78,
-            "probability": 0.5814551711082458
+            "word": " He'll",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.01190119719831273
           },
           {
-            "word": " post.",
-            "start": 49.78,
+            "word": " be",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.5529648065567017
+          },
+          {
+            "word": " the",
+            "start": 49.64,
+            "end": 49.72,
+            "probability": 0.10765098035335541
+          },
+          {
+            "word": " first.",
+            "start": 49.72,
             "end": 49.86,
-            "probability": 0.9943251013755798
+            "probability": 0.41215240955352783
           }
         ]
       },
       {
         "start": 49.86,
-        "end": 49.9,
-        "text": " The post.",
-        "avg_logprob": -2.3565218702275703,
-        "no_speech_prob": 9.352350491265149e-12,
-        "words": [
-          {
-            "word": " The",
-            "start": 49.86,
-            "end": 49.9,
-            "probability": 0.7995302081108093
-          },
-          {
-            "word": " post.",
-            "start": 49.9,
-            "end": 49.9,
-            "probability": 0.9980486631393433
-          }
-        ]
-      },
-      {
-        "start": 49.9,
         "end": 49.94,
-        "text": " Now it is ready to",
-        "avg_logprob": -2.3565218702275703,
+        "text": " But...",
+        "avg_logprob": -3.052436048334295,
         "no_speech_prob": 9.352350491265149e-12,
         "words": [
           {
-            "word": " Now",
-            "start": 49.9,
+            "word": " But...",
+            "start": 49.86,
             "end": 49.94,
-            "probability": 0.0006113703711889684
-          },
-          {
-            "word": " it",
-            "start": 49.94,
-            "end": 49.94,
-            "probability": 0.0285770483314991
-          },
-          {
-            "word": " is",
-            "start": 49.94,
-            "end": 49.94,
-            "probability": 0.06024928763508797
-          },
-          {
-            "word": " ready",
-            "start": 49.94,
-            "end": 49.94,
-            "probability": 0.002420145785436034
-          },
-          {
-            "word": " to",
-            "start": 49.94,
-            "end": 49.94,
-            "probability": 0.4031777083873749
+            "probability": 0.01814022264443338
           }
         ]
       }
@@ -1167,7 +1096,9 @@
       "end_ms": 3540,
       "text": "The road out of Ealthorn narrows as it climbs toward the Ashen Spire.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.810526251605358
+      "confidence": 0.810526251605358,
+      "speaker_overlap_ratio": 0.991,
+      "speaker_coverage_ratio": 0.991
     },
     {
       "id": "t0001",
@@ -1175,7 +1106,9 @@
       "end_ms": 7040,
       "text": "Eilera draws her hood up and checks the sigil on her palm again.",
       "physical_speaker": "SPEAKER_01",
-      "confidence": 0.810526251605358
+      "confidence": 0.810526251605358,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0002",
@@ -1183,7 +1116,9 @@
       "end_ms": 11480,
       "text": "Does Bran see anything moving on the ridge? I want a perception check.",
       "physical_speaker": "SPEAKER_02",
-      "confidence": 0.810526251605358
+      "confidence": 0.810526251605358,
+      "speaker_overlap_ratio": 0.617,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0003",
@@ -1191,7 +1126,9 @@
       "end_ms": 15180,
       "text": "Roll it. The wind is loud enough that you are at disadvantage.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.810526251605358
+      "confidence": 0.810526251605358,
+      "speaker_overlap_ratio": 0.378,
+      "speaker_coverage_ratio": 0.979
     },
     {
       "id": "t0004",
@@ -1199,7 +1136,9 @@
       "end_ms": 17760,
       "text": "That is a 14. Not great.",
       "physical_speaker": "SPEAKER_01",
-      "confidence": 0.810526251605358
+      "confidence": 0.810526251605358,
+      "speaker_overlap_ratio": 0.946,
+      "speaker_coverage_ratio": 0.946
     },
     {
       "id": "t0005",
@@ -1207,7 +1146,9 @@
       "end_ms": 23060,
       "text": "Karikon keeps walking. He has no patience for ridge lines today.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.810526251605358
+      "confidence": 0.810526251605358,
+      "speaker_overlap_ratio": 0.523,
+      "speaker_coverage_ratio": 0.884
     },
     {
       "id": "t0006",
@@ -1215,7 +1156,9 @@
       "end_ms": 27360,
       "text": "Then you three reach the gate before the light goes. It is already open.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.810526251605358
+      "confidence": 0.810526251605358,
+      "speaker_overlap_ratio": 0.981,
+      "speaker_coverage_ratio": 0.981
     },
     {
       "id": "t0007",
@@ -1223,7 +1166,9 @@
       "end_ms": 29680,
       "text": "Eilera stops. Open how?",
       "physical_speaker": "SPEAKER_04",
-      "confidence": 0.810526251605358
+      "confidence": 0.810526251605358,
+      "speaker_overlap_ratio": 0.94,
+      "speaker_coverage_ratio": 0.94
     },
     {
       "id": "t0008",
@@ -1231,7 +1176,9 @@
       "end_ms": 31860,
       "text": "Forced open. Or left open?",
       "physical_speaker": "SPEAKER_04",
-      "confidence": 0.8313818000544303
+      "confidence": 0.8313818000544303,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0009",
@@ -1239,7 +1186,9 @@
       "end_ms": 37280,
       "text": "Left open. The bar is set neatly against the wall. As if by someone in her read.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.8313818000544303
+      "confidence": 0.8313818000544303,
+      "speaker_overlap_ratio": 0.967,
+      "speaker_coverage_ratio": 0.967
     },
     {
       "id": "t0010",
@@ -1247,7 +1196,9 @@
       "end_ms": 41620,
       "text": "Karikon says what everyone is thinking. That is worse.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.8313818000544303
+      "confidence": 0.8313818000544303,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0011",
@@ -1255,7 +1206,9 @@
       "end_ms": 45440,
       "text": "Bran wants to know if the warden of the spire is expecting us.",
       "physical_speaker": "SPEAKER_02",
-      "confidence": 0.8313818000544303
+      "confidence": 0.8313818000544303,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0012",
@@ -1263,47 +1216,29 @@
       "end_ms": 49640,
       "text": "You will find out. Something inside the courtyard says your name first.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.8313818000544303
+      "confidence": 0.8313818000544303,
+      "speaker_overlap_ratio": 0.962,
+      "speaker_coverage_ratio": 0.962
     },
     {
       "id": "t0013",
       "start_ms": 49640,
-      "end_ms": 49680,
-      "text": "The post.",
+      "end_ms": 49860,
+      "text": "He'll be the first.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.0947492007674158
+      "confidence": 0.0472436961700055,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0014",
-      "start_ms": 49700,
-      "end_ms": 49780,
-      "text": "The post.",
-      "physical_speaker": "SPEAKER_00",
-      "confidence": 0.0947492007674158
-    },
-    {
-      "id": "t0015",
-      "start_ms": 49780,
-      "end_ms": 49860,
-      "text": "The post.",
-      "physical_speaker": "SPEAKER_00",
-      "confidence": 0.0947492007674158
-    },
-    {
-      "id": "t0016",
       "start_ms": 49860,
-      "end_ms": 49900,
-      "text": "The post.",
-      "physical_speaker": "SPEAKER_00",
-      "confidence": 0.0947492007674158
-    },
-    {
-      "id": "t0017",
-      "start_ms": 49900,
       "end_ms": 49940,
-      "text": "Now it is ready to",
+      "text": "But...",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.0947492007674158
+      "confidence": 0.0472436961700055,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     }
   ]
 }

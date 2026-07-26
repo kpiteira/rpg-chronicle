@@ -15,15 +15,15 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 2.412,
+    "wall_clock_s": 2.369,
     "model_load_s": 0.0,
-    "inference_s": 2.412,
-    "realtime_factor": 20.72,
-    "inference_realtime_factor": 20.72,
-    "peak_rss_mb": 26.4,
-    "peak_child_rss_mb": 1988.7,
-    "load_avg_1m_before": 8.63,
-    "load_avg_1m_after": 8.1
+    "inference_s": 2.368,
+    "realtime_factor": 21.1,
+    "inference_realtime_factor": 21.1,
+    "peak_rss_mb": 26.7,
+    "peak_child_rss_mb": 1986.5,
+    "load_avg_1m_before": 6.07,
+    "load_avg_1m_after": 6.07
   },
   "shape": {
     "produces_text": true,
@@ -51,13 +51,17 @@
       "mean_overlap_ratio": 0.881,
       "min_overlap_ratio": 0.39,
       "turns_below_0_8_overlap": 3,
-      "turns_with_no_speaker": 0
+      "turns_with_no_speaker": 0,
+      "mean_coverage_ratio": 0.984,
+      "overlap_given_coverage": 0.895,
+      "total_unit_span_ms": 44740
     }
   },
   "diarization_source": {
     "path": "synthetic-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
+  "configuration": {},
   "native_artifact": {
     "engine": "whisper.cpp",
     "model": {
@@ -82,7 +86,7 @@
     "cli": [
       "whisper-cli",
       "-m",
-      "/Users/karl/.cache/rpg-chronicle/models/ggml-large-v3-turbo.bin",
+      "ggml-large-v3-turbo.bin",
       "-f",
       "synthetic-table-talk.wav",
       "-ojf",
@@ -92,11 +96,6 @@
       "12"
     ],
     "systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
-    "params": {
-      "model": "/Users/karl/.cache/rpg-chronicle/models/ggml-large-v3-turbo.bin",
-      "language": "en",
-      "translate": false
-    },
     "result": {
       "language": "en"
     },
@@ -3030,17 +3029,17 @@
       }
     ],
     "stderr_tail": [
-      "output_json: saving output to 'synthetic-table-talk.json'",
+      "output_json: saving output to '/var/folders/yd/xvtv0p5x38n21chq45grg_240000gn/T/rpg-whispercpp-y3ss9h1d/synthetic-table-talk.json'",
       "",
-      "whisper_print_timings:     load time =   471.50 ms",
+      "whisper_print_timings:     load time =   430.10 ms",
       "whisper_print_timings:     fallbacks =   0 p /   0 h",
-      "whisper_print_timings:      mel time =     8.45 ms",
-      "whisper_print_timings:   sample time =   125.67 ms /  1034 runs (     0.12 ms per run)",
-      "whisper_print_timings:   encode time =   996.98 ms /     2 runs (   498.49 ms per run)",
-      "whisper_print_timings:   decode time =     2.24 ms /     1 runs (     2.24 ms per run)",
-      "whisper_print_timings:   batchd time =   668.56 ms /  1026 runs (     0.65 ms per run)",
-      "whisper_print_timings:   prompt time =    12.82 ms /   132 runs (     0.10 ms per run)",
-      "whisper_print_timings:    total time =  2322.61 ms",
+      "whisper_print_timings:      mel time =     8.41 ms",
+      "whisper_print_timings:   sample time =   119.22 ms /  1034 runs (     0.12 ms per run)",
+      "whisper_print_timings:   encode time =   999.84 ms /     2 runs (   499.92 ms per run)",
+      "whisper_print_timings:   decode time =     2.25 ms /     1 runs (     2.25 ms per run)",
+      "whisper_print_timings:   batchd time =   670.77 ms /  1026 runs (     0.65 ms per run)",
+      "whisper_print_timings:   prompt time =    12.81 ms /   132 runs (     0.10 ms per run)",
+      "whisper_print_timings:    total time =  2279.43 ms",
       "ggml_metal_free: deallocating"
     ]
   },
@@ -3051,7 +3050,9 @@
       "end_ms": 3560,
       "text": "The road out of Vealthorn narrows as it climbs toward the Ashen Spire.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.940869
+      "confidence": 0.940869,
+      "speaker_overlap_ratio": 0.991,
+      "speaker_coverage_ratio": 0.991
     },
     {
       "id": "t0001",
@@ -3059,7 +3060,9 @@
       "end_ms": 7100,
       "text": "Eilera draws her hood up and checks the sigil on her palm again.",
       "physical_speaker": "SPEAKER_01",
-      "confidence": 0.935678
+      "confidence": 0.935678,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0002",
@@ -3067,7 +3070,9 @@
       "end_ms": 11600,
       "text": "Does Bran see anything moving on the ridge? I want a perception check.",
       "physical_speaker": "SPEAKER_02",
-      "confidence": 0.949437
+      "confidence": 0.949437,
+      "speaker_overlap_ratio": 0.644,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0003",
@@ -3075,7 +3080,9 @@
       "end_ms": 15180,
       "text": "Roll it. The wind is loud enough that you are at disadvantage.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.993662
+      "confidence": 0.993662,
+      "speaker_overlap_ratio": 0.39,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0004",
@@ -3083,7 +3090,9 @@
       "end_ms": 17900,
       "text": "That is a 14. Not great.",
       "physical_speaker": "SPEAKER_01",
-      "confidence": 0.973469
+      "confidence": 0.973469,
+      "speaker_overlap_ratio": 0.988,
+      "speaker_coverage_ratio": 0.988
     },
     {
       "id": "t0005",
@@ -3091,7 +3100,9 @@
       "end_ms": 23180,
       "text": "Karikon keeps walking. He has no patience for ridge lines today.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.826645
+      "confidence": 0.826645,
+      "speaker_overlap_ratio": 0.526,
+      "speaker_coverage_ratio": 0.878
     },
     {
       "id": "t0006",
@@ -3099,7 +3110,9 @@
       "end_ms": 27420,
       "text": "Then you three reach the gate before the light goes. It is already open.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.998634
+      "confidence": 0.998634,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0007",
@@ -3107,7 +3120,9 @@
       "end_ms": 29740,
       "text": "Eilera stops. Open how?",
       "physical_speaker": "SPEAKER_04",
-      "confidence": 0.951522
+      "confidence": 0.951522,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0008",
@@ -3115,7 +3130,9 @@
       "end_ms": 31900,
       "text": "Forced open. Or left open?",
       "physical_speaker": "SPEAKER_04",
-      "confidence": 0.955427
+      "confidence": 0.955427,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0009",
@@ -3123,7 +3140,9 @@
       "end_ms": 37340,
       "text": "Left open. The bar is set neatly against the wall, as if by someone in her read.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.900759
+      "confidence": 0.900759,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0010",
@@ -3131,7 +3150,9 @@
       "end_ms": 41700,
       "text": "Karikon says what everyone is thinking. That is worse.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.99743
+      "confidence": 0.99743,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0011",
@@ -3139,7 +3160,9 @@
       "end_ms": 45440,
       "text": "Bran wants to know if the warden of the spire is expecting us.",
       "physical_speaker": "SPEAKER_02",
-      "confidence": 0.958231
+      "confidence": 0.958231,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0012",
@@ -3147,7 +3170,9 @@
       "end_ms": 49960,
       "text": "You will find out. Something inside the courtyard says your name first.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.998745
+      "confidence": 0.998745,
+      "speaker_overlap_ratio": 0.914,
+      "speaker_coverage_ratio": 0.94
     }
   ]
 }

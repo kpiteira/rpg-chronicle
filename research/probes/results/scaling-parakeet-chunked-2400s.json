@@ -15,15 +15,15 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 44.396,
-    "model_load_s": 1.285,
-    "inference_s": 43.11,
-    "realtime_factor": 54.06,
-    "inference_realtime_factor": 55.67,
-    "peak_rss_mb": 1109.0,
-    "peak_child_rss_mb": 16.4,
-    "load_avg_1m_before": 23.52,
-    "load_avg_1m_after": 27.42
+    "wall_clock_s": 30.519,
+    "model_load_s": 1.048,
+    "inference_s": 29.471,
+    "realtime_factor": 78.64,
+    "inference_realtime_factor": 81.43,
+    "peak_rss_mb": 1099.3,
+    "peak_child_rss_mb": 16.3,
+    "load_avg_1m_before": 3.06,
+    "load_avg_1m_after": 2.91
   },
   "shape": {
     "produces_text": true,
@@ -43,5 +43,10 @@
     "characters_of_text": 23630
   },
   "diarization_source": null,
+  "configuration": {
+    "model": "mlx-community/parakeet-tdt-0.6b-v3",
+    "chunk_duration_s": 120.0,
+    "chunk_env": "RPG_PROBE_PARAKEET_CHUNK"
+  },
   "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
 }

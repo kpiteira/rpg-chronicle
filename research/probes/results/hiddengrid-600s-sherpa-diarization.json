@@ -15,15 +15,15 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 28.924,
-    "model_load_s": 0.358,
-    "inference_s": 28.567,
-    "realtime_factor": 20.74,
-    "inference_realtime_factor": 21.0,
-    "peak_rss_mb": 3651.2,
+    "wall_clock_s": 30.046,
+    "model_load_s": 0.351,
+    "inference_s": 29.695,
+    "realtime_factor": 19.97,
+    "inference_realtime_factor": 20.21,
+    "peak_rss_mb": 3658.5,
     "peak_child_rss_mb": 13.5,
-    "load_avg_1m_before": 6.98,
-    "load_avg_1m_after": 10.92
+    "load_avg_1m_before": 5.7,
+    "load_avg_1m_after": 13.57
   },
   "shape": {
     "produces_text": false,
@@ -67,5 +67,6 @@
     "characters_of_text": 0
   },
   "diarization_source": null,
+  "configuration": {},
   "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
 }

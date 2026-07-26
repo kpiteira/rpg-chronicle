@@ -15,15 +15,15 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 13.418,
-    "model_load_s": 1.12,
-    "inference_s": 12.298,
-    "realtime_factor": 44.72,
-    "inference_realtime_factor": 48.79,
-    "peak_rss_mb": 428.1,
-    "peak_child_rss_mb": 15.6,
-    "load_avg_1m_before": 10.92,
-    "load_avg_1m_after": 9.45
+    "wall_clock_s": 16.31,
+    "model_load_s": 1.266,
+    "inference_s": 15.044,
+    "realtime_factor": 36.79,
+    "inference_realtime_factor": 39.88,
+    "peak_rss_mb": 419.4,
+    "peak_child_rss_mb": 15.7,
+    "load_avg_1m_before": 13.57,
+    "load_avg_1m_after": 11.89
   },
   "shape": {
     "produces_text": true,
@@ -68,12 +68,20 @@
       "mean_overlap_ratio": 0.61,
       "min_overlap_ratio": 0.0,
       "turns_below_0_8_overlap": 107,
-      "turns_with_no_speaker": 4
+      "turns_with_no_speaker": 4,
+      "mean_coverage_ratio": 0.712,
+      "overlap_given_coverage": 0.857,
+      "total_unit_span_ms": 477520
     }
   },
   "diarization_source": {
     "path": "hiddengrid-600s-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
+  },
+  "configuration": {
+    "model": "mlx-community/parakeet-tdt-0.6b-v3",
+    "chunk_duration_s": null,
+    "chunk_env": "RPG_PROBE_PARAKEET_CHUNK"
   },
   "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
 }

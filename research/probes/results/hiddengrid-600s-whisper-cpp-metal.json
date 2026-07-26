@@ -15,15 +15,15 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 25.735,
-    "model_load_s": 0.0,
-    "inference_s": 25.735,
-    "realtime_factor": 23.31,
-    "inference_realtime_factor": 23.31,
-    "peak_rss_mb": 29.2,
-    "peak_child_rss_mb": 2094.6,
-    "load_avg_1m_before": 6.08,
-    "load_avg_1m_after": 4.41
+    "wall_clock_s": 25.79,
+    "model_load_s": 0.001,
+    "inference_s": 25.79,
+    "realtime_factor": 23.26,
+    "inference_realtime_factor": 23.27,
+    "peak_rss_mb": 29.7,
+    "peak_child_rss_mb": 2095.4,
+    "load_avg_1m_before": 7.31,
+    "load_avg_1m_after": 5.17
   },
   "shape": {
     "produces_text": true,
@@ -69,12 +69,16 @@
       "mean_overlap_ratio": 0.847,
       "min_overlap_ratio": 0.0,
       "turns_below_0_8_overlap": 90,
-      "turns_with_no_speaker": 10
+      "turns_with_no_speaker": 10,
+      "mean_coverage_ratio": 0.9,
+      "overlap_given_coverage": 0.941,
+      "total_unit_span_ms": 389060
     }
   },
   "diarization_source": {
     "path": "hiddengrid-600s-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
+  "configuration": {},
   "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
 }

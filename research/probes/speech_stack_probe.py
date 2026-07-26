@@ -27,11 +27,14 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import platform
 import resource
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from collections.abc import Callable
 from pathlib import Path
@@ -44,6 +47,11 @@ from typing import Any
 # end or the other.
 Ready = Callable[[], None]
 Probe = tuple[dict[str, Any], list[dict[str, Any]]]
+
+# Settings a runner chose that a reader needs in order to re-run it. These are kept
+# out of the engine-native artifact on purpose: redaction strips that artifact for
+# restricted inputs, and a redacted result that cannot be reproduced is not evidence.
+CONFIGURATION: dict[str, Any] = {}
 
 MODELS = Path(os.environ.get("RPG_PROBE_MODELS", Path.home() / ".cache/rpg-chronicle/models"))
 
@@ -107,6 +115,13 @@ def run_parakeet_mlx(audio: Path, ready: Ready) -> Probe:
     # result instead of being hidden inside a default value.
     chunk = os.environ.get("RPG_PROBE_PARAKEET_CHUNK")
     extra = {"chunk_duration": float(chunk)} if chunk else {}
+    CONFIGURATION.update(
+        {
+            "model": repo,
+            "chunk_duration_s": extra.get("chunk_duration"),
+            "chunk_env": "RPG_PROBE_PARAKEET_CHUNK",
+        }
+    )
     result = model.transcribe(audio, **extra)
 
     sentences = [
@@ -165,7 +180,7 @@ def run_mlx_whisper(audio: Path, ready: Ready) -> Probe:
             # Whisper has no calibrated per-segment confidence. avg_logprob is the
             # closest native signal; exp() puts it on 0..1 so it is comparable in shape
             # to Parakeet's confidence, NOT so it is comparable in meaning.
-            "confidence": float(pow(2.718281828459045, seg["avg_logprob"])),
+            "confidence": math.exp(seg["avg_logprob"]),
             "no_speech_prob": seg.get("no_speech_prob"),
         }
         for seg in result["segments"]
@@ -209,7 +224,7 @@ def run_faster_whisper_cpu(audio: Path, ready: Ready) -> Probe:
             "start_ms": _ms(s["start"]),
             "end_ms": _ms(s["end"]),
             "text": s["text"].strip(),
-            "confidence": float(pow(2.718281828459045, s["avg_logprob"])),
+            "confidence": math.exp(s["avg_logprob"]),
             "no_speech_prob": s["no_speech_prob"],
         }
         for s in collected
@@ -225,7 +240,12 @@ def run_whisper_cpp_metal(audio: Path, ready: Ready) -> Probe:
     separately below.
     """
     model = Path(os.environ.get("RPG_PROBE_WHISPER_CPP_MODEL", MODELS / "ggml-large-v3-turbo.bin"))
-    out_prefix = audio.with_suffix("")
+    # Never beside the input. The input may live inside the checkout, and whisper-cli
+    # would then drop an unredacted transcript into the working tree where it could be
+    # committed by accident -- which for a CC BY-NC-ND source is the one outcome this
+    # probe exists to avoid.
+    scratch = tempfile.mkdtemp(prefix="rpg-whispercpp-")
+    out_prefix = Path(scratch) / audio.stem
     cmd = [
         "whisper-cli",
         "-m",
@@ -246,7 +266,12 @@ def run_whisper_cpp_metal(audio: Path, ready: Ready) -> Probe:
     proc = subprocess.run(cmd, check=True, capture_output=True, text=True)
     payload = json.loads(Path(f"{out_prefix}.json").read_text())
 
-    native = {"engine": "whisper.cpp", "model": str(model.name), "cli": cmd, **payload}
+    # Absolute paths here would commit the operator's home directory and username into
+    # a public repository. The command is recorded by basename so it stays readable
+    # without carrying machine identity into the diff.
+    redacted_cmd = [Path(part).name if "/" in part else part for part in cmd]
+    payload.pop("params", None)
+    native = {"engine": "whisper.cpp", "model": model.name, "cli": redacted_cmd, **payload}
     units = []
     for seg in payload.get("transcription", []):
         offsets = seg["offsets"]
@@ -266,6 +291,7 @@ def run_whisper_cpp_metal(audio: Path, ready: Ready) -> Probe:
             }
         )
     native["stderr_tail"] = proc.stderr.strip().splitlines()[-12:]
+    shutil.rmtree(scratch, ignore_errors=True)
     return native, units
 
 
@@ -357,17 +383,21 @@ def fuse_speakers(
     recorded per unit as ``speaker_overlap_ratio`` so the review layer can see which
     turns are attributions rather than observations.
     """
+    # Converted once, not once per unit: this loop is O(units x segments) and the
+    # repeated rounding was both wasted work and a chance for two iterations to disagree.
+    spans = [(_ms(seg["start"]), _ms(seg["end"]), seg["speaker"]) for seg in diarization_segments]
+
     fused = []
     for unit in units:
         best_speaker, best_overlap = None, 0
         total = 0
-        for seg in diarization_segments:
-            start = max(unit["start_ms"], _ms(seg["start"]))
-            end = min(unit["end_ms"], _ms(seg["end"]))
+        for seg_start, seg_end, speaker in spans:
+            start = max(unit["start_ms"], seg_start)
+            end = min(unit["end_ms"], seg_end)
             overlap = max(0, end - start)
             total += overlap
             if overlap > best_overlap:
-                best_speaker, best_overlap = seg["speaker"], overlap
+                best_speaker, best_overlap = speaker, overlap
         span = max(1, unit["end_ms"] - unit["start_ms"])
         fused.append(
             {
@@ -399,16 +429,21 @@ def to_canonical_turns(
         if start < 0 or end <= start:
             rejected.append({"index": index, "reason": "non-positive span", "unit": unit})
             continue
-        turns.append(
-            {
-                "id": f"t{index:04d}",
-                "start_ms": start,
-                "end_ms": end,
-                "text": text,
-                "physical_speaker": unit.get("physical_speaker"),
-                "confidence": unit.get("confidence"),
-            }
-        )
+        turn = {
+            "id": f"t{index:04d}",
+            "start_ms": start,
+            "end_ms": end,
+            "text": text,
+            "physical_speaker": unit.get("physical_speaker"),
+            "confidence": unit.get("confidence"),
+        }
+        # Attribution quality travels with the turn it describes. Aggregates alone hide
+        # which turns are attributions rather than observations, and that is exactly
+        # what a review layer needs per turn.
+        for extra in ("speaker_overlap_ratio", "speaker_coverage_ratio"):
+            if extra in unit:
+                turn[extra] = unit[extra]
+        turns.append(turn)
     return turns, rejected
 
 
@@ -453,7 +488,39 @@ def main() -> int:
     load_before = os.getloadavg()
     started = time.monotonic()
     ready_at: list[float] = []
-    native, units = RUNNERS[args.stack](args.audio, lambda: ready_at.append(time.monotonic()))
+    # A stack that cannot process an input is a result about that stack, not an absence
+    # of one. Recording the failure keeps "this engine refuses audio of this length"
+    # inside the committed evidence instead of only in a console someone once watched.
+    try:
+        native, units = RUNNERS[args.stack](args.audio, lambda: ready_at.append(time.monotonic()))
+    except Exception as failure:  # noqa: BLE001 - any engine failure is the finding
+        elapsed = time.monotonic() - started
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(
+            json.dumps(
+                {
+                    "probe_version": "1",
+                    "stack": args.stack,
+                    "outcome": "failed",
+                    "input": {
+                        "label": args.input_label or args.audio.name,
+                        "duration_s": round(duration_s, 3),
+                    },
+                    "configuration": dict(CONFIGURATION),
+                    "environment": {
+                        "machine": platform.machine(),
+                        "platform": platform.platform(),
+                    },
+                    "failed_after_s": round(elapsed, 3),
+                    "error_type": type(failure).__name__,
+                    "error": str(failure).replace(str(Path.home()), "~"),
+                },
+                indent=2,
+            )
+            + "\n"
+        )
+        print(f"{args.stack}: FAILED after {elapsed:.1f}s -> {args.out}\n  {failure}")
+        return 1
     elapsed = time.monotonic() - started
     load_after = os.getloadavg()
     model_load_s = (ready_at[0] - started) if ready_at else None
@@ -541,18 +608,33 @@ def main() -> int:
             "characters_of_text": sum(len(t["text"]) for t in turns),
         },
         "diarization_source": diarization_source,
+        "configuration": dict(CONFIGURATION),
     }
 
     # How confidently the fused speaker label describes its turn. This survives
     # redaction because it is an aggregate about attribution quality and contains
     # nothing anyone said.
     overlaps = [t["speaker_overlap_ratio"] for t in units if "speaker_overlap_ratio" in t]
+    coverages = [t["speaker_coverage_ratio"] for t in units if "speaker_coverage_ratio" in t]
     if overlaps:
+        mean_overlap = sum(overlaps) / len(overlaps)
+        mean_coverage = sum(coverages) / len(coverages)
+        unit_span = sum(t["end_ms"] - t["start_ms"] for t in units)
         result["shape"]["speaker_attribution"] = {
-            "mean_overlap_ratio": round(sum(overlaps) / len(overlaps), 3),
+            "mean_overlap_ratio": round(mean_overlap, 3),
             "min_overlap_ratio": round(min(overlaps), 3),
             "turns_below_0_8_overlap": sum(1 for o in overlaps if o < 0.8),
             "turns_with_no_speaker": sum(1 for t in units if not t.get("physical_speaker")),
+            # Overlap alone confounds two different things. A stack whose units span more
+            # time than the diarizer called speech cannot reach an overlap of 1.0 however
+            # well it attributes, so coverage -- the share of a unit any speaker covers --
+            # has to be reported beside it. The ratio of the two is attribution purity
+            # given what was diarized at all, which is the comparable quantity.
+            "mean_coverage_ratio": round(mean_coverage, 3),
+            "overlap_given_coverage": (
+                round(mean_overlap / mean_coverage, 3) if mean_coverage else None
+            ),
+            "total_unit_span_ms": unit_span,
         }
 
     if args.redact_text:

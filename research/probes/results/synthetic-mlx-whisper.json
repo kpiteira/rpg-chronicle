@@ -15,20 +15,20 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 11.438,
-    "model_load_s": 0.593,
-    "inference_s": 10.845,
-    "realtime_factor": 4.37,
-    "inference_realtime_factor": 4.61,
-    "peak_rss_mb": 1941.0,
-    "peak_child_rss_mb": 15.4,
-    "load_avg_1m_before": 9.36,
-    "load_avg_1m_after": 8.63
+    "wall_clock_s": 12.008,
+    "model_load_s": 0.588,
+    "inference_s": 11.42,
+    "realtime_factor": 4.16,
+    "inference_realtime_factor": 4.38,
+    "peak_rss_mb": 1942.0,
+    "peak_child_rss_mb": 15.2,
+    "load_avg_1m_before": 7.23,
+    "load_avg_1m_after": 6.07
   },
   "shape": {
     "produces_text": true,
-    "unit_count": 41,
-    "canonical_turn_count": 15,
+    "unit_count": 42,
+    "canonical_turn_count": 16,
     "speaker_span_count": null,
     "speaker_span_ms": null,
     "rejected_unit_count": 26,
@@ -40,7 +40,7 @@
           "start_ms": 49640,
           "end_ms": 49640,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -54,7 +54,7 @@
           "start_ms": 49640,
           "end_ms": 49640,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -68,7 +68,7 @@
           "start_ms": 49640,
           "end_ms": 49640,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -82,7 +82,7 @@
           "start_ms": 49640,
           "end_ms": 49640,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -96,7 +96,7 @@
           "start_ms": 49640,
           "end_ms": 49640,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -110,7 +110,7 @@
           "start_ms": 49640,
           "end_ms": 49640,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -124,7 +124,7 @@
           "start_ms": 49640,
           "end_ms": 49640,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -138,21 +138,7 @@
           "start_ms": 49640,
           "end_ms": 49640,
           "text": "",
-          "confidence": 0.5370637980088185,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 21,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
-          "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -163,10 +149,10 @@
         "index": 22,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -177,10 +163,10 @@
         "index": 23,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -191,10 +177,10 @@
         "index": 24,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -208,7 +194,7 @@
           "start_ms": 49680,
           "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -222,7 +208,7 @@
           "start_ms": 49680,
           "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -236,7 +222,35 @@
           "start_ms": 49680,
           "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 28,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49680,
+          "end_ms": 49680,
+          "text": "",
+          "confidence": NaN,
+          "no_speech_prob": 6.283935611445246e-12,
+          "physical_speaker": null,
+          "speaker_overlap_ratio": 0.0,
+          "speaker_coverage_ratio": 0.0
+        }
+      },
+      {
+        "index": 29,
+        "reason": "empty text",
+        "unit": {
+          "start_ms": 49680,
+          "end_ms": 49680,
+          "text": "",
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -247,10 +261,10 @@
         "index": 30,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49880,
-          "end_ms": 49880,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -261,10 +275,10 @@
         "index": 31,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49880,
-          "end_ms": 49880,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -275,10 +289,10 @@
         "index": 32,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49880,
-          "end_ms": 49880,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -289,10 +303,10 @@
         "index": 33,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49880,
-          "end_ms": 49880,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -303,10 +317,10 @@
         "index": 34,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49880,
-          "end_ms": 49880,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -317,10 +331,10 @@
         "index": 35,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49880,
-          "end_ms": 49880,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -331,10 +345,10 @@
         "index": 36,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49880,
-          "end_ms": 49880,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -345,10 +359,10 @@
         "index": 37,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49880,
-          "end_ms": 49880,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -359,10 +373,10 @@
         "index": 38,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49880,
-          "end_ms": 49880,
+          "start_ms": 49680,
+          "end_ms": 49680,
           "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -370,27 +384,13 @@
         }
       },
       {
-        "index": 39,
+        "index": 41,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49880,
-          "end_ms": 49880,
+          "start_ms": 51580,
+          "end_ms": 51580,
           "text": "",
-          "confidence": 0.5370637980088185,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 40,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49880,
-          "end_ms": 49880,
-          "text": "",
-          "confidence": 0.5370637980088185,
+          "confidence": NaN,
           "no_speech_prob": 6.283935611445246e-12,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
@@ -407,26 +407,30 @@
       "SPEAKER_04",
       "SPEAKER_06"
     ],
-    "turns_with_confidence": 15,
-    "confidence_min": 0.5371,
-    "confidence_mean": 0.7821,
-    "total_speech_ms": 44540,
-    "characters_of_text": 781,
+    "turns_with_confidence": 16,
+    "confidence_min": 0.8117,
+    "confidence_mean": NaN,
+    "total_speech_ms": 44520,
+    "characters_of_text": 812,
     "speaker_attribution": {
-      "mean_overlap_ratio": 0.324,
+      "mean_overlap_ratio": 0.34,
       "min_overlap_ratio": 0.0,
       "turns_below_0_8_overlap": 29,
-      "turns_with_no_speaker": 26
+      "turns_with_no_speaker": 26,
+      "mean_coverage_ratio": 0.372,
+      "overlap_given_coverage": 0.914,
+      "total_unit_span_ms": 44520
     }
   },
   "diarization_source": {
     "path": "synthetic-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
+  "configuration": {},
   "native_artifact": {
     "engine": "mlx-whisper",
     "model": "mlx-community/whisper-large-v3-turbo",
-    "text": " The road out of Ealthorn narrows as it climbs toward the Ashen Spire. Eilera draws her hood up and checks the sigil on her palm again. Does Bran see anything moving on the ridge? I want a perception check. Roll it. The wind is loud enough that you are at disadvantage. That is a 14. Not great. Karikon keeps walking. He has no patience for ridge lines today. Then you three reach the gate before the light goes. It is already open. Eilera stops. Open how? Forced open. Or left open? Left open. The bar is set neatly against the wall. As if by someone in her read. Karikon says what everyone is thinking. That is worse. Bran wants to know if the warden of the spire is expecting us. You will find out. Something inside the courtyard says your name first. We'll be right back. We'll be right back.",
+    "text": " The road out of Ealthorn narrows as it climbs toward the Ashen Spire. Eilera draws her hood up and checks the sigil on her palm again. Does Bran see anything moving on the ridge? I want a perception check. Roll it. The wind is loud enough that you are at disadvantage. That is a 14. Not great. Karikon keeps walking. He has no patience for ridge lines today. Then you three reach the gate before the light goes. It is already open. Eilera stops. Open how? Forced open. Or left open? Left open. The bar is set neatly against the wall. As if by someone in her read. Karikon says what everyone is thinking. That is worse. Bran wants to know if the warden of the spire is expecting us. You will find out. Something inside the courtyard says your name first. What was the right answer? What was the right answer was the right answer",
     "segments": [
       {
         "id": 0,
@@ -1692,8 +1696,8 @@
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1705,8 +1709,8 @@
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1718,8 +1722,8 @@
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1731,8 +1735,8 @@
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1744,8 +1748,8 @@
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1757,8 +1761,8 @@
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1770,8 +1774,8 @@
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1783,8 +1787,8 @@
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1792,51 +1796,91 @@
         "id": 21,
         "seek": 4964,
         "start": 49.64,
-        "end": 49.64,
-        "text": "",
-        "tokens": [],
+        "end": 49.68,
+        "text": " What was the right answer?",
+        "tokens": [
+          50462,
+          708,
+          390,
+          264,
+          558,
+          1867,
+          30,
+          50462
+        ],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
-        "words": []
+        "words": [
+          {
+            "word": " What",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.5380859375
+          },
+          {
+            "word": " was",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.72412109375
+          },
+          {
+            "word": " the",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.91259765625
+          },
+          {
+            "word": " right",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.74853515625
+          },
+          {
+            "word": " answer?",
+            "start": 49.64,
+            "end": 49.68,
+            "probability": 0.99462890625
+          }
+        ]
       },
       {
         "id": 22,
         "seek": 4964,
-        "start": 49.64,
-        "end": 49.64,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
       {
         "id": 23,
         "seek": 4964,
-        "start": 49.64,
-        "end": 49.64,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
       {
         "id": 24,
         "seek": 4964,
-        "start": 49.64,
-        "end": 49.64,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1848,8 +1892,8 @@
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1861,8 +1905,8 @@
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1874,8 +1918,8 @@
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
@@ -1883,236 +1927,252 @@
         "id": 28,
         "seek": 4964,
         "start": 49.68,
-        "end": 49.78,
-        "text": " We'll be right back.",
-        "tokens": [
-          50602,
-          492,
-          603,
-          312,
-          558,
-          646,
-          13,
-          50602
-        ],
+        "end": 49.68,
+        "text": "",
+        "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
-        "words": [
-          {
-            "word": " We'll",
-            "start": 49.68,
-            "end": 49.68,
-            "probability": 0.9619140625
-          },
-          {
-            "word": " be",
-            "start": 49.68,
-            "end": 49.68,
-            "probability": 0.99267578125
-          },
-          {
-            "word": " right",
-            "start": 49.68,
-            "end": 49.78,
-            "probability": 0.994140625
-          },
-          {
-            "word": " back.",
-            "start": 49.78,
-            "end": 49.78,
-            "probability": 0.99853515625
-          }
-        ]
+        "words": []
       },
       {
         "id": 29,
         "seek": 4964,
-        "start": 49.78,
-        "end": 49.88,
-        "text": " We'll be right back.",
-        "tokens": [
-          50602,
-          492,
-          603,
-          312,
-          558,
-          646,
-          13,
-          50654
-        ],
+        "start": 49.68,
+        "end": 49.68,
+        "text": "",
+        "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
-        "words": [
-          {
-            "word": " We'll",
-            "start": 49.78,
-            "end": 49.88,
-            "probability": 0.9619140625
-          },
-          {
-            "word": " be",
-            "start": 49.88,
-            "end": 49.88,
-            "probability": 0.99267578125
-          },
-          {
-            "word": " right",
-            "start": 49.88,
-            "end": 49.88,
-            "probability": 0.994140625
-          },
-          {
-            "word": " back.",
-            "start": 49.88,
-            "end": 49.88,
-            "probability": 0.9990234375
-          }
-        ]
+        "words": []
       },
       {
         "id": 30,
         "seek": 4964,
-        "start": 49.88,
-        "end": 49.88,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
       {
         "id": 31,
         "seek": 4964,
-        "start": 49.88,
-        "end": 49.88,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
       {
         "id": 32,
         "seek": 4964,
-        "start": 49.88,
-        "end": 49.88,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
       {
         "id": 33,
         "seek": 4964,
-        "start": 49.88,
-        "end": 49.88,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
       {
         "id": 34,
         "seek": 4964,
-        "start": 49.88,
-        "end": 49.88,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
       {
         "id": 35,
         "seek": 4964,
-        "start": 49.88,
-        "end": 49.88,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
       {
         "id": 36,
         "seek": 4964,
-        "start": 49.88,
-        "end": 49.88,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
       {
         "id": 37,
         "seek": 4964,
-        "start": 49.88,
-        "end": 49.88,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
       {
         "id": 38,
         "seek": 4964,
-        "start": 49.88,
-        "end": 49.88,
+        "start": 49.68,
+        "end": 49.68,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       },
       {
         "id": 39,
         "seek": 4964,
-        "start": 49.88,
-        "end": 49.88,
-        "text": "",
-        "tokens": [],
+        "start": 49.68,
+        "end": 49.72,
+        "text": " What was the right answer",
+        "tokens": [
+          50462,
+          708,
+          390,
+          264,
+          558,
+          1867,
+          50462
+        ],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
-        "words": []
+        "words": [
+          {
+            "word": " What",
+            "start": 49.68,
+            "end": 49.68,
+            "probability": 0.76904296875
+          },
+          {
+            "word": " was",
+            "start": 49.68,
+            "end": 49.68,
+            "probability": 0.71826171875
+          },
+          {
+            "word": " the",
+            "start": 49.68,
+            "end": 49.68,
+            "probability": 0.94287109375
+          },
+          {
+            "word": " right",
+            "start": 49.68,
+            "end": 49.68,
+            "probability": 0.8310546875
+          },
+          {
+            "word": " answer",
+            "start": 49.68,
+            "end": 49.72,
+            "probability": 0.990234375
+          }
+        ]
       },
       {
         "id": 40,
         "seek": 4964,
-        "start": 49.88,
-        "end": 49.88,
+        "start": 49.72,
+        "end": 49.82,
+        "text": " was the right answer",
+        "tokens": [
+          50462,
+          390,
+          264,
+          558,
+          1867,
+          50462
+        ],
+        "temperature": 1.0,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
+        "no_speech_prob": 6.283935611445246e-12,
+        "words": [
+          {
+            "word": " was",
+            "start": 49.72,
+            "end": 49.72,
+            "probability": 0.0171051025390625
+          },
+          {
+            "word": " the",
+            "start": 49.72,
+            "end": 49.72,
+            "probability": 0.6572265625
+          },
+          {
+            "word": " right",
+            "start": 49.72,
+            "end": 49.8,
+            "probability": 0.80712890625
+          },
+          {
+            "word": " answer!",
+            "start": 49.8,
+            "end": 49.82,
+            "probability": 0.98681640625
+          }
+        ]
+      },
+      {
+        "id": 41,
+        "seek": 4964,
+        "start": 51.58,
+        "end": 51.58,
         "text": "",
         "tokens": [],
         "temperature": 1.0,
-        "avg_logprob": -0.6216383870442709,
-        "compression_ratio": 16.305555555555557,
+        "avg_logprob": NaN,
+        "compression_ratio": 16.644444444444446,
         "no_speech_prob": 6.283935611445246e-12,
         "words": []
       }
@@ -2126,7 +2186,9 @@
       "end_ms": 3540,
       "text": "The road out of Ealthorn narrows as it climbs toward the Ashen Spire.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.8116726150163756
+      "confidence": 0.8116726150163756,
+      "speaker_overlap_ratio": 0.991,
+      "speaker_coverage_ratio": 0.991
     },
     {
       "id": "t0001",
@@ -2134,7 +2196,9 @@
       "end_ms": 7060,
       "text": "Eilera draws her hood up and checks the sigil on her palm again.",
       "physical_speaker": "SPEAKER_01",
-      "confidence": 0.8116726150163756
+      "confidence": 0.8116726150163756,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0002",
@@ -2142,7 +2206,9 @@
       "end_ms": 11480,
       "text": "Does Bran see anything moving on the ridge? I want a perception check.",
       "physical_speaker": "SPEAKER_02",
-      "confidence": 0.8116726150163756
+      "confidence": 0.8116726150163756,
+      "speaker_overlap_ratio": 0.617,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0003",
@@ -2150,7 +2216,9 @@
       "end_ms": 15180,
       "text": "Roll it. The wind is loud enough that you are at disadvantage.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.8116726150163756
+      "confidence": 0.8116726150163756,
+      "speaker_overlap_ratio": 0.378,
+      "speaker_coverage_ratio": 0.979
     },
     {
       "id": "t0004",
@@ -2158,7 +2226,9 @@
       "end_ms": 17760,
       "text": "That is a 14. Not great.",
       "physical_speaker": "SPEAKER_01",
-      "confidence": 0.8116726150163756
+      "confidence": 0.8116726150163756,
+      "speaker_overlap_ratio": 0.908,
+      "speaker_coverage_ratio": 0.908
     },
     {
       "id": "t0005",
@@ -2166,7 +2236,9 @@
       "end_ms": 23060,
       "text": "Karikon keeps walking. He has no patience for ridge lines today.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.8116726150163756
+      "confidence": 0.8116726150163756,
+      "speaker_overlap_ratio": 0.523,
+      "speaker_coverage_ratio": 0.884
     },
     {
       "id": "t0006",
@@ -2174,7 +2246,9 @@
       "end_ms": 27360,
       "text": "Then you three reach the gate before the light goes. It is already open.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.8116726150163756
+      "confidence": 0.8116726150163756,
+      "speaker_overlap_ratio": 0.981,
+      "speaker_coverage_ratio": 0.981
     },
     {
       "id": "t0007",
@@ -2182,7 +2256,9 @@
       "end_ms": 29680,
       "text": "Eilera stops. Open how?",
       "physical_speaker": "SPEAKER_04",
-      "confidence": 0.8116726150163756
+      "confidence": 0.8116726150163756,
+      "speaker_overlap_ratio": 0.95,
+      "speaker_coverage_ratio": 0.95
     },
     {
       "id": "t0008",
@@ -2190,7 +2266,9 @@
       "end_ms": 31860,
       "text": "Forced open. Or left open?",
       "physical_speaker": "SPEAKER_04",
-      "confidence": 0.8328034822694828
+      "confidence": 0.8328034822694828,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0009",
@@ -2198,7 +2276,9 @@
       "end_ms": 37280,
       "text": "Left open. The bar is set neatly against the wall. As if by someone in her read.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.8328034822694828
+      "confidence": 0.8328034822694828,
+      "speaker_overlap_ratio": 0.967,
+      "speaker_coverage_ratio": 0.967
     },
     {
       "id": "t0010",
@@ -2206,7 +2286,9 @@
       "end_ms": 41620,
       "text": "Karikon says what everyone is thinking. That is worse.",
       "physical_speaker": "SPEAKER_06",
-      "confidence": 0.8328034822694828
+      "confidence": 0.8328034822694828,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0011",
@@ -2214,7 +2296,9 @@
       "end_ms": 45440,
       "text": "Bran wants to know if the warden of the spire is expecting us.",
       "physical_speaker": "SPEAKER_02",
-      "confidence": 0.8328034822694828
+      "confidence": 0.8328034822694828,
+      "speaker_overlap_ratio": 0.996,
+      "speaker_coverage_ratio": 0.996
     },
     {
       "id": "t0012",
@@ -2222,23 +2306,39 @@
       "end_ms": 49640,
       "text": "You will find out. Something inside the courtyard says your name first.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.8328034822694828
+      "confidence": 0.8328034822694828,
+      "speaker_overlap_ratio": 0.962,
+      "speaker_coverage_ratio": 0.962
     },
     {
-      "id": "t0028",
+      "id": "t0021",
+      "start_ms": 49640,
+      "end_ms": 49680,
+      "text": "What was the right answer?",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": NaN,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0039",
       "start_ms": 49680,
-      "end_ms": 49780,
-      "text": "We'll be right back.",
+      "end_ms": 49720,
+      "text": "What was the right answer",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.5370637980088185
+      "confidence": NaN,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     },
     {
-      "id": "t0029",
-      "start_ms": 49780,
-      "end_ms": 49880,
-      "text": "We'll be right back.",
+      "id": "t0040",
+      "start_ms": 49720,
+      "end_ms": 49820,
+      "text": "was the right answer",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.5370637980088185
+      "confidence": NaN,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
     }
   ]
 }

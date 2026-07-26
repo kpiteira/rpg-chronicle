@@ -15,24 +15,24 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 40.68,
-    "model_load_s": 1.012,
-    "inference_s": 39.667,
-    "realtime_factor": 14.75,
-    "inference_realtime_factor": 15.13,
-    "peak_rss_mb": 2063.8,
+    "wall_clock_s": 32.626,
+    "model_load_s": 1.061,
+    "inference_s": 31.565,
+    "realtime_factor": 18.39,
+    "inference_realtime_factor": 19.01,
+    "peak_rss_mb": 2093.0,
     "peak_child_rss_mb": 15.7,
-    "load_avg_1m_before": 9.45,
-    "load_avg_1m_after": 6.35
+    "load_avg_1m_before": 11.42,
+    "load_avg_1m_after": 7.31
   },
   "shape": {
     "produces_text": true,
-    "unit_count": 389,
-    "canonical_turn_count": 342,
+    "unit_count": 213,
+    "canonical_turn_count": 212,
     "speaker_span_count": null,
     "speaker_span_ms": null,
-    "rejected_unit_count": 47,
-    "rejected_units": 47,
+    "rejected_unit_count": 1,
+    "rejected_units": 1,
     "has_timestamps": true,
     "distinct_physical_speakers": 23,
     "physical_speakers": [
@@ -60,21 +60,25 @@
       "SPEAKER_27",
       "SPEAKER_29"
     ],
-    "turns_with_confidence": 342,
-    "confidence_min": 0.3502,
-    "confidence_mean": 0.6785,
-    "total_speech_ms": 317200,
-    "characters_of_text": 5656,
+    "turns_with_confidence": 212,
+    "confidence_min": 0.5581,
+    "confidence_mean": 0.7039,
+    "total_speech_ms": 314900,
+    "characters_of_text": 5553,
     "speaker_attribution": {
-      "mean_overlap_ratio": 0.735,
+      "mean_overlap_ratio": 0.785,
       "min_overlap_ratio": 0.0,
-      "turns_below_0_8_overlap": 154,
-      "turns_with_no_speaker": 62
+      "turns_below_0_8_overlap": 85,
+      "turns_with_no_speaker": 10,
+      "mean_coverage_ratio": 0.86,
+      "overlap_given_coverage": 0.913,
+      "total_unit_span_ms": 314900
     }
   },
   "diarization_source": {
     "path": "hiddengrid-600s-sherpa-diarization.json",
     "engine": "sherpa-onnx-offline-speaker-diarization"
   },
+  "configuration": {},
   "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
 }

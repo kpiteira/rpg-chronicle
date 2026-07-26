@@ -23,6 +23,18 @@
         }
       },
       "text": {
+        "coined_noun_recall": 0.0,
+        "coined_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false
+        },
+        "english_word_name_recall": 1.0,
+        "english_word_names_found": {
+          "Ashen Spire": true,
+          "Warden": true
+        },
         "invented_nouns_found": {
           "Vaelthorn": false,
           "Ilyra": false,
@@ -40,12 +52,12 @@
         },
         "control_phrase_recall": 1.0,
         "truth_characters": 748,
-        "produced_characters": 812
+        "produced_characters": 780
       },
       "confidence": {
         "available": true,
-        "turns_scored": 18,
-        "overall_min_confidence": 0.0947,
+        "turns_scored": 15,
+        "overall_min_confidence": 0.0472,
         "mean_confidence_where_invented_noun_survived": 0.821,
         "mean_confidence_where_invented_noun_was_lost": 0.8183,
         "lost_nouns": [
@@ -76,6 +88,18 @@
         }
       },
       "text": {
+        "coined_noun_recall": 0.0,
+        "coined_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false
+        },
+        "english_word_name_recall": 1.0,
+        "english_word_names_found": {
+          "Ashen Spire": true,
+          "Warden": true
+        },
         "invented_nouns_found": {
           "Vaelthorn": false,
           "Ilyra": false,
@@ -93,12 +117,12 @@
         },
         "control_phrase_recall": 1.0,
         "truth_characters": 748,
-        "produced_characters": 795
+        "produced_characters": 827
       },
       "confidence": {
         "available": true,
-        "turns_scored": 15,
-        "overall_min_confidence": 0.5371,
+        "turns_scored": 16,
+        "overall_min_confidence": 0.8117,
         "mean_confidence_where_invented_noun_survived": 0.8222,
         "mean_confidence_where_invented_noun_was_lost": 0.8196,
         "lost_nouns": [
@@ -129,6 +153,18 @@
         }
       },
       "text": {
+        "coined_noun_recall": 0.0,
+        "coined_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false
+        },
+        "english_word_name_recall": 1.0,
+        "english_word_names_found": {
+          "Ashen Spire": true,
+          "Warden": true
+        },
         "invented_nouns_found": {
           "Vaelthorn": false,
           "Ilyra": false,
@@ -202,6 +238,18 @@
         }
       },
       "text": {
+        "coined_noun_recall": 0.0,
+        "coined_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false
+        },
+        "english_word_name_recall": 1.0,
+        "english_word_names_found": {
+          "Ashen Spire": true,
+          "Warden": true
+        },
         "invented_nouns_found": {
           "Vaelthorn": false,
           "Ilyra": false,

@@ -15,15 +15,15 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 3.153,
-    "model_load_s": 0.402,
-    "inference_s": 2.751,
-    "realtime_factor": 15.85,
-    "inference_realtime_factor": 18.16,
+    "wall_clock_s": 3.08,
+    "model_load_s": 0.308,
+    "inference_s": 2.772,
+    "realtime_factor": 16.22,
+    "inference_realtime_factor": 18.02,
     "peak_rss_mb": 895.2,
     "peak_child_rss_mb": 13.5,
-    "load_avg_1m_before": 8.0,
-    "load_avg_1m_after": 9.36
+    "load_avg_1m_before": 6.21,
+    "load_avg_1m_after": 7.23
   },
   "shape": {
     "produces_text": false,
@@ -50,6 +50,7 @@
     "characters_of_text": 0
   },
   "diarization_source": null,
+  "configuration": {},
   "native_artifact": {
     "engine": "sherpa-onnx-offline-speaker-diarization",
     "segmentation_model": "model.onnx",
