@@ -21,11 +21,18 @@ esac
 root=$(git rev-parse --show-toplevel)
 cd "$root"
 
-if git worktree list --porcelain | grep -q "worktree $(cd "$(dirname "$dir")" && pwd)/$(basename "$dir")$"; then
+abs_dir="$(cd "$(dirname "$dir")" && pwd)/$(basename "$dir")"
+branch="codex/${role}/scratch"
+
+if git worktree list --porcelain | grep -qxF "worktree ${abs_dir}"; then
   echo "Worktree ${dir} already exists; skipping creation."
 else
   git fetch origin
-  git worktree add "$dir" -b "codex/${role}/scratch" origin/main
+  if git show-ref --verify --quiet "refs/heads/${branch}"; then
+    git worktree add "$dir" "$branch"
+  else
+    git worktree add "$dir" -b "$branch" origin/main
+  fi
 fi
 
 (cd "$dir" && uv sync -q --dev)
