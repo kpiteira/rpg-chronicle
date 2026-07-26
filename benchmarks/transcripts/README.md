@@ -53,6 +53,11 @@ bounds what the result means.
 }
 ```
 
+A segment that straddles a window boundary is included whole, so the first and last
+`start_ms`/`end_ms` can fall a little outside `window`. Truncating a machine segment's text at
+a time boundary would produce a line neither engine produced, which is worse than a few seconds
+of overhang.
+
 `primary` and `secondary` are kept apart rather than merged. Merging them would invent a
 third transcript neither engine produced and hide exactly the information a corrector needs.
 
