@@ -32,6 +32,30 @@ Examples not worth asking:
 - Minor grammar errors
 - Speaker confusion during an irrelevant joke
 
+## Attention budget
+
+The queue is capped, and the cap is a number rather than an intention.
+
+`docs/PRODUCT.md` puts the north star at around five minutes of review for a typical
+four-hour session. At roughly thirty seconds to read a question, weigh a recommendation,
+and act on it, that is **ten questions for a full session**. Ten is therefore the default
+bound.
+
+Three properties follow, and all three are load-bearing:
+
+- The bound is enforced in code, not requested of a model. A generator asked for at most
+  ten questions usually returns at most ten, and "usually" is not a bound.
+- It is a budget, not a target. Three questions that matter is a better outcome than ten.
+  An analysis pass that emits eighty questions has failed even if every one is correct.
+- What gets kept when the bound binds is the most consequential first, and among equally
+  consequential questions the least confident first. A high-consequence claim the system
+  is sure about is worth less human attention than one it is guessing at.
+
+A question about something the session deliberately left open — a cliffhanger, an
+unresolved thread the table intends to resolve next time — is not a review question. It
+is the story working. See `docs/ANALYSIS.md` for a measured case where that distinction
+was got wrong.
+
 ## Interaction pattern
 
 Each question should include:
