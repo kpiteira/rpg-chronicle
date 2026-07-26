@@ -244,18 +244,7 @@ def test_a_failed_transfer_leaves_no_partial_file(tmp_path: Path, monkeypatch) -
     assert list(destination.parent.iterdir()) == []
 
 
-def test_the_committed_hiddengrid_manifest_carries_what_the_procedure_needs() -> None:
-    """Reproducibility is a property of the manifest, not of the operator's memory.
-
-    This asserts only that the fields the procedure reads are present and well formed.
-    Feeding them back into ``compare`` would compare them with themselves and could not
-    fail; whether the real bytes match is decided by running the script, not by a test.
-    """
-    manifest = json.loads(
-        (ROOT / "benchmarks/manifests/hiddengrid-swc-ep044-tower-play.json").read_text()
-    )
-    source = manifest["source"]
-
-    assert len(source["media_sha256"]) == 64
-    assert set(source["media_sha256"]) <= set("0123456789abcdef")
-    assert int(source["media_bytes"]) > 0
+# A test that the committed manifest carries a well-formed digest and byte count used to
+# live here. It restated the schema's own `^[0-9a-f]{64}$` and `minimum: 1`, which the
+# manifest validator already enforces on every manifest, and it could not fail on the real
+# bytes. Whether those bytes match is settled by running the script, not by a test.
