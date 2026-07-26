@@ -99,6 +99,12 @@ def _semantic_errors(instance: dict) -> list[str]:
             "truth.method is required once a target is verified, so a score is never "
             "read without knowing how the truth was established"
         )
+    if verified and not instance["source"].get("media_sha256"):
+        errors.append(
+            "source.media_sha256 is required once a target is verified; an anchor is an "
+            "offset into particular bytes, and without a digest nobody can tell whether "
+            "they still have those bytes"
+        )
     if machine_assisted and not instance["truth"].get("contaminating_providers"):
         errors.append(
             "truth.contaminating_providers is required once a target is machine-assisted; "

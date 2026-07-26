@@ -48,7 +48,10 @@ what that means, because prose cannot:
   produced any machine-assisted output;
 - `truth.contaminating_providers` must name every provider that helped build the truth
   once any target is machine-assisted, so a scoring run can refuse to mark an engine
-  against its own output.
+  against its own output;
+- `source.media_sha256` must be present once any target is verified. An anchor is an
+  offset into particular bytes, and without a digest a later reader cannot tell whether
+  they still have those bytes.
 
 `recording_conditions.capture_layout` states only what the recording establishes.
 `single_mixed_track` says there is no per-speaker channel to diarize from and claims
