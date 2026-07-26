@@ -261,6 +261,35 @@ def test_interpreter_arguments_are_not_a_way_through(
     assert classify(command) == expected
 
 
+@pytest.mark.parametrize(
+    ("command", "expected"),
+    [
+        # A redirection must not end the command and drop what follows it.
+        ("git push >/dev/null origin main", "push-main"),
+        ("git push origin main >/dev/null 2>&1", "push-main"),
+        ("gh pr merge 2>/dev/null 7 --rebase", "merge 7"),
+        ("gh pr merge </dev/null 7 --rebase", "merge 7"),
+        ("gh pr merge 7 --rebase >>log.txt", "merge 7"),
+        ('gh pr merge 7 --rebase > "some file.txt"', "merge 7"),
+        # A number that merely precedes a redirection is still the target.
+        ("gh pr merge 7 >log.txt", "merge 7"),
+    ],
+)
+def test_a_redirection_is_not_part_of_the_command(command: str, expected: str) -> None:
+    """A fail-open the goal validator reproduced.
+
+    Listing `<` and `>` among the separators split a command mid-arguments, so
+    `git push >/dev/null origin main` lost `origin main` to a second segment
+    and was allowed, and `gh pr merge 2>/dev/null 7` read the file descriptor
+    as the pull request -- checking PR 2's verdict while merging PR 7.
+    """
+    assert classify(command) == expected
+
+
+def test_a_continued_line_is_one_command() -> None:
+    assert classify("gh pr merge \\\n7 --rebase") == "merge 7"
+
+
 def test_a_heredoc_marker_inside_quotes_does_not_swallow_later_lines() -> None:
     """Also from the validator: heredoc detection must respect quoting.
 

@@ -39,10 +39,12 @@ Known limit, stated precisely because the goal behind this module asked that
 every prior refusal survive. A substring match refused *any* occurrence of the
 guarded text, including occurrences it had no business refusing -- that
 overreach is the defect being fixed, so the two cannot hold in full. What is
-covered: shell separators, line breaks, command substitution, quoting, heredoc
-bodies (and herestrings, which are not heredocs and carry no terminator),
-assignments, wrappers with or without their own options, invocation by
-path, `git`'s own options between `git` and `push`, and a shell command nested
+covered: shell separators, line breaks and continued lines, command
+substitution, quoting, redirections and the file descriptors written against
+them, heredoc bodies (and herestrings, which are not heredocs and carry no
+terminator), assignments, wrappers with or without their own options,
+end-of-options markers, invocation by path, `git`'s own options between `git`
+and `push`, and a shell command nested
 inside another to three levels. What is not: a guarded command written to a
 script file and run; one reconstructed at runtime; and one carried inside a
 *non-shell* interpreter, since `python3 -c 'os.system("git push origin main")'`
@@ -68,7 +70,12 @@ GUARDED_HINTS = ("gh pr merge", "git push")
 # separator when every character in it is one of these, rather than when it
 # equals a listed operator. Matching exact operators let `(… gh pr merge 7);
 # gh pr merge 8` read as one command, hiding the second merge behind the first.
-SEPARATOR_CHARACTERS = set("();<>|&")
+#
+# Redirections are NOT separators, and listing `<` and `>` here once meant a
+# redirection split a command mid-arguments: `git push >/dev/null origin main`
+# lost `origin main` to a second segment and classified as allowed. They are
+# removed in normalize_shell_text instead.
+SEPARATOR_CHARACTERS = set("();|&")
 
 # Leading characters that introduce a command without being part of its name,
 # so `$(gh pr merge 7)` and a backticked variant still resolve to `gh`.
@@ -135,7 +142,12 @@ def normalize_shell_text(command: str) -> str:
         character = command[index]
 
         if escaped:
-            out.append(character)
+            # A backslash before a newline continues the line; the pair is not
+            # part of the command. Keeping it left a target of "\n7".
+            if character != "\n":
+                out.append(character)
+            elif out and out[-1] == "\\":
+                out.pop()
             escaped = False
             index += 1
         elif character == "\\" and quote != "'":
@@ -168,6 +180,14 @@ def normalize_shell_text(command: str) -> str:
             out.append(heredoc.group(0))
             pending.append(heredoc.group(2))
             index = heredoc.end()
+        elif character in "<>":
+            # A redirection and its target are not part of the command's
+            # arguments. The file descriptor, if written, is attached to the
+            # operator with no space -- which is how `2>` is told apart from a
+            # `7` that happens to precede a redirection.
+            while out and out[-1].isdigit():
+                out.pop()
+            index = skip_redirection(command, index)
         elif character == "\n":
             out.append(";")
             index += 1
@@ -177,6 +197,26 @@ def normalize_shell_text(command: str) -> str:
             index += 1
 
     return "".join(out)
+
+
+def skip_redirection(command: str, index: int) -> int:
+    """Advance past a redirection operator and whatever it redirects to."""
+    length = len(command)
+    while index < length and command[index] in "<>&":
+        index += 1
+    while index < length and command[index] in " \t":
+        index += 1
+
+    if index < length and command[index] in "'\"":
+        quote = command[index]
+        index += 1
+        while index < length and command[index] != quote:
+            index += 1
+        return min(index + 1, length)
+
+    while index < length and command[index] not in " \t\n;|&()":
+        index += 1
+    return index
 
 
 def skip_heredoc_bodies(command: str, index: int, pending: list[str]) -> int:
@@ -253,7 +293,11 @@ def find_merges(segment: list[str]) -> list[int]:
 def find_pushes(segment: list[str]) -> list[int]:
     """Every `git push`, allowing git's own options between the two words.
 
-    `git -C /path push origin main` puts an argument between them.
+    `git -C /path push origin main` puts an argument between them. The distance
+    is unbounded, so `git log --grep push origin main` is refused as though it
+    pushed. That over-refusal is left standing: bounding the gap means deciding
+    which arguments to stop reading at, and a bypass hides wherever this stops
+    reading.
     """
     words = [base_name(word) for word in segment]
     found = []
