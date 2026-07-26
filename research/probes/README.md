@@ -62,7 +62,16 @@ acceptance — that absence is itself a finding, recorded in
 CACHE=~/.cache/rpg-chronicle/benchmark
 mkdir -p "$CACHE"
 
-# rights-clear input, generated locally, full output committed
+# rights-clear input, generated locally, full output committed.
+#
+# Needs macOS and four system voices: Daniel, Samantha, Karen, Ralph. Check first --
+# `say` fails per line if one is missing, and the clip comes out short rather than
+# erroring:
+#     for v in Daniel Samantha Karen Ralph; do say -v "$v" -o /tmp/probe-voice-check.aiff \
+#         "check" 2>&1 && echo "$v ok"; done; rm -f /tmp/probe-voice-check.aiff
+# Missing voices install from System Settings › Accessibility › Spoken Content ›
+# System Voice › Manage Voices. Substituting other voices is fine for output shape, but
+# the committed synthetic results will no longer be byte-comparable.
 research/probes/make_synthetic_clip.py --out-dir "$CACHE"
 (cd "$CACHE" && /path/to/repo/research/probes/run_probe_battery.sh \
     synthetic-table-talk.wav synthetic /path/to/repo/research/probes/results)
@@ -169,6 +178,9 @@ is an observation about the engines rather than a fixture replay — the distinc
   one-minute probe and nothing across four hours. Project from `inference_s`.
 - `metrics.peak_rss_mb` versus `peak_child_rss_mb` — `whisper-cpp-metal` does its work
   in a subprocess, so its memory is the child figure; the others are the self figure.
+  Every stack shows a small non-zero child figure regardless, because `ffprobe` runs as
+  a child to read the input duration. Roughly 13–16 MB of child RSS is that, not the
+  engine.
 - `shape.turns_with_confidence` and `confidence_mean` — confidence is not comparable
   *in meaning* across engines. Parakeet emits a native token confidence; Whisper-family
   stacks do not, and what is recorded for them is `exp(avg_logprob)` or a mean token

@@ -32,6 +32,11 @@ from pathlib import Path
 SAMPLE_RATE = 16_000
 GAP_MS = 350
 
+# macOS ships these but they are not guaranteed present, and `say` fails one line at a
+# time rather than refusing outright -- which would silently produce a shorter clip with
+# a speaker missing, and results that look valid. Checked up front instead.
+REQUIRED_VOICES = ("Daniel", "Samantha", "Karen", "Ralph")
+
 # Four macOS system voices, chosen to be clearly distinct. Fantasy nouns are deliberate:
 # invented proper nouns are a known weak spot for general-purpose ASR and this is the
 # only input in the probe set whose spelling truth we are allowed to publish.
@@ -66,6 +71,17 @@ def main() -> int:
     parser.add_argument("--out-dir", required=True, type=Path)
     parser.add_argument("--name", default="synthetic-table-talk")
     args = parser.parse_args()
+
+    installed = subprocess.run(["say", "-v", "?"], check=True, capture_output=True, text=True)
+    available = {line.split()[0] for line in installed.stdout.splitlines() if line.strip()}
+    missing = [v for v in REQUIRED_VOICES if v not in available]
+    if missing:
+        raise SystemExit(
+            f"missing macOS system voices: {', '.join(missing)}. Install them from System "
+            "Settings > Accessibility > Spoken Content > System Voice > Manage Voices, or "
+            "edit SCRIPT to use voices this machine has -- but note that the committed "
+            "synthetic results were generated with the four listed above."
+        )
 
     work = args.out_dir / f"{args.name}-parts"
     work.mkdir(parents=True, exist_ok=True)

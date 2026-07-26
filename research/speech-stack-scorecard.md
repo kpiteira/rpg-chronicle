@@ -167,9 +167,11 @@ Three things this table hides, and they matter:
 3. **Rejected units are real.** `TranscriptTurn.__post_init__` rejects empty text and
    non-positive spans. The probe reports what could not become a turn rather than
    dropping it; a `TranscriptProvider` will hit the same cases. On the 600 s
-   window whisper.cpp produced 1 unusable unit out of 302 and mlx-whisper 1 out of 226;
-   the count is small but non-zero on every Whisper-family run, so a provider that
-   assumed every segment converts would be wrong on its first real file.
+   window whisper.cpp produced 1 unusable unit out of 302 and mlx-whisper 1 out of 226,
+   and mlx-whisper rejected 3 of 20 on the synthetic clip. Most runs reject nothing at
+   all — Parakeet and faster-whisper rejected none anywhere — so this is occasional
+   rather than routine, which is exactly why a provider that assumed every segment
+   converts would pass its own tests and then fail on some real file.
 
 ### What a `TranscriptProvider` would have to do
 
@@ -422,13 +424,13 @@ half.
 **Memory needs two different projections, because the two stages behave differently.**
 
 - *whisper.cpp is effectively constant.* Growth is 0.179 MB per second of audio, and it
-  is the same rate to three decimals between 10→20 minutes and 20→40 minutes, so a
-  straight line is the right model. Four hours projects to **about 4.6 GB**. This is the internal 30-second
+  is 0.175 MB/s between 10→20 minutes and 0.180 between 20→40, so a straight line is
+  the right model. Four hours projects to **about 4.6 GB**. This is the internal 30-second
   windowing doing its job.
 - *sherpa-onnx diarization decelerates.* Growth per second of audio fell 5.00 → 2.50 →
   1.17 → 0.74 MB across the four intervals, roughly halving each time. These are
   *interval* slopes between consecutive measurements, not averages: the first is
-  (3653.6 − 903.0) MB ÷ (600 − 50) s, using the 50 s synthetic measurement as the low
+  (3653.6 − 898.6) MB ÷ (600 − 50) s, using the 50 s synthetic measurement as the low
   anchor. Dividing a single measurement by its own duration gives a different and
   less useful number. That gives a
   range rather than a number, and both ends are stated because the extrapolation is the
@@ -448,8 +450,11 @@ comfortable — and the upper bound is the one to plan against.
    silence, which should help both stages.
 3. The stages run sequentially. Running recognition and diarization concurrently would
    halve the wall clock and *add* the memory, pushing the upper bound past 19 GB — and
-   at 40 minutes this machine was already 11 GB into swap with a second agent session
-   running. Sequential is the recommended default.
+   the machine was observed deep into swap during the 40-minute diarization run with a
+   second agent session present. That swap reading came from `sysctl vm.swapusage` at the
+   time and is **not** in any committed artifact — the probe records RSS and load average,
+   not swap — so treat it as a caution rather than as evidence. Sequential is the
+   recommended default regardless, on the memory arithmetic alone.
 4. No model reload per session; load time is under 2 s and irrelevant at this scale.
 
 **The escalation threshold in the goal was not reached.** A four-hour session processes

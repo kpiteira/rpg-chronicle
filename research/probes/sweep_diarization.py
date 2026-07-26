@@ -73,8 +73,13 @@ def main() -> int:
     args = parser.parse_args()
 
     truth_turns = json.loads((args.cache / args.truth).read_text())["turns"]
-    work = Path(tempfile.mkdtemp(prefix="rpg-diar-sweep-"))
+    # A context manager, not mkdtemp: these runs include diarization of restricted audio,
+    # so the directory must go away even when a run raises.
+    with tempfile.TemporaryDirectory(prefix="rpg-diar-sweep-") as scratch:
+        return sweep(args, truth_turns, Path(scratch))
 
+
+def sweep(args: argparse.Namespace, truth_turns: list[dict[str, Any]], work: Path) -> int:
     synthetic: dict[str, Any] = {}
     for threshold in THRESHOLDS:
         result = run(
