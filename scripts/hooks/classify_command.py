@@ -25,11 +25,15 @@ Parse failures are reported rather than swallowed. The gate treats an
 unresolved command as a block, so a tokenizer that cannot make sense of the
 input fails closed instead of waving it through.
 
+An interpreter's `-c` argument is classified in turn, since the substring match
+this replaces caught `sh -c "git push origin main"` and losing that would be a
+narrowing rather than a fix.
+
 Known limit: this classifies commands, it does not sandbox them. A guarded
-command reached through an interpreter -- `bash <<EOF`, `sh -c`, `eval` on a
-quoted string, a script file -- is not detected, exactly as it was not before.
-The gate is a guardrail against an unvalidated merge happening by accident, not
-a barrier against one pursued deliberately, which no PreToolUse hook could be.
+command reached through a script file, a heredoc fed to an interpreter, or any
+indirection this module does not model is not detected. The gate is a guardrail
+against an unvalidated merge happening by accident, not a barrier against one
+pursued deliberately, which no PreToolUse hook could be.
 """
 
 from __future__ import annotations
@@ -76,6 +80,10 @@ VALUE_FLAGS = {
     "--field",
     "--match-head-commit",
 }
+
+# Interpreters whose `-c` argument is itself a command. The old substring match
+# caught `sh -c "git push origin main"` by accident; this catches it on purpose.
+INTERPRETERS = {"sh", "bash", "zsh", "dash", "ksh"}
 
 ASSIGNMENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
 HEREDOC = re.compile(r"<<-?[ \t]*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
@@ -219,7 +227,16 @@ def merge_target(segment: list[str]) -> str:
     return "-"
 
 
-def classify(command: str) -> str:
+def interpreted_script(segment: list[str]) -> str | None:
+    """The script an interpreter was asked to run, if any."""
+    if segment and segment[0] in INTERPRETERS and "-c" in segment:
+        index = segment.index("-c") + 1
+        if index < len(segment):
+            return segment[index]
+    return None
+
+
+def classify(command: str, depth: int = 0) -> str:
     if not command.strip():
         return "allow"
 
@@ -236,6 +253,12 @@ def classify(command: str) -> str:
             return "push-main"
         if segment[:3] == ["gh", "pr", "merge"] and merge is None:
             merge = merge_target(segment)
+        if depth < 3 and (script := interpreted_script(segment)):
+            nested = classify(script, depth + 1)
+            if nested == "push-main":
+                return nested
+            if nested.startswith("merge ") and merge is None:
+                merge = nested[len("merge ") :]
 
     return f"merge {merge}" if merge is not None else "allow"
 
