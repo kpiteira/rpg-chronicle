@@ -42,7 +42,7 @@
     "license_url": null,
     "local_processing": "restricted",
     "redistribution": "restricted",
-    "review_notes": "The watch page markup carries no Creative Commons licence row on 2026-07-26, and yt-dlp reports no license field, which together mean the video is under the Standard YouTube Licence. That licence grants viewers no right to download or reproduce, so the project has no basis to acquire a copy to process, and 'the use is private' does not create one. The check was controlled rather than assumed: the same detection finds an explicit 'Creative Commons (reuse allowed)' row on other videos, so its absence here is a real difference and not a broken test. This position is reversible by asking: a 941-view-scale channel with 58 views on this video is exactly the kind of creator who might grant permission for research use, and that request is the user's to make, not this role's.",
+    "review_notes": "The watch page markup carries no Creative Commons licence row on 2026-07-26, and yt-dlp reports no license field, which together mean the video is under the Standard YouTube Licence. That licence grants viewers no right to download or reproduce, so the project has no basis to acquire a copy to process, and 'the use is private' does not create one. The check was controlled rather than assumed: the same detection finds an explicit 'Creative Commons (reuse allowed)' row on other videos, so its absence here is a real difference and not a broken test. This position is reversible by asking: a 66-subscriber channel with 58 views on this video is exactly the kind of creator who might grant permission for research use, and that request is the user's to make, not this role's.",
     "accessed_at": "2026-07-26"
   },
   "selection": {
