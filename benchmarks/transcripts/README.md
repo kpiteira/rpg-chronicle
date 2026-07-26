@@ -155,6 +155,12 @@ because the licence rests on the publication and the publication would be gone.
 Whether the repository wants verbatim text of this kind at all is a policy question above
 this goal, and it is open rather than settled here.
 
+**And the CI guard will not catch the next one.** The `privacy` job in
+`.github/workflows/checks.yml` rejects media file extensions and files over 1 MiB. It never
+reads committed text. So a green privacy check is evidence that no audio was committed, and
+no evidence at all about what the committed words say - which is why this section exists
+rather than a passing job.
+
 ## What does not go in here
 
 The full four-hour transcript. Repository policy keeps recordings and full transcripts out of
