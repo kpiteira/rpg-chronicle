@@ -31,15 +31,20 @@ Roughly 4 GB of models and about ten minutes of downloads. Nothing lands in the
 repository.
 
 ```bash
-# 1. dependencies, in a venv outside the checkout
+# 1. ffmpeg, which supplies both ffmpeg and ffprobe. Every probe shells out to ffprobe
+# for the input duration and the clip generator uses ffmpeg, so nothing below runs
+# without it.
+brew install ffmpeg
+
+# 2. dependencies, in a venv outside the checkout
 uv venv --python 3.12 ~/.cache/rpg-chronicle/probe-venv
 uv pip install --python ~/.cache/rpg-chronicle/probe-venv/bin/python \
     mlx-whisper parakeet-mlx sherpa-onnx faster-whisper soundfile numpy
 
-# 2. whisper.cpp with Metal
+# 3. whisper.cpp with Metal
 brew install whisper-cpp
 
-# 3. models that are not fetched automatically
+# 4. models that are not fetched automatically
 mkdir -p ~/.cache/rpg-chronicle/models && cd ~/.cache/rpg-chronicle/models
 curl -sSL -O https://github.com/k2-fsa/sherpa-onnx/releases/download/speaker-segmentation-models/sherpa-onnx-pyannote-segmentation-3-0.tar.bz2
 tar xjf sherpa-onnx-pyannote-segmentation-3-0.tar.bz2
@@ -228,6 +233,11 @@ rather than quietly left, because a metric that cannot fail is worse than no met
   entry of `canonical_turns`. It should be derived from those or dropped; doing so means
   regenerating every result, so it is left as a follow-up rather than changed in a way
   that would leave the committed code and the committed numbers out of step.
+- **`shape.rejected_units` has two types under one key.** It is a list of the offending
+  units when the result is unredacted and a bare count when `--redact-text` is set,
+  because the units themselves are transcript text. A consumer reading both the synthetic
+  and Hiddengrid families has to handle both; `shape.rejected_unit_count` is always an
+  integer and is the field to parse.
 - **`speaker_coverage_ratio` overstates coverage where diarization spans overlap.** It
   sums per-span overlaps and clamps at the unit span, so a unit spanned by two
   simultaneous speakers counts that time twice before clamping. `overlap_given_coverage`
