@@ -275,12 +275,12 @@ def test_cost_is_accumulated_from_the_backend_not_estimated():
     assert provider.cost.wall_ms == 7 * requests
 
 
-def test_a_missing_credential_stops_the_run_before_anything_is_written(tmp_path, monkeypatch):
-    """The credential-absent path: a clear error, no partial artifact, no leak.
+def test_a_missing_credential_produces_a_clear_error_naming_the_variable(monkeypatch):
+    """The credential-absent path, exercised through the shared resolver.
 
-    Exercised through the shared resolver every credential-bearing backend uses. The
-    one working backend is subscription-mediated and holds no key in the environment,
-    so this is where the env-key path is proved.
+    The one working backend is subscription-mediated and holds no key in the
+    environment, so this is where the env-key path every future backend will reuse is
+    proved.
     """
     monkeypatch.delenv("RPG_CHRONICLE_TEST_KEY", raising=False)
     provider = ModelAnalysisProvider(FakeBackend(required_env_var="RPG_CHRONICLE_TEST_KEY"))
@@ -291,7 +291,6 @@ def test_a_missing_credential_stops_the_run_before_anything_is_written(tmp_path,
     message = str(caught.value)
     assert "RPG_CHRONICLE_TEST_KEY" in message
     assert "not set" in message
-    assert not list(tmp_path.iterdir())
 
 
 def test_an_empty_credential_is_treated_as_missing_and_never_echoed(monkeypatch):

@@ -69,6 +69,10 @@ def _parser() -> argparse.ArgumentParser:
 
 
 def _model_provider(args: argparse.Namespace) -> ModelAnalysisProvider:
+    """Construct the model-backed provider from the parsed flags.
+
+    Overridden in tests to inject a backend that does not reach a vendor.
+    """
     return ModelAnalysisProvider(
         ClaudeCliBackend(model=args.model),
         budget=TokenBudget(
@@ -94,9 +98,16 @@ def _run_fixture(args: argparse.Namespace) -> None:
     session_id = json.loads(args.fixture.read_text())["session"]["id"]
 
     if args.analysis == "model":
-        provider: FixtureAnalysisProvider | ModelAnalysisProvider = _model_provider(args)
-        # Fail before the pipeline creates a session directory. A backend that cannot
-        # run must leave nothing behind at all, not a half-written session.
+        try:
+            provider: FixtureAnalysisProvider | ModelAnalysisProvider = _model_provider(args)
+        except ValueError as error:
+            # A budget with no room for the prompt, a negative overlap, a question cap
+            # of zero. These are usage errors and deserve a usage error's message
+            # rather than a traceback from three modules down.
+            raise SystemExit(f"invalid analysis options: {error}") from error
+        # Fail before the pipeline creates a session directory. `run_pipeline` writes
+        # the canonical session the moment it is called, so this ordering is the only
+        # thing standing between an unusable backend and a half-written session.
         provider.preflight()
     else:
         provider = _fixture_provider(args.fixture)
