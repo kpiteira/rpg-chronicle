@@ -23,6 +23,7 @@
     "capture_layout": "remote_mixdown",
     "production": "edited",
     "expected_physical_speakers": 7,
+    "proven_distinct_speakers": 5,
     "overlap": "medium",
     "music_or_effects": true,
     "observations": "Measured from the file: one mixed track (the two channels differ by 34 dB, so there is no per-speaker channel to diarize from), 16 kHz sampling, so nothing survives above 8 kHz and energy above 7 kHz sits 26 dB down; integrated loudness -19.2 LUFS, 8.2 LU range, true peak +0.2 dBFS, so the audio was levelled and limited in post. Gaps between utterances fall to near-digital silence (1.05% of samples in the window are exactly zero, 4.6% below -78 dBFS), which an open microphone in a shared room does not produce; this is gated or noise-suppressed per speaker. That rules out a raw single-room capture but does not by itself prove remote play: the remote reading rests on the publisher's online-play format, players referred to by handle, and one player being 'AFK' at 00:17:00. Whether the endpoints were also recorded separately before mixdown cannot be determined from the published file. Seven distinct first-person role-holders speak inside the window: the game master and the players of Kat, Pulse, James, Gray, Freya and Gartog. Adjacent-turn exchanges prove at least five of them are different people (Kat and Pulse argue at 00:02:35, Kat and James hold a phone call at 00:04:04, James and Gray talk in the same room at 00:04:10, Freya and the game master trade jokes at 00:05:51). No voice-print separation was performed, so one person voicing two of the seven roles cannot be excluded; treat 7 as role-holders heard and 5 as the proven floor. Music: the theme song runs 00:00:03-00:00:57 and the host's welcome starts at 00:00:28 over it, so the first 29 s of speech in the window is mixed with music. Overlap is rated medium from laughter and interjections over the recap (00:01:10-00:01:49 carries no detectable pause) rather than from sustained cross-talk."
@@ -40,7 +41,7 @@
         "kind": "person",
         "status": "verified",
         "anchor_ms": 69900,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "A player is addressed by first name at 00:01:09, 'Jacob, you stole my line', after another player takes his joke. Both decodes agree on the name. It is not among the handles the publisher tags on this episode, and the spelling cannot be settled by ear."
       },
       {
@@ -48,7 +49,7 @@
         "kind": "person",
         "status": "verified",
         "anchor_ms": 222860,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "At 00:03:42 a player says he will phone 'Ante's character, James', naming the person at the table and the character separately in one breath. Both decodes render the handle as 'Ante'; the publisher tags this episode Entei, which fixes the spelling of a name the audio alone leaves open."
       },
       {
@@ -56,7 +57,7 @@
         "kind": "person",
         "status": "verified",
         "anchor_ms": 365500,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "One voice opens the episode at 00:00:28 with 'welcome to another episode', sets every scene, adjudicates every test, and at 00:06:05 says 'as the game master, I'm not doing rituals' (one decode hears 'aim master'). The role is observed in the audio; the credit is the publisher's."
       },
       {
@@ -64,7 +65,7 @@
         "kind": "character",
         "status": "verified",
         "anchor_ms": 252400,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "Named in the phone call at 00:04:12, 'It's Kat', and again at 00:07:08 when the game master moves 'Kat and Pulse' to the building. Kat and Cat are homophones and the decodes produced both, so the audio establishes the character but not the spelling."
       },
       {
@@ -72,7 +73,7 @@
         "kind": "character",
         "status": "verified",
         "anchor_ms": 428680,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "The game master places 'Kat and Pulse' outside the building at 00:07:08. The same player says at 00:01:55 that he is going to hit the tower with Kat driving, which ties the name to the plan formed earlier in the window."
       },
       {
@@ -80,7 +81,7 @@
         "kind": "character",
         "status": "verified",
         "anchor_ms": 244700,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "Introduced at 00:03:42 as Entei's character and addressed in the in-fiction phone call at 00:04:04, 'Hey, James, where the hell are you guys?'. Both decodes agree."
       },
       {
@@ -88,7 +89,7 @@
         "kind": "character",
         "status": "verified",
         "anchor_ms": 269280,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "The character who hired the team, reached through James at 00:04:29 ('Gray said to call him when we were done') and whose apartment the group gathers in at 00:08:16. The decodes split between Gray and Greg, one engine using both within the window; accept either spelling as a hit."
       },
       {
@@ -96,7 +97,7 @@
         "kind": "character",
         "status": "verified",
         "anchor_ms": 331460,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "At 00:05:31 a player narrates Freya in the other room taking aspirin for the headache the ritual left her, then claims the stun damage in the first person at 00:05:46."
       },
       {
@@ -104,7 +105,7 @@
         "kind": "character",
         "status": "verified",
         "anchor_ms": 526220,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "At 00:08:46 a player takes Gartog into a spare bedroom to swap the cyberdeck cases. Every decode produced a different name - Gartog, Gartok, Garntak, Garth - so the character is verified and the spelling is not. Score any of those renderings as a hit; the point of the target is that no engine resolved it."
       },
       {
@@ -112,7 +113,7 @@
         "kind": "character",
         "status": "verified",
         "anchor_ms": 53480,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "At 00:00:53 a player summarises the situation as a pop princess 'kidnapped by a dragon'. The antagonist is never given a name inside the window, and this mention sits inside the recap, so it is knowledge stated here about events that happened earlier."
       },
       {
@@ -120,7 +121,7 @@
         "kind": "place",
         "status": "verified",
         "anchor_ms": 124180,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "The objective the session's plan is built around: 'I'm going to hit the tower' at 00:02:04, after the recap places a tower in the vision the ritual produced."
       },
       {
@@ -128,7 +129,7 @@
         "kind": "place",
         "status": "verified",
         "anchor_ms": 135440,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "The location already searched, at 00:02:15, 'it took me all day to search the factory'. It is what the group is done with, and it bounds what they still have to do."
       },
       {
@@ -136,7 +137,7 @@
         "kind": "place",
         "status": "verified",
         "anchor_ms": 586000,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "The game master asks at 00:09:46 whether the character can drive to the nearby Stuffer Shack for a repair kit. Neither decode produced the setting's form, offering 'stuffer shack' and 'Steffer Shack', so this probes Shadowrun vocabulary rather than plain transcription."
       },
       {
@@ -144,7 +145,7 @@
         "kind": "item",
         "status": "verified",
         "anchor_ms": 170240,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "The fee under discussion at 00:02:50 is 2,500 nuyen. Both decodes wrote 'new yen'. The audio establishes the spoken word and the amount; the spelling is the Shadowrun setting's. A target whose correct form neither engine produced is worth more than one they both got right."
       }
     ],
@@ -154,7 +155,7 @@
         "kind": "event",
         "status": "verified",
         "anchor_ms": 0,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "Continuous non-silent audio from 00:00:03 to 00:00:57 by silence detection at -40 dB; the welcome starts at 00:00:28, so speech and music overlap for about 29 s. None of this is campaign content, and a chronicle that reports it as such has misread the episode's furniture for its story."
       },
       {
@@ -162,7 +163,7 @@
         "kind": "event",
         "status": "verified",
         "anchor_ms": 36180,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "Game master narration from 00:00:36 to 00:01:50, with players interjecting. These events happened before the window. The recap is the only place the window states them, so a system must attribute them as recalled rather than as occurring here."
       },
       {
@@ -170,7 +171,7 @@
         "kind": "event",
         "status": "verified",
         "anchor_ms": 115920,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "From 00:01:55 to 00:02:26: 'go sleep and then I'm going to hit the tower', 'Kat's going to drive me', then 'Screw it, then I'm going to go during the night'. This is the decision the session turns on, and it is made inside the window."
       },
       {
@@ -178,7 +179,7 @@
         "kind": "event",
         "status": "verified",
         "anchor_ms": 216280,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "From 00:03:36 to 00:05:20. The exchange runs through a character relaying a call to another character in the same room, so speaker attribution and character attribution come apart here more sharply than anywhere else in the window."
       },
       {
@@ -186,7 +187,7 @@
         "kind": "event",
         "status": "verified",
         "anchor_ms": 331460,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "From 00:05:31 to 00:07:05, including 'body plus willpower, your hits reduce your stun damage'. Table mechanics that a chronicle should recognise as rules talk rather than as story."
       },
       {
@@ -194,7 +195,7 @@
         "kind": "event",
         "status": "verified",
         "anchor_ms": 526220,
-        "basis": "audio_observed",
+        "basis": "audio_machine_assisted",
         "evidence": "From 00:08:46 to 00:09:53: the case swap is described, the game master asks for an electronics build-repair kit, the player has none, and the penalty is set. The attempt itself is resolved after the window ends."
       }
     ],

@@ -11,6 +11,10 @@ ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "benchmarks/schema/benchmark-manifest.schema.json"
 MANIFEST_DIR = ROOT / "benchmarks/manifests"
 
+# A target can be verified from the recording by ear or through tooling. It can never be
+# verified from a title, a description, or an index, however plausible the guess.
+VERIFIABLE_BASES = {"audio_observed", "audio_machine_assisted"}
+
 
 def _display(path: Path) -> str:
     """Name a manifest relative to the repository when it lives inside it."""
@@ -53,6 +57,19 @@ def _semantic_errors(instance: dict) -> list[str]:
     if duration_ms is not None and end_ms > duration_ms:
         errors.append("excerpt.end_ms exceeds source.episode_duration_ms")
 
+    conditions = instance["recording_conditions"]
+    expected_speakers = conditions.get("expected_physical_speakers")
+    proven_speakers = conditions.get("proven_distinct_speakers")
+    if (
+        proven_speakers is not None
+        and expected_speakers is not None
+        and proven_speakers > expected_speakers
+    ):
+        errors.append(
+            f"recording_conditions.proven_distinct_speakers {proven_speakers} exceeds "
+            f"expected_physical_speakers {expected_speakers}; the proven count is a floor"
+        )
+
     verified = False
     for path, target in _truth_targets(instance):
         anchor_ms = target.get("anchor_ms")
@@ -66,9 +83,9 @@ def _semantic_errors(instance: dict) -> list[str]:
         verified = True
         if anchor_ms is None:
             errors.append(f"{path} is verified but carries no anchor_ms")
-        if target.get("basis") != "audio_observed":
+        if target.get("basis") not in VERIFIABLE_BASES:
             errors.append(
-                f"{path} is verified but its basis is not audio_observed; "
+                f"{path} is verified but its basis is not one of {sorted(VERIFIABLE_BASES)}; "
                 "only an observation of the recording can be verified"
             )
         if not target.get("evidence", "").strip():

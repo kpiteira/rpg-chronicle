@@ -92,7 +92,16 @@
           "description": "How the speakers were captured. remote_multitrack keeps one track per remote endpoint; remote_mixdown is remote play delivered as a single mixed track, which offers no per-speaker channel to diarize from."
         },
         "production": {"type": "string", "enum": ["polished", "edited", "raw", "unknown"]},
-        "expected_physical_speakers": {"type": ["integer", "null"], "minimum": 1},
+        "expected_physical_speakers": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "How many distinct people are believed to speak. Best estimate, not a proven count."
+        },
+        "proven_distinct_speakers": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "How many speakers are demonstrably different people, by evidence stated in observations. Never larger than expected_physical_speakers. A diarization score should be read against this floor as well as the estimate."
+        },
         "overlap": {"type": "string", "enum": ["low", "medium", "high", "unknown"]},
         "music_or_effects": {"type": "boolean"},
         "observations": {"type": "string", "minLength": 1}
@@ -191,8 +200,8 @@
         },
         "basis": {
           "type": "string",
-          "enum": ["audio_observed", "metadata_inferred"],
-          "description": "audio_observed means the target was found in the recording itself. metadata_inferred means it came from a title, description, or index, which cannot be scored as capability."
+          "enum": ["audio_observed", "audio_machine_assisted", "metadata_inferred"],
+          "description": "How the target was found. audio_observed is a human ear on the recording. audio_machine_assisted is the recording read through tooling, which is verifiable but carries a dependency on whatever produced the reading. metadata_inferred came from a title, description, or index, and cannot be scored as capability. Only the first two can be verified; the distinction between them is kept in the enum so a consumer reading the field alone cannot mistake one for the other."
         }
       }
     }

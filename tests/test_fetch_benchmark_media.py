@@ -98,16 +98,25 @@ def test_changed_bytes_are_quarantined_rather_than_accepted(
 def test_a_manifest_without_a_digest_cannot_be_verified(
     tmp_path: Path, manifest_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
+    """An unverifiable manifest is a gap in the manifest, not evidence against the bytes.
+
+    So it fails, but it does not quarantine: the download may be exactly right, and
+    destroying it would punish the wrong thing.
+    """
     manifest = json.loads(manifest_path.read_text())
     del manifest["source"]["media_sha256"]
     manifest_path.write_text(json.dumps(manifest))
     cache = tmp_path / "cache"
-    _cache_media(cache, MEDIA)
+    target = _cache_media(cache, MEDIA)
 
     exit_code = fetch.main([str(manifest_path), "--cache", str(cache), "--verify-only"])
+    output = capsys.readouterr().out
 
     assert exit_code == 1
-    assert "records no source.media_sha256" in capsys.readouterr().out
+    assert "UNVERIFIABLE: manifest records no source.media_sha256" in output
+    assert "MISMATCH" not in output
+    assert target.exists()
+    assert not target.with_suffix(".mp3.mismatch").exists()
 
 
 def test_verify_only_never_fetches_a_missing_file(
@@ -151,12 +160,17 @@ def test_a_failed_transfer_leaves_no_partial_file(tmp_path: Path, monkeypatch) -
 
 
 def test_the_committed_hiddengrid_manifest_carries_what_the_procedure_needs() -> None:
-    """Reproducibility is a property of the manifest, not of the operator's memory."""
+    """Reproducibility is a property of the manifest, not of the operator's memory.
+
+    This asserts only that the fields the procedure reads are present and well formed.
+    Feeding them back into ``compare`` would compare them with themselves and could not
+    fail; whether the real bytes match is decided by running the script, not by a test.
+    """
     manifest = json.loads(
         (ROOT / "benchmarks/manifests/hiddengrid-swc-ep044-tower-play.json").read_text()
     )
     source = manifest["source"]
 
     assert len(source["media_sha256"]) == 64
+    assert set(source["media_sha256"]) <= set("0123456789abcdef")
     assert int(source["media_bytes"]) > 0
-    assert fetch.compare(source, fetch.Digest(source["media_sha256"], source["media_bytes"])) == []

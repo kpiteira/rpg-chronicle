@@ -51,6 +51,10 @@ unchanged, with `Last-Modified: Sat, 24 May 2014 18:53:35 GMT`.
 | Gap floor | 1.05% of window samples exactly zero, 4.6% below −78 dBFS | raw sample histogram |
 | Music | 00:00:03–00:00:57, welcome from 00:00:28 over it | `silencedetect` at −40 dB, checked on a spectrogram |
 
+The commands and their raw output are committed alongside this file, in
+[`hiddengrid-swc-ep044-measurements.md`](hiddengrid-swc-ep044-measurements.md), so the
+table above can be checked without re-fetching 127 MB.
+
 Two consequences worth carrying forward. The single mixed track means **there is no
 per-speaker channel**: any diarization probed here works from one signal, as it would on
 the target iPad recording. And the gated near-silence between utterances, together with
@@ -81,7 +85,9 @@ least five are different people — Kat and Pulse argue at 00:02:35, Kat and Jam
 phone call at 00:04:04, James and Gray speak in the same room at 00:04:10, Freya and the
 game master trade jokes at 00:05:51. No voice-print separation was performed, so one
 person voicing two of the seven roles is not excluded. **Score against 7 as
-"role-holders heard" and 5 as the proven floor.**
+"role-holders heard" and 5 as the proven floor.** Both numbers are in the manifest, as
+`expected_physical_speakers` and `proven_distinct_speakers`, so neither has to be read
+out of prose.
 
 Characters outnumber speakers, which is the point. Kiko exists in the fiction behind a
 closed door while the player is away from the keyboard (00:17:00, outside the window), and
