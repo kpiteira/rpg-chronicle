@@ -38,8 +38,9 @@ def test_a_window_names_the_recording_its_offsets_are_into(path: Path) -> None:
     """
     document = json.loads(path.read_text(encoding="utf-8"))
     identity = document["identity"]
-    fingerprint = ROOT / identity["content_fingerprint"]
+    fingerprint = (ROOT / identity["content_fingerprint"]).resolve()
 
+    assert fingerprint.is_relative_to(ROOT), "must name a file committed in this repository"
     assert fingerprint.is_file(), identity["content_fingerprint"]
     assert (
         hashlib.sha256(fingerprint.read_bytes()).hexdigest()

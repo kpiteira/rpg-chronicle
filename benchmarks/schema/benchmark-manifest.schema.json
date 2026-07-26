@@ -66,7 +66,8 @@
             "path": {
               "type": "string",
               "minLength": 1,
-              "description": "Repository path of the committed fingerprint."
+              "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$)).+$",
+              "description": "Repository path of the committed fingerprint, relative to the repository root. Constrained here as well as in the validator: a manifest is data, and a path with a leading slash or a .. segment would send whatever reads it outside the repository, which both reads what it should not and voids the point of the field - that the fingerprint is committed where a reader can already see it."
             },
             "sha256": {
               "type": "string",

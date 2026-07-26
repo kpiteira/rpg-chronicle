@@ -21,8 +21,10 @@ uv run python scripts/audio_identity.py verify <your-audio-file> \
   --against benchmarks/fingerprints/mystic-horizon-ch1ep1-killing-zombozos.json
 ```
 
-If it prints an offset, **add the inverse of it to every timecode below**. If it says
-DIFFERENT RECORDING, stop — you have another video, and nothing here applies.
+If it prints an offset, **add that offset to every timecode below, sign included**. It is
+usually well under a second. If it says DIFFERENT RECORDING, stop — you have another video and
+nothing here applies; if it says TOO SHORT TO JUDGE, you have an excerpt rather than the full
+recording.
 
 ## Task A — one window, transcribed blind
 

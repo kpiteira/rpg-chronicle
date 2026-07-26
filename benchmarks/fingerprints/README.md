@@ -38,8 +38,9 @@ straddle different slices of the sound once shifted, and it scores above 0.99 fi
 [`../notes/recording-identity.md`](../notes/recording-identity.md) is the demonstration:
 three genuinely different encodes of one recording, a copy trimmed by 12.347 s, an unrelated
 recording, and — the control that matters — a different episode of the *same campaign*, with
-the same cast, room and encoder, which the procedure rejects at 0.0465. It also records the
-two ways the procedure was wrong before it was right.
+the same cast, room and encoder, which the procedure rejects at 0.0465. It also records every
+way the procedure was wrong before it was right, which by now is more places than it is
+comfortable to list here.
 
 ## These are measurements, not media
 
