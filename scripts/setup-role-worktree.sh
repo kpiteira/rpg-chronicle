@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# One-time setup for a specialist role: worktree, environment, bootstrap lines.
+# One-time setup for a specialist role worktree, environment, and bootstrap lines.
 #
-# Usage: scripts/setup-role-worktree.sh <role-id>
+# Usage: scripts/setup-role-worktree.sh <specialist-role-id>
 set -euo pipefail
 
-role="${1:?usage: scripts/setup-role-worktree.sh <role-id>}"
+role="${1:?usage: scripts/setup-role-worktree.sh <specialist-role-id>}"
 
 case "$role" in
   reuse-research)     dir="../rpg-reuse" ;;
