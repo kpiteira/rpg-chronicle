@@ -139,7 +139,8 @@ Code primitive. The operator's intent is Claude Code as the primary environment 
 other tools used selectively where they fit.
 
 The repository had encoded the stale decision in the one place it is hardest to change
-later — the branch prefix, `codex/`, in four documents and the worktree setup script.
+later — the branch prefix, `codex/`, in three documents (`AGENTS.md`, `CONTRIBUTING.md`,
+`docs/PARALLEL_EXECUTION.md`) and the worktree setup script.
 The prefix becomes `agent/<role-id>/<issue-number>-<slug>`: tool-neutral, because work
 will genuinely come from more than one environment and a prefix naming either is wrong
 for the other. Existing `codex/` branches are left to merge and expire; nothing enforces

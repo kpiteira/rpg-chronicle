@@ -137,6 +137,27 @@ the rest of `benchmarks/` stays with benchmark research.
 The canonical session model is the one file everyone depends on. Changes to it go through
 the TPM with consumer evidence, exactly as the operating model states.
 
+### `scripts/`
+
+The directory is split by consumer, not owned as a unit: governance tooling to the TPM,
+subsystem tooling to whoever owns the subsystem. Two shapes were considered and
+rejected, so that the next reader need not re-derive them:
+
+- **TPM ownership of the whole directory.** Goal #11 added
+  `scripts/fetch_benchmark_media.py`, which serves the benchmark corpus and interests no
+  other role. Whole-directory ownership would have made that a cross-role request for a
+  file nobody else will ever open, and the ownership model exists to prevent collisions
+  rather than to centralise. Rule 1 decides it: the script serves benchmark research's
+  outcomes.
+- **Ownership per subtree, with governance and subsystem tooling separated into
+  directories.** This is the same answer as the split above, plus a directory move that
+  breaks every existing reference — `CLAUDE.md`, `AGENTS.md`, the hook configuration —
+  to encode a boundary the table already states. The cost is real and the benefit is
+  naming.
+
+Shared-append was never a candidate here. Scripts are whole files; there is nothing to
+append to, and two roles adding different files to one directory do not conflict.
+
 ### Protocol definitions and their implementations
 
 `src/rpg_chronicle/providers.py` holds protocol definitions that every role downstream

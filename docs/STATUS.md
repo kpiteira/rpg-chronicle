@@ -24,10 +24,12 @@ so the front of the pipeline is still a fixture. Goal #20 is closing that.
 
 ## Active milestone
 
-`M1 — R0 public vertical slice`. Four of its six exit criteria are met outright. The
-remaining two — canonical output retaining timestamps, speaker distinction, confidence
-and native artifacts, and one resumable command producing the review package — are
-satisfied on synthetic input and unsatisfied on the public excerpt the milestone names.
+`M1 — R0 public vertical slice`. Three of its six exit criteria are met outright: the
+selected source's provenance, the reproducible fetch, and the evidence-backed engine
+choice. The other three — canonical output retaining timestamps, speaker distinction,
+confidence and native artifacts; every important summary and review assertion linking to
+transcript evidence; one resumable command producing the review package — are satisfied
+on synthetic input and unsatisfied on the public excerpt the milestone names.
 
 ## Accepted facts
 
