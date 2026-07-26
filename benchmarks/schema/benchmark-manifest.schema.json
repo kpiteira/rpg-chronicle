@@ -51,6 +51,29 @@
           "type": "string",
           "pattern": "^[0-9a-f]{64}$",
           "description": "SHA-256 of the published media file. A fetch that reproduces this digest reproduces the excerpt; see scripts/fetch_benchmark_media.py."
+        },
+        "content_fingerprint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["method", "path", "sha256"],
+          "description": "How to establish that another copy is this recording, when bytes cannot: a source that re-encodes gives every downloader a different file, so a digest pins nothing. The fingerprint describes the sound instead, and survives re-encoding. Verified truth needs one of the two, because an anchor into bytes nobody can confirm is not evidence.",
+          "properties": {
+            "method": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Identifies the procedure and its version, so a reader knows which tool reads this file."
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Repository path of the committed fingerprint."
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$",
+              "description": "SHA-256 of the fingerprint file itself. This one does pin bytes: the fingerprint is committed here, so it cannot be re-encoded underneath a reader."
+            }
+          }
         }
       }
     },
@@ -138,6 +161,11 @@
           "items": {"$ref": "#/$defs/truthTarget"}
         },
         "notes": {"type": "string"},
+        "threads": {
+          "type": "array",
+          "description": "Subjects that open early and are still live late, recorded as the distance between the first and last anchor that carries them. This is the property a short excerpt cannot exhibit at all, and the reason a multi-hour item exists: a system can capture every entity in a four-hour session and still fail to notice that the thing settled in the last ten minutes is the thing raised in the first ten. Each end must be the anchor of a truth target, so a thread cannot be asserted without the observations that hold it up.",
+          "items": {"$ref": "#/$defs/truthThread"}
+        },
         "method": {
           "type": "string",
           "minLength": 1,
@@ -188,6 +216,29 @@
     }
   },
   "$defs": {
+    "truthThread": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "first_anchor_ms", "last_anchor_ms", "evidence"],
+      "properties": {
+        "label": {"type": "string", "minLength": 1},
+        "first_anchor_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Where the thread opens. Must be the anchor_ms of a truth target in this manifest."
+        },
+        "last_anchor_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Where the thread is last carried. Must be the anchor_ms of a truth target in this manifest, and later than first_anchor_ms."
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "description": "What is observable at each end and what makes them the same thread. A pair of anchors that merely mention a word is a word frequency, not a thread; what is claimed here is that the later moment is about the earlier one."
+        }
+      }
+    },
     "truthTarget": {
       "type": "object",
       "additionalProperties": false,

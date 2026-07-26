@@ -171,17 +171,31 @@ def test_a_restricted_candidate_may_record_no_licence_url(tmp_path: Path) -> Non
     assert exit_code == 0, lines
 
 
-def test_verified_truth_requires_a_digest_for_the_bytes_it_is_anchored_in(
-    tmp_path: Path,
-) -> None:
-    """An anchor is an offset into particular bytes, so verified truth needs those bytes pinned."""
+def test_verified_truth_requires_a_way_to_establish_identity(tmp_path: Path) -> None:
+    """An anchor is an offset into a particular recording, so identity has to be checkable."""
     manifest = _hiddengrid()
     del manifest["source"]["media_sha256"]
 
     exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
 
     assert exit_code == 1
-    assert any("source.media_sha256 is required" in line for line in lines), lines
+    assert any("verified truth needs a way to establish identity" in line for line in lines), lines
+
+
+def test_a_fingerprint_satisfies_identity_where_bytes_cannot(tmp_path: Path) -> None:
+    """A source that re-encodes gives every downloader different bytes, so a digest pins
+    nothing. The fingerprint describes the sound and is the honest substitute."""
+    manifest = _hiddengrid()
+    del manifest["source"]["media_sha256"]
+    manifest["source"]["content_fingerprint"] = {
+        "method": "rms_envelope_v1",
+        "path": "benchmarks/fingerprints/example.json",
+        "sha256": "0" * 64,
+    }
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0, lines
 
 
 def test_a_provisional_candidate_needs_no_digest_yet(tmp_path: Path) -> None:
@@ -199,6 +213,63 @@ def test_a_provisional_candidate_needs_no_digest_yet(tmp_path: Path) -> None:
     exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
 
     assert exit_code == 0, lines
+
+
+def _threaded(first: int, last: int) -> dict:
+    """A Hiddengrid manifest carrying one thread between two of its own target anchors."""
+    manifest = _hiddengrid()
+    manifest["truth"]["threads"] = [
+        {
+            "label": "example",
+            "first_anchor_ms": first,
+            "last_anchor_ms": last,
+            "evidence": "the later moment is about the earlier one",
+        }
+    ]
+    return manifest
+
+
+def test_a_thread_between_two_target_anchors_is_accepted(tmp_path: Path) -> None:
+    """The positive case, so the rejections below are not passing for want of any thread."""
+    manifest = _threaded(69900, 526220)
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0, lines
+
+
+def test_a_thread_end_that_anchors_no_target_is_rejected(tmp_path: Path) -> None:
+    """A thread claims a subject was still live, and the targets at its ends are what show it.
+
+    One millisecond off a real anchor is the interesting mutation: the number still lands in
+    the window and still looks like a citation, and there is nothing at it.
+    """
+    manifest = _threaded(69901, 526220)
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("is not the anchor of any truth target" in line for line in lines), lines
+
+
+def test_a_thread_that_ends_before_it_starts_is_rejected(tmp_path: Path) -> None:
+    manifest = _threaded(526220, 69900)
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("must be later than first_anchor_ms" in line for line in lines), lines
+
+
+def test_a_thread_reaching_outside_the_excerpt_is_rejected(tmp_path: Path) -> None:
+    """Outside the window is audio nobody scores, so a span across it measures nothing."""
+    manifest = _threaded(69900, manifest_end := _hiddengrid()["excerpt"]["end_ms"] + 1)
+    assert manifest_end > 0
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("outside the excerpt window" in line for line in lines), lines
 
 
 def test_machine_assisted_truth_must_name_the_providers_it_cannot_score(tmp_path: Path) -> None:
