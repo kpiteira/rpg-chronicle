@@ -100,7 +100,7 @@
         "proven_distinct_speakers": {
           "type": ["integer", "null"],
           "minimum": 1,
-          "description": "How many speakers are demonstrably different people, by evidence stated in observations. Never larger than expected_physical_speakers. A diarization score should be read against this floor as well as the estimate."
+          "description": "How many speakers are demonstrably different people, by evidence stated in observations. Never larger than expected_physical_speakers. Proving k distinct people needs k speakers established as pairwise distinct from one another: counting the speakers named across a list of pairwise observations overstates it, because a chain of pairs can be satisfied by two people. A diarization score should be read against this floor as well as the estimate."
         },
         "overlap": {"type": "string", "enum": ["low", "medium", "high", "unknown"]},
         "music_or_effects": {"type": "boolean"},

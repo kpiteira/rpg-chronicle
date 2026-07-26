@@ -88,15 +88,35 @@ renegotiated. Inside 0–600 s the window offers, in one span:
 
 ## Who is speaking
 
-Seven distinct first-person role-holders speak in the window: the game master, and the
-players of Kat, Pulse, James, Gray, Freya and Gartog. Adjacent-turn exchanges prove at
-least five are different people — Kat and Pulse argue at 00:02:35, Kat and James hold a
-phone call at 00:04:04, James and Gray speak in the same room at 00:04:10, Freya and the
-game master trade jokes at 00:05:51. No voice-print separation was performed, so one
-person voicing two of the seven roles is not excluded. **Score against 7 as
-"role-holders heard" and 5 as the proven floor.** Both numbers are in the manifest, as
+Seven distinct first-person speaking roles are heard in the window: the game master, and
+the players of Kat, Pulse, James, Gray, Freya and Gartog. How many *people* hold those
+roles is a separate question, and this is where an earlier draft of this file got it
+wrong — worth recording, because the error is an easy one and the correction is the
+whole point of a "proven" number.
+
+Four exchanges put two roles in immediate succession, which establishes those two as
+different people: Kat with Pulse at 00:02:35, Kat with James at 00:04:04, James with Gray
+at 00:04:10, Freya with the game master at 00:05:51. The draft read that as proving five
+distinct people. It does not. Those are four *pairwise* constraints, and no three of the
+roles are ever established as pairwise distinct among themselves, so the whole set is
+satisfiable by two people:
+
+| Person | Roles |
+|---|---|
+| one | Freya, Gray, Kat |
+| two | game master, James, Pulse |
+
+Nothing in the recorded evidence rules that out. Counting the roles that appear in the
+pair evidence is not the same as counting the people it separates — proving *k* distinct
+people needs *k* roles that are pairwise distinct from each other, and the largest such
+set here is 2.
+
+**So: 7 roles heard, 2 people demonstrated.** Both numbers are in the manifest, as
 `expected_physical_speakers` and `proven_distinct_speakers`, so neither has to be read
-out of prose.
+out of prose. The true count is very probably 6 or 7 — the publisher tags five player
+handles for this episode and there is a host — but that is inference from metadata and
+content, not something this recording demonstrates. Raising the floor honestly needs
+overlapping speech or voice-print separation, and neither was performed.
 
 Characters outnumber speakers, which is the point. Kiko exists in the fiction behind a
 closed door while the player is away from the keyboard (00:17:00, outside the window), and
