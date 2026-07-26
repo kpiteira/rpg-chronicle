@@ -263,6 +263,20 @@ def test_unbalanced_quotes_elsewhere_do_not_block_the_session() -> None:
     assert classify("echo \"unterminated") == "allow"
 
 
+def test_a_guarded_phrase_in_a_comment_does_not_block_an_unparseable_call() -> None:
+    """Raised by Copilot.
+
+    A comment's stray apostrophe defeats the tokenizer, and the guarded phrase
+    beside it then refused the whole call -- relocating the annoyance this
+    module exists to remove rather than fixing it.
+    """
+    assert classify("# don't run \"gh pr merge\" yet\nuv run pytest -q") == "allow"
+
+
+def test_an_unparseable_call_with_a_real_guarded_command_still_fails_closed() -> None:
+    assert classify("# don't\ngh pr merge 7 --body \"unterminated") == "unparseable"
+
+
 def test_an_unreadable_payload_fails_closed() -> None:
     result = subprocess.run(
         [sys.executable, str(CLASSIFIER)],

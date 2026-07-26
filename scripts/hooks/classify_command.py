@@ -221,11 +221,17 @@ def base_name(word: str) -> str:
 
 
 def pushes_to_main(segment: list[str]) -> bool:
-    """True when any refspec in a `git push` resolves to main.
+    """True when any argument of a `git push` resolves to main.
 
     Permission prefix rules cannot see refspecs -- `git push origin HEAD:main`
     satisfies an allow rule for `git push origin` -- so the destination is
     matched here instead.
+
+    Every positional is checked, including the one naming the remote, so a
+    remote literally named `main` would be refused as though it were the branch.
+    That is a deliberate over-refusal: distinguishing the two means treating the
+    first positional as a remote, and a bypass hides behind any argument this
+    function decides not to inspect.
     """
     for argument in segment[2:]:
         if argument.startswith("-"):
@@ -267,7 +273,15 @@ def classify(command: str, depth: int = 0) -> str:
     try:
         parsed = segments(tokenize(body))
     except ValueError:
-        return "unparseable" if any(h in body for h in GUARDED_HINTS) else "allow"
+        # Quoting could not be resolved, so fall back to raw text -- minus
+        # whole-line comments, which are never commands. Without that, a stray
+        # apostrophe in a comment that merely mentions a guarded command
+        # refuses the whole call, which is the annoyance this module exists to
+        # remove rather than relocate.
+        readable = "\n".join(
+            line for line in body.splitlines() if not line.lstrip().startswith("#")
+        )
+        return "unparseable" if any(h in readable for h in GUARDED_HINTS) else "allow"
 
     merges: list[str] = []
     for segment in parsed:
