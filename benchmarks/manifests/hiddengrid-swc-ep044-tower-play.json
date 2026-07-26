@@ -20,7 +20,7 @@
     "verification": "A 2026-07-26 fetch returned 127266240 bytes matching the digest recorded at B01: a 128 kbit/s CBR MP3, 16 kHz, nominally stereo, lasting 7954.009 s. Reproduce with `uv run python scripts/fetch_benchmark_media.py hiddengrid-swc-ep044-tower-play`. The window was kept at 0-600000 ms after measurement rather than by default: theme music occupies only 0:03-0:57, the recap ends at 1:50, and the remaining 82% of the window is live play. The episode post is dated 2013-11-29; the media file's own Last-Modified is 2014-05-24, so the published audio was uploaded or replaced months after the post."
   },
   "recording_conditions": {
-    "capture_layout": "remote_mixdown",
+    "capture_layout": "single_mixed_track",
     "production": "edited",
     "expected_physical_speakers": 7,
     "proven_distinct_speakers": 5,
@@ -35,6 +35,13 @@
   },
   "truth": {
     "method": "Machine-assisted listen-through on 2026-07-26, not a human ear. The window was decoded twice by different implementations and model families - whisper.cpp large-v3-turbo (beam 5) and openai-whisper medium.en - both run locally on the private copy, and structure was measured with ffmpeg silence, loudness and spectral analysis rather than by any model. A target was verified only where both decodes carry it and a timestamp locates it; where they disagree, the disagreement is stated in the evidence instead of being resolved by guesswork. Contested passages were re-decoded by four more local models (whisper base.en, ggml small.en, ggml small multilingual, and large-v3-turbo at beam 8) and the split reported rather than voted away. Proper-noun spellings that no decode can settle are flagged as such, and two - Entei and nuyen - take their spelling from the publisher's episode tags and Shadowrun setting vocabulary respectively, with the audio only establishing that the word is spoken. This provenance matters for scoring: see benchmarks/notes/hiddengrid-swc-ep044-tower-play.md for what this item can and cannot diagnose, including the engines it must not be used to score without declaring the dependency.",
+    "contaminating_providers": [
+      "whisper.cpp large-v3-turbo",
+      "openai-whisper medium.en",
+      "openai-whisper base.en",
+      "whisper.cpp small.en",
+      "whisper.cpp small"
+    ],
     "important_entities": [
       {
         "label": "Jacob",

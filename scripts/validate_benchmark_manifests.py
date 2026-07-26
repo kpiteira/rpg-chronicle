@@ -71,6 +71,7 @@ def _semantic_errors(instance: dict) -> list[str]:
         )
 
     verified = False
+    machine_assisted = False
     for path, target in _truth_targets(instance):
         anchor_ms = target.get("anchor_ms")
         if anchor_ms is not None and not start_ms <= anchor_ms < end_ms:
@@ -78,6 +79,8 @@ def _semantic_errors(instance: dict) -> list[str]:
                 f"{path}.anchor_ms {anchor_ms} is outside the excerpt window "
                 f"[{start_ms}, {end_ms})"
             )
+        if target.get("basis") == "audio_machine_assisted":
+            machine_assisted = True
         if target.get("status") != "verified":
             continue
         verified = True
@@ -95,6 +98,12 @@ def _semantic_errors(instance: dict) -> list[str]:
         errors.append(
             "truth.method is required once a target is verified, so a score is never "
             "read without knowing how the truth was established"
+        )
+    if machine_assisted and not instance["truth"].get("contaminating_providers"):
+        errors.append(
+            "truth.contaminating_providers is required once a target is machine-assisted; "
+            "a provider that helped build the truth cannot be scored against it, and that "
+            "has to be checkable rather than left to whoever reads the notes"
         )
     return errors
 

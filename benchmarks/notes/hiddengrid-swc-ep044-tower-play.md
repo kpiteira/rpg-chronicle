@@ -62,6 +62,15 @@ post-production levelling and limiting, means this is a **produced** artifact �
 the raw acoustic condition the product is aimed at, and it should not be read as a proxy
 for one.
 
+What is *not* measurable here is where the speakers were sitting. The gating rules out a
+raw single-room capture, and the publisher's online-play format, the players referred to
+by handle, and one player being "AFK" at 00:17:00 all point to remote play — but that is
+inference from the publisher and the content, not from the signal. So
+`capture_layout` records `single_mixed_track`, which is the measured part, and the remote
+reading stays here in prose with its evidence attached. An enum value claiming "remote"
+would have smuggled an inference into the field a consumer is most likely to read alone,
+which is the same mistake the `basis` split exists to prevent.
+
 ## Why the window stayed at 0–600 000 ms
 
 The goal allowed moving it if the default proved to be intro music and recap. Measured, it
@@ -143,6 +152,11 @@ This method has a cost that must travel with any score computed against this ite
 > *content* recall — the targets are entities and events, not word strings — but even
 > then, anything either reference engine mis-heard consistently is invisible to this
 > truth set.
+
+Every engine that touched this annotation is listed in the manifest's
+`truth.contaminating_providers`, so a scoring run can refuse the combination instead of
+depending on someone having read this paragraph. The validator requires that list once
+any target is machine-assisted.
 
 The `nuyen` target is the deliberate counter-example: both reference decodes wrote "new
 yen", so the recorded truth differs from what either engine produced. Targets like it are

@@ -85,17 +85,17 @@
           "enum": [
             "studio_multimic",
             "remote_multitrack",
-            "remote_mixdown",
+            "single_mixed_track",
             "single_room_mic",
             "unknown"
           ],
-          "description": "How the speakers were captured. remote_multitrack keeps one track per remote endpoint; remote_mixdown is remote play delivered as a single mixed track, which offers no per-speaker channel to diarize from."
+          "description": "How the speakers were captured, stated only as far as the recording establishes it. single_mixed_track says what a mixdown measurably is - one track, no per-speaker channel to diarize from - and deliberately claims nothing about where the speakers were, since room topology is rarely measurable from a published file. Where the speakers actually were belongs in observations, with its evidence, rather than in an enum a consumer will read alone."
         },
         "production": {"type": "string", "enum": ["polished", "edited", "raw", "unknown"]},
         "expected_physical_speakers": {
           "type": ["integer", "null"],
           "minimum": 1,
-          "description": "How many distinct people are believed to speak. Best estimate, not a proven count."
+          "description": "The upper reading of how many people speak: distinct speaking roles heard, before allowing for one person covering two of them. Read it with proven_distinct_speakers, which is the floor; the true count lies between."
         },
         "proven_distinct_speakers": {
           "type": ["integer", "null"],
@@ -139,6 +139,11 @@
           "type": "string",
           "minLength": 1,
           "description": "How the truth was established, including which provider produced any machine-assisted output. Required once any target is verified, so a score is never read without its annotation provenance."
+        },
+        "contaminating_providers": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "description": "Providers that helped build this truth and therefore cannot be scored against it without declaring the dependency. Machine-readable so a scoring run can refuse the combination instead of relying on someone having read the notes. Required once any target is machine-assisted."
         }
       }
     },
