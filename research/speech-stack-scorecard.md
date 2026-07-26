@@ -149,7 +149,16 @@ smaller set of usable units than the others'. Earlier runs of the same audio dur
 goal produced 213 and 226 units with 1 unusable; those runs were overwritten by later
 regenerations and are **not** in this diff, so treat the swing as an observation rather
 than as evidence — the committed 450/104 stands on its own, and it is enough to
-discount the row. That is a real advantage pointing the same way as before, but a
+discount the row.
+
+The same caution applies to mlx-whisper's **wall clock**, and the cost table above does
+not currently carry it. Its committed synthetic run ends in a roughly 200-token
+`Rest Rest Rest…` repetition loop, which is a familiar Whisper degenerate-decoding
+failure and burns inference time producing nothing. So its 44.3 s at 600 s and 13.6x
+realtime are a slow *and* partly degenerate draw, not a clean measurement of the engine.
+The rejection of mlx-whisper as "measurably the slowest Apple Silicon path" is safe
+because whisper.cpp runs the same model faster on the same machine, but the specific
+figure should not be quoted as this engine's throughput. That is a real advantage pointing the same way as before, but a
 modest one — and the honest reading is that the four recognizers cluster between 0.86
 and 0.94 on attribution purity, where the raw numbers suggested a chasm.
 
@@ -477,13 +486,13 @@ half.
 **Memory needs two different projections, because the two stages behave differently.**
 
 - *whisper.cpp is effectively constant.* Growth is 0.179 MB per second of audio, and it
-  is 0.177 MB/s between 10→20 minutes and 0.181 between 20→40, so a straight line is
+  is 0.178 MB/s between 10→20 minutes and 0.181 between 20→40, so a straight line is
   the right model. Four hours projects to **about 4.6 GB**. This is the internal 30-second
   windowing doing its job.
 - *sherpa-onnx diarization decelerates.* Growth per second of audio fell 4.97 → 2.50 →
   1.36 → 0.54 MB across the four intervals, roughly halving each time. These are
   *interval* slopes between consecutive measurements, not averages: the first is
-  (3653.6 − 922.3) MB ÷ (600 − 50) s, using the 50 s synthetic measurement as the low
+  (3654.0 − 922.3) MB ÷ (600 − 50) s, using the 50 s synthetic measurement as the low
   anchor. Dividing a single measurement by its own duration gives a different and
   less useful number. That gives a
   range rather than a number, and both ends are stated because the extrapolation is the
@@ -696,6 +705,11 @@ not schedule.
    regression input for measuring progress against it.
 5. **`docs/STATUS.md` records that no provisional engine is selected.** That is now out
    of date, and `docs/` is TPM territory, so it is flagged here rather than edited.
+6. **A decision record belongs in `docs/DECISIONS.md`.** Shared rule 5 in `AGENTS.md`
+   routes durable foundational choices there, and selecting the provisional speech stack
+   is one — this scorecard is the evidence behind the decision, not the decision log
+   entry. `docs/` is TPM-owned, so this is proposed rather than written: a short D-record
+   naming the recommended stack, the four grounds, and a pointer here.
 6. **A tier-3 benchmark input does not exist.** Every conclusion about the target
    acoustic condition is currently an extrapolation from two inputs that are wrong in
    opposite directions. This belongs to benchmark-research.

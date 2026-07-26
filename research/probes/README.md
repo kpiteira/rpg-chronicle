@@ -231,5 +231,8 @@ rather than quietly left, because a metric that cannot fail is worse than no met
 - **`speaker_coverage_ratio` overstates coverage where diarization spans overlap.** It
   sums per-span overlaps and clamps at the unit span, so a unit spanned by two
   simultaneous speakers counts that time twice before clamping. `overlap_given_coverage`
-  is correspondingly deflated. The direction of the comparison it supports holds, but its
-  third decimal does not, and the scorecard says so where it uses it.
+  is correspondingly deflated. On the 600 s window the span sum exceeds the union by
+  about 6%, which leaves the ordering of stacks intact. The direction of the comparison
+  it supports holds; its third decimal does not. The scorecard warns against reading that
+  column closely, but on the separate ground that it is a ratio of aggregate means — this
+  double-count is disclosed here and not there.
