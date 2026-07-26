@@ -19,27 +19,38 @@ fixture processor output
 → evidence-backed summary-first review package
 ```
 
-The path is resumable and preserves the processor-native artifact. What it has never
-done is carry real audio: no transcription engine is wired behind `TranscriptProvider`,
-so the front of the pipeline is still a fixture. That gap is open and is tracked by goal
-#20, which is in review at the time of writing rather than merged.
+The path is resumable, preserves the processor-native artifact, and — since #20 merged —
+carries real audio. `run-audio` takes the Hiddengrid excerpt from a verified media file
+to a review package, with `whisper.cpp` and `sherpa-onnx` behind `TranscriptProvider`.
 
 ## Active milestone
 
-`M1 — R0 public vertical slice`. Three of its six exit criteria are met outright: the
-selected source's provenance, the reproducible fetch, and the evidence-backed engine
-choice. The other three — canonical output retaining timestamps, speaker distinction,
-confidence and native artifacts; every important summary and review assertion linking to
-transcript evidence; one resumable command producing the review package — are satisfied
-on synthetic input and unsatisfied on the public excerpt the milestone names.
+`M2 — R1 useful prototype`.
+
+**`M1 — R0 public vertical slice` is met.** All six exit criteria in
+`docs/MILESTONES.md` hold against the merged artifacts, the last three on real audio
+rather than on the fixture:
+
+- source provenance, reproducible fetch, and evidence-backed engine choice — #11 and #10;
+- canonical output retaining timestamps, speaker distinction, confidence and the
+  processor-native artifact — 301 of 301 turns carry timestamps and confidence, 292
+  carry a speaker label, both native artifacts are retained
+  (`research/runs/hiddengrid-600s-first-run.json`);
+- every important assertion linking to transcript evidence — 6 claims citing 72 distinct
+  turn ids, none citing a turn that does not exist, enforced in code rather than asserted;
+- one resumable command — `run-audio`, with resumption demonstrated by removing the
+  guard and showing the tests fail.
+
+What that milestone does **not** say, and what nobody should read into it: nothing here
+measures how *well* the path carries audio. It ran on ten minutes, not four hours.
 
 ## Accepted facts
 
 ### Lifecycle
 
-- Four specialist goals have completed the full issue → Copilot-reviewed PR → validated
-  → merged lifecycle: #11, #10, #12, #14. The validator blocked three of them at least
-  once, and each block named a defect that would otherwise have merged.
+- Five specialist goals have completed the full issue → Copilot-reviewed PR → validated
+  → merged lifecycle: #11, #10, #12, #14, #20. The validator blocked three of them at
+  least once, and each block named a defect that would otherwise have merged.
 
 ### Transcription
 
@@ -55,8 +66,11 @@ on synthetic input and unsatisfied on the public excerpt the milestone names.
   labels are carried through and marked unreliable rather than trusted.
 - Those probes measure cost and output shape, not accuracy. No word error rate has been
   computed by anything in this repository, because no reference transcript exists.
-- Nothing in `src/rpg_chronicle/` transcribes audio yet. R01's goal excluded
-  integration.
+- Both engines are wired in behind `TranscriptProvider` as two separate components
+  (#20), so the unreliable half can be replaced without touching the reliable one. A
+  600-second excerpt produced 301 turns in 159.7 s of wall clock on the operator's
+  machine, and 23 distinct speaker labels for a recording with far fewer speakers —
+  diarization behaving exactly as the probes measured it.
 
 ### Analysis
 
@@ -98,11 +112,15 @@ on synthetic input and unsatisfied on the public excerpt the milestone names.
 
 ### Boundaries and process
 
-- The canonical schema is version `0.1` and intentionally narrow. Two consumers have now
-  asked it to grow — confidence provenance and speaker-attribution quality from #10,
-  somewhere for entities, aliases, and unresolved threads from #12. Both requests carry
-  consumer evidence and neither has been granted; extending the shared boundary is a
-  TPM goal of its own.
+- The canonical schema is version `0.1` and intentionally narrow. Three consumers have
+  now asked it to grow — confidence provenance and speaker-attribution quality from #10,
+  somewhere for entities, aliases, and unresolved threads from #12, and #20 recording
+  per-turn attribution `coverage` and `purity` in the engine-native artifact because
+  canonical turns have nowhere to hold them. That last one is the boundary leaking:
+  D-006 says downstream consumes canonical turns only, and a consumer reading only
+  canonical turns cannot tell an uncertain speaker attribution from a certain one. All
+  three carry consumer evidence, none has been granted, and extending the shared
+  contract is a TPM goal of its own.
 - The external reference vault must remain read-only during discovery.
 - The initial bootstrap establishes the shared product, operating, and executable
   foundation; agents must preserve it and never assume unfamiliar files are disposable.
@@ -117,11 +135,14 @@ This status document intentionally does not mirror issue-by-issue assignment sta
 
 ## Integration focus
 
-The convergence point is unchanged and now has one wire missing: a public excerpt
-travelling from audio through the canonical boundary to a review package. Three merged
-artifacts meet there — a selected engine, a fetchable excerpt, a real analyser — and
-until that command exists, every quality claim the project can make rests on synthetic
-input.
+The R0 convergence point is reached: a public excerpt travels from audio through the
+canonical boundary to a review package, and four merged artifacts meet there — a
+selected engine, a fetchable excerpt, a real analyser, and the command that joins them.
+
+The next one is measurement. Everything the project has produced describes cost and
+shape; nothing describes quality, and nothing can until a reference transcript exists.
+Goal #21 is open against the longest of the two candidates whose licence permits
+committing one.
 
 ## Known blockers
 

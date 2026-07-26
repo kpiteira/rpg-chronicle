@@ -126,7 +126,8 @@ no benefit.
 | `src/rpg_chronicle/model.py`, `src/rpg_chronicle/providers.py`, `docs/ARCHITECTURE_BOUNDARIES.md` | TPM (shared contract) |
 | `src/rpg_chronicle/cli.py`, `src/rpg_chronicle/pipeline.py` | Shared composition — rule 4 |
 | `tests/` | Follows the code under test — rule 1 |
-| `.gitignore` | Shared-append — see below |
+| `.gitignore`, `pyproject.toml` dependency groups | Shared-append — see below |
+| `uv.lock` | Regenerated, never hand-edited — see below |
 
 `benchmarks/fixtures/` holds synthetic input authored to exercise the pipeline, not
 corpus material: goal #12 added `long_session_plan.json` there for an analysis
@@ -170,9 +171,12 @@ An implementation lives in the package of the role that writes it —
 `src/rpg_chronicle/analysis/` for the analysis provider, as goal #12 arranged, and the
 transcription package for the transcription provider. Only the protocol is shared.
 
-**Transition.** Goal #20 was activated with `providers.py` assigned to reuse research and
-completes under that assignment; changing a goal's scope mid-execution is the defect
-recorded in `docs/GOALS.md`. The shared-contract rule applies from the next goal onward, and a specialist working #20 should read this note and not the table row alone.
+**How the transition was handled**, since the pattern will recur. Goal #20 was in
+execution when this reassignment was written, and it completed under the old assignment
+rather than the new one: changing a goal's scope mid-execution is the defect recorded in
+`docs/GOALS.md`, and applying a table change retroactively is the same defect by another
+route. #20 has since merged — it created `src/rpg_chronicle/transcription/` and did not
+touch `providers.py` at all — so the shared-contract rule is now simply in force.
 
 ### `.gitignore`
 
@@ -192,7 +196,18 @@ and do not follow it, and they are left alone deliberately: retrofitting a prove
 comment onto them would mean editing another role's lines, which is the one thing the
 convention forbids.
 
-Two shapes were considered and rejected:
+`pyproject.toml`'s dependency groups follow the same convention for the same reason:
+#12 and #20 have each added one, each serving only itself. `[project]` metadata and tool
+configuration are not shared-append — those are the operating model's and go through the
+TPM.
+
+`uv.lock` is the sharper case and the convention does not help it, because it is
+regenerated wholesale rather than appended to: two roles adding a dependency in the same
+window produce a conflict no comment prevents. **Never hand-edit or hand-resolve it.** On
+a conflict, take `origin/main`'s copy, re-run `uv sync`, and commit what the resolver
+produces. A merged lockfile that no resolver ever generated is worse than a rebase.
+
+Two shapes were considered and rejected for `.gitignore`:
 
 - **A `.gitignore` per owned directory.** This relocates the ownership question instead
   of answering it: goal #12 (review and analysis) needed to ignore
