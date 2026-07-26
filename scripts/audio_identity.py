@@ -116,8 +116,18 @@ def envelope(
         "-",
     ]
     result = subprocess.run(command, capture_output=True, text=True, check=True)
+    return parse_rms_levels(result.stdout)
+
+
+def parse_rms_levels(output: str) -> list[float]:
+    """Read per-frame RMS levels out of ffmpeg's ametadata output.
+
+    Split from ``envelope`` so the part with a decision in it can be checked without a
+    decoder present: how silence is handled is the decision, and running ffmpeg to reach it
+    would make the check depend on a tool the test does not care about.
+    """
     values: list[float] = []
-    for match in re.finditer(r"lavfi\.astats\.1\.RMS_level=(-?[\d.]+|-?inf|nan)", result.stdout):
+    for match in re.finditer(r"lavfi\.astats\.1\.RMS_level=(-?[\d.]+|-?inf|nan)", output):
         token = match.group(1)
         # Digital silence reports as -inf, which no arithmetic survives; floor it instead,
         # because a silent frame is information about the recording, not a missing value.

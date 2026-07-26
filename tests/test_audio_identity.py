@@ -1,10 +1,11 @@
 """The identity procedure is a claim about other people's copies, so it has to be checkable.
 
-These tests never touch the network and never need the recording. They build synthetic
-envelopes whose relationship is known by construction — same shape, same shape shifted,
-different shape — and assert the procedure reports it. The real recording is exercised
-separately, and that run is written up in the notes; what is pinned here is the logic that
-turns two envelopes into a verdict.
+These tests never touch the network, never need the recording, and - with one skipped
+exception - never need a decoder. They build synthetic envelopes whose relationship is known
+by construction: same shape, same shape shifted, different shape. What is pinned here is the
+logic that turns two envelopes into a verdict, which is where every decision in this module
+lives. The real recording is exercised separately and that run is written up in
+benchmarks/notes/recording-identity.md, with the numbers those runs produced.
 """
 
 from __future__ import annotations
@@ -13,6 +14,7 @@ import importlib.util
 import json
 import math
 import random
+import shutil
 import sys
 from pathlib import Path
 
@@ -92,23 +94,35 @@ def test_correlation_of_a_flat_series_is_zero_rather_than_an_error() -> None:
     assert identity._pearson([-120.0] * 50, _speechlike(50)) == 0.0
 
 
-def test_silence_is_floored_rather_than_dropped(tmp_path: Path) -> None:
+def test_silence_is_floored_rather_than_dropped() -> None:
     """-inf frames are information about the recording; dropping them would shift every
-    later frame and silently corrupt the alignment."""
-    silent = tmp_path / "silent.wav"
-    identity.subprocess.run(
-        ["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "anullsrc=r=16000:cl=mono",
-         "-t", "3", str(silent)],
-        check=True,
+    later frame and silently corrupt the alignment.
+
+    Read against ffmpeg's own output text rather than by decoding a silent file, so the
+    decision this pins is checked wherever the tests run and not only where ffmpeg is
+    installed. The literal below is what ffmpeg prints for digital silence.
+    """
+    values = identity.parse_rms_levels(
+        "frame:0 pts:0 pts_time:0\n"
+        "lavfi.astats.1.RMS_level=-inf\n"
+        "frame:1 pts:16000 pts_time:1\n"
+        "lavfi.astats.1.RMS_level=-23.4\n"
+        "frame:2 pts:32000 pts_time:2\n"
+        "lavfi.astats.1.RMS_level=nan\n"
     )
 
-    values = identity.envelope(silent, frame_ms=1000)
-
-    assert len(values) >= 3
-    assert all(v == identity.SILENCE_FLOOR_DB for v in values[:3])
+    assert values == [identity.SILENCE_FLOOR_DB, -23.4, identity.SILENCE_FLOOR_DB]
 
 
-def test_verify_reports_a_different_recording_without_refining_it(tmp_path: Path) -> None:
+def test_verify_reports_a_different_recording_without_refining_it(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A copy that shares no envelope must be rejected before the fine pass runs at all.
+
+    The candidate's envelope is supplied directly rather than decoded, because what is under
+    test is the decision verify() makes about two envelopes. Feeding it a real file would
+    test ffmpeg as well, and would leave the refusal unchecked anywhere ffmpeg is absent.
+    """
     fingerprint = tmp_path / "fp.json"
     fingerprint.write_text(
         json.dumps(
@@ -123,17 +137,19 @@ def test_verify_reports_a_different_recording_without_refining_it(tmp_path: Path
             }
         )
     )
-    tone = tmp_path / "tone.wav"
-    identity.subprocess.run(
-        ["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "sine=frequency=440:r=16000",
-         "-t", "300", str(tone)],
-        check=True,
-    )
+    calls: list[dict] = []
 
-    coarse, fine = identity.verify(tone, fingerprint)
+    def unrelated(path, frame_ms=1000, start_seconds=None, duration_seconds=None):
+        calls.append({"frame_ms": frame_ms})
+        return _speechlike(300, seed=7)
 
-    assert fine is None, "a steady tone shares no envelope with speech and must not refine"
+    monkeypatch.setattr(identity, "envelope", unrelated)
+
+    coarse, fine = identity.verify(tmp_path / "whatever.webm", fingerprint)
+
+    assert fine is None, "an unrelated envelope shares no shape and must not refine"
     assert not coarse.peak_found
+    assert [call["frame_ms"] for call in calls] == [1000], "the fine pass must not have run"
 
 
 # Measured on the real recording; every run is in benchmarks/notes/recording-identity.md.
@@ -145,6 +161,33 @@ OBSERVED_GAP = {
     "SAME_RECORDING_R": (0.0465, 0.9931),
     "COARSE_PEAK_FLOOR_R": (0.0465, 0.7769),
 }
+
+
+def test_the_filter_chain_actually_decodes(tmp_path: Path) -> None:
+    """One end-to-end check that the ffmpeg invocation in envelope() is well formed.
+
+    Skipped where ffmpeg is absent, which includes CI, so this is not what holds the
+    behaviour - it is a local guard against a typo in the filter chain, which nothing else
+    would catch until someone ran the tool against four hours of audio. Everything the
+    module decides is tested above without a decoder.
+    """
+    if shutil.which("ffmpeg") is None:
+        pytest.skip("ffmpeg not installed")
+    tone = tmp_path / "tone.wav"
+    identity.subprocess.run(
+        ["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "sine=frequency=440:r=16000",
+         "-t", "3", str(tone)],
+        check=True,
+    )
+
+    values = identity.envelope(tone, frame_ms=1000)
+
+    # A steady tone has a constant RMS, so a correctly framed chain returns the same finite
+    # level for every second. Its actual value depends on the source's amplitude and is not
+    # the point; that the frames agree is.
+    assert len(values) >= 3
+    assert all(identity.SILENCE_FLOOR_DB < v < 0 for v in values[:3]), values
+    assert max(values[:3]) - min(values[:3]) < 0.1, values
 
 
 @pytest.mark.parametrize("name", sorted(OBSERVED_GAP))
