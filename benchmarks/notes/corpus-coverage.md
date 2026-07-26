@@ -82,14 +82,18 @@ than seeking permission from a commercial rights holder.
 
 ## Every candidate evaluated
 
+Every licence below was read from that candidate's own watch-page markup on 2026-07-26,
+by the controlled check described above. The two candidates with no manifest of their own
+carry their landing URL here so the determination is source-linked wherever it is recorded.
+
 | Candidate | Duration | Licence, from page markup | Verdict |
 |---|---|---|---|
-| KIX, *Our First Session* (`PrNE4_ZHRig`) | 3:24:46, was live | Standard YouTube | **Rejected** — no download right. Best diagnostic fit of all; worth asking permission |
-| Amateur Hour, *D&D Edition Ep 1* (`3Mv7fuK_NJI`) | 1:25:50 | Standard YouTube | **Rejected** — no download right, and 1 h 26 m fills no gap the corpus has |
-| Oxventure *Wyrdwood* ch. 1–4 (`H39LNrL_VH0` + 3) | 6:30:00 across 4 files | Standard YouTube | **Rejected** — no download right; commercial rights holder. Also would not have tested single-file duration |
-| SIR HORSE, *Mystic Horizon* ch. 1 ep. 1 (`-ZzSFGgczrI`) | 3:57:18, was live | **CC BY 3.0** | **Admitted** — multi-hour stress |
-| Dice & Die, *Lost Mine of Phandelver* ep. 1 (`x0vglhb46sM`) | 2:36:57 | **CC BY 3.0** | **Admitted** — unpolished amateur |
-| inwils, *Light of Xaryxis #1* (`5EM_KEerz-k`) | 2:43:21 | **CC BY 3.0** | Not admitted — a viable third amateur item, held back because it duplicates coverage the two admitted items already give |
+| KIX, *Our First Session* — [`PrNE4_ZHRig`](https://www.youtube.com/watch?v=PrNE4_ZHRig) | 3:24:46, was live | Standard YouTube | **Rejected** — no download right. Best diagnostic fit of all; worth asking permission. Manifest: `kix-dnd-amateurs-first-session` |
+| Amateur Hour, *D&D Edition Ep 1* — [`3Mv7fuK_NJI`](https://www.youtube.com/watch?v=3Mv7fuK_NJI) | 1:25:50 | Standard YouTube — no Creative Commons row in the page markup, and `yt-dlp` reports no licence field | **Rejected** — no download right, and at 1 h 26 m it fills no gap the corpus has, so it gets no manifest of its own |
+| Oxventure *Wyrdwood* ch. 1–4 — [`H39LNrL_VH0`](https://www.youtube.com/watch?v=H39LNrL_VH0), [`uAn2kSNRLuM`](https://www.youtube.com/watch?v=uAn2kSNRLuM), [`Pu-GlIu0Gqo`](https://www.youtube.com/watch?v=Pu-GlIu0Gqo), [`rT5VwYxJbf8`](https://www.youtube.com/watch?v=rT5VwYxJbf8) | 6:30:00 across 4 files | Standard YouTube | **Rejected** — no download right; commercial rights holder. Also would not have tested single-file duration. Manifest: `oxventure-wyrdwood-campaign` |
+| SIR HORSE, *Mystic Horizon* ch. 1 ep. 1 — [`-ZzSFGgczrI`](https://www.youtube.com/watch?v=-ZzSFGgczrI) | 3:57:18, was live | **CC BY 3.0** | **Admitted** — multi-hour stress |
+| Dice & Die, *Lost Mine of Phandelver* ep. 1 — [`x0vglhb46sM`](https://www.youtube.com/watch?v=x0vglhb46sM) | 2:36:57 | **CC BY 3.0** | **Admitted** — unpolished amateur |
+| inwils, *Light of Xaryxis #1* — [`5EM_KEerz-k`](https://www.youtube.com/watch?v=5EM_KEerz-k) | 2:43:21 | **CC BY 3.0** — Creative Commons row present in the page markup, `yt-dlp` reports `Creative Commons Attribution license (reuse allowed)` | Not admitted — a viable third amateur item with an acceptable rights position, held back because it duplicates coverage the two admitted items already give. Admit it if either of those is withdrawn |
 
 The goal named a product-input trigger: ask the user if no candidate with an acceptable
 rights position can fill the long-form tier. One was found, so the trigger did not fire.

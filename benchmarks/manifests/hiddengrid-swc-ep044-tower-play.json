@@ -26,7 +26,7 @@
     "proven_distinct_speakers": 2,
     "overlap": "medium",
     "music_or_effects": true,
-    "observations": "Measured from the file: one mixed track (the two channels differ by 34 dB, so there is no per-speaker channel to diarize from), 16 kHz sampling, so nothing survives above 8 kHz and energy above 7 kHz sits 26 dB down; integrated loudness -19.2 LUFS, 8.2 LU range, true peak +0.2 dBFS, so the audio was levelled and limited in post. Gaps between utterances fall to near-digital silence (1.05% of samples in the window are exactly zero, 4.6% below -78 dBFS), which an open microphone in a shared room does not produce; this is gated or noise-suppressed per speaker. That rules out a raw single-room capture but does not by itself prove remote play: the remote reading rests on the publisher's online-play format, players referred to by handle, and one player being 'AFK' at 00:17:00. Whether the endpoints were also recorded separately before mixdown cannot be determined from the published file. Seven distinct first-person speaking roles are heard inside the window: the game master and the players of Kat, Pulse, James, Gray, Freya and Gartog. How many people hold those roles is a different question, and the audio barely answers it. Exchanges where two roles speak in immediate succession establish those two as different people - Kat with Pulse at 00:02:35, Kat with James at 00:04:04, James with Gray at 00:04:10, Freya with the game master at 00:05:51 - but no three of these roles are ever established as pairwise distinct, and constraints of that shape can all be satisfied by two people (Freya, Gray and Kat one person; the game master, James and Pulse the other). The demonstrated floor is therefore 2. An earlier draft of this manifest claimed 5, which counted roles appearing in the pair evidence rather than people the evidence separates; the goal validator caught it. Raising the floor needs overlapping speech or voice-print separation, neither of which was performed. Read 7 as roles heard and 2 as what this recording proves; the true count is very probably 6 or 7, and that is inference from the publisher's cast and the content, not measurement. Music: the theme song runs 00:00:03-00:00:57 and the host's welcome starts at 00:00:28 over it, so the first 29 s of speech in the window is mixed with music. Overlap is rated medium from laughter and interjections over the recap (00:01:10-00:01:49 carries no detectable pause) rather than from sustained cross-talk."
+    "observations": "Measured from the file: one mixed track (the two channels differ by 34 dB, so there is no per-speaker channel to diarize from), 16 kHz sampling, so nothing survives above 8 kHz and energy above 7 kHz sits 26 dB down; integrated loudness -19.2 LUFS, 8.2 LU range, true peak +0.2 dBFS, so the audio was levelled and limited in post. Gaps between utterances fall to near-digital silence (1.05% of samples in the window are exactly zero, 4.6% below -78 dBFS), which an open microphone in a shared room does not produce; this is gated or noise-suppressed per speaker. That rules out a raw single-room capture but does not by itself prove remote play: the remote reading rests on the publisher's online-play format, players referred to by handle, and one player being 'AFK' at 00:17:00. Whether the endpoints were also recorded separately before mixdown cannot be determined from the published file. Seven distinct first-person speaking roles are heard inside the window: the game master and the players of Kat, Pulse, James, Grey, Freya and Gartog. How many people hold those roles is a different question, and the audio barely answers it. Exchanges where two roles speak in immediate succession establish those two as different people - Kat with Pulse at 00:02:35, Kat with James at 00:04:04, James with Grey at 00:04:10, Freya with the game master at 00:05:51 - but no three of these roles are ever established as pairwise distinct, and constraints of that shape can all be satisfied by two people (Freya, Grey and Kat one person; the game master, James and Pulse the other). The demonstrated floor is therefore 2. An earlier draft of this manifest claimed 5, which counted roles appearing in the pair evidence rather than people the evidence separates; the goal validator caught it. Raising the floor needs overlapping speech or voice-print separation, neither of which was performed. Read 7 as roles heard and 2 as what this recording proves; the true count is very probably 6 or 7, and that is inference from the publisher's cast and the content, not measurement. Music: the theme song runs 00:00:03-00:00:57 and the host's welcome starts at 00:00:28 over it, so the first 29 s of speech in the window is mixed with music. Overlap is rated medium from laughter and interjections over the recap (00:01:10-00:01:49 carries no detectable pause) rather than from sustained cross-talk."
   },
   "references": {
     "caption_or_transcript": "none",
@@ -34,7 +34,7 @@
     "annotation_status": "verified"
   },
   "truth": {
-    "method": "Machine-assisted listen-through on 2026-07-26, not a human ear. The window was decoded twice by different implementations and model families - whisper.cpp large-v3-turbo (beam 5) and openai-whisper medium.en - both run locally on the private copy, and structure was measured with ffmpeg silence, loudness and spectral analysis rather than by any model. A target was verified only where both decodes carry it and a timestamp locates it; where they disagree, the disagreement is stated in the evidence instead of being resolved by guesswork. Contested passages were re-decoded by four more local models (whisper base.en, ggml small.en, ggml small multilingual, and large-v3-turbo at beam 8) and the split reported rather than voted away. Proper-noun spellings that no decode can settle are flagged as such, and two - Entei and nuyen - take their spelling from the publisher's episode tags and Shadowrun setting vocabulary respectively, with the audio only establishing that the word is spoken. This provenance matters for scoring: see benchmarks/notes/hiddengrid-swc-ep044-tower-play.md for what this item can and cannot diagnose, including the engines it must not be used to score without declaring the dependency.",
+    "method": "Machine-assisted listen-through on 2026-07-26, not a human ear. The window was decoded twice by different implementations and model families - whisper.cpp large-v3-turbo (beam 5) and openai-whisper medium.en - both run locally on the private copy, and structure was measured with ffmpeg silence, loudness and spectral analysis rather than by any model. A target was verified only where both decodes carry it and a timestamp locates it; where they disagree, the disagreement is stated in the evidence instead of being resolved by guesswork. Contested passages were re-decoded by four more local models (whisper base.en, ggml small.en, ggml small multilingual, and large-v3-turbo at beam 8) and the split reported rather than voted away. Proper-noun spellings that no decode can settle are flagged as such, and two - Entei and nuyen - take their spelling from the publisher's episode tags and Shadowrun setting vocabulary respectively, with the audio only establishing that the word is spoken. This provenance matters for scoring: see benchmarks/notes/hiddengrid-swc-ep044-tower-play.md for what this item can and cannot diagnose, including the engines it must not be used to score without declaring the dependency. Updated 2026-07-26 at B03 with two sources the original pass did not have. A human listener went through the excerpt and reported on four open questions; where the ear settles something, the target's basis becomes audio_observed and its evidence says what was heard. And the publisher's own cast page (https://www.hiddengrid.com/cast-of-shadows/shadowrunners/, read 2026-07-26) lists the player characters by name, which settles spellings no listening could: Kat over Cat, Grey over Gray, Gartog over Gartok, and corroborates James and Pulse. Two of the four questions B02 raised were homophone pairs and were therefore unanswerable by ear - asking a listener to decide Kat against Cat was our error, not theirs, since audio carries no orthography. Freya is not on that cast page, so that spelling still rests on decoder agreement alone and is the one label here with no written source behind it.",
     "contaminating_providers": [
       "whisper.cpp large-v3-turbo",
       "openai-whisper medium.en",
@@ -72,8 +72,8 @@
         "kind": "character",
         "status": "verified",
         "anchor_ms": 252400,
-        "basis": "audio_machine_assisted",
-        "evidence": "Named in the phone call at 00:04:12, 'It's Kat', and again at 00:07:08 when the game master moves 'Kat and Pulse' to the building. Kat and Cat are homophones and the decodes produced both, so the audio establishes the character but not the spelling."
+        "basis": "audio_observed",
+        "evidence": "Named in the phone call at 00:04:12 and again at 00:07:08 when the game master moves 'Kat and Pulse' to the building. A human listener reports hearing 'It's Cat' at 00:04:12, which confirms the word but cannot settle the spelling: Kat and Cat are homophones, so no amount of listening decides between them. The publisher's own cast page (https://www.hiddengrid.com/cast-of-shadows/shadowrunners/, read 2026-07-26) does decide it, listing 'Katherine (Kat) - Hunting her clone'. The label was already Kat; it now rests on a written source instead of on a decoder's preference."
       },
       {
         "label": "Pulse",
@@ -81,7 +81,7 @@
         "status": "verified",
         "anchor_ms": 428680,
         "basis": "audio_machine_assisted",
-        "evidence": "The game master places 'Kat and Pulse' outside the building at 00:07:08. The same player says at 00:01:55 that he is going to hit the tower with Kat driving, which ties the name to the plan formed earlier in the window."
+        "evidence": "The game master places 'Kat and Pulse' outside the building at 00:07:08. The same player says at 00:01:55 that he is going to hit the tower with Kat driving, which ties the name to the plan formed earlier in the window. The spelling is corroborated in writing by the publisher's own cast page (https://www.hiddengrid.com/cast-of-shadows/shadowrunners/, read 2026-07-26), which lists 'Pulse - In prison'."
       },
       {
         "label": "James",
@@ -89,15 +89,15 @@
         "status": "verified",
         "anchor_ms": 244700,
         "basis": "audio_machine_assisted",
-        "evidence": "Introduced at 00:03:42 as Entei's character and addressed in the in-fiction phone call at 00:04:04, 'Hey, James, where the hell are you guys?'. Both decodes agree."
+        "evidence": "Introduced at 00:03:42 as Entei's character and addressed in the in-fiction phone call at 00:04:04, 'Hey, James, where the hell are you guys?'. Both decodes agree. The spelling is corroborated in writing by the publisher's own cast page (https://www.hiddengrid.com/cast-of-shadows/shadowrunners/, read 2026-07-26), which lists 'James - Off in Germany with a special mask'."
       },
       {
-        "label": "Gray",
+        "label": "Grey",
         "kind": "character",
         "status": "verified",
         "anchor_ms": 269280,
-        "basis": "audio_machine_assisted",
-        "evidence": "The character who hired the team, reached through James at 00:04:29 ('Gray said to call him when we were done') and whose apartment the group gathers in at 00:08:16. The decodes split between Gray and Greg, one engine using both within the window; accept either spelling as a hit."
+        "basis": "audio_observed",
+        "evidence": "The character who hired the team, reached through James at 00:04:29 and whose apartment the group gathers in at 00:08:16. Two corrections land on this item. A human listener reports Gray or Grey by ear at 00:04:29, which eliminates the 'Greg' one decoder produced. The spelling is then settled in writing rather than by ear, because Gray and Grey are homophones and audio carries no orthography: the publisher's own cast page (https://www.hiddengrid.com/cast-of-shadows/shadowrunners/, read 2026-07-26) lists the retired player character as 'Brother Shango / Mr Grey'. B02 recorded this label as 'Gray'; it was wrong."
       },
       {
         "label": "Freya",
@@ -112,8 +112,8 @@
         "kind": "character",
         "status": "verified",
         "anchor_ms": 526220,
-        "basis": "audio_machine_assisted",
-        "evidence": "At 00:08:46 a player takes Gartog into a spare bedroom to swap the cyberdeck cases. Every decode produced a different name - Gartog, Gartok, Garntak, Garth - so the character is verified and the spelling is not. Score any of those renderings as a hit; the point of the target is that no engine resolved it."
+        "basis": "audio_observed",
+        "evidence": "At 00:08:46 a player takes Gartog into a spare bedroom to swap the cyberdeck cases. Every decoder produced a different name - Gartog, Gartok, Garntak, Garth. A human listener reports 'Gartog' by ear, which eliminates Garth and Garntak but not Gartok, a final-consonant distinction the ear did not separate. The publisher's own cast page (https://www.hiddengrid.com/cast-of-shadows/shadowrunners/, read 2026-07-26) closes that pair: it lists 'Gartog - Working as Roadee for Maria Mercurial'. Name and spelling are now both settled, by ear and in writing respectively."
       },
       {
         "label": "The dragon holding the kidnapped target",
@@ -178,11 +178,11 @@
         "kind": "event",
         "status": "verified",
         "anchor_ms": 115920,
-        "basis": "audio_machine_assisted",
-        "evidence": "From 00:01:55 to 00:02:26: 'go sleep and then I'm going to hit the tower', 'Kat's going to drive me', then 'Screw it, then I'm going to go during the night'. This is the decision the session turns on, and it is made inside the window."
+        "basis": "audio_observed",
+        "evidence": "From 00:01:55 to 00:02:26: 'go sleep and then I'm going to hit the tower', then 'Kat's going to drive me', then 'Screw it, then I'm going to go during the night'. This is the decision the session turns on, and it is made inside the window. A human listener reports hearing 'Cat's gonna drive me', which both decoders place at 00:02:05-00:02:06, so the phrase is now confirmed by ear as well as by machine."
       },
       {
-        "label": "Pulse and Kat telephone James, who relays the request to Gray; Gray has James pass on the address and the pair drive over.",
+        "label": "Pulse and Kat telephone James, who relays the request to Grey; Grey has James pass on the address and the pair drive over.",
         "kind": "event",
         "status": "verified",
         "anchor_ms": 216280,
@@ -206,7 +206,7 @@
         "evidence": "From 00:08:46 to 00:09:53: the case swap is described, the game master asks for an electronics build-repair kit, the player has none, and the penalty is set. The attempt itself is resolved after the window ends."
       }
     ],
-    "notes": "The name Mercurial appears in no decode of this window; the full name is first spoken at about 00:21:42, well outside it. Inside the window the kidnapped target is 'our pop princess' and 'she', so the episode's title entity is deliberately absent from the truth targets and serves as a negative control: an analysis that reports 'Maria Mercurial' from this window is drawing on metadata or on prior sessions rather than on the audio, and should be scored as an unsupported claim unless it says where the name came from. One qualification, recorded because it cuts against the control: at 00:02:08 two of six decodes hear 'nothing happens to Maria in the time frame' where four hear 'nothing happens to me'. The bare given name may or may not be spoken there; it could not be settled without a human ear, and it is left unresolved rather than decided. The 'Tower Play' framing is a second metadata trap - the group plans the tower run here and reaches the tower later in the episode."
+    "notes": "The name Mercurial appears in no decode of this window; the full name is first spoken at about 00:21:42, well outside it. Inside the window the kidnapped target is 'our pop princess' and 'she', so the episode's title entity is deliberately absent from the truth targets and serves as a negative control: an analysis that reports 'Maria Mercurial' from this window is drawing on metadata or on prior sessions rather than on the audio, and should be scored as an unsupported claim unless it says where the name came from. The 00:02:08 token remains unresolved, and a human ear did not settle it. Six decodes split between 'nothing happens to me' (four) and 'nothing happens to Maria' (two). A human listener, asked about 00:02:08, reported hearing 'Cat's gonna drive me' - which is a different sentence, and both decoders place it at 00:02:05-00:02:06, two to three seconds earlier. So the report corroborates the neighbouring line rather than deciding this one, and the me/Maria question is still open. It is recorded that way rather than closed in either direction. What the episode is about does not depend on it; what does depend on it is whether a decoder's contextual prior can manufacture a name, which is the reason the item is kept. The 'Tower Play' framing is a second metadata trap - the group plans the tower run here and reaches the tower later in the episode."
   },
   "rights": {
     "copyright_holder": "Hiddengrid contributors; Shadowrun rights remain with The Topps Company, Inc.",

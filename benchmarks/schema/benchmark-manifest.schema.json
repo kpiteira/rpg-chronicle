@@ -209,7 +209,7 @@
         "basis": {
           "type": "string",
           "enum": ["audio_observed", "audio_machine_assisted", "metadata_inferred"],
-          "description": "How the target was found. audio_observed is a human ear on the recording. audio_machine_assisted is the recording read through tooling, which is verifiable but carries a dependency on whatever produced the reading. metadata_inferred came from a title, description, or index, and cannot be scored as capability. Only the first two can be verified; the distinction between them is kept in the enum so a consumer reading the field alone cannot mistake one for the other."
+          "description": "How the target was found, named for the strongest evidence behind it. audio_observed means a person listened to the recording and heard it - this is the human-ear value, and nothing weaker may use it. audio_machine_assisted means the recording was read through tooling, which is verifiable but carries a dependency on whatever produced the reading. metadata_inferred came from a title, description, or index, and cannot be scored as capability. Only the first two can be verified. A target first read by tooling and later confirmed by ear becomes audio_observed, and its evidence says both things happened, because one field cannot carry a history. A spelling settled from a written source is not an ear observation: the audio establishes the word, the source establishes how it is written, and the evidence has to say which did which."
         }
       }
     }
