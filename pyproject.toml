@@ -18,6 +18,21 @@ dev = [
   "pytest>=8.0",
   "ruff>=0.9",
 ]
+# Opt-in, and a group rather than an extra so `uv sync --all-extras --dev` does not
+# pull it. These are only needed to run `run-audio` against a real recording; the test
+# suite stubs the engines, so CI has no reason to install onnxruntime. Install with
+# `uv sync --group speech`, and see research/probes/README.md for the model downloads
+# and the whisper.cpp binary, which is not a Python dependency.
+speech = [
+  "numpy>=1.26",
+  "sherpa-onnx>=1.13",
+  # Declared explicitly although sherpa-onnx requires it: the resolver reads the sdist
+  # metadata, which omits it, and the resulting install imports only far enough to fail
+  # on a missing libonnxruntime at dlopen time. Naming it here is the difference between
+  # `uv sync --group speech` working and appearing to work.
+  "sherpa-onnx-core>=1.13",
+  "soundfile>=0.12",
+]
 
 [project.scripts]
 rpg-chronicle = "rpg_chronicle.cli:main"
