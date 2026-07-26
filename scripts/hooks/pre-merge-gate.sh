@@ -7,6 +7,11 @@
 # Command recognition is delegated to scripts/hooks/classify_command.py, which
 # tokenizes with shlex so that a guarded command quoted as data stays data.
 #
+# A classifier that cannot run leaves every command unclassified, so the hook
+# refuses all of them rather than clearing them. That is the correct direction,
+# and the blast radius is worth stating plainly: a missing or broken python3
+# stops the session from running any Bash command, not merely guarded ones.
+#
 # Guard 1: any `git push` whose destination ref is main is refused.
 # Guard 2: `gh pr merge` is refused unless the latest goal-validator verdict is
 # an explicit pass recorded against the PR's current head commit. No verdict, a
@@ -33,12 +38,16 @@ case "$decision" in
     ;;
 esac
 
-pr=${decision#merge }
+target=${decision#merge }
 
-# `gh pr merge` accepts a branch name as well as a number. When the command
-# names no PR the gate resolves one from the current branch, as before.
-if [ "$pr" = "-" ]; then
+# `gh pr view` accepts a number, a URL, or a branch name, so whatever the merge
+# command named is resolved directly. Only a merge that names nothing falls back
+# to the current branch; resolving a named branch that way would check one pull
+# request's verdict while merging another.
+if [ "$target" = "-" ]; then
   pr=$(gh pr view --json number --jq .number 2>/dev/null || true)
+else
+  pr=$(gh pr view "$target" --json number --jq .number 2>/dev/null || true)
 fi
 
 if [ -z "$pr" ]; then

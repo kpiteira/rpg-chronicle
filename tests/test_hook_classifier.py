@@ -61,9 +61,15 @@ def test_ordinary_commands_are_allowed(command: str) -> None:
     [
         ("gh pr merge 7 --rebase --delete-branch", "merge 7"),
         ("gh pr merge --rebase 7", "merge 7"),
-        ("gh pr merge https://github.com/o/r/pull/12 --squash", "merge 12"),
+        (
+            "gh pr merge https://github.com/o/r/pull/12 --squash",
+            "merge https://github.com/o/r/pull/12",
+        ),
         ("gh pr merge --rebase", "merge -"),
-        ("gh pr merge codex/tpm/scratch --rebase", "merge -"),
+        # A branch is passed through, not reported as absent: `gh pr view`
+        # accepts it, and calling it absent made the gate resolve the current
+        # branch and check the wrong pull request's verdict.
+        ("gh pr merge codex/tpm/scratch --rebase", "merge codex/tpm/scratch"),
     ],
 )
 def test_merge_targets_are_extracted(command: str, expected: str) -> None:
@@ -72,6 +78,37 @@ def test_merge_targets_are_extracted(command: str, expected: str) -> None:
 
 def test_a_flag_value_is_not_read_as_a_pr_number() -> None:
     assert classify("gh pr merge --subject 7 --rebase") == "merge -"
+
+
+@pytest.mark.parametrize(
+    ("command", "expected"),
+    [
+        ("GIT_TRACE=1 git push origin main", "push-main"),
+        ("env GIT_TRACE=1 git push origin main", "push-main"),
+        ("sudo git push origin HEAD:main", "push-main"),
+        ("command gh pr merge 7 --rebase", "merge 7"),
+        ("nohup gh pr merge 7 --rebase", "merge 7"),
+    ],
+)
+def test_wrappers_and_assignments_do_not_hide_a_command(
+    command: str, expected: str
+) -> None:
+    """A fail-closed regression the goal validator caught.
+
+    The substring match this classifier replaced caught these; matching on the
+    first two tokens alone did not.
+    """
+    assert classify(command) == expected
+
+
+def test_a_heredoc_marker_inside_quotes_does_not_swallow_later_lines() -> None:
+    """Also from the validator: heredoc detection must respect quoting.
+
+    Stripping heredocs from raw text let a quoted `<<WORD` consume the rest of
+    the script, hiding any guarded command below it.
+    """
+    command = 'echo "a <<WORD b"\ngh pr merge 7 --rebase'
+    assert classify(command) == "merge 7"
 
 
 @pytest.mark.parametrize(

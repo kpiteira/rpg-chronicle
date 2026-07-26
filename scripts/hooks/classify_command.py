@@ -3,12 +3,17 @@
 
 Reads a PreToolUse payload on stdin and prints exactly one decision line:
 
-    allow           no guarded command in this call
-    push-main       a `git push` whose destination ref is main
-    merge <pr>      a `gh pr merge`, with its explicit PR argument
-    merge -         a `gh pr merge` with no explicit PR argument
-    unparseable     the command could not be tokenized and its raw text
-                    mentions a guarded command
+    allow             no guarded command in this call
+    push-main         a `git push` whose destination ref is main
+    merge <target>    a `gh pr merge`, with the pull request it names
+    merge -           a `gh pr merge` naming no pull request
+    unparseable       the command could not be tokenized and its raw text
+                      mentions a guarded command
+
+`<target>` is passed through exactly as written -- a number, a pull URL, or a
+branch name -- because `gh pr view` accepts all three. The gate resolves it.
+Reporting a branch as "no target" is what let an earlier version of this hook
+check the current branch's verdict while merging a different pull request.
 
 Shell metacharacters are resolved with `shlex`, so a guarded command that
 appears inside a quoted string is inert text and classifies as `allow`. That
@@ -16,19 +21,15 @@ distinction is the point of this module: a substring match blocks an issue
 comment that merely mentions `gh pr merge`, which is exactly what happened when
 the goal loop was first exercised.
 
-Heredoc bodies are stripped before tokenizing, for the same reason: text fed
-to a program's stdin is data. A commit message that describes `gh pr merge`,
-and contains an apostrophe, is otherwise both untokenizable and guarded-looking.
-
 Parse failures are reported rather than swallowed. The gate treats an
 unresolved command as a block, so a tokenizer that cannot make sense of the
 input fails closed instead of waving it through.
 
 Known limit: this classifies commands, it does not sandbox them. A guarded
-command reached through an interpreter -- `bash <<EOF`, `sh -c`, a script --
-is not detected, exactly as it was not before. The gate is a guardrail against
-an unvalidated merge happening by accident, not a barrier against one pursued
-deliberately, which no PreToolUse hook could be.
+command reached through an interpreter -- `bash <<EOF`, `sh -c`, `eval` on a
+quoted string, a script file -- is not detected, exactly as it was not before.
+The gate is a guardrail against an unvalidated merge happening by accident, not
+a barrier against one pursued deliberately, which no PreToolUse hook could be.
 """
 
 from __future__ import annotations
@@ -43,14 +44,28 @@ import sys
 GUARDED_HINTS = ("gh pr merge", "git push")
 
 # Tokens that end one command and begin another.
-SEPARATORS = {";", "&", "&&", "|", "||", "(", ")", "\n"}
+SEPARATORS = {";", "&", "&&", "|", "||", "(", ")"}
 
 # Leading characters that introduce a command without being part of its name,
 # so `$(gh pr merge 7)` and a backticked variant still resolve to `gh`.
 COMMAND_PREFIX = "`$("
 
+# Words that precede the real command without changing it. Without these,
+# `env FOO=1 git push origin main` reads as a command named `env`.
+COMMAND_WRAPPERS = {
+    "builtin",
+    "command",
+    "env",
+    "eval",
+    "exec",
+    "nice",
+    "nohup",
+    "sudo",
+    "time",
+}
+
 # Flags that consume the following token, so a value is never mistaken for a
-# positional PR argument.
+# positional pull request argument.
 VALUE_FLAGS = {
     "-b",
     "--body",
@@ -62,59 +77,77 @@ VALUE_FLAGS = {
     "--match-head-commit",
 }
 
-PULL_URL = re.compile(r"/pull/(\d+)")
-
-HEREDOC = re.compile(r"<<-?\s*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
-
-
-def strip_heredocs(command: str) -> str:
-    """Drop heredoc bodies, keeping the line that introduces them.
-
-    The redirection itself stays visible to the lexer; only the text being fed
-    to the command is removed.
-    """
-    lines = command.split("\n")
-    kept: list[str] = []
-    index = 0
-    while index < len(lines):
-        line = lines[index]
-        kept.append(line)
-        index += 1
-        for match in HEREDOC.finditer(line):
-            terminator = match.group(2)
-            while index < len(lines) and lines[index].strip() != terminator:
-                index += 1
-            index += 1  # the terminator line itself
-    return "\n".join(kept)
+ASSIGNMENT = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=")
+HEREDOC = re.compile(r"<<-?[ \t]*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
 
 
-def newlines_to_separators(command: str) -> str:
-    """Turn line breaks between commands into separators.
+def normalize_shell_text(command: str) -> str:
+    """Resolve line structure while respecting quotes.
 
-    `shlex` emits no token for a newline under any setting, so without this a
-    merge on the third line of a script joins the segment begun on the first
-    and is never recognized. Line breaks inside quotes are left alone.
+    Two jobs, done in one pass because both need to know whether the cursor is
+    inside a quoted string:
+
+    * heredoc bodies are dropped, since text fed to a program's stdin is data;
+    * a line break between commands becomes a separator, because `shlex` emits
+      no token for a newline under any setting, so without this a merge on the
+      third line of a script joins the segment begun on the first.
+
+    Doing the heredoc pass on raw text instead would let `echo "a <<WORD b"`
+    swallow every following line.
     """
     out: list[str] = []
+    pending: list[str] = []
     quote: str | None = None
     escaped = False
-    for character in command:
+    index = 0
+    length = len(command)
+
+    while index < length:
+        character = command[index]
+
         if escaped:
             out.append(character)
             escaped = False
+            index += 1
         elif character == "\\" and quote != "'":
             out.append(character)
             escaped = True
+            index += 1
         elif quote:
             out.append(character)
             if character == quote:
                 quote = None
+            index += 1
         elif character in "'\"":
             out.append(character)
             quote = character
+            index += 1
+        elif character == "<" and (heredoc := HEREDOC.match(command, index)):
+            out.append(heredoc.group(0))
+            pending.append(heredoc.group(2))
+            index = heredoc.end()
+        elif character == "\n":
+            out.append(";")
+            index += 1
+            index = skip_heredoc_bodies(command, index, pending)
         else:
-            out.append(";" if character == "\n" else character)
+            out.append(character)
+            index += 1
+
     return "".join(out)
+
+
+def skip_heredoc_bodies(command: str, index: int, pending: list[str]) -> int:
+    """Advance past the bodies of heredocs opened on the line just ended."""
+    while pending:
+        terminator = pending.pop(0)
+        while index < len(command):
+            break_at = command.find("\n", index)
+            line = command[index:] if break_at == -1 else command[index:break_at]
+            index = len(command) if break_at == -1 else break_at + 1
+            if line.strip() == terminator:
+                break
+    return index
 
 
 def tokenize(command: str) -> list[str]:
@@ -141,14 +174,20 @@ def segments(tokens: list[str]) -> list[list[str]]:
             current.append(token)
     if current:
         found.append(current)
-    return [normalize(segment) for segment in found if segment]
+    return [stripped for segment in found if (stripped := normalize(segment))]
 
 
 def normalize(segment: list[str]) -> list[str]:
+    """Reduce a command to the words that name it."""
     head = segment[0].lstrip(COMMAND_PREFIX)
-    if not head:
-        return segment[1:]
-    return [head, *segment[1:]]
+    rest = [head, *segment[1:]] if head else segment[1:]
+
+    index = 0
+    while index < len(rest) and (
+        ASSIGNMENT.match(rest[index]) or rest[index] in COMMAND_WRAPPERS
+    ):
+        index += 1
+    return rest[index:]
 
 
 def pushes_to_main(segment: list[str]) -> bool:
@@ -168,12 +207,7 @@ def pushes_to_main(segment: list[str]) -> bool:
 
 
 def merge_target(segment: list[str]) -> str:
-    """The PR argument of a `gh pr merge`, or `-` when it names none.
-
-    `gh pr merge` also accepts a branch name. Resolving a branch to its PR is
-    the gate's job, not the lexer's, so anything that is not a number or a pull
-    URL is reported as absent.
-    """
+    """The pull request a `gh pr merge` names, or `-` when it names none."""
     arguments = segment[3:]
     index = 0
     while index < len(arguments):
@@ -181,10 +215,7 @@ def merge_target(segment: list[str]) -> str:
         if argument.startswith("-"):
             index += 2 if argument in VALUE_FLAGS else 1
             continue
-        if argument.isdigit():
-            return argument
-        url = PULL_URL.search(argument)
-        return url.group(1) if url else "-"
+        return argument
     return "-"
 
 
@@ -192,7 +223,7 @@ def classify(command: str) -> str:
     if not command.strip():
         return "allow"
 
-    body = newlines_to_separators(strip_heredocs(command))
+    body = normalize_shell_text(command)
 
     try:
         parsed = segments(tokenize(body))
