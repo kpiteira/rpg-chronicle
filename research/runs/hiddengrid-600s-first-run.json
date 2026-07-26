@@ -1,0 +1,25 @@
+{
+  "session_id": "hiddengrid-swc-ep044-000-600",
+  "audio": "hiddengrid-excerpt-16k-mono.wav",
+  "status": "review_ready",
+  "output_kind": "model output",
+  "transcript_provider": "whisper.cpp+sherpa-onnx-offline-speaker-diarization",
+  "analysis_provider": "model-analysis",
+  "analysis_is_declared_truth": false,
+  "wall_clock_s": 162.0,
+  "turns": 301,
+  "total_turn_span_ms": 389060,
+  "turns_with_confidence": 301,
+  "turns_with_speaker": 292,
+  "distinct_speaker_labels": 23,
+  "speaker_labels_are": "cluster identifiers, not people; marked unreliable",
+  "confidence_mean": 0.9314,
+  "confidence_min": 0.508,
+  "scenes": 6,
+  "review_questions": 4,
+  "processor_artifacts": {
+    "transcript": "processor-native/transcript.json",
+    "analysis": "processor-native/analysis.json"
+  },
+  "contains_recognized_text": false
+}
