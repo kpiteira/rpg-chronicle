@@ -44,3 +44,4 @@ work/
 tmp/
 *.part
 *.mismatch
+*.mismatch.*
