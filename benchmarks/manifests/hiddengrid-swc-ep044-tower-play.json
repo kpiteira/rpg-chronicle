@@ -221,8 +221,8 @@
     "r0_status": "recommended",
     "diagnostic_value": "The only real audio in the corpus with a verified fetch and a listened-through truth section. In ten minutes it exercises music over speech, a recap that states prior-session events inside the window, an explicit player-to-character mapping spoken aloud, a relayed in-fiction phone call, Shadowrun vocabulary that both reference decoders got wrong, and a named entity that the episode title supplies but the audio does not.",
     "risks": [
-      "Truth is machine-assisted, not human-verified by ear. Any engine used to build it - whisper large-v3-turbo, whisper medium.en - carries an undeclared advantage when scored against it; see the notes file before reporting a score.",
-      "One mixed 16 kHz track with no per-speaker channel and a proven floor of five distinct speakers means diarization can be probed but not scored precisely.",
+      "Truth is machine-assisted, not human-verified by ear. Every engine that touched it is listed in truth.contaminating_providers - five of them, two used for the window decodes and three consulted on contested passages - and each carries an undeclared advantage when scored against this truth; see the notes file before reporting a score.",
+      "Diarization can be probed here but not scored precisely: one mixed 16 kHz track with no per-speaker channel, seven speaking roles heard, and only two distinct people demonstrated. The gap between 7 and 2 is evidence this recording does not supply, not a range to average over.",
       "It is an online podcast with post-production levelling and gating, not the target single-room iPad condition, and the corpus still lacks that tier.",
       "The publisher serves the file from its own host; link rot or a re-encode would invalidate every anchor recorded here, which is why the digest is recorded and checked rather than assumed."
     ]
