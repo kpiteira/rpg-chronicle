@@ -45,3 +45,6 @@ tmp/
 *.part
 *.mismatch
 *.mismatch.*
+
+# Generated fixtures: reproducible from their plan, too large to commit
+benchmarks/fixtures/generated/
