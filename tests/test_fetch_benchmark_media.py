@@ -1,0 +1,250 @@
+"""The fetch procedure is only worth committing if it fails loudly on the wrong bytes.
+
+These tests never reach the network: they exercise the verification and quarantine
+behaviour against a cache the test builds itself.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import importlib.util
+import json
+import sys
+from pathlib import Path
+
+import pytest
+
+ROOT = Path(__file__).resolve().parents[1]
+SCRIPT = ROOT / "scripts/fetch_benchmark_media.py"
+
+
+def _load_script_module():
+    spec = importlib.util.spec_from_file_location("fetch_benchmark_media", SCRIPT)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    # The script defines a dataclass, which resolves its own module by name at class
+    # creation time, so it has to be importable before the body runs.
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+fetch = _load_script_module()
+
+MEDIA = b"not really an mp3, but it has a digest like one"
+MEDIA_SHA256 = hashlib.sha256(MEDIA).hexdigest()
+
+
+@pytest.fixture
+def manifest_path(tmp_path: Path) -> Path:
+    manifest = {
+        "id": "probe-item",
+        "source": {
+            "media_url": "https://example.invalid/podcast/probe.mp3",
+            "media_bytes": len(MEDIA),
+            "media_sha256": MEDIA_SHA256,
+        },
+    }
+    path = tmp_path / "probe-item.json"
+    path.write_text(json.dumps(manifest))
+    return path
+
+
+def _cache_media(cache: Path, payload: bytes) -> Path:
+    target = cache / "probe-item" / "probe.mp3"
+    target.parent.mkdir(parents=True)
+    target.write_bytes(payload)
+    return target
+
+
+def test_digest_file_reports_what_the_file_actually_is(tmp_path: Path) -> None:
+    path = tmp_path / "media.bin"
+    path.write_bytes(MEDIA)
+
+    digest = fetch.digest_file(path)
+
+    assert digest.sha256 == MEDIA_SHA256
+    assert digest.size_bytes == len(MEDIA)
+
+
+def test_matching_bytes_verify(tmp_path: Path, manifest_path: Path) -> None:
+    cache = tmp_path / "cache"
+    target = _cache_media(cache, MEDIA)
+
+    exit_code = fetch.main([str(manifest_path), "--cache", str(cache), "--verify-only"])
+
+    assert exit_code == 0
+    assert target.exists()
+
+
+def test_changed_bytes_are_quarantined_rather_than_accepted(
+    tmp_path: Path, manifest_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """A re-encoded source invalidates every time anchor, so it must not pass quietly."""
+    cache = tmp_path / "cache"
+    target = _cache_media(cache, MEDIA + b" re-encoded in 2027")
+
+    exit_code = fetch.main([str(manifest_path), "--cache", str(cache), "--verify-only"])
+    output = capsys.readouterr().out
+
+    assert exit_code == 1
+    assert not target.exists()
+    assert target.with_suffix(".mp3.mismatch").exists()
+    assert "MISMATCH: sha256 is " in output
+    assert "MISMATCH: size is " in output
+    assert "report this on the benchmark goal issue" in output
+
+
+def test_a_manifest_without_a_digest_cannot_be_verified(
+    tmp_path: Path, manifest_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    """An unverifiable manifest is a gap in the manifest, not evidence against the bytes.
+
+    So it fails, but it does not quarantine: the download may be exactly right, and
+    destroying it would punish the wrong thing.
+    """
+    manifest = json.loads(manifest_path.read_text())
+    del manifest["source"]["media_sha256"]
+    manifest_path.write_text(json.dumps(manifest))
+    cache = tmp_path / "cache"
+    target = _cache_media(cache, MEDIA)
+
+    exit_code = fetch.main([str(manifest_path), "--cache", str(cache), "--verify-only"])
+    output = capsys.readouterr().out
+
+    assert exit_code == 1
+    assert "UNVERIFIABLE: manifest records no source.media_sha256" in output
+    assert "MISMATCH" not in output
+    assert target.exists()
+    assert not target.with_suffix(".mp3.mismatch").exists()
+
+
+def test_verify_only_never_fetches_a_missing_file(
+    tmp_path: Path, manifest_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    exit_code = fetch.main([str(manifest_path), "--cache", str(tmp_path / "cache"), "--verify-only"])
+
+    assert exit_code == 1
+    assert "missing: " in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("identifier", ["../escape", "probe/item", "probe item", "Probe-Item"])
+def test_an_id_that_could_climb_out_of_the_cache_is_refused(
+    tmp_path: Path, manifest_path: Path, capsys: pytest.CaptureFixture[str], identifier: str
+) -> None:
+    """The script reads a manifest from wherever it is pointed, so the id is not trusted."""
+    manifest = json.loads(manifest_path.read_text())
+    manifest["id"] = identifier
+    manifest_path.write_text(json.dumps(manifest))
+    cache = tmp_path / "cache"
+
+    exit_code = fetch.main([str(manifest_path), "--cache", str(cache)])
+
+    assert exit_code == 1
+    assert "REFUSED: manifest id" in capsys.readouterr().out
+    assert not cache.exists()
+
+
+@pytest.mark.parametrize(
+    ("media_url", "expected"),
+    [
+        ("https://example.invalid/podcast/probe.mp3", "probe.mp3"),
+        ("https://example.invalid/watch?v=abc123&t=90", "watch"),
+        ("https://example.invalid/podcast/probe.mp3#t=120", "probe.mp3"),
+    ],
+)
+def test_the_cache_filename_comes_from_the_url_path_alone(
+    tmp_path: Path, media_url: str, expected: str
+) -> None:
+    """A query or fragment is addressing, not a filename, and `?` is illegal on Windows."""
+    manifest = {"id": "probe-item", "source": {"media_url": media_url}}
+
+    target = fetch.cache_target(tmp_path, manifest)
+
+    assert target.name == expected
+    assert not {"?", "#"} & set(str(target))
+
+
+def test_a_url_with_no_filename_in_its_path_is_refused(tmp_path: Path) -> None:
+    manifest = {"id": "probe-item", "source": {"media_url": "https://example.invalid/?v=abc"}}
+
+    with pytest.raises(ValueError, match="ends in no usable filename"):
+        fetch.cache_target(tmp_path, manifest)
+
+
+def test_a_second_mismatch_does_not_overwrite_the_first_quarantine(tmp_path: Path) -> None:
+    """Quarantine exists to preserve evidence, so it must not land on earlier evidence."""
+    target = tmp_path / "probe.mp3"
+    target.write_bytes(MEDIA)
+    first = fetch.quarantine_path(target)
+    first.write_bytes(b"an earlier mismatch")
+
+    second = fetch.quarantine_path(target)
+
+    assert second != first
+    assert not second.exists()
+    assert first.read_bytes() == b"an earlier mismatch"
+
+
+def test_the_transfer_is_given_a_timeout_so_a_stalled_host_cannot_hang_it(
+    tmp_path: Path, monkeypatch
+) -> None:
+    """A verification tool that hangs forever fails quietly, which is the one thing it must not do."""
+    seen: dict[str, object] = {}
+
+    class _Empty:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc_info):
+            return False
+
+        def read(self, _size):
+            return b""
+
+    def _urlopen(_request, timeout=None):
+        seen["timeout"] = timeout
+        return _Empty()
+
+    monkeypatch.setattr(fetch.urllib.request, "urlopen", _urlopen)
+
+    fetch.download("https://example.invalid/probe.mp3", tmp_path / "probe.mp3")
+
+    assert isinstance(seen["timeout"], int | float) and seen["timeout"] > 0
+
+
+def test_the_request_identifies_itself_as_a_client_the_publisher_will_serve() -> None:
+    """The publisher's host answers urllib's default agent with 406, so this is load-bearing."""
+    request = fetch.build_request("https://example.invalid/probe.mp3")
+
+    agent = request.get_header("User-agent")
+    assert agent and "Python-urllib" not in agent
+
+
+def test_a_failed_transfer_leaves_no_partial_file(tmp_path: Path, monkeypatch) -> None:
+    """A half-written file in the cache would later be digested and reported as a mismatch."""
+
+    class _Failing:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc_info):
+            return False
+
+        def read(self, _size):
+            raise TimeoutError("connection dropped")
+
+    monkeypatch.setattr(fetch.urllib.request, "urlopen", lambda _request, timeout=None: _Failing())
+    destination = tmp_path / "media" / "probe.mp3"
+
+    with pytest.raises(TimeoutError):
+        fetch.download("https://example.invalid/probe.mp3", destination)
+
+    assert not destination.exists()
+    assert list(destination.parent.iterdir()) == []
+
+
+# A test that the committed manifest carries a well-formed digest and byte count used to
+# live here. It restated the schema's own `^[0-9a-f]{64}$` and `minimum: 1`, which the
+# manifest validator already enforces on every manifest, and it could not fail on the real
+# bytes. Whether those bytes match is settled by running the script, not by a test.

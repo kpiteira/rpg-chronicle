@@ -56,6 +56,163 @@ def test_manifest_corpus_is_diverse_and_rights_explicit() -> None:
         assert manifest["rights"]["redistribution"] in {"permitted", "restricted", "unknown"}
 
 
+def _hiddengrid() -> dict:
+    return json.loads((MANIFEST_DIR / "hiddengrid-swc-ep044-tower-play.json").read_text())
+
+
+def _write(tmp_path: Path, manifest: dict) -> Path:
+    (tmp_path / "candidate.json").write_text(json.dumps(manifest))
+    return tmp_path / "candidate.json"
+
+
+# A test walking the committed manifests and re-asserting the anchor, basis, and evidence
+# rules used to live here. `test_validator_script_passes_on_the_committed_corpus` already
+# runs the validator over the same directory, and CI runs it again, so the only thing the
+# walk added was a second copy of the rules that stayed green when the rules were gutted.
+# The mutation tests below are what hold the behaviour.
+
+
+def test_an_anchor_outside_the_window_is_rejected(tmp_path: Path) -> None:
+    manifest = _hiddengrid()
+    manifest["truth"]["important_entities"][0]["anchor_ms"] = manifest["excerpt"]["end_ms"]
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("outside the excerpt window" in line for line in lines), lines
+
+
+def test_a_target_verified_without_an_anchor_is_rejected(tmp_path: Path) -> None:
+    manifest = _hiddengrid()
+    del manifest["truth"]["important_entities"][0]["anchor_ms"]
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("verified but carries no anchor_ms" in line for line in lines), lines
+
+
+def test_a_target_inferred_from_metadata_cannot_be_verified(tmp_path: Path) -> None:
+    """The defect this repository keeps guarding against: a title-derived claim sold as truth."""
+    manifest = _hiddengrid()
+    manifest["truth"]["important_entities"][0]["basis"] = "metadata_inferred"
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("its basis is not one of" in line for line in lines), lines
+
+
+@pytest.mark.parametrize("basis", ["audio_observed", "audio_machine_assisted"])
+def test_a_target_read_from_the_recording_can_be_verified_either_way(
+    tmp_path: Path, basis: str
+) -> None:
+    """Tooling can verify a target; it may not pass itself off as a human ear.
+
+    Both bases pass, so upgrading a target by listening to it never fails validation.
+    Keeping them separate is what lets a consumer reading only the enum tell them apart.
+    """
+    manifest = _hiddengrid()
+    for group in ("important_entities", "important_events"):
+        for target in manifest["truth"][group]:
+            target["basis"] = basis
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0, lines
+
+
+def test_verified_truth_requires_a_digest_for_the_bytes_it_is_anchored_in(
+    tmp_path: Path,
+) -> None:
+    """An anchor is an offset into particular bytes, so verified truth needs those bytes pinned."""
+    manifest = _hiddengrid()
+    del manifest["source"]["media_sha256"]
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("source.media_sha256 is required" in line for line in lines), lines
+
+
+def test_a_provisional_candidate_needs_no_digest_yet(tmp_path: Path) -> None:
+    """A candidate is still being assessed; the digest is owed when its truth is verified.
+
+    The contamination list stays in place here: it is keyed on how a target was read, not
+    on whether it is verified, so naming the provider is owed as soon as one was used.
+    """
+    manifest = _hiddengrid()
+    del manifest["source"]["media_sha256"]
+    for group in ("important_entities", "important_events"):
+        for target in manifest["truth"][group]:
+            target["status"] = "provisional"
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0, lines
+
+
+def test_machine_assisted_truth_must_name_the_providers_it_cannot_score(tmp_path: Path) -> None:
+    """The contamination guard has to be checkable, not a sentence in a notes file."""
+    manifest = _hiddengrid()
+    del manifest["truth"]["contaminating_providers"]
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("truth.contaminating_providers is required" in line for line in lines), lines
+
+
+def test_truth_read_by_ear_alone_needs_no_contamination_list(tmp_path: Path) -> None:
+    """Nothing is contaminated when no provider was involved, so the rule stays off."""
+    manifest = _hiddengrid()
+    del manifest["truth"]["contaminating_providers"]
+    for group in ("important_entities", "important_events"):
+        for target in manifest["truth"][group]:
+            target["basis"] = "audio_observed"
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0, lines
+
+
+def test_a_proven_speaker_count_above_the_estimate_is_rejected(tmp_path: Path) -> None:
+    """The proven count is a floor under the estimate; above it, one of the two is wrong."""
+    manifest = _hiddengrid()
+    manifest["recording_conditions"]["proven_distinct_speakers"] = (
+        manifest["recording_conditions"]["expected_physical_speakers"] + 1
+    )
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("the proven count is a floor" in line for line in lines), lines
+
+
+def test_verified_truth_requires_a_recorded_method(tmp_path: Path) -> None:
+    manifest = _hiddengrid()
+    del manifest["truth"]["method"]
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("truth.method is required" in line for line in lines), lines
+
+
+def test_a_provisional_target_needs_neither_anchor_nor_method(tmp_path: Path) -> None:
+    """Provisional targets are candidates, not evidence; the rules bite only on verified ones."""
+    manifest = _hiddengrid()
+    del manifest["truth"]["method"]
+    for group in ("important_entities", "important_events"):
+        for target in manifest["truth"][group]:
+            target["status"] = "provisional"
+            target.pop("anchor_ms", None)
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0, lines
+
+
 def test_validator_reports_malformed_json_rather_than_raising(tmp_path: Path) -> None:
     (tmp_path / "truncated.json").write_text('{"schema_version": "0.1", "id": "truncated"')
 

@@ -41,7 +41,17 @@
         "publisher": {"type": "string", "minLength": 1},
         "published_at": {"type": "string", "format": "date"},
         "accessed_at": {"type": "string", "format": "date"},
-        "episode_duration_ms": {"type": "integer", "minimum": 1}
+        "episode_duration_ms": {"type": "integer", "minimum": 1},
+        "media_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Size of the published media file, as fetched on accessed_at."
+        },
+        "media_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "SHA-256 of the published media file. A fetch that reproduces this digest reproduces the excerpt; see scripts/fetch_benchmark_media.py."
+        }
       }
     },
     "excerpt": {
@@ -72,10 +82,26 @@
       "properties": {
         "capture_layout": {
           "type": "string",
-          "enum": ["studio_multimic", "remote_multitrack", "single_room_mic", "unknown"]
+          "enum": [
+            "studio_multimic",
+            "remote_multitrack",
+            "single_mixed_track",
+            "single_room_mic",
+            "unknown"
+          ],
+          "description": "How the speakers were captured, stated only as far as the recording establishes it. single_mixed_track says what a mixdown measurably is - one track, no per-speaker channel to diarize from - and deliberately claims nothing about where the speakers were, since room topology is rarely measurable from a published file. Where the speakers actually were belongs in observations, with its evidence, rather than in an enum a consumer will read alone."
         },
         "production": {"type": "string", "enum": ["polished", "edited", "raw", "unknown"]},
-        "expected_physical_speakers": {"type": ["integer", "null"], "minimum": 1},
+        "expected_physical_speakers": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "The upper reading of how many people speak: distinct speaking roles heard, before allowing for one person covering two of them. Read it with proven_distinct_speakers, which is the floor; the true count lies between."
+        },
+        "proven_distinct_speakers": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "How many speakers are demonstrably different people, by evidence stated in observations. Never larger than expected_physical_speakers. Proving k distinct people needs k speakers established as pairwise distinct from one another: counting the speakers named across a list of pairwise observations overstates it, because a chain of pairs can be satisfied by two people. A diarization score should be read against this floor as well as the estimate."
+        },
         "overlap": {"type": "string", "enum": ["low", "medium", "high", "unknown"]},
         "music_or_effects": {"type": "boolean"},
         "observations": {"type": "string", "minLength": 1}
@@ -108,7 +134,17 @@
           "type": "array",
           "items": {"$ref": "#/$defs/truthTarget"}
         },
-        "notes": {"type": "string"}
+        "notes": {"type": "string"},
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "description": "How the truth was established, including which provider produced any machine-assisted output. Required once any target is verified, so a score is never read without its annotation provenance."
+        },
+        "contaminating_providers": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1},
+          "description": "Providers that helped build this truth and therefore cannot be scored against it without declaring the dependency. Machine-readable so a scoring run can refuse the combination instead of relying on someone having read the notes. Required once any target is machine-assisted."
+        }
       }
     },
     "rights": {
@@ -157,10 +193,21 @@
         "label": {"type": "string", "minLength": 1},
         "kind": {
           "type": "string",
-          "enum": ["person", "character", "place", "faction", "item", "quest", "event"]
+          "enum": ["person", "character", "place", "faction", "item", "quest", "event"],
+          "description": "person is a physical speaker at the table; character is the fiction they voice. The two are deliberately separate kinds."
         },
         "status": {"type": "string", "enum": ["provisional", "verified"]},
-        "evidence": {"type": "string"}
+        "evidence": {"type": "string"},
+        "anchor_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Where the target is observable, in milliseconds on the same basis as the excerpt window. Must fall inside that window."
+        },
+        "basis": {
+          "type": "string",
+          "enum": ["audio_observed", "audio_machine_assisted", "metadata_inferred"],
+          "description": "How the target was found. audio_observed is a human ear on the recording. audio_machine_assisted is the recording read through tooling, which is verifiable but carries a dependency on whatever produced the reading. metadata_inferred came from a title, description, or index, and cannot be scored as capability. Only the first two can be verified; the distinction between them is kept in the enum so a consumer reading the field alone cannot mistake one for the other."
+        }
       }
     }
   }
