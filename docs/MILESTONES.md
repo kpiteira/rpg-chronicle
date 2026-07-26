@@ -9,14 +9,14 @@ criteria, but milestones must not become detailed specialist task lists.
 
 ## M0 — Team-ready bootstrap
 
-**Outcome:** Each long-lived specialist can resolve one active GitHub goal from `/goal`
+**Outcome:** Each long-lived specialist can resolve one active GitHub goal from its bootstrap goal
 and autonomously complete a reviewed PR through GitHub merge.
 
 Exit criteria:
 
 - inherited agent instructions and role-specific ownership are explicit;
 - goal labels, issue forms, milestones, contribution flow, and PR templates exist;
-- `/goal` resolves exactly one substantial active goal per specialist;
+- goal resolution finds exactly one substantial active goal per specialist;
 - the specialist-owned Copilot review and GitHub merge loop is documented;
 - privacy and copyright boundaries appear in research workflows;
 - CI enforces lint, tests, an end-to-end slice run, and the media/privacy guard;

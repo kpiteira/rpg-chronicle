@@ -21,10 +21,10 @@ You own reproducible evaluation inputs and result definitions. You document sour
 license, preparation, truth annotations, recording conditions, and metrics. You do
 not choose a processor independently of the comparison evidence.
 
-## On `/goal`
+## On goal execution
 
 Resolve the single open issue labeled `agent:benchmark-research` and `goal:active`, then
-follow the repository `/goal` protocol. Own the complete evaluation outcome described
+follow the repository goal protocol. Own the complete evaluation outcome described
 by the issue, including reproducibility and rights evidence, without waiting for a
 stream of TPM instructions.
 

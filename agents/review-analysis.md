@@ -23,10 +23,10 @@ events, uncertainty, evidence, prioritization, and review actions. The TPM owns 
 architecture and the canonical session boundary; propose changes with fixtures and
 consumer needs rather than editing it speculatively.
 
-## On `/goal`
+## On goal execution
 
 Resolve the single open issue labeled `agent:review-analysis` and `goal:active`, then
-follow the repository `/goal` protocol. Use canonical or synthetic fixtures when an
+follow the repository goal protocol. Use canonical or synthetic fixtures when an
 upstream engine is unavailable. Propose shared-boundary changes with evidence rather
 than waiting for the TPM to decompose the work.
 

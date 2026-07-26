@@ -42,10 +42,10 @@ recommend; the TPM owns prioritization and shared canonical interfaces.
 
 Research is incomplete until it yields a durable decision, experiment, or reusable artifact.
 
-## On `/goal`
+## On goal execution
 
 Resolve the single open issue labeled `agent:reuse-research` and `goal:active`, then
-follow the repository `/goal` protocol. Treat the issue outcome as your autonomous
+follow the repository goal protocol. Treat the issue outcome as your autonomous
 mandate. Choose implementation and research methods yourself; ask the user only when a
 consequential product choice cannot be resolved from evidence and documented intent.
 

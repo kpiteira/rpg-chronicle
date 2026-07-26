@@ -20,7 +20,7 @@ git switch -c codex/<role-id>/<goal-issue-number>-<slug> origin/main
 
 ## Before implementation
 
-For a specialist `/goal`:
+For a specialist goal:
 
 1. resolve exactly one open active goal issue for the role;
 2. read the issue, milestone, linked context, and discussion;

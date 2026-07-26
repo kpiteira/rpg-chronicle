@@ -76,3 +76,16 @@ Deadline pressure must never become a reason to relax the merge gate.
 A permanently placed table microphone and one-time per-player voice enrollment are within
 the product constraint, because neither adds a step to game night. Recording consent and
 a deletion path are stated obligations. See `docs/CAPTURE.md`.
+
+## D-013: Specialist sessions run on the native goal loop
+
+Claude Code ships a native `/goal` command (v2.1.139+): it sets a completion condition
+and an independent evaluator model re-checks it after every turn, keeping the session
+working until the condition holds. That is the same independent-evaluator principle as
+the goal validator, provided by the platform. The repository's custom `/goal` command
+duplicated none of this, shadowed the built-in through undocumented precedence, and
+carried two defects precisely because it had never executed. It is deleted. The goal
+protocol lives in `AGENTS.md` alone; sessions bootstrap with the native loop using the
+per-role condition in `docs/PARALLEL_EXECUTION.md`. Rule going forward: prefer platform
+primitives over bespoke mechanisms, and give bespoke commands collision-resistant names
+(`/validate` is now `/validate-goal`).
