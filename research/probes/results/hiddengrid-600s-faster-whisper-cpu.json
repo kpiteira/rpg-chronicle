@@ -15,15 +15,15 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 164.313,
-    "model_load_s": 2.083,
-    "inference_s": 162.23,
-    "realtime_factor": 3.65,
-    "inference_realtime_factor": 3.7,
-    "peak_rss_mb": 2643.0,
+    "wall_clock_s": 183.933,
+    "model_load_s": 2.674,
+    "inference_s": 181.259,
+    "realtime_factor": 3.26,
+    "inference_realtime_factor": 3.31,
+    "peak_rss_mb": 2637.6,
     "peak_child_rss_mb": 13.5,
-    "load_avg_1m_before": 5.17,
-    "load_avg_1m_after": 4.88
+    "load_avg_1m_before": 7.41,
+    "load_avg_1m_after": 6.4
   },
   "shape": {
     "produces_text": true,
@@ -61,10 +61,10 @@
       "SPEAKER_29"
     ],
     "turns_with_confidence": 240,
-    "confidence_min": 0.1984,
-    "confidence_mean": 0.7059,
-    "total_speech_ms": 311700,
-    "characters_of_text": 5459,
+    "confidence_min": 0.2457,
+    "confidence_mean": 0.7061,
+    "total_speech_ms": 311720,
+    "characters_of_text": 5460,
     "speaker_attribution": {
       "mean_overlap_ratio": 0.819,
       "min_overlap_ratio": 0.0,
@@ -72,7 +72,7 @@
       "turns_with_no_speaker": 8,
       "mean_coverage_ratio": 0.881,
       "overlap_given_coverage": 0.93,
-      "total_unit_span_ms": 311700
+      "total_unit_span_ms": 311720
     }
   },
   "diarization_source": {

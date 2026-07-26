@@ -131,13 +131,18 @@ research/probes/speech_stack_probe.py --stack parakeet-mlx \
     --out research/probes/results/scaling-parakeet-unchunked-1200s.json \
     --input-label "hiddengrid-1200s" || true
 
-# clustering threshold, against the synthetic clip's known speaker count
-for TH in 0.4 0.5 0.6 0.7 0.8 0.9; do
-  RPG_PROBE_CLUSTER_THRESHOLD=$TH research/probes/speech_stack_probe.py \
-      --stack sherpa-diarization --audio "$CACHE/synthetic-table-talk.wav" \
-      --out "$CACHE/probe-full/sweep/syn-th$TH.json" --input-label "synthetic-th$TH"
-done
+# the diarization clustering sweep, which produces results/diarization-threshold-sweep.json
+# in one command: six thresholds against the synthetic clip's known speaker count, six
+# against the restricted window, and the forced num_clusters=4 run.
+research/probes/sweep_diarization.py --cache "$CACHE" \
+    --out research/probes/results/diarization-threshold-sweep.json
 ```
+
+`sweep_diarization.py` drives `speech_stack_probe.py` through
+`RPG_PROBE_CLUSTER_THRESHOLD` and `RPG_PROBE_NUM_CLUSTERS`; both are also usable
+directly if you want a single run. Its per-run outputs stay in a temp directory — only
+the scored summary is committed, because the restricted clip's speaker spans must not
+enter the repository.
 
 ### Scoring against known truth
 
@@ -172,4 +177,10 @@ is an observation about the engines rather than a fixture replay — the distinc
 - `speech_stack_probe.py` — runs one stack, normalizes, measures. One stack per process.
 - `run_probe_battery.sh` — runs every stack over one input, sequentially.
 - `make_synthetic_clip.py` — builds the rights-clear input and its declared truth.
+- `score_synthetic.py` — scores a result against that declared truth.
+- `sweep_diarization.py` — the clustering sweep behind the diarization findings.
 - `results/` — committed results. Hiddengrid results are redacted by construction.
+
+A run that fails is still a result: the probe writes `"outcome": "failed"` with the
+error and the configuration that produced it, and exits non-zero.
+`results/scaling-parakeet-unchunked-1200s.json` is one, and it is deliberate.

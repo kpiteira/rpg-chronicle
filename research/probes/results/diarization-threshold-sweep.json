@@ -1,9 +1,9 @@
 {
-  "probe": "sherpa-onnx offline speaker diarization, clustering threshold sweep",
+  "probe": "sherpa-onnx offline speaker diarization, clustering sweep",
   "output_kind": "model output",
   "provider_of_record": "sherpa-onnx pyannote-segmentation-3.0 + wespeaker CAM++",
-  "reproduce": "research/probes/README.md, \"Scaling and tuning runs\"",
-  "why": "Establishes whether tuning recovers the true speaker count, and which failure mode each setting produces. Fragmentation (one person, several labels) is recoverable; collision (several people, one label) fabricates attribution.",
+  "generated_by": "research/probes/sweep_diarization.py",
+  "why": "Fragmentation (one person, several labels) is recoverable; collision (several people, one label) fabricates attribution. Tuning trades one for the other, so which one a setting produces matters more than how close the count looks.",
   "synthetic_clip": {
     "truth_kind": "declared truth, generated locally; no engine saw it",
     "expected_speakers": 4,
@@ -25,7 +25,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 3.21
+        "wall_clock_s": 3.466
       },
       "0.5": {
         "expected_speakers": 4,
@@ -44,7 +44,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 3.323
+        "wall_clock_s": 3.306
       },
       "0.6": {
         "expected_speakers": 4,
@@ -64,7 +64,7 @@
           "PLAYER_B": 2,
           "PLAYER_C": 2
         },
-        "wall_clock_s": 3.164
+        "wall_clock_s": 3.017
       },
       "0.7": {
         "expected_speakers": 4,
@@ -85,7 +85,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 3.299
+        "wall_clock_s": 3.009
       },
       "0.8": {
         "expected_speakers": 4,
@@ -106,7 +106,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 3.07
+        "wall_clock_s": 3.067
       },
       "0.9": {
         "expected_speakers": 4,
@@ -127,7 +127,7 @@
           "PLAYER_A": 2,
           "PLAYER_B": 2
         },
-        "wall_clock_s": 2.964
+        "wall_clock_s": 3.325
       }
     },
     "forced_num_clusters_4": {
@@ -151,13 +151,18 @@
       }
     }
   },
-  "hiddengrid_600s": {
-    "truth_kind": "unknown - the manifest records expected_physical_speakers: null",
-    "caveat": "label counts only; there is nothing to score against",
+  "restricted_clip": {
+    "input": "hiddengrid-ep044-000-600.wav",
+    "truth_kind": "unknown -- the manifest records expected_physical_speakers: null",
+    "caveat": "label counts only; there is nothing to score against, and the licence forbids committing the spans",
     "by_threshold": {
       "0.4": {
         "labels": 35,
         "speaker_spans": 201
+      },
+      "0.5": {
+        "labels": 23,
+        "speaker_spans": 208
       },
       "0.6": {
         "labels": 17,
@@ -174,11 +179,6 @@
       "0.9": {
         "labels": 4,
         "speaker_spans": 153
-      },
-      "0.5": {
-        "labels": 23,
-        "speaker_spans": 208,
-        "note": "the default; taken from hiddengrid-600s-sherpa-diarization.json"
       }
     }
   }

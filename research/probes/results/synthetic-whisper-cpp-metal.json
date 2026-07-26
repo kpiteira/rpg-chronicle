@@ -15,15 +15,15 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 2.369,
-    "model_load_s": 0.0,
-    "inference_s": 2.368,
-    "realtime_factor": 21.1,
-    "inference_realtime_factor": 21.1,
+    "wall_clock_s": 2.39,
+    "model_load_s": 0.001,
+    "inference_s": 2.39,
+    "realtime_factor": 20.91,
+    "inference_realtime_factor": 20.91,
     "peak_rss_mb": 26.7,
-    "peak_child_rss_mb": 1986.5,
-    "load_avg_1m_before": 6.07,
-    "load_avg_1m_after": 6.07
+    "peak_child_rss_mb": 1988.2,
+    "load_avg_1m_before": 5.47,
+    "load_avg_1m_after": 5.47
   },
   "shape": {
     "produces_text": true,
@@ -3029,17 +3029,17 @@
       }
     ],
     "stderr_tail": [
-      "output_json: saving output to '/var/folders/yd/xvtv0p5x38n21chq45grg_240000gn/T/rpg-whispercpp-y3ss9h1d/synthetic-table-talk.json'",
+      "output_json: saving output to '<scratch>/synthetic-table-talk<audio-dir>json'",
       "",
-      "whisper_print_timings:     load time =   430.10 ms",
+      "whisper_print_timings:     load time =   433<audio-dir>86 ms",
       "whisper_print_timings:     fallbacks =   0 p /   0 h",
-      "whisper_print_timings:      mel time =     8.41 ms",
-      "whisper_print_timings:   sample time =   119.22 ms /  1034 runs (     0.12 ms per run)",
-      "whisper_print_timings:   encode time =   999.84 ms /     2 runs (   499.92 ms per run)",
-      "whisper_print_timings:   decode time =     2.25 ms /     1 runs (     2.25 ms per run)",
-      "whisper_print_timings:   batchd time =   670.77 ms /  1026 runs (     0.65 ms per run)",
-      "whisper_print_timings:   prompt time =    12.81 ms /   132 runs (     0.10 ms per run)",
-      "whisper_print_timings:    total time =  2279.43 ms",
+      "whisper_print_timings:      mel time =     8<audio-dir>89 ms",
+      "whisper_print_timings:   sample time =   140<audio-dir>38 ms /  1034 runs (     0<audio-dir>14 ms per run)",
+      "whisper_print_timings:   encode time =  1000<audio-dir>43 ms /     2 runs (   500<audio-dir>21 ms per run)",
+      "whisper_print_timings:   decode time =     2<audio-dir>24 ms /     1 runs (     2<audio-dir>24 ms per run)",
+      "whisper_print_timings:   batchd time =   678<audio-dir>44 ms /  1026 runs (     0<audio-dir>66 ms per run)",
+      "whisper_print_timings:   prompt time =    12<audio-dir>88 ms /   132 runs (     0<audio-dir>10 ms per run)",
+      "whisper_print_timings:    total time =  2315<audio-dir>59 ms",
       "ggml_metal_free: deallocating"
     ]
   },

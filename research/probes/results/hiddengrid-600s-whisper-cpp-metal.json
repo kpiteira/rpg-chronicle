@@ -15,15 +15,15 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 25.79,
+    "wall_clock_s": 28.146,
     "model_load_s": 0.001,
-    "inference_s": 25.79,
-    "realtime_factor": 23.26,
-    "inference_realtime_factor": 23.27,
-    "peak_rss_mb": 29.7,
-    "peak_child_rss_mb": 2095.4,
-    "load_avg_1m_before": 7.31,
-    "load_avg_1m_after": 5.17
+    "inference_s": 28.146,
+    "realtime_factor": 21.32,
+    "inference_realtime_factor": 21.32,
+    "peak_rss_mb": 29.8,
+    "peak_child_rss_mb": 2096.5,
+    "load_avg_1m_before": 9.34,
+    "load_avg_1m_after": 7.41
   },
   "shape": {
     "produces_text": true,

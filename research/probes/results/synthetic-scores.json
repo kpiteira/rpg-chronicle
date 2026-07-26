@@ -52,14 +52,19 @@
         },
         "control_phrase_recall": 1.0,
         "truth_characters": 748,
-        "produced_characters": 780
+        "produced_characters": 855
       },
       "confidence": {
         "available": true,
-        "turns_scored": 15,
-        "overall_min_confidence": 0.0472,
-        "mean_confidence_where_invented_noun_survived": 0.821,
-        "mean_confidence_where_invented_noun_was_lost": 0.8183,
+        "turns_scored": 17,
+        "overall_min_confidence": 0.0177,
+        "mean_confidence_where_invented_noun_survived": null,
+        "mean_confidence_where_invented_noun_was_lost": 0.8175,
+        "truth_turns_excluded_as_mixed": 2,
+        "confidences_compared": {
+          "survived": 0,
+          "lost": 6
+        },
         "lost_nouns": [
           "Brann",
           "Ilyra",
@@ -117,14 +122,19 @@
         },
         "control_phrase_recall": 1.0,
         "truth_characters": 748,
-        "produced_characters": 827
+        "produced_characters": 1608
       },
       "confidence": {
         "available": true,
-        "turns_scored": 16,
+        "turns_scored": 14,
         "overall_min_confidence": 0.8117,
-        "mean_confidence_where_invented_noun_survived": 0.8222,
-        "mean_confidence_where_invented_noun_was_lost": 0.8196,
+        "mean_confidence_where_invented_noun_survived": null,
+        "mean_confidence_where_invented_noun_was_lost": 0.8187,
+        "truth_turns_excluded_as_mixed": 2,
+        "confidences_compared": {
+          "survived": 0,
+          "lost": 6
+        },
         "lost_nouns": [
           "Brann",
           "Ilyra",
@@ -188,8 +198,13 @@
         "available": true,
         "turns_scored": 23,
         "overall_min_confidence": 0.918,
-        "mean_confidence_where_invented_noun_survived": 0.9851,
-        "mean_confidence_where_invented_noun_was_lost": 0.9649,
+        "mean_confidence_where_invented_noun_survived": null,
+        "mean_confidence_where_invented_noun_was_lost": 0.9612,
+        "truth_turns_excluded_as_mixed": 2,
+        "confidences_compared": {
+          "survived": 0,
+          "lost": 11
+        },
         "lost_nouns": [
           "Brann",
           "Ilyra",
@@ -273,8 +288,13 @@
         "available": true,
         "turns_scored": 13,
         "overall_min_confidence": 0.8266,
-        "mean_confidence_where_invented_noun_survived": 0.9659,
-        "mean_confidence_where_invented_noun_was_lost": 0.946,
+        "mean_confidence_where_invented_noun_survived": null,
+        "mean_confidence_where_invented_noun_was_lost": 0.936,
+        "truth_turns_excluded_as_mixed": 2,
+        "confidences_compared": {
+          "survived": 0,
+          "lost": 6
+        },
         "lost_nouns": [
           "Brann",
           "Ilyra",

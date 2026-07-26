@@ -15,15 +15,15 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 84.006,
-    "model_load_s": 0.307,
-    "inference_s": 83.699,
-    "realtime_factor": 21.43,
-    "inference_realtime_factor": 21.51,
-    "peak_rss_mb": 6003.2,
-    "peak_child_rss_mb": 13.4,
-    "load_avg_1m_before": 12.32,
-    "load_avg_1m_after": 17.13
+    "wall_clock_s": 89.894,
+    "model_load_s": 0.301,
+    "inference_s": 89.593,
+    "realtime_factor": 20.02,
+    "inference_realtime_factor": 20.09,
+    "peak_rss_mb": 5851.4,
+    "peak_child_rss_mb": 13.5,
+    "load_avg_1m_before": 14.59,
+    "load_avg_1m_after": 20.32
   },
   "shape": {
     "produces_text": false,
@@ -33,7 +33,7 @@
     "speaker_span_ms": 1188638,
     "rejected_unit_count": 0,
     "rejected_units": 0,
-    "has_timestamps": false,
+    "has_timestamps": true,
     "distinct_physical_speakers": 39,
     "physical_speakers": [
       "SPEAKER_02",

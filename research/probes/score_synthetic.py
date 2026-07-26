@@ -146,6 +146,7 @@ def confidence_vs_errors(truth_turns: list[dict], turns: list[dict]) -> dict[str
     hit: list[float] = []
     miss: list[float] = []
     missed_nouns: list[str] = []
+    mixed = 0
     for truth_turn in truth_turns:
         expected = [n for n in INVENTED_NOUNS if n.lower() in truth_turn["text"].lower()]
         if not expected:
@@ -161,11 +162,19 @@ def confidence_vs_errors(truth_turns: list[dict], turns: list[dict]) -> dict[str
         if not overlapping:
             continue
         produced = " ".join(t["text"].lower() for t in overlapping)
-        for noun in expected:
-            bucket = hit if noun.lower() in produced else miss
-            if bucket is miss:
-                missed_nouns.append(noun)
-            bucket.extend(t["confidence"] for t in overlapping)
+        survived = [n for n in expected if n.lower() in produced]
+        lost = [n for n in expected if n.lower() not in produced]
+        missed_nouns.extend(lost)
+
+        # A truth turn carrying one recovered and one lost noun cannot say anything about
+        # whether confidence tracks the difference: its turns would land in both buckets
+        # with identical values and flatten the very gap being measured. Such turns are
+        # excluded and counted, rather than contributed to both sides.
+        if survived and lost:
+            mixed += 1
+            continue
+        bucket = hit if survived else miss
+        bucket.extend(t["confidence"] for t in overlapping)
 
     return {
         "available": True,
@@ -177,6 +186,8 @@ def confidence_vs_errors(truth_turns: list[dict], turns: list[dict]) -> dict[str
         "mean_confidence_where_invented_noun_was_lost": round(sum(miss) / len(miss), 4)
         if miss
         else None,
+        "truth_turns_excluded_as_mixed": mixed,
+        "confidences_compared": {"survived": len(hit), "lost": len(miss)},
         "lost_nouns": sorted(set(missed_nouns)),
     }
 

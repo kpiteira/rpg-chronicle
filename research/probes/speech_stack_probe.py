@@ -31,7 +31,6 @@ import math
 import os
 import platform
 import resource
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -93,6 +92,24 @@ def _sha256(path: Path) -> str:
 
 def _ms(seconds: float) -> int:
     return round(seconds * 1000)
+
+
+def _json_safe(value: Any) -> Any:
+    """Replace non-finite floats with null, recursively.
+
+    Whisper returns ``-inf`` or ``nan`` for ``avg_logprob`` on some segments, and
+    ``json.dumps`` happily writes those as bare ``NaN``/``Infinity`` literals, which no
+    strict JSON parser accepts -- the file looks fine until ``jq`` refuses it. Writing
+    with ``allow_nan=False`` afterwards turns any case this misses into a loud error
+    instead of a quietly invalid artifact.
+    """
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, dict):
+        return {k: _json_safe(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_json_safe(v) for v in value]
+    return value
 
 
 # ------------------------------------------------------------------------ ASR stacks
@@ -244,7 +261,8 @@ def run_whisper_cpp_metal(audio: Path, ready: Ready) -> Probe:
     # would then drop an unredacted transcript into the working tree where it could be
     # committed by accident -- which for a CC BY-NC-ND source is the one outcome this
     # probe exists to avoid.
-    scratch = tempfile.mkdtemp(prefix="rpg-whispercpp-")
+    scratch_dir = tempfile.TemporaryDirectory(prefix="rpg-whispercpp-")
+    scratch = scratch_dir.name
     out_prefix = Path(scratch) / audio.stem
     cmd = [
         "whisper-cli",
@@ -263,8 +281,13 @@ def run_whisper_cpp_metal(audio: Path, ready: Ready) -> Probe:
     ]
     # The CLI loads its own model, so load and inference are inseparable here.
     ready()
-    proc = subprocess.run(cmd, check=True, capture_output=True, text=True)
-    payload = json.loads(Path(f"{out_prefix}.json").read_text())
+    try:
+        proc = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        payload = json.loads(Path(f"{out_prefix}.json").read_text())
+    except BaseException:
+        # An engine failure must not leave a transcript of restricted audio behind.
+        scratch_dir.cleanup()
+        raise
 
     # Absolute paths here would commit the operator's home directory and username into
     # a public repository. The command is recorded by basename so it stays readable
@@ -290,8 +313,11 @@ def run_whisper_cpp_metal(audio: Path, ready: Ready) -> Probe:
                 "confidence": round(sum(scores) / len(scores), 6) if scores else None,
             }
         )
-    native["stderr_tail"] = proc.stderr.strip().splitlines()[-12:]
-    shutil.rmtree(scratch, ignore_errors=True)
+    native["stderr_tail"] = [
+        line.replace(scratch, "<scratch>").replace(str(audio.parent), "<audio-dir>")
+        for line in proc.stderr.strip().splitlines()[-12:]
+    ]
+    scratch_dir.cleanup()
     return native, units
 
 
@@ -554,7 +580,11 @@ def main() -> int:
     else:
         turns, rejected = to_canonical_turns(units)
         speakers = sorted({t["physical_speaker"] for t in turns if t["physical_speaker"]})
-        scored = [t["confidence"] for t in turns if t["confidence"] is not None]
+        scored = [
+            t["confidence"]
+            for t in turns
+            if t["confidence"] is not None and math.isfinite(t["confidence"])
+        ]
 
     result: dict[str, Any] = {
         "probe_version": "1",
@@ -598,7 +628,10 @@ def main() -> int:
             ),
             "rejected_unit_count": len(rejected),
             "rejected_units": rejected if not args.redact_text else len(rejected),
-            "has_timestamps": bool(turns),
+            # True whenever the stack timestamped anything, which a diarizer does even
+            # though it produces no turns. Deriving this from `turns` alone described
+            # the projection rather than the engine.
+            "has_timestamps": bool(turns) or bool(units),
             "distinct_physical_speakers": len(speakers),
             "physical_speakers": speakers,
             "turns_with_confidence": len(scored),
@@ -647,15 +680,18 @@ def main() -> int:
         result["canonical_turns"] = turns
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n")
+    args.out.write_text(
+        json.dumps(_json_safe(result), indent=2, ensure_ascii=False, allow_nan=False) + "\n"
+    )
 
     if args.full_out:
         args.full_out.parent.mkdir(parents=True, exist_ok=True)
         args.full_out.write_text(
             json.dumps(
-                {**result, "native_artifact": native, "canonical_turns": turns},
+                _json_safe({**result, "native_artifact": native, "canonical_turns": turns}),
                 indent=2,
                 ensure_ascii=False,
+                allow_nan=False,
             )
             + "\n"
         )

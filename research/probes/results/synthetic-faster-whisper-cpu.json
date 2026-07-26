@@ -15,20 +15,20 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 38.881,
-    "model_load_s": 2.044,
-    "inference_s": 36.837,
+    "wall_clock_s": 38.75,
+    "model_load_s": 2.012,
+    "inference_s": 36.738,
     "realtime_factor": 1.29,
     "inference_realtime_factor": 1.36,
-    "peak_rss_mb": 2471.3,
+    "peak_rss_mb": 2469.9,
     "peak_child_rss_mb": 13.5,
-    "load_avg_1m_before": 6.07,
-    "load_avg_1m_after": 5.7
+    "load_avg_1m_before": 5.47,
+    "load_avg_1m_after": 5.43
   },
   "shape": {
     "produces_text": true,
-    "unit_count": 15,
-    "canonical_turn_count": 15,
+    "unit_count": 17,
+    "canonical_turn_count": 17,
     "speaker_span_count": null,
     "speaker_span_ms": null,
     "rejected_unit_count": 0,
@@ -42,18 +42,18 @@
       "SPEAKER_04",
       "SPEAKER_06"
     ],
-    "turns_with_confidence": 15,
-    "confidence_min": 0.0472,
-    "confidence_mean": 0.7157,
+    "turns_with_confidence": 17,
+    "confidence_min": 0.0177,
+    "confidence_mean": 0.6301,
     "total_speech_ms": 44520,
-    "characters_of_text": 766,
+    "characters_of_text": 839,
     "speaker_attribution": {
-      "mean_overlap_ratio": 0.887,
+      "mean_overlap_ratio": 0.9,
       "min_overlap_ratio": 0.378,
       "turns_below_0_8_overlap": 3,
       "turns_with_no_speaker": 0,
-      "mean_coverage_ratio": 0.977,
-      "overlap_given_coverage": 0.908,
+      "mean_coverage_ratio": 0.979,
+      "overlap_given_coverage": 0.919,
       "total_unit_span_ms": 44520
     }
   },
@@ -1041,49 +1041,157 @@
       },
       {
         "start": 49.64,
-        "end": 49.86,
-        "text": " He'll be the first.",
-        "avg_logprob": -3.052436048334295,
+        "end": 49.68,
+        "text": " Back to the threshold.",
+        "avg_logprob": -4.0344716972774926,
         "no_speech_prob": 9.352350491265149e-12,
         "words": [
           {
-            "word": " He'll",
+            "word": " Back",
             "start": 49.64,
             "end": 49.64,
-            "probability": 0.01190119719831273
+            "probability": 0.0036521980073302984
           },
           {
-            "word": " be",
+            "word": " to",
             "start": 49.64,
-            "end": 49.64,
-            "probability": 0.5529648065567017
+            "end": 49.68,
+            "probability": 0.44492799043655396
           },
           {
             "word": " the",
-            "start": 49.64,
-            "end": 49.72,
-            "probability": 0.10765098035335541
+            "start": 49.68,
+            "end": 49.68,
+            "probability": 0.3950943648815155
           },
           {
-            "word": " first.",
-            "start": 49.72,
-            "end": 49.86,
-            "probability": 0.41215240955352783
+            "word": " threshold.",
+            "start": 49.68,
+            "end": 49.68,
+            "probability": 1.4110556548985187e-05
           }
         ]
       },
       {
-        "start": 49.86,
-        "end": 49.94,
-        "text": " But...",
-        "avg_logprob": -3.052436048334295,
+        "start": 49.68,
+        "end": 49.78,
+        "text": " The pursued. A",
+        "avg_logprob": -4.0344716972774926,
         "no_speech_prob": 9.352350491265149e-12,
         "words": [
           {
-            "word": " But...",
-            "start": 49.86,
+            "word": " The",
+            "start": 49.68,
+            "end": 49.68,
+            "probability": 0.02942468971014023
+          },
+          {
+            "word": " pursued.",
+            "start": 49.68,
+            "end": 49.78,
+            "probability": 2.58318232226884e-06
+          },
+          {
+            "word": " A",
+            "start": 49.78,
+            "end": 49.78,
+            "probability": 0.010015635751187801
+          }
+        ]
+      },
+      {
+        "start": 49.78,
+        "end": 49.84,
+        "text": " 2 when the droid goes down.",
+        "avg_logprob": -4.0344716972774926,
+        "no_speech_prob": 9.352350491265149e-12,
+        "words": [
+          {
+            "word": " 2",
+            "start": 49.78,
+            "end": 49.78,
+            "probability": 0.000221300360863097
+          },
+          {
+            "word": " when",
+            "start": 49.78,
+            "end": 49.78,
+            "probability": 0.00034253994817845523
+          },
+          {
+            "word": " the",
+            "start": 49.78,
+            "end": 49.78,
+            "probability": 0.17758889496326447
+          },
+          {
+            "word": " droid",
+            "start": 49.78,
+            "end": 49.84,
+            "probability": 0.27778511204815004
+          },
+          {
+            "word": " goes",
+            "start": 49.84,
+            "end": 49.84,
+            "probability": 0.01728353090584278
+          },
+          {
+            "word": " down.",
+            "start": 49.84,
+            "end": 49.84,
+            "probability": 0.051444973796606064
+          }
+        ]
+      },
+      {
+        "start": 49.84,
+        "end": 49.94,
+        "text": " They're putting away as if she can.",
+        "avg_logprob": -4.0344716972774926,
+        "no_speech_prob": 9.352350491265149e-12,
+        "words": [
+          {
+            "word": " They're",
+            "start": 49.84,
             "end": 49.94,
-            "probability": 0.01814022264443338
+            "probability": 0.033224507700651884
+          },
+          {
+            "word": " putting",
+            "start": 49.94,
+            "end": 49.94,
+            "probability": 0.0005009624874219298
+          },
+          {
+            "word": " away",
+            "start": 49.94,
+            "end": 49.94,
+            "probability": 0.002651965944096446
+          },
+          {
+            "word": " as",
+            "start": 49.94,
+            "end": 49.94,
+            "probability": 0.0015345461433753371
+          },
+          {
+            "word": " if",
+            "start": 49.94,
+            "end": 49.94,
+            "probability": 0.006270380690693855
+          },
+          {
+            "word": " she",
+            "start": 49.94,
+            "end": 49.94,
+            "probability": 0.007175793871283531
+          },
+          {
+            "word": " can.",
+            "start": 49.94,
+            "end": 49.94,
+            "probability": 0.026525240391492844
           }
         ]
       }
@@ -1223,20 +1331,40 @@
     {
       "id": "t0013",
       "start_ms": 49640,
-      "end_ms": 49860,
-      "text": "He'll be the first.",
+      "end_ms": 49680,
+      "text": "Back to the threshold.",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.0472436961700055,
+      "confidence": 0.017695025974637284,
       "speaker_overlap_ratio": 1.0,
       "speaker_coverage_ratio": 1.0
     },
     {
       "id": "t0014",
-      "start_ms": 49860,
-      "end_ms": 49940,
-      "text": "But...",
+      "start_ms": 49680,
+      "end_ms": 49780,
+      "text": "The pursued. A",
       "physical_speaker": "SPEAKER_00",
-      "confidence": 0.0472436961700055,
+      "confidence": 0.017695025974637284,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0015",
+      "start_ms": 49780,
+      "end_ms": 49840,
+      "text": "2 when the droid goes down.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.017695025974637284,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0016",
+      "start_ms": 49840,
+      "end_ms": 49940,
+      "text": "They're putting away as if she can.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.017695025974637284,
       "speaker_overlap_ratio": 1.0,
       "speaker_coverage_ratio": 1.0
     }

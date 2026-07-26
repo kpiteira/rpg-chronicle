@@ -15,383 +15,33 @@
     "cpu_count": 12
   },
   "metrics": {
-    "wall_clock_s": 12.008,
-    "model_load_s": 0.588,
-    "inference_s": 11.42,
-    "realtime_factor": 4.16,
-    "inference_realtime_factor": 4.38,
-    "peak_rss_mb": 1942.0,
+    "wall_clock_s": 12.603,
+    "model_load_s": 0.606,
+    "inference_s": 11.997,
+    "realtime_factor": 3.96,
+    "inference_realtime_factor": 4.17,
+    "peak_rss_mb": 1939.7,
     "peak_child_rss_mb": 15.2,
-    "load_avg_1m_before": 7.23,
-    "load_avg_1m_after": 6.07
+    "load_avg_1m_before": 6.59,
+    "load_avg_1m_after": 5.47
   },
   "shape": {
     "produces_text": true,
-    "unit_count": 42,
-    "canonical_turn_count": 16,
+    "unit_count": 15,
+    "canonical_turn_count": 14,
     "speaker_span_count": null,
     "speaker_span_ms": null,
-    "rejected_unit_count": 26,
+    "rejected_unit_count": 1,
     "rejected_units": [
-      {
-        "index": 13,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
       {
         "index": 14,
         "reason": "empty text",
         "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
+          "start_ms": 49920,
+          "end_ms": 49920,
           "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 15,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 16,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 17,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 18,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 19,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 20,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49640,
-          "end_ms": 49640,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 22,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 23,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 24,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 25,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 26,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 27,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 28,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 29,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 30,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 31,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 32,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 33,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 34,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 35,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 36,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 37,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 38,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 49680,
-          "end_ms": 49680,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
-          "physical_speaker": null,
-          "speaker_overlap_ratio": 0.0,
-          "speaker_coverage_ratio": 0.0
-        }
-      },
-      {
-        "index": 41,
-        "reason": "empty text",
-        "unit": {
-          "start_ms": 51580,
-          "end_ms": 51580,
-          "text": "",
-          "confidence": NaN,
-          "no_speech_prob": 6.283935611445246e-12,
+          "confidence": 0.6554340339593471,
+          "no_speech_prob": 7.14081849206849e-11,
           "physical_speaker": null,
           "speaker_overlap_ratio": 0.0,
           "speaker_coverage_ratio": 0.0
@@ -407,19 +57,19 @@
       "SPEAKER_04",
       "SPEAKER_06"
     ],
-    "turns_with_confidence": 16,
+    "turns_with_confidence": 14,
     "confidence_min": 0.8117,
-    "confidence_mean": NaN,
-    "total_speech_ms": 44520,
-    "characters_of_text": 812,
+    "confidence_mean": 0.8196,
+    "total_speech_ms": 44640,
+    "characters_of_text": 1595,
     "speaker_attribution": {
-      "mean_overlap_ratio": 0.34,
+      "mean_overlap_ratio": 0.818,
       "min_overlap_ratio": 0.0,
-      "turns_below_0_8_overlap": 29,
-      "turns_with_no_speaker": 26,
-      "mean_coverage_ratio": 0.372,
-      "overlap_given_coverage": 0.914,
-      "total_unit_span_ms": 44520
+      "turns_below_0_8_overlap": 4,
+      "turns_with_no_speaker": 1,
+      "mean_coverage_ratio": 0.908,
+      "overlap_given_coverage": 0.901,
+      "total_unit_span_ms": 44640
     }
   },
   "diarization_source": {
@@ -430,7 +80,7 @@
   "native_artifact": {
     "engine": "mlx-whisper",
     "model": "mlx-community/whisper-large-v3-turbo",
-    "text": " The road out of Ealthorn narrows as it climbs toward the Ashen Spire. Eilera draws her hood up and checks the sigil on her palm again. Does Bran see anything moving on the ridge? I want a perception check. Roll it. The wind is loud enough that you are at disadvantage. That is a 14. Not great. Karikon keeps walking. He has no patience for ridge lines today. Then you three reach the gate before the light goes. It is already open. Eilera stops. Open how? Forced open. Or left open? Left open. The bar is set neatly against the wall. As if by someone in her read. Karikon says what everyone is thinking. That is worse. Bran wants to know if the warden of the spire is expecting us. You will find out. Something inside the courtyard says your name first. What was the right answer? What was the right answer was the right answer",
+    "text": " The road out of Ealthorn narrows as it climbs toward the Ashen Spire. Eilera draws her hood up and checks the sigil on her palm again. Does Bran see anything moving on the ridge? I want a perception check. Roll it. The wind is loud enough that you are at disadvantage. That is a 14. Not great. Karikon keeps walking. He has no patience for ridge lines today. Then you three reach the gate before the light goes. It is already open. Eilera stops. Open how? Forced open. Or left open? Left open. The bar is set neatly against the wall. As if by someone in her read. Karikon says what everyone is thinking. That is worse. Bran wants to know if the warden of the spire is expecting us. You will find out. Something inside the courtyard says your name first. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And",
     "segments": [
       {
         "id": 0,
@@ -1692,488 +1342,1368 @@
         "id": 13,
         "seek": 4964,
         "start": 49.64,
-        "end": 49.64,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 14,
-        "seek": 4964,
-        "start": 49.64,
-        "end": 49.64,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 15,
-        "seek": 4964,
-        "start": 49.64,
-        "end": 49.64,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 16,
-        "seek": 4964,
-        "start": 49.64,
-        "end": 49.64,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 17,
-        "seek": 4964,
-        "start": 49.64,
-        "end": 49.64,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 18,
-        "seek": 4964,
-        "start": 49.64,
-        "end": 49.64,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 19,
-        "seek": 4964,
-        "start": 49.64,
-        "end": 49.64,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 20,
-        "seek": 4964,
-        "start": 49.64,
-        "end": 49.64,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 21,
-        "seek": 4964,
-        "start": 49.64,
-        "end": 49.68,
-        "text": " What was the right answer?",
+        "end": 49.94,
+        "text": " And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And",
         "tokens": [
-          50462,
-          708,
-          390,
-          264,
-          558,
-          1867,
-          30,
-          50462
+          50365,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400,
+          291,
+          486,
+          915,
+          484,
+          13,
+          400
         ],
         "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
+        "avg_logprob": -0.20200724283854166,
+        "compression_ratio": 21.897435897435898,
         "no_speech_prob": 6.283935611445246e-12,
         "words": [
           {
-            "word": " What",
+            "word": " And",
             "start": 49.64,
             "end": 49.64,
-            "probability": 0.5380859375
+            "probability": 0.0018463134765625
           },
           {
-            "word": " was",
+            "word": " you",
             "start": 49.64,
             "end": 49.64,
-            "probability": 0.72412109375
+            "probability": 0.0306396484375
           },
           {
-            "word": " the",
+            "word": " will",
             "start": 49.64,
             "end": 49.64,
-            "probability": 0.91259765625
+            "probability": 0.054443359375
           },
           {
-            "word": " right",
+            "word": " find",
             "start": 49.64,
             "end": 49.64,
-            "probability": 0.74853515625
+            "probability": 0.07562255859375
           },
           {
-            "word": " answer?",
+            "word": " out.",
             "start": 49.64,
-            "end": 49.68,
-            "probability": 0.99462890625
-          }
-        ]
-      },
-      {
-        "id": 22,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 23,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 24,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 25,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 26,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 27,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 28,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 29,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 30,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 31,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 32,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 33,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 34,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 35,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 36,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 37,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 38,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.68,
-        "text": "",
-        "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": []
-      },
-      {
-        "id": 39,
-        "seek": 4964,
-        "start": 49.68,
-        "end": 49.72,
-        "text": " What was the right answer",
-        "tokens": [
-          50462,
-          708,
-          390,
-          264,
-          558,
-          1867,
-          50462
-        ],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": [
-          {
-            "word": " What",
-            "start": 49.68,
-            "end": 49.68,
-            "probability": 0.76904296875
+            "end": 49.64,
+            "probability": 0.07354736328125
           },
           {
-            "word": " was",
-            "start": 49.68,
-            "end": 49.68,
-            "probability": 0.71826171875
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.040802001953125
           },
           {
-            "word": " the",
-            "start": 49.68,
-            "end": 49.68,
-            "probability": 0.94287109375
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.2437744140625
           },
           {
-            "word": " right",
-            "start": 49.68,
-            "end": 49.68,
-            "probability": 0.8310546875
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.73388671875
           },
           {
-            "word": " answer",
-            "start": 49.68,
-            "end": 49.72,
-            "probability": 0.990234375
-          }
-        ]
-      },
-      {
-        "id": 40,
-        "seek": 4964,
-        "start": 49.72,
-        "end": 49.82,
-        "text": " was the right answer",
-        "tokens": [
-          50462,
-          390,
-          264,
-          558,
-          1867,
-          50462
-        ],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
-        "words": [
-          {
-            "word": " was",
-            "start": 49.72,
-            "end": 49.72,
-            "probability": 0.0171051025390625
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.794921875
           },
           {
-            "word": " the",
-            "start": 49.72,
-            "end": 49.72,
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.39697265625
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.1822509765625
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.384033203125
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.84228515625
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.92138671875
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.65185546875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.33154296875
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.4638671875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.87744140625
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.94580078125
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.775390625
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.4208984375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.50634765625
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.896484375
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9541015625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.82177734375
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.48193359375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.525390625
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9072265625
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95947265625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.85302734375
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.51904296875
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.5546875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.921875
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.96337890625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.8828125
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.5703125
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.572265625
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.92822265625
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.96533203125
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.90478515625
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.615234375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.5830078125
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.93310546875
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.96826171875
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.91943359375
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.6591796875
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.6044921875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9384765625
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.96923828125
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.927734375
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.70458984375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.62646484375
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9443359375
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97119140625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.935546875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.74462890625
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
             "probability": 0.6572265625
           },
           {
-            "word": " right",
-            "start": 49.72,
-            "end": 49.8,
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95068359375
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97265625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.94091796875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.76904296875
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.67529296875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.953125
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97412109375
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9501953125
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.78564453125
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.6865234375
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95703125
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97509765625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95263671875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
             "probability": 0.80712890625
           },
           {
-            "word": " answer!",
-            "start": 49.8,
-            "end": 49.82,
-            "probability": 0.98681640625
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.70654296875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95947265625
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97607421875
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95068359375
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.83056640625
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.72802734375
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9609375
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9765625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9521484375
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.8408203125
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.7421875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.96240234375
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9775390625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9560546875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.84912109375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.74755859375
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.962890625
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.978515625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9541015625
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.85400390625
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.7666015625
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.96435546875
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9775390625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.953125
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.85986328125
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.7685546875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.96337890625
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9775390625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95361328125
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.859375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.7763671875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.96435546875
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.978515625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.953125
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.8662109375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.78076171875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.96435546875
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97900390625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95263671875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.8662109375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.7763671875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9638671875
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97802734375
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9482421875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.86865234375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.77978515625
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9638671875
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.978515625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.94580078125
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.86572265625
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.7900390625
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.962890625
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97705078125
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.94482421875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.865234375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.787109375
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.962890625
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9765625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.94287109375
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.8603515625
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.78515625
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.96142578125
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9755859375
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.94091796875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.85888671875
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.78369140625
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9599609375
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97607421875
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.93798828125
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.85302734375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.78173828125
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9599609375
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9755859375
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9384765625
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.85205078125
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.7802734375
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95947265625
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.974609375
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9326171875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.849609375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.78369140625
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95751953125
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97412109375
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9306640625
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.83251953125
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.7822265625
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95654296875
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97314453125
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9296875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.82373046875
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.77880859375
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95703125
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97314453125
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.9267578125
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.8193359375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.7763671875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95458984375
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97119140625
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.92236328125
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.8212890625
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.77734375
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95458984375
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.970703125
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.92041015625
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.8095703125
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.7744140625
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95263671875
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.97021484375
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.91796875
+          },
+          {
+            "word": " And",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.802734375
+          },
+          {
+            "word": " you",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.7763671875
+          },
+          {
+            "word": " will",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.95361328125
+          },
+          {
+            "word": " find",
+            "start": 49.64,
+            "end": 49.64,
+            "probability": 0.96875
+          },
+          {
+            "word": " out.",
+            "start": 49.64,
+            "end": 49.74,
+            "probability": 0.91259765625
+          },
+          {
+            "word": " And",
+            "start": 49.74,
+            "end": 49.94,
+            "probability": 0.79150390625
           }
         ]
       },
       {
-        "id": 41,
-        "seek": 4964,
-        "start": 51.58,
-        "end": 51.58,
+        "id": 14,
+        "seek": 4994,
+        "start": 49.92,
+        "end": 49.92,
         "text": "",
         "tokens": [],
-        "temperature": 1.0,
-        "avg_logprob": NaN,
-        "compression_ratio": 16.644444444444446,
-        "no_speech_prob": 6.283935611445246e-12,
+        "temperature": 0.0,
+        "avg_logprob": -0.42245761553446454,
+        "compression_ratio": 0.5555555555555556,
+        "no_speech_prob": 7.14081849206849e-11,
         "words": []
       }
     ],
@@ -2311,32 +2841,12 @@
       "speaker_coverage_ratio": 0.962
     },
     {
-      "id": "t0021",
+      "id": "t0013",
       "start_ms": 49640,
-      "end_ms": 49680,
-      "text": "What was the right answer?",
+      "end_ms": 49940,
+      "text": "And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And you will find out. And",
       "physical_speaker": "SPEAKER_00",
-      "confidence": NaN,
-      "speaker_overlap_ratio": 1.0,
-      "speaker_coverage_ratio": 1.0
-    },
-    {
-      "id": "t0039",
-      "start_ms": 49680,
-      "end_ms": 49720,
-      "text": "What was the right answer",
-      "physical_speaker": "SPEAKER_00",
-      "confidence": NaN,
-      "speaker_overlap_ratio": 1.0,
-      "speaker_coverage_ratio": 1.0
-    },
-    {
-      "id": "t0040",
-      "start_ms": 49720,
-      "end_ms": 49820,
-      "text": "was the right answer",
-      "physical_speaker": "SPEAKER_00",
-      "confidence": NaN,
+      "confidence": 0.8170890098770321,
       "speaker_overlap_ratio": 1.0,
       "speaker_coverage_ratio": 1.0
     }
