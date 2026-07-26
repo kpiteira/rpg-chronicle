@@ -36,9 +36,24 @@ case "$decision" in
     echo "Simplify the command, or quote its arguments, and try again." >&2
     exit 2
     ;;
+  "merge "*)
+    target=${decision#merge }
+    ;;
+  *)
+    # Anything else means the classifier and this gate disagree about their own
+    # contract. Refusing is the only safe reading; falling through would have
+    # handed unrecognized output to `gh pr view` as though it named a PR.
+    echo "Unrecognized decision from the command classifier; refusing to merge." >&2
+    exit 2
+    ;;
 esac
 
-target=${decision#merge }
+case "$target" in
+  "" | *[[:space:]]*)
+    echo "The command classifier named no usable pull request; refusing to merge." >&2
+    exit 2
+    ;;
+esac
 
 # `gh pr view` accepts a number, a URL, or a branch name, so whatever the merge
 # command named is resolved directly. Only a merge that names nothing falls back
