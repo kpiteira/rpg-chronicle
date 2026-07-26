@@ -156,6 +156,22 @@ def test_a_merge_naming_a_branch_resolves_that_branch(gate) -> None:
     assert "pr view codex/other/branch --json number" in calls
 
 
+def test_a_merge_naming_a_repository_asks_about_that_repository(gate) -> None:
+    """Raised by the goal validator, as a residual form of the same defect.
+
+    The repository was parsed and then dropped, so `7` resolved against
+    whichever repository the session happened to be standing in.
+    """
+    code, stderr, calls = gate(
+        "gh pr merge 7 -R other/repo --rebase", GH_VERDICT=verdict(HEAD)
+    )
+    assert code == 0, stderr
+    assert "pr view 7 -R other/repo --json number" in calls
+    # The repository has to stay attached for every later question too.
+    assert "-R other/repo --json headRefOid" in calls
+    assert "-R other/repo --json comments" in calls
+
+
 def test_a_merge_naming_nothing_falls_back_to_the_current_branch(gate) -> None:
     code, stderr, calls = gate("gh pr merge --rebase", GH_VERDICT=verdict(HEAD))
     assert code == 0, stderr

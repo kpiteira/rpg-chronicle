@@ -42,7 +42,14 @@ case "$decision" in
     exit 2
     ;;
   "merge "*)
-    target=${decision#merge }
+    argument=${decision#merge }
+    target=${argument%% *}
+    # A repository, when the merge named one. Resolving the pull request
+    # against the wrong repository is the same wrong-pull-request defect.
+    repo=""
+    case "$argument" in
+      *" "*) repo=${argument#* } ;;
+    esac
     ;;
   *)
     # Anything else means the classifier and this gate disagree about their own
@@ -64,10 +71,15 @@ esac
 # command named is resolved directly. Only a merge that names nothing falls back
 # to the current branch; resolving a named branch that way would check one pull
 # request's verdict while merging another.
+scope=()
+if [ -n "$repo" ]; then
+  scope=(-R "$repo")
+fi
+
 if [ "$target" = "-" ]; then
-  pr=$(gh pr view --json number --jq .number 2>/dev/null || true)
+  pr=$(gh pr view ${scope[@]+"${scope[@]}"} --json number --jq .number 2>/dev/null || true)
 else
-  pr=$(gh pr view "$target" --json number --jq .number 2>/dev/null || true)
+  pr=$(gh pr view "$target" ${scope[@]+"${scope[@]}"} --json number --jq .number 2>/dev/null || true)
 fi
 
 if [ -z "$pr" ]; then
@@ -75,13 +87,14 @@ if [ -z "$pr" ]; then
   exit 2
 fi
 
-head_sha=$(gh pr view "$pr" --json headRefOid --jq .headRefOid 2>/dev/null || true)
+head_sha=$(gh pr view "$pr" ${scope[@]+"${scope[@]}"} --json headRefOid --jq .headRefOid \
+  2>/dev/null || true)
 if [ -z "$head_sha" ]; then
   echo "Cannot read the head commit of PR #${pr}; refusing to merge." >&2
   exit 2
 fi
 
-verdict=$(gh pr view "$pr" --json comments \
+verdict=$(gh pr view "$pr" ${scope[@]+"${scope[@]}"} --json comments \
   --jq '[.comments[] | select(.body | test("^<!-- goal-validator "))] | last | .body // ""' \
   2>/dev/null || true)
 
