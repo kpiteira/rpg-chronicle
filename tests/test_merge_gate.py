@@ -169,6 +169,10 @@ def test_missing_tooling_refuses_everything(tmp_path: Path) -> None:
     nothing -- including commands that are not guarded at all. That is the right
     direction and an expensive one, so it is pinned here rather than left to be
     discovered during a session.
+
+    The PATH is empty, so the refusal arrives as soon as the hook cannot resolve
+    its own directory, before it ever looks for python3. Both failures land on
+    the same decision, which is the property under test.
     """
     empty = tmp_path / "empty-bin"
     empty.mkdir()

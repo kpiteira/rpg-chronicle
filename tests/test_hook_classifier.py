@@ -279,6 +279,25 @@ def test_a_heredoc_body_is_data_not_commands() -> None:
     assert classify(command) == "allow"
 
 
+@pytest.mark.parametrize(
+    "command",
+    [
+        "read x <<<hello\ngit push origin main",
+        'read x <<<"bar"\ngit push origin main',
+        "read x <<<abc\ngit push origin main",
+        "read x <<<$VALUE\ngit push origin main",
+    ],
+)
+def test_a_herestring_does_not_swallow_the_lines_after_it(command: str) -> None:
+    """A reproducible fail-open, caught by the goal validator.
+
+    The heredoc pattern matched at the second `<` of `<<<`, taking the payload
+    for a terminator that never arrived, so everything below it was consumed
+    while searching for one.
+    """
+    assert classify(command) == "push-main"
+
+
 def test_a_command_after_a_heredoc_is_still_classified() -> None:
     command = "git commit -F - <<'MSG'\nmessage body\nMSG\ngh pr merge 7 --rebase"
     assert classify(command) == "merge 7"
