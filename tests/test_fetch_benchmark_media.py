@@ -145,6 +145,33 @@ def test_an_id_that_could_climb_out_of_the_cache_is_refused(
     assert not cache.exists()
 
 
+@pytest.mark.parametrize(
+    ("media_url", "expected"),
+    [
+        ("https://example.invalid/podcast/probe.mp3", "probe.mp3"),
+        ("https://example.invalid/watch?v=abc123&t=90", "watch"),
+        ("https://example.invalid/podcast/probe.mp3#t=120", "probe.mp3"),
+    ],
+)
+def test_the_cache_filename_comes_from_the_url_path_alone(
+    tmp_path: Path, media_url: str, expected: str
+) -> None:
+    """A query or fragment is addressing, not a filename, and `?` is illegal on Windows."""
+    manifest = {"id": "probe-item", "source": {"media_url": media_url}}
+
+    target = fetch.cache_target(tmp_path, manifest)
+
+    assert target.name == expected
+    assert not {"?", "#"} & set(str(target))
+
+
+def test_a_url_with_no_filename_in_its_path_is_refused(tmp_path: Path) -> None:
+    manifest = {"id": "probe-item", "source": {"media_url": "https://example.invalid/?v=abc"}}
+
+    with pytest.raises(ValueError, match="ends in no usable filename"):
+        fetch.cache_target(tmp_path, manifest)
+
+
 def test_a_second_mismatch_does_not_overwrite_the_first_quarantine(tmp_path: Path) -> None:
     """Quarantine exists to preserve evidence, so it must not land on earlier evidence."""
     target = tmp_path / "probe.mp3"
