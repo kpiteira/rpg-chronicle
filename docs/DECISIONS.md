@@ -104,3 +104,29 @@ and the diff. It is accepted with that stated limit: a fresh-context read of the
 the tautology check still apply, and the alternative -- the role that maintains the gate
 being the only role permitted around it -- is worse. Rule going forward: a control that
 cannot be applied to its own maintainer is not yet finished.
+
+## D-015: The merge gate is best-effort by construction
+
+Hardening the gate produced five validator blocks in a row, each naming a shell construct
+the classifier did not model. The pattern is worth recording, because the natural response
+-- keep enumerating -- was right for some of them and wrong for others.
+
+Where the guarded words could be located directly, enumeration was the defect: listing
+command wrappers dropped every wrapper not listed, and scanning for the words themselves
+removed the need for a list. Where the question is whether a command treats its argument
+as code, no such move exists, because that requires knowing the command. Recognizing
+interpreters is therefore a list, and an interpreter absent from it is not guarded.
+
+The goal for that work asked that every refusal the previous gate made must survive. That
+was unachievable and it was ours to correct: the old gate refused any occurrence of the
+guarded text anywhere in a command, which is precisely the behaviour being fixed -- it
+blocked a comment describing the merge command, the test harness for the fix, and a commit
+message. A classifier that stops refusing text about commands necessarily stops making
+some refusals a text match made.
+
+The gate is a guardrail against an unvalidated merge happening by accident. It is not a
+barrier against one pursued deliberately, and no PreToolUse hook could be, since the hook
+runs inside the session it constrains. Branch protection is the boundary that holds
+without depending on the classifier being clever. Rule going forward: when a control's
+stated guarantee cannot be met, correct the statement rather than the evidence, and name
+the layer that does hold.
