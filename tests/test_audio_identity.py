@@ -56,8 +56,8 @@ def test_a_copy_of_the_same_envelope_aligns_at_zero() -> None:
     result = identity.align(series, list(series), max_lag_frames=50)
 
     assert result.correlation > 0.999
-    assert result.lag_seconds == 0.0
-    assert result.same_recording
+    assert result.lag_frames == 0
+    assert result.lag_seconds(frame_ms=1000) == 0.0
 
 
 def test_a_shifted_copy_reports_the_shift() -> None:
@@ -67,8 +67,12 @@ def test_a_shifted_copy_reports_the_shift() -> None:
 
     result = identity.align(series, shifted, max_lag_frames=80)
 
-    assert result.lag_seconds == -40.0
+    assert result.lag_frames == -40
     assert result.correlation > 0.999
+    # The same lag is a different number of seconds at a different frame size, which is the
+    # whole reason align() reports frames and leaves the conversion to whoever asked.
+    assert result.lag_seconds(frame_ms=1000) == -40.0
+    assert result.lag_seconds(frame_ms=10) == -0.4
 
 
 def test_a_different_recording_does_not_align() -> None:
@@ -76,7 +80,7 @@ def test_a_different_recording_does_not_align() -> None:
     result = identity.align(_speechlike(600), _speechlike(600, seed=7), max_lag_frames=50)
 
     assert result.correlation < identity.SAME_RECORDING_R
-    assert not result.same_recording
+    assert not result.peak_found
 
 
 def test_lossy_degradation_still_counts_as_the_same_recording() -> None:
@@ -86,7 +90,7 @@ def test_lossy_degradation_still_counts_as_the_same_recording() -> None:
 
     result = identity.align(series, degraded, max_lag_frames=50)
 
-    assert result.same_recording
+    assert result.correlation >= identity.SAME_RECORDING_R
 
 
 def test_correlation_of_a_flat_series_is_zero_rather_than_an_error() -> None:
@@ -150,6 +154,47 @@ def test_verify_reports_a_different_recording_without_refining_it(
     assert fine is None, "an unrelated envelope shares no shape and must not refine"
     assert not coarse.peak_found
     assert [call["frame_ms"] for call in calls] == [1000], "the fine pass must not have run"
+
+
+def test_the_coarse_search_range_follows_the_fingerprint_frame_size(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A lag of 40 s has to be findable whatever resolution the fingerprint was written at.
+
+    The coarse search used to be ``int(MAX_PLAUSIBLE_LAG_SECONDS)``, which is a count of
+    frames being fed a number of seconds. At the one-second frames every committed
+    fingerprint uses, those happen to be the same number. At 500 ms they are not: the search
+    would have covered 30 s, and a genuine copy 40 s out would have been reported as a
+    different recording, with the coarse pass never reaching the fine one.
+    """
+    coarse_reference = _speechlike(400)
+    fine_reference = _speechlike(100)
+    fingerprint = tmp_path / "fp.json"
+    fingerprint.write_text(
+        json.dumps(
+            {
+                "method": "rms_envelope_v1",
+                "coarse_frame_ms": 500,
+                "fine_frame_ms": 10,
+                "fine_probe_start_seconds": 0.0,
+                "fine_probe_seconds": 1.0,
+                "coarse": coarse_reference,
+                "fine": fine_reference,
+            }
+        )
+    )
+
+    def shifted(path, frame_ms=1000, start_seconds=None, duration_seconds=None):
+        # 80 frames at 500 ms is a 40 s lag: inside 60 s, outside the 30 s the bug allowed.
+        return coarse_reference[80:] if frame_ms == 500 else list(fine_reference)
+
+    monkeypatch.setattr(identity, "envelope", shifted)
+
+    coarse, fine = identity.verify(tmp_path / "copy.webm", fingerprint)
+
+    assert coarse.lag_frames == -80
+    assert coarse.lag_seconds(frame_ms=500) == -40.0
+    assert fine is not None, "the coarse pass found the peak and must have refined it"
 
 
 # Measured on the real recording; every run is in benchmarks/notes/recording-identity.md.

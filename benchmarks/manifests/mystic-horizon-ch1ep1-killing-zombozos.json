@@ -13,7 +13,7 @@
     "content_fingerprint": {
       "method": "rms_envelope_v1",
       "path": "benchmarks/fingerprints/mystic-horizon-ch1ep1-killing-zombozos.json",
-      "sha256": "26fa8a9bd207ff13c06f69e3583e0dd929082af4ddd1377f0368e0d9e908b646"
+      "sha256": "13c3c8d6789d31e3857ffb4e2fa5d96b0425c3f9267ea90d64955e5f1da2c9d2"
     }
   },
   "excerpt": {

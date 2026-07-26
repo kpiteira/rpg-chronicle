@@ -182,20 +182,56 @@ def test_verified_truth_requires_a_way_to_establish_identity(tmp_path: Path) -> 
     assert any("verified truth needs a way to establish identity" in line for line in lines), lines
 
 
+def _committed_fingerprint() -> dict:
+    """A content_fingerprint that really does describe a file in this repository.
+
+    Taken from the manifest that carries one rather than written out here, so the test cannot
+    drift away from the artefact it is meant to be about.
+    """
+    manifest = json.loads(
+        (MANIFEST_DIR / "mystic-horizon-ch1ep1-killing-zombozos.json").read_text()
+    )
+    return manifest["source"]["content_fingerprint"]
+
+
 def test_a_fingerprint_satisfies_identity_where_bytes_cannot(tmp_path: Path) -> None:
     """A source that re-encodes gives every downloader different bytes, so a digest pins
     nothing. The fingerprint describes the sound and is the honest substitute."""
     manifest = _hiddengrid()
     del manifest["source"]["media_sha256"]
-    manifest["source"]["content_fingerprint"] = {
-        "method": "rms_envelope_v1",
-        "path": "benchmarks/fingerprints/example.json",
-        "sha256": "0" * 64,
-    }
+    manifest["source"]["content_fingerprint"] = _committed_fingerprint()
 
     exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
 
     assert exit_code == 0, lines
+
+
+def test_a_fingerprint_pointing_at_no_file_is_rejected(tmp_path: Path) -> None:
+    """Presence satisfies the schema and establishes nothing; the reader has to be able to
+    open it, or the identity claim is a sentence rather than a procedure."""
+    manifest = _hiddengrid()
+    manifest["source"]["content_fingerprint"] = {
+        **_committed_fingerprint(),
+        "path": "benchmarks/fingerprints/does-not-exist.json",
+    }
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("is not a file in this repository" in line for line in lines), lines
+
+
+def test_a_fingerprint_whose_digest_stopped_matching_is_rejected(tmp_path: Path) -> None:
+    """This is the one digest in a manifest that can be checked outright, because the file it
+    names is committed here. Regenerating the fingerprint without updating the manifest is
+    the realistic way it goes wrong, and it has to fail rather than pass quietly."""
+    manifest = _hiddengrid()
+    manifest["source"]["content_fingerprint"] = {**_committed_fingerprint(), "sha256": "0" * 64}
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("content_fingerprint.sha256 does not match" in line for line in lines), lines
 
 
 def test_a_provisional_candidate_needs_no_digest_yet(tmp_path: Path) -> None:

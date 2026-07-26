@@ -220,6 +220,33 @@ the file had actually been trimmed by 10.021 s rather than the 12.345 s requeste
 answer was right and the test was wrong. It is mentioned because the first instinct was to
 change the tool.
 
+### Three more found in review
+
+None of these had produced a wrong answer yet, which is what makes them worth recording.
+
+**A lag was called `lag_seconds` and held frames.** True only because the coarse pass uses
+one-second frames. The fine pass has always been in units of 10 ms, and the coarse search
+range was `int(MAX_PLAUSIBLE_LAG_SECONDS)` — a frame count being handed a number of seconds.
+A fingerprint written at 500 ms would have searched 30 s instead of 60 and reported genuine
+copies beyond that as different recordings. Every frame size now comes from the fingerprint,
+the field is `lag_frames`, converting is the caller's job, and the fine pass returns an
+`Offset` in seconds so the two cannot be confused. A test builds a 500 ms fingerprint with a
+40 s lag and fails against the old arithmetic.
+
+**The validator took a declared fingerprint on trust.** It checked that the field was present
+and shaped correctly, which establishes nothing: a typoed path or a digest that stopped
+matching left a manifest passing validation with anchors no reader could use — the exact
+failure the field exists to close. Unlike `media_sha256`, this digest *is* checkable here,
+because the file it names is committed in this repository. The validator now opens it and
+hashes it.
+
+**The fingerprint file carried the threshold, and it was stale.** It recorded
+`same_recording_correlation: 0.98` from before the threshold was settled at 0.90, while
+nothing ever read the field. The field is gone rather than corrected: a threshold belongs to
+the tool, and a copy of it in the data can only drift. The fingerprint was regenerated, which
+changed its digest, which the validator would now have caught in the four places that
+reference it.
+
 ## What this does and does not establish
 
 It establishes that a reader with an independently obtained copy can determine whether it is
