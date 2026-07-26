@@ -78,8 +78,12 @@ measures how *well* the path carries audio. It ran on ten minutes, not four hour
   (`docs/ANALYSIS.md`, `src/rpg_chronicle/analysis/`). A vendor is named in one backend
   module and at the point where a backend is selected, and nowhere else;
   `tests/test_vendor_neutrality.py` fails the commit that leaks one further.
-- `--analysis fixture` remains the default. The model backend reaches Claude through a
-  headless process using the operator's subscription, and CI holds no credential.
+- `--analysis fixture` remains the default **for `run-fixture`**, which is what CI runs
+  and CI holds no credential. `run-audio` defaults to the model instead, deliberately:
+  CI cannot run it at all, since the audio is not and cannot be in the repository, and
+  recognized audio has no declared truth to replay. Running `run-audio` therefore spends
+  the operator's subscription, which the model backend reaches through a headless
+  process.
 - The measurement behind it is of **scale and structure on a synthetic transcript with
   deliberately planted long-range structure**, not of quality on recorded play. No real
   session has been recorded, transcribed, or analysed.
