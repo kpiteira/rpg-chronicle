@@ -149,19 +149,44 @@ class ClaudeCliBackend:
         if not isinstance(text, str) or not text.strip():
             raise BackendResponseError(f"backend {self.name!r} returned an empty result")
 
-        usage = payload.get("usage") or {}
+        usage = payload.get("usage")
+        if not isinstance(usage, dict):
+            usage = {}
         return ModelResponse(
             text=text,
             usage=TokenUsage(
-                input_tokens=int(usage.get("input_tokens") or 0),
-                output_tokens=int(usage.get("output_tokens") or 0),
-                cached_input_tokens=int(usage.get("cache_read_input_tokens") or 0)
-                + int(usage.get("cache_creation_input_tokens") or 0),
+                input_tokens=self._count(usage, "input_tokens"),
+                output_tokens=self._count(usage, "output_tokens"),
+                cached_input_tokens=self._count(usage, "cache_read_input_tokens")
+                + self._count(usage, "cache_creation_input_tokens"),
             ),
             # The CLI's own timing excludes process startup; the wall clock is what the
             # operator waits, so that is what gets reported.
             wall_ms=wall_ms,
         )
+
+
+    @staticmethod
+    def _count(usage: dict[str, object], key: str) -> int:
+        """Read one token count, or say which field was unreadable and why.
+
+        The CLI's usage schema is not this repository's to guarantee. If a field
+        arrives as a string, a float, or something else entirely, converting it
+        blindly would raise `ValueError` or `TypeError` out of a backend -- past the
+        `BackendError` handling in `cli.py` -- and a schema change on the far side
+        would surface as a traceback rather than as a backend failure. Cost figures
+        are the point of this class, so a bad count is an error rather than a zero.
+        """
+        value = usage.get(key)
+        if value is None:
+            return 0
+        try:
+            return int(value)  # type: ignore[call-overload]
+        except (TypeError, ValueError) as error:
+            raise BackendResponseError(
+                f"backend usage field {key!r} was not a number: {type(value).__name__} "
+                f"({str(value)[:80]!r})"
+            ) from error
 
 
 def _tail(stream: str, limit: int = 400) -> str:

@@ -104,8 +104,9 @@ def plan_windows(turns: list[TranscriptTurn], budget: TokenBudget) -> list[Windo
 
     One window means the transcript fit in a single request; the caller reports that
     as a finding rather than assuming it. A single turn larger than the whole budget
-    is placed in a window alone: truncating a turn would break the evidence contract,
-    so the request is allowed to fail loudly at the backend instead.
+    is placed in a window alone, wherever in the transcript it falls: truncating a
+    turn would break the evidence contract, so the request is allowed to fail loudly
+    at the backend instead.
     """
     if not turns:
         return []
@@ -117,6 +118,20 @@ def plan_windows(turns: list[TranscriptTurn], budget: TokenBudget) -> list[Windo
 
     for turn in turns:
         cost = estimate_tokens(render_turn(turn)) + 1
+
+        # A turn larger than the whole budget cannot share a window with anything,
+        # including an overlap carry. Flushing first and emitting it alone keeps the
+        # promise this function makes: no window exceeds the budget unless it holds a
+        # single turn that does. Truncating the turn instead would break the evidence
+        # contract, so the oversized request is allowed to reach the backend and fail
+        # there, where the error names a real limit.
+        if cost > capacity:
+            if current:
+                windows.append(Window(index=len(windows), turns=current))
+            windows.append(Window(index=len(windows), turns=[turn]))
+            current, current_tokens = [], 0
+            continue
+
         if current and current_tokens + cost > capacity:
             windows.append(Window(index=len(windows), turns=current))
             carried = current[-budget.overlap_turns :] if budget.overlap_turns else []

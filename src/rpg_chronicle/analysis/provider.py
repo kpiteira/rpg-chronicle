@@ -466,15 +466,19 @@ class ModelAnalysisProvider:
             )
 
         scenes: list[Scene] = []
-        seen_spans: set[tuple[str, ...]] = set()
+        seen_spans: set[frozenset[str]] = set()
         for payload in window_payloads:
             for entry in payload["scenes"]:
                 ids = tuple(_turn_ids(entry, where="scene"))
-                # Windows overlap, so a scene on a boundary is reported twice. The
-                # cited span is the identity: the same turns are the same scene.
-                if ids in seen_spans:
+                # Windows overlap, so a scene on a boundary is reported twice. The set
+                # of cited turns is the identity, not the order they were listed in:
+                # the same evidence is the same scene however the model happened to
+                # sequence the ids the second time it saw the material. The original
+                # order is kept for the evidence payload.
+                key = frozenset(ids)
+                if key in seen_spans:
                     continue
-                seen_spans.add(ids)
+                seen_spans.add(key)
                 scenes.append(
                     Scene(
                         id=f"scene-{len(scenes) + 1:03d}",

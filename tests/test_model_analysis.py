@@ -261,8 +261,39 @@ def test_overlapping_windows_do_not_produce_duplicate_scenes():
         budget=TokenBudget(max_input_tokens=4_000, prompt_overhead_tokens=500, overlap_turns=6),
     )
     result = provider.analyze(_long_turns(200))
-    spans = [tuple(scene.evidence.turn_ids) for scene in result.scenes]
+    spans = [frozenset(scene.evidence.turn_ids) for scene in result.scenes]
     assert len(spans) == len(set(spans))
+
+
+def test_the_same_scene_cited_in_a_different_order_is_still_one_scene(turns):
+    """Overlap dedupe keys off the set of cited turns, not the order they were listed.
+
+    The model re-reads the same material in the next window and has no obligation to
+    sequence the ids the same way. Keying off order would let the identical scene
+    through twice and put it in the review package twice.
+    """
+    forwards = json.dumps(
+        {
+            "window_summary": "A summary.",
+            "scenes": [
+                {
+                    "title": "A scene",
+                    "summary": "It happened.",
+                    "turn_ids": ["turn-001", "turn-002", "turn-003"],
+                },
+                {
+                    "title": "The same scene, listed backwards",
+                    "summary": "It happened.",
+                    "turn_ids": ["turn-003", "turn-002", "turn-001"],
+                },
+            ],
+            "questions": [],
+        }
+    )
+    result = ModelAnalysisProvider(ScriptedBackend(replies=[forwards])).analyze(turns)
+    assert len(result.scenes) == 1
+    # The surviving scene keeps the order it was first cited in.
+    assert result.scenes[0].evidence.turn_ids == ["turn-001", "turn-002", "turn-003"]
 
 
 def test_cost_is_accumulated_from_the_backend_not_estimated():

@@ -93,6 +93,52 @@ def test_a_single_turn_larger_than_the_budget_gets_its_own_window():
     assert windows[0].turns[0].text.startswith("word")
 
 
+def test_an_oversized_turn_in_the_middle_gets_its_own_window():
+    """The oversized-turn rule has to hold wherever the turn falls, not just first.
+
+    With an overlap carry in play the naive loop appends the oversized turn to the
+    carried tail, producing a window that both exceeds the budget and holds more than
+    one turn -- breaking the promise the docstring makes.
+    """
+    turns = _turns(40)
+    giant = TranscriptTurn(
+        id="turn-giant",
+        start_ms=10_000_000,
+        end_ms=10_060_000,
+        text="word " * 20_000,
+        physical_speaker="speaker-1",
+    )
+    turns = turns[:20] + [giant] + turns[20:]
+    budget = TokenBudget(max_input_tokens=3_000, prompt_overhead_tokens=500, overlap_turns=4)
+    windows = plan_windows(turns, budget)
+
+    holding = [w for w in windows if any(t.id == "turn-giant" for t in w.turns)]
+    assert len(holding) == 1
+    assert [t.id for t in holding[0].turns] == ["turn-giant"], "it must travel alone"
+
+    for window in windows:
+        size = sum(estimate_tokens(render_turn(turn)) + 1 for turn in window.turns)
+        assert size <= budget.transcript_tokens or len(window.turns) == 1
+
+    covered = {turn.id for window in windows for turn in window.turns}
+    assert covered == {turn.id for turn in turns}
+
+
+def test_an_oversized_turn_does_not_swallow_the_turns_around_it():
+    turns = _turns(10)
+    giant = TranscriptTurn(
+        id="turn-giant", start_ms=10_000_000, end_ms=10_060_000, text="word " * 20_000
+    )
+    ordered = plan_windows(
+        turns[:5] + [giant] + turns[5:],
+        TokenBudget(max_input_tokens=3_000, prompt_overhead_tokens=500, overlap_turns=0),
+    )
+    flattened = [turn.id for window in ordered for turn in window.turns]
+    assert flattened == [turn.id for turn in turns[:5]] + ["turn-giant"] + [
+        turn.id for turn in turns[5:]
+    ]
+
+
 def test_a_budget_that_leaves_no_room_for_the_prompt_is_rejected():
     with pytest.raises(ValueError, match="prompt overhead"):
         TokenBudget(max_input_tokens=100, prompt_overhead_tokens=500)
