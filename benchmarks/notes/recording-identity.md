@@ -240,6 +240,24 @@ failure the field exists to close. Unlike `media_sha256`, this digest *is* check
 because the file it names is committed in this repository. The validator now opens it and
 hashes it.
 
+**A short clip was called a different recording.** `align` ignores any lag with fewer than 30
+frames of overlap, so a candidate too short to reach that anywhere produced no comparison at
+all — and the tool reported that as `DIFFERENT RECORDING`, confidently. Verified against the
+real recording: a genuine 20-second excerpt of the reference itself, cut from the file the
+fingerprint was made from.
+
+```text
+coarse correlation: -1.0000 over 0 frames
+TOO SHORT TO JUDGE: no lag gave enough overlap to correlate
+This needs at least 30 overlapping frames at 1000 ms, so about 30 s of audio. That is a
+statement about this input, not about the recording: an excerpt cannot be
+identified this way, and a full copy can.
+exit=1
+```
+
+Still a non-zero exit, because the anchors still cannot be trusted — but it now says why, and
+it no longer tells someone holding the right recording that they have the wrong one.
+
 **The fingerprint file carried the threshold, and it was stale.** It recorded
 `same_recording_correlation: 0.98` from before the threshold was settled at 0.90, while
 nothing ever read the field. The field is gone rather than corrected: a threshold belongs to
