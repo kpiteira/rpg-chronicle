@@ -16,12 +16,9 @@ Role labels:
 - `agent:vault-discovery`
 - `agent:tpm` — program and infrastructure work owned by the TPM itself
 
-`agent:tpm` exists so that TPM changes travel the same path as specialist changes:
-one active goal, a pull request that closes it, a validator verdict, and the merge gate.
-The independence is weaker here, because the TPM writes both the goal and the diff. It is
-not worthless: the validator still reads the diff in a fresh context and still applies the
-tautology check. Exempting the TPM instead would have left the only unvalidated merges in
-the repository sitting with the role that maintains the gate.
+`agent:tpm` exists so that TPM changes travel the same path as specialist changes: one
+active goal, a pull request that closes it, a validator verdict, and the merge gate. Its
+independence is weaker, and that limit is recorded in D-014.
 
 Lifecycle labels:
 

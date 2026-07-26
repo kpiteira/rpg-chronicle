@@ -159,6 +159,28 @@ def test_a_merge_naming_nothing_falls_back_to_the_current_branch(gate) -> None:
     assert "pr view --json number" in calls
 
 
+def test_missing_tooling_refuses_everything(tmp_path: Path) -> None:
+    """The stated blast radius of failing closed.
+
+    With its tooling unavailable the hook cannot classify anything, so it clears
+    nothing -- including commands that are not guarded at all. That is the right
+    direction and an expensive one, so it is pinned here rather than left to be
+    discovered during a session.
+    """
+    empty = tmp_path / "empty-bin"
+    empty.mkdir()
+    result = subprocess.run(
+        ["/bin/bash", str(GATE)],
+        input=json.dumps({"tool_input": {"command": "uv run pytest -q"}}),
+        capture_output=True,
+        text=True,
+        env={"PATH": str(empty)},
+        check=False,
+    )
+    assert result.returncode == 2
+    assert "Could not parse this command" in result.stderr
+
+
 def test_an_unparseable_guarded_command_is_refused(gate) -> None:
     code, stderr, _ = gate('gh pr merge 7 --body "unterminated')
     assert code == 2

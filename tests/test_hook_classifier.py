@@ -101,6 +101,24 @@ def test_wrappers_and_assignments_do_not_hide_a_command(
     assert classify(command) == expected
 
 
+@pytest.mark.parametrize(
+    ("command", "expected"),
+    [
+        ("sh -c 'git push origin main'", "push-main"),
+        ('bash -c "git push origin HEAD:main"', "push-main"),
+        ("sh -c 'gh pr merge 7 --rebase'", "merge 7"),
+        ("sh -c 'uv run pytest -q'", "allow"),
+    ],
+)
+def test_an_interpreted_script_is_classified_too(command: str, expected: str) -> None:
+    """Keeping a refusal the substring match made by accident.
+
+    The goal constrains this change so that every refusal that fired before
+    still fires; `sh -c` on a guarded command was one of them.
+    """
+    assert classify(command) == expected
+
+
 def test_a_heredoc_marker_inside_quotes_does_not_swallow_later_lines() -> None:
     """Also from the validator: heredoc detection must respect quoting.
 
