@@ -21,7 +21,7 @@ def test_committed_benchmark_manifests_validate() -> None:
         assert not errors, f"{manifest}: {errors}"
 
 
-def test_b01_candidates_are_diverse_and_rights_explicit() -> None:
+def test_manifest_corpus_is_diverse_and_rights_explicit() -> None:
     manifests = [
         json.loads(path.read_text())
         for path in sorted((ROOT / "benchmarks/manifests").glob("*.json"))
