@@ -2,9 +2,10 @@
 
 Last updated: 2026-07-26
 
-Every claim below cites the merged artifact that established it. Pull-request
-descriptions are not sources: several figures in this round's descriptions did not
-survive validation, and this document tracks what was verified.
+Claims that changed in this round cite the merged artifact or the goal that established
+them. Pull-request descriptions are not sources: several figures in this round's
+descriptions did not survive validation, and this document tracks what was verified.
+Longer-standing facts are inherited and are not individually sourced here.
 
 ## Current outcome
 
@@ -81,9 +82,13 @@ on synthetic input and unsatisfied on the public excerpt the milestone names.
   its redistribution is restricted independently of the licence because Shadowrun
   rights sit with a third party. A 2026-07-26 fetch verified the excerpt reproducibly
   without committing the media.
-- The corpus's only multi-hour item is `mystic-horizon-ch1ep1-killing-zombozos`
-  (3 h 57 m, CC BY 3.0) — the first candidate whose licence would permit a committed
-  reference transcript. Goal #21 is annotating it.
+- Three candidates carry multi-hour excerpts: `mystic-horizon` (3 h 57 m),
+  `kix-dnd-amateurs-first-session` (3 h 25 m) and `dice-and-die-lmop-e01` (2 h 37 m).
+  Two of those are CC BY 3.0 — `mystic-horizon` and `dice-and-die` — so either licence
+  would permit a committed reference transcript for annotated windows.
+  `mystic-horizon` is the longest, is the only one tiered `multi_hour_stress`, and is
+  the closest in duration to a real session; goal #21 is annotating it. `dice-and-die`
+  is the fallback if that annotation proves impractical, not a rejected candidate.
 - Truth in the corpus so far is machine-assisted or human-heard on short windows, and
   the Hiddengrid manifest names the engines its targets derive from as contaminated for
   scoring those same engines.
