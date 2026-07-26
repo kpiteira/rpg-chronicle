@@ -28,9 +28,9 @@ third model plus a second inference pass.
 
 `parakeet-mlx` was the fastest and lightest thing probed, by a lot: 1.8x whisper.cpp's
 throughput on the 600 s window (41.0x realtime against 23.3x) on a fifth of the memory,
-widening to 3.7x throughput at 40 minutes — where the memory advantage narrows to about
-45% (1,100 MB against 2,419 MB), because chunked Parakeet grows and whisper.cpp barely
-does.
+widening to 3.6x throughput at 40 minutes (78.0x against 21.4x) — where the memory
+advantage narrows to about 45% (1,100 MB against 2,419 MB), because chunked Parakeet
+grows and whisper.cpp barely does.
 It is not a close call on those axes and this recommendation does not pretend otherwise.
 It goes to whisper.cpp on four grounds, in order of weight. The first two are
 categorical; the third is a measured margin that an earlier draft of this document

@@ -224,7 +224,7 @@ error and the configuration that produced it, and exits non-zero.
 
 ## Known limitations of this instrumentation
 
-Two fields are weaker than they look. Both were found in validation and are recorded
+Three fields are weaker than they look. All were found in validation and are recorded
 rather than quietly left, because a metric that cannot fail is worse than no metric.
 
 - **`shape.has_timestamps` cannot be false.** It is `bool(turns) or bool(units)`, so any
