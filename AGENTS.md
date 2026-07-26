@@ -30,7 +30,7 @@ Supported role IDs:
 
 This file applies repository-wide. A nested `AGENTS.md` may refine instructions only
 below its directory. Role briefs add responsibilities but cannot relax product intent,
-privacy rules, ownership boundaries, the `/goal` protocol, or the prohibition on direct
+privacy rules, ownership boundaries, the goal protocol, or the prohibition on direct
 changes to `main`.
 
 ## Authority and ownership
@@ -46,9 +46,13 @@ evaluation, research, or integration outcome—not a stream of small assigned ta
 No agent may commit or merge directly to local or remote `main`. All repository changes,
 including TPM governance changes, go through a branch and GitHub pull request.
 
-## `/goal` protocol
+## Goal protocol
 
-When the user tells a specialist `/goal`, the specialist must:
+A specialist session is bootstrapped with Claude Code's native `/goal` loop: the
+condition names the role and holds until the role's active goal is merged and closed,
+the goal is labelled `goal:blocked`, or a consequential product question is awaiting
+the user. The canonical bootstrap per role is in `docs/PARALLEL_EXECUTION.md`. Under
+that loop the specialist must:
 
 1. Confirm GitHub CLI authentication and repository identity.
 2. Find open issues carrying both labels:

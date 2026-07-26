@@ -55,7 +55,7 @@ The full protocol and label set live in `docs/GOALS.md`.
 flowchart LR
     U["User notifies TPM of completed goal"] --> T["TPM assesses outcome and milestone"]
     T --> G["TPM creates one substantial active goal issue"]
-    G --> S["User tells specialist /goal"]
+    G --> S["User bootstraps specialist session with its goal"]
     S --> E["Specialist executes autonomously"]
     E --> P["Specialist opens PR closing goal"]
     P --> C["Copilot review and critical triage loop"]

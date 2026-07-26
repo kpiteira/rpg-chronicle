@@ -31,7 +31,8 @@ You are the <role> agent. Get started.
 ```
 
 The repository routes that role through inherited instructions and durable shared
-context. Specialists then receive `/goal`, resolve their single active GitHub goal, and
+context. Specialists then start from the bootstrap goal in
+`docs/PARALLEL_EXECUTION.md`, resolve their single active GitHub goal, and
 own execution through Copilot-reviewed GitHub merge. See `docs/OPERATING_MODEL.md`,
 `docs/GOALS.md`, `docs/MILESTONES.md`, and `CONTRIBUTING.md`.
 

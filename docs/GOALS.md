@@ -24,7 +24,7 @@ Lifecycle labels:
 An open issue must never carry more than one role label or more than one lifecycle
 label. `.github/workflows/goal-lifecycle.yml` fails the check when a role holds more than
 one `goal:active` issue, so a misconfiguration is caught at labelling time rather than at
-the next `/goal`. Closing the issue represents completion or cancellation; do not add a redundant
+the next goal resolution. Closing the issue represents completion or cancellation; do not add a redundant
 `goal:complete` label.
 
 ## Substantial-goal test

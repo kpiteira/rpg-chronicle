@@ -27,15 +27,34 @@ At the start of each goal the specialist rebranches from current `origin/main` o
 
 ## Starting a session
 
+One-time per role, from the repository root:
+
+```bash
+scripts/setup-role-worktree.sh review-analysis
+```
+
+Then, in the worktree it created:
+
 ```bash
 cd ../rpg-review
 claude
-> You are the review-analysis agent. Get started.
-> /goal
+> You are the review-analysis agent.
+> /goal Per the goal protocol in AGENTS.md, the single open issue labelled
+  agent:review-analysis and goal:active is implemented, its pull request validated
+  and merged, and the issue closed — or the goal is labelled goal:blocked, or a
+  consequential product question is awaiting the user.
 ```
 
+`/goal` here is Claude Code's **native** goal loop, not a repository command: an
+independent evaluator re-checks the condition after every turn and keeps the session
+working until it holds. The escape clauses are what return control to the user — a
+blocked goal or a pending product question ends the loop instead of grinding on. The
+repository previously shipped a custom `/goal` command that shadowed this built-in;
+it was deleted (see `docs/DECISIONS.md` D-013), and the setup script prints each
+role's exact bootstrap lines.
+
 `CLAUDE.md` routes every session through `AGENTS.md`, the role brief, and the role's
-`Read first` list, so the bootstrap prompt stays one line.
+`Read first` list, so the bootstrap stays this short.
 
 ## File ownership
 
@@ -95,7 +114,7 @@ context.
 ## Attention budget
 
 Running five sessions does not mean five times the throughput if all five ask questions.
-The `/goal` protocol's product-input test already limits interruptions; the operating
+The goal protocol's product-input test already limits interruptions; the operating
 model's automation removes the rest of the polling. Expect to spend attention on goal
 definition and validator escalations, not on relaying messages.
 

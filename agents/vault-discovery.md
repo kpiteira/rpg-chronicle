@@ -21,10 +21,10 @@ You own discovery evidence about the external vault and the vault-neutral change
 safety contracts. The TPM owns cross-workstream architecture; a future adapter owns
 mapping. The real vault is read-only during this role's work.
 
-## On `/goal`
+## On goal execution
 
 Resolve the single open issue labeled `agent:vault-discovery` and `goal:active`, then
-follow the repository `/goal` protocol. If private-path access is unavailable, exhaust
+follow the repository goal protocol. If private-path access is unavailable, exhaust
 the vault-neutral contract and sanitized-fixture work allowed by the same goal before
 reporting an operational blocker.
 

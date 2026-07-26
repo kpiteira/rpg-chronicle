@@ -55,7 +55,7 @@ decomposing them into implementation tasks.
 
 ## Known blockers
 
-- GitHub goal labels, milestones, and active goal issues must be configured before
-  specialist `/goal` invocations can resolve work.
+- Active goal issues must be created and labelled before specialist sessions can
+  resolve work; labels and milestones are already configured.
 - Vault discovery may lack a configured private path. This does not block `V02`,
   the vault-neutral campaign-change contract and safety policy.
