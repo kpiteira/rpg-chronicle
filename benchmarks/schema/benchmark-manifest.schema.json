@@ -103,7 +103,10 @@
           "description": "How many speakers are demonstrably different people, by evidence stated in observations. Never larger than expected_physical_speakers. Proving k distinct people needs k speakers established as pairwise distinct from one another: counting the speakers named across a list of pairwise observations overstates it, because a chain of pairs can be satisfied by two people. A diarization score should be read against this floor as well as the estimate."
         },
         "overlap": {"type": "string", "enum": ["low", "medium", "high", "unknown"]},
-        "music_or_effects": {"type": "boolean"},
+        "music_or_effects": {
+          "type": ["boolean", "null"],
+          "description": "Whether music or effects appear in the recording. null means not assessed - a candidate ruled out on rights before anyone listened has nothing to report here, and false would claim an observation that was never made."
+        },
         "observations": {"type": "string", "minLength": 1}
       }
     },

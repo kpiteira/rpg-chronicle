@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.1",
+  "id": "mystic-horizon-ch1ep1-killing-zombozos",
+  "title": "D&D: Mystic Horizon, Chapter 1 Episode 1: Killing Zombozos",
+  "corpus_tier": "multi_hour_stress",
+  "source": {
+    "landing_url": "https://www.youtube.com/watch?v=-ZzSFGgczrI",
+    "media_url": "https://www.youtube.com/watch?v=-ZzSFGgczrI",
+    "publisher": "SIR HORSE (YouTube channel UCArU4kY3U6kHEvzIgJnf65g)",
+    "published_at": "2024-07-23",
+    "accessed_at": "2026-07-26",
+    "episode_duration_ms": 14238058
+  },
+  "excerpt": {
+    "start_ms": 0,
+    "end_ms": 14238058,
+    "timestamp_basis": "published_media_file",
+    "verification": "The whole recording is the excerpt, because duration is the property being tested. Measured from the media rather than read from the description: ffprobe reports 14238.058231 s (3 h 57 m 18 s) over the audio stream obtained as yt-dlp format 140 (AAC-LC, 44.1 kHz, 128 kbit/s), 230265075 bytes, SHA-256 83999e0cb827ac2243bdc097b5097c2e990b9cf5a00c4e02f31e0332cd20af7f on 2026-07-26. That digest is a record of what one acquisition returned, not a reproducibility guarantee: YouTube serves signed, expiring URLs and re-encodes, so no direct-file checksum procedure of the kind scripts/fetch_benchmark_media.py performs can apply here. Acquire with `yt-dlp -f 140`, and expect to re-derive duration rather than bytes."
+  },
+  "recording_conditions": {
+    "capture_layout": "single_mixed_track",
+    "production": "raw",
+    "expected_physical_speakers": 5,
+    "proven_distinct_speakers": null,
+    "overlap": "unknown",
+    "music_or_effects": false,
+    "observations": "Measured from the acquired audio: nominally stereo but effectively one mixed track (L-R residual -55.2 dB against -20.7 dB programme, 34 dB down), so there is no per-speaker channel to diarize from. Delivered at 44.1 kHz with a hard AAC ceiling near 15.4 kHz; energy above 12 kHz sits 26 dB down. Integrated loudness -14.6 LUFS with a 17.1 LU range and a true peak of +0.7 dBFS - clipping, and a dynamic range more than twice the Hiddengrid item's 8.2 LU, which is the unpolished-audio property this candidate was admitted for. 3285 gaps longer than 0.5 s at -40 dB across the recording, about 14 per minute, indicating dense turn-taking rather than monologue. The five speakers are the publisher's own credit line, not a count of voices heard: the description names WOLFVAME as game master and Sir Horse, ReaperSect, Lizzie and Sammy Stuffies as players, each with a character. That is metadata, so proven_distinct_speakers stays null - nothing here was established by listening, and B03 excludes annotation. No music was found in five sampled windows totalling about ten minutes (0-4 min and 90 s each at 1 h, 2 h, 3 h and 3 h 55 m); the file was not inspected end to end, so read music_or_effects as 'none found where sampled' rather than as a guarantee. Remote play over Discord, per the description, so this is not the single-room condition the product targets."
+  },
+  "references": {
+    "caption_or_transcript": "automatic",
+    "reference_url": "https://www.youtube.com/watch?v=-ZzSFGgczrI",
+    "speaker_labels": false,
+    "annotation_status": "none"
+  },
+  "truth": {
+    "important_entities": [],
+    "important_events": [],
+    "notes": "No truth targets. B03 establishes which candidates are admissible; annotating one is a separate outcome per candidate, as B02 was for Hiddengrid. Anyone adding targets here must also add source.media_sha256, which the validator requires once a target is verified - and should first read the acquisition caveat in excerpt.verification, because a YouTube digest does not pin bytes the way a direct file does."
+  },
+  "rights": {
+    "copyright_holder": "SIR HORSE and the credited participants; Dungeons & Dragons material remains with Wizards of the Coast",
+    "license": "Creative Commons Attribution 3.0 (YouTube's 'Creative Commons - reuse allowed' setting)",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "local_processing": "permitted",
+    "redistribution": "restricted",
+    "review_notes": "Read from the watch page's own markup on 2026-07-26, which carries the 'Creative Commons (reuse allowed)' licence row; yt-dlp independently reports license='Creative Commons Attribution license (reuse allowed)' for this video id. The detection was controlled: the same check finds no such row on any of the six candidates supplied with the goal, and does find it on other videos, so the absence elsewhere is a real difference rather than a broken test. Three limits are recorded rather than smoothed over. First, the uploader can only license what the uploader owns; the campaign is described as mostly homebrew, but the system and any published material remain Wizards of the Coast's, exactly as Shadowrun remains Topps' in the Hiddengrid item. Second, CC BY permits redistribution with attribution, but redistribution stays restricted here on repository policy - media and full transcripts do not enter Git under any licence. Third, the content licence is what grants reuse; obtaining the file from a platform is separately subject to that platform's terms, which is a question about the acquisition route rather than about this licence.",
+    "accessed_at": "2026-07-26"
+  },
+  "selection": {
+    "r0_status": "alternate",
+    "diagnostic_value": "The only long-form candidate found with a licence that actually permits local processing, and the first item in the corpus at the product's real target duration: 3 h 57 m in one continuous file. It was streamed live, so there are no chapter breaks, re-setups or edits hiding a discontinuity - which is what makes it test sustained single-file processing rather than campaign-arc continuity. Expected to expose the failure modes that only appear at length: losing a thread introduced in the first hour, forgetting an entity established early, and producing a summary that reads as four disconnected summaries. Its 17.1 LU range and clipped peaks additionally probe unpolished level handling, which the corpus's other amateur item does not, having been levelled to 8.2 LU in post.",
+    "risks": [
+      "Nothing here was listened to. Recording conditions are measured, but the content, the entity set, and whether the session is even coherent are unknown until an annotation goal listens through it.",
+      "A four-hour annotation is a much larger job than the ten-minute Hiddengrid window; the item may only ever carry sampled truth, which bounds what a score against it can mean.",
+      "No byte-reproducible fetch: YouTube re-encodes and serves expiring URLs, so a second person re-derives the duration but not necessarily the bytes. A disappeared video is recognisable from the recorded id, channel id, title, duration and digest.",
+      "Remote Discord play mixed to one track, so it does not fill the single-room single-microphone tier, which stays empty.",
+      "A 941-subscriber channel with 79 views on this video may take the recording down without notice, and there is no archival copy the project may republish."
+    ]
+  }
+}

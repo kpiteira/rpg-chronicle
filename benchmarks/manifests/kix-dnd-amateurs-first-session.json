@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1",
+  "id": "kix-dnd-amateurs-first-session",
+  "title": "Our First Session, Dnd Amateurs for Amateurs (KIX)",
+  "corpus_tier": "amateur_online",
+  "source": {
+    "landing_url": "https://www.youtube.com/watch?v=PrNE4_ZHRig",
+    "media_url": "https://www.youtube.com/watch?v=PrNE4_ZHRig",
+    "publisher": "KIX (YouTube channel UC34Npwcrg0F8wU2UNqYjLIg)",
+    "published_at": "2024-01-17",
+    "accessed_at": "2026-07-26",
+    "episode_duration_ms": 12286000
+  },
+  "excerpt": {
+    "start_ms": 0,
+    "end_ms": 12286000,
+    "timestamp_basis": "published_media_file",
+    "verification": "Duration read from the media's own metadata, not from the description: the watch page's player response reports lengthSeconds 12286 (3 h 24 m 46 s) and yt-dlp reports the same. No audio was acquired - the candidate was ruled out on rights before any audio assessment, which is the order this goal requires."
+  },
+  "recording_conditions": {
+    "capture_layout": "unknown",
+    "production": "unknown",
+    "expected_physical_speakers": null,
+    "proven_distinct_speakers": null,
+    "overlap": "unknown",
+    "music_or_effects": null,
+    "observations": "Not assessed. Everything here is unknown because the candidate failed the rights check first and nothing was downloaded or measured. What the metadata alone establishes: 3 h 24 m 46 s, published 2024-01-17, and live_status 'was_live', meaning one continuous streamed session rather than an edited assembly. That combination - genuinely amateur, single continuous file, well past three hours - is the best diagnostic fit among every candidate evaluated for this goal, which is exactly why the rejection is recorded rather than left implicit."
+  },
+  "references": {
+    "caption_or_transcript": "unknown",
+    "speaker_labels": false,
+    "annotation_status": "none"
+  },
+  "truth": {
+    "important_entities": [],
+    "important_events": [],
+    "notes": "None, and none should be added while the rights position stands."
+  },
+  "rights": {
+    "copyright_holder": "KIX and the session participants; Dungeons & Dragons material remains with Wizards of the Coast",
+    "license": "Standard YouTube Licence",
+    "license_url": null,
+    "local_processing": "restricted",
+    "redistribution": "restricted",
+    "review_notes": "The watch page markup carries no Creative Commons licence row on 2026-07-26, and yt-dlp reports no license field, which together mean the video is under the Standard YouTube Licence. That licence grants viewers no right to download or reproduce, so the project has no basis to acquire a copy to process, and 'the use is private' does not create one. The check was controlled rather than assumed: the same detection finds an explicit 'Creative Commons (reuse allowed)' row on other videos, so its absence here is a real difference and not a broken test. This position is reversible by asking: a 941-view-scale channel with 58 views on this video is exactly the kind of creator who might grant permission for research use, and that request is the user's to make, not this role's.",
+    "accessed_at": "2026-07-26"
+  },
+  "selection": {
+    "r0_status": "rejected",
+    "diagnostic_value": "Rejected on rights, not on merit. Had the licence permitted it, this was the strongest long-form candidate found: an unedited three-and-a-half-hour livestream by self-described amateurs, which is closer to the product's target recording than anything now in the corpus. Recorded here so the question is not reopened from scratch, and so that if permission is ever obtained the evaluation does not start over.",
+    "risks": [
+      "Standard YouTube Licence grants no download or reproduction right; acquiring a copy to process would not be permissible on the evidence available.",
+      "Fifty-eight views on a small channel means the recording could disappear; the id, channel id, title, publication date and duration are recorded so it can be recognised if it resurfaces.",
+      "Nothing about the audio has been verified, so 'amateur' rests on the channel's own framing and the livestream status rather than on measurement."
+    ]
+  }
+}

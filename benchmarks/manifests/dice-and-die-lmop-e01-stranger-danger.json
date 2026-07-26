@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.1",
+  "id": "dice-and-die-lmop-e01-stranger-danger",
+  "title": "The Dice & Die do The Lost Mine of Phandelver, Episode 1: Stranger Danger",
+  "corpus_tier": "amateur_online",
+  "source": {
+    "landing_url": "https://www.youtube.com/watch?v=x0vglhb46sM",
+    "media_url": "https://www.youtube.com/watch?v=x0vglhb46sM",
+    "publisher": "The Dice & Die - A Dungeons & Dragons Podcast (YouTube channel UCY9kRlqfIvRWllISGPUleyg)",
+    "published_at": "2020-04-15",
+    "accessed_at": "2026-07-26",
+    "episode_duration_ms": 9417178
+  },
+  "excerpt": {
+    "start_ms": 0,
+    "end_ms": 9417178,
+    "timestamp_basis": "published_media_file",
+    "verification": "Measured from the media rather than read from the description: ffprobe reports 9417.177687 s (2 h 36 m 57 s) over the audio stream obtained as yt-dlp format 140 (AAC-LC, 44.1 kHz, 128 kbit/s), 152299342 bytes, SHA-256 43f2768e60db6b5a4fd67d94c881d50d4513677d7614c78e553e60b68211dcba on 2026-07-26. As with the other YouTube candidate, that digest records one acquisition and is not a reproducibility guarantee; the platform re-encodes and serves expiring URLs, so scripts/fetch_benchmark_media.py does not apply. The whole episode is recorded as the span; a scoreable window has not been chosen, because choosing one is part of annotating it."
+  },
+  "recording_conditions": {
+    "capture_layout": "single_mixed_track",
+    "production": "edited",
+    "expected_physical_speakers": null,
+    "proven_distinct_speakers": null,
+    "overlap": "unknown",
+    "music_or_effects": true,
+    "observations": "Measured from the acquired audio: the two channels are a duplicated mono source, with an L-R residual of -75.4 dB against -22.7 dB programme - 53 dB down, even flatter than the other candidates - so there is no per-speaker channel. 44.1 kHz with the AAC ceiling near 15.4 kHz and energy above 12 kHz 25 dB down; the speech itself is visibly concentrated below about 8.8 kHz on a spectrogram, consistent with a voice-over-IP source upsampled for publication. Integrated loudness -17.2 LUFS across a 15.8 LU range with a true peak of +2.2 dBFS: this clips harder than anything else in the corpus. An intro music bed runs from about 00:00:10 to 00:00:31, which is the basis for music_or_effects and for calling production 'edited' - the editing is an intro sting, not level correction. 1874 gaps longer than 0.5 s at -40 dB, about 12 per minute. Speaker count is null in both fields because the publisher credits no cast and nobody has listened; B03 excludes annotation. Play is over Roll20 per the description, so participants are remote and this does not fill the single-room tier."
+  },
+  "references": {
+    "caption_or_transcript": "automatic",
+    "reference_url": "https://www.youtube.com/watch?v=x0vglhb46sM",
+    "speaker_labels": false,
+    "annotation_status": "none"
+  },
+  "truth": {
+    "important_entities": [],
+    "important_events": [],
+    "notes": "No truth targets; admissibility is what B03 establishes. This candidate is unusual in that a large part of its eventual truth is externally documented: it follows the published Lost Mine of Phandelver adventure, so names like Gundren Rockseeker, Phandalin and Cragmaw have a canonical spelling in a source independent of any decoder. That makes it the corpus's best fantasy-name probe, and it means an annotator here must be careful to record which targets came from the audio and which from the published module - the same audio_observed versus metadata_inferred line the schema already draws."
+  },
+  "rights": {
+    "copyright_holder": "The Dice & Die and its participants; The Lost Mine of Phandelver and Dungeons & Dragons remain with Wizards of the Coast",
+    "license": "Creative Commons Attribution 3.0 (YouTube's 'Creative Commons - reuse allowed' setting)",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "local_processing": "permitted",
+    "redistribution": "restricted",
+    "review_notes": "Read from the watch page's own markup on 2026-07-26, which carries the 'Creative Commons (reuse allowed)' licence row; yt-dlp independently reports license='Creative Commons Attribution license (reuse allowed)'. One qualification matters more here than for the other CC candidate, and it comes from the uploader rather than from me: the description states that they do not own the rights to the materials used, that maps and tokens were sourced from image searches or taken from the Wizards of the Coast publication, and invites rights holders to get in touch. A CC BY mark can only license what the marker owns, so the grant covers their performance and recording, not the published adventure they are playing through. Local processing of a private copy is what this manifest relies on and is supported. Redistribution stays restricted: repository policy keeps media and transcripts out of Git regardless of licence, and the third-party material makes wholesale republication a question this project has no need to answer. Obtaining the file from a platform is separately subject to that platform's terms.",
+    "accessed_at": "2026-07-26"
+  },
+  "selection": {
+    "r0_status": "alternate",
+    "diagnostic_value": "Fills the unpolished-amateur gap the corpus had: the only other amateur item, Hiddengrid, was levelled and limited in post to an 8.2 LU range, while this clips at +2.2 dBFS across a 15.8 LU range with a mono voice-over-IP source. Expected to expose level-dependent transcription failure - quiet speakers lost against loud ones - which no current item tests. Its second purpose is fantasy-name accuracy with an independent reference: it plays a published adventure, so a large part of the proper-noun set has a canonical spelling documented outside the audio, and outside any decoder that might be scored against it.",
+    "risks": [
+      "Nothing here was listened to; content, coherence and entity set are unverified.",
+      "Beginners learning the rules on their first recorded episode means long stretches may be rules talk rather than story, which could make it a weak test of narrative capture even while it is a good test of audio robustness.",
+      "The uploader's own disclaimer that they do not own the materials used narrows what the CC BY mark covers.",
+      "No byte-reproducible fetch, for the same platform reasons as the other YouTube candidate.",
+      "Remote Roll20 play mixed to one track, so it does not fill the single-room single-microphone tier."
+    ]
+  }
+}
