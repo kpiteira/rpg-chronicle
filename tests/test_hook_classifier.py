@@ -181,6 +181,43 @@ def test_merging_twice_in_one_call_is_refused(command: str) -> None:
     assert classify(command) == "merge-multiple"
 
 
+@pytest.mark.parametrize(
+    "command",
+    [
+        "(cd /tmp && gh pr merge 7 --rebase); gh pr merge 8 --rebase",
+        "(gh pr merge 7 --rebase)&&(gh pr merge 8 --rebase)",
+        "{ gh pr merge 7 --rebase; }; gh pr merge 8 --rebase",
+    ],
+)
+def test_a_subshell_does_not_hide_a_second_merge(command: str) -> None:
+    """A confirmed bypass, caught by the goal validator.
+
+    `shlex` returns a run of punctuation as one token, so `);` matched no
+    listed operator, the segment never split, and the second merge was cleared
+    on the first pull request's verdict.
+    """
+    assert classify(command) == "merge-multiple"
+
+
+@pytest.mark.parametrize(
+    "command",
+    [
+        "git push origin +main",
+        "git push origin +refs/heads/main",
+        "git push --all origin",
+        "git push --mirror origin",
+    ],
+)
+def test_refspec_forms_that_reach_main_are_refused(command: str) -> None:
+    """Holes the previous regex had too, named by the goal validator."""
+    assert classify(command) == "push-main"
+
+
+def test_nesting_beyond_one_level_is_classified() -> None:
+    """The docstring claims three levels; this exercises more than one."""
+    assert classify("""sh -c 'sh -c "gh pr merge 7 --rebase"'""") == "merge 7"
+
+
 def test_an_author_email_is_not_read_as_the_merge_target() -> None:
     assert classify("gh pr merge --author-email a@b.c --rebase") == "merge -"
 
