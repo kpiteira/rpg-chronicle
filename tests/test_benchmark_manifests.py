@@ -122,6 +122,55 @@ def test_a_target_read_from_the_recording_can_be_verified_either_way(
     assert exit_code == 0, lines
 
 
+def test_music_or_effects_may_be_left_unanswered(tmp_path: Path) -> None:
+    """A candidate nobody listened to has nothing to report, and false would invent it.
+
+    The nullable relaxation is what lets a rights-rejected or only-sampled candidate stay
+    honest, so it needs a test of its own rather than riding on the manifests that use it.
+    """
+    manifest = _hiddengrid()
+    manifest["recording_conditions"]["music_or_effects"] = None
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0, lines
+
+
+def test_music_or_effects_still_rejects_a_non_boolean_answer(tmp_path: Path) -> None:
+    """Nullable is not free-form: 'unknown' as a string would slip past a reader's eye."""
+    manifest = _hiddengrid()
+    manifest["recording_conditions"]["music_or_effects"] = "unknown"
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("music_or_effects" in line for line in lines), lines
+
+
+def test_claiming_a_licence_permits_processing_requires_naming_the_licence(
+    tmp_path: Path,
+) -> None:
+    """The corpus is only usable if its permissions are checkable, not asserted."""
+    manifest = _hiddengrid()
+    manifest["rights"]["license_url"] = None
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("point at the licence that says so" in line for line in lines), lines
+
+
+def test_a_restricted_candidate_may_record_no_licence_url(tmp_path: Path) -> None:
+    """An all-rights-reserved source has no licence document, and saying so is the point."""
+    manifest = _hiddengrid()
+    manifest["rights"]["license_url"] = None
+    manifest["rights"]["local_processing"] = "restricted"
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0, lines
+
+
 def test_verified_truth_requires_a_digest_for_the_bytes_it_is_anchored_in(
     tmp_path: Path,
 ) -> None:

@@ -57,6 +57,13 @@ def _semantic_errors(instance: dict) -> list[str]:
     if duration_ms is not None and end_ms > duration_ms:
         errors.append("excerpt.end_ms exceeds source.episode_duration_ms")
 
+    rights = instance["rights"]
+    if rights["local_processing"] == "permitted" and not rights.get("license_url"):
+        errors.append(
+            "rights.local_processing is permitted but rights.license_url is null or empty; a claim "
+            "that a licence allows processing has to point at the licence that says so"
+        )
+
     conditions = instance["recording_conditions"]
     expected_speakers = conditions.get("expected_physical_speakers")
     proven_speakers = conditions.get("proven_distinct_speakers")
