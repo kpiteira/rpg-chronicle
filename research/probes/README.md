@@ -58,7 +58,12 @@ acceptance — that absence is itself a finding, recorded in
 
 ## Reproducing
 
+Run every block from the repository root. `REPO` is spelled out because two of the
+commands below `cd` into the audio cache, and the battery script needs an absolute path
+to write its results back into the checkout.
+
 ```bash
+REPO=$(git rev-parse --show-toplevel)
 CACHE=~/.cache/rpg-chronicle/benchmark
 mkdir -p "$CACHE"
 
@@ -66,7 +71,7 @@ mkdir -p "$CACHE"
 # run_probe_battery.sh, which is the only one that finds the venv on its own. Set this
 # first or the first script fails on `import mlx_whisper`.
 export RPG_PROBE_PYTHON=~/.cache/rpg-chronicle/probe-venv/bin/python
-PROBE="$RPG_PROBE_PYTHON research/probes/speech_stack_probe.py"
+PROBE="$RPG_PROBE_PYTHON $REPO/research/probes/speech_stack_probe.py"
 
 # rights-clear input, generated locally, full output committed.
 #
@@ -78,9 +83,9 @@ PROBE="$RPG_PROBE_PYTHON research/probes/speech_stack_probe.py"
 # Missing voices install from System Settings › Accessibility › Spoken Content ›
 # System Voice › Manage Voices. Substituting other voices is fine for output shape, but
 # the committed synthetic results will no longer be byte-comparable.
-$RPG_PROBE_PYTHON research/probes/make_synthetic_clip.py --out-dir "$CACHE"
-(cd "$CACHE" && /path/to/repo/research/probes/run_probe_battery.sh \
-    synthetic-table-talk.wav synthetic /path/to/repo/research/probes/results)
+$RPG_PROBE_PYTHON "$REPO"/research/probes/make_synthetic_clip.py --out-dir "$CACHE"
+(cd "$CACHE" && "$REPO"/research/probes/run_probe_battery.sh \
+    synthetic-table-talk.wav synthetic "$REPO"/research/probes/results)
 
 # restricted input, aggregates only
 curl -sSL -o "$CACHE/hiddengrid-ep044.mp3" \
@@ -88,9 +93,9 @@ curl -sSL -o "$CACHE/hiddengrid-ep044.mp3" \
 shasum -a 256 "$CACHE/hiddengrid-ep044.mp3"   # must match the benchmark manifest
 ffmpeg -v error -ss 0 -t 600 -i "$CACHE/hiddengrid-ep044.mp3" \
     -ac 1 -ar 16000 -c:a pcm_s16le "$CACHE/hiddengrid-ep044-000-600.wav"
-(cd "$CACHE" && /path/to/repo/research/probes/run_probe_battery.sh \
+(cd "$CACHE" && "$REPO"/research/probes/run_probe_battery.sh \
     hiddengrid-ep044-000-600.wav hiddengrid-600s \
-    /path/to/repo/research/probes/results --redact-text)
+    "$REPO"/research/probes/results --redact-text)
 ```
 
 The battery also writes an unredacted copy of every result into `probe-full/` beside the
@@ -122,7 +127,7 @@ done
 for T in 1200 1800 2400; do
   $PROBE --stack sherpa-diarization \
       --audio "$CACHE/scale-$T.wav" --redact-text \
-      --out research/probes/results/scaling-diarization-${T}s.json \
+      --out "$REPO"/research/probes/results/scaling-diarization-${T}s.json \
       --input-label "hiddengrid-${T}s"
 done
 
@@ -130,7 +135,7 @@ done
 for T in 1200 2400; do
   $PROBE --stack whisper-cpp-metal \
       --audio "$CACHE/scale-$T.wav" --redact-text \
-      --out research/probes/results/scaling-whispercpp-${T}s.json \
+      --out "$REPO"/research/probes/results/scaling-whispercpp-${T}s.json \
       --input-label "hiddengrid-${T}s"
 
   # RPG_PROBE_PARAKEET_CHUNK sets parakeet-mlx's chunk_duration in seconds. It is
@@ -138,7 +143,7 @@ for T in 1200 2400; do
   # `configuration` block, which survives redaction for exactly this reason.
   RPG_PROBE_PARAKEET_CHUNK=120 $PROBE --stack parakeet-mlx \
       --audio "$CACHE/scale-$T.wav" --redact-text \
-      --out research/probes/results/scaling-parakeet-chunked-${T}s.json \
+      --out "$REPO"/research/probes/results/scaling-parakeet-chunked-${T}s.json \
       --input-label "hiddengrid-${T}s"
 done
 
@@ -146,14 +151,14 @@ done
 # Expected to exit non-zero and write a result with "outcome": "failed".
 $PROBE --stack parakeet-mlx \
     --audio "$CACHE/scale-1200.wav" --redact-text \
-    --out research/probes/results/scaling-parakeet-unchunked-1200s.json \
+    --out "$REPO"/research/probes/results/scaling-parakeet-unchunked-1200s.json \
     --input-label "hiddengrid-1200s" || true
 
 # the diarization clustering sweep, which produces results/diarization-threshold-sweep.json
 # in one command: six thresholds against the synthetic clip's known speaker count, six
 # against the restricted window, and the forced num_clusters=4 run.
-$RPG_PROBE_PYTHON research/probes/sweep_diarization.py --cache "$CACHE" \
-    --out research/probes/results/diarization-threshold-sweep.json
+$RPG_PROBE_PYTHON "$REPO"/research/probes/sweep_diarization.py --cache "$CACHE" \
+    --out "$REPO"/research/probes/results/diarization-threshold-sweep.json
 ```
 
 `sweep_diarization.py` drives `speech_stack_probe.py` through
@@ -165,10 +170,10 @@ enter the repository.
 ### Scoring against known truth
 
 ```bash
-$RPG_PROBE_PYTHON research/probes/score_synthetic.py \
+$RPG_PROBE_PYTHON "$REPO"/research/probes/score_synthetic.py \
     --truth "$CACHE/synthetic-table-talk-truth.json" \
-    --result research/probes/results/synthetic-*.json \
-    --out research/probes/results/synthetic-scores.json
+    --result "$REPO"/research/probes/results/synthetic-*.json \
+    --out "$REPO"/research/probes/results/synthetic-scores.json
 ```
 
 The truth file is the generator's own script. No engine ever sees it, so the comparison

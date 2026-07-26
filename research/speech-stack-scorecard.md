@@ -56,11 +56,16 @@ Speed is not the binding constraint at 20x realtime, so trading it for the four
 properties above is the right trade at this stage — and if that stops being true, the
 replacement triggers below say exactly when.
 
-One fact makes this cheaper to reverse than it looks: **whisper.cpp v1.9.0 added NVIDIA
-Parakeet support**, and the Homebrew build ships a `parakeet-cli`. Choosing whisper.cpp
-does not foreclose the Parakeet model — it reaches it through a portable runtime. What
-that CLI does not yet have, per its own `--help` on v1.9.1, is JSON output, word
-timestamps, or confidence, so it is not usable for this pipeline today.
+One fact makes this cheaper to reverse than it looks:
+[whisper.cpp v1.9.0](https://github.com/ggml-org/whisper.cpp/releases/tag/v1.9.0)
+(2026-06-17) lists "parakeet : add support for NVIDIA Parakeet"
+([#3735](https://github.com/ggml-org/whisper.cpp/pull/3735)), and the Homebrew v1.9.1
+build ships a `parakeet-cli` binary. Choosing whisper.cpp does not foreclose the Parakeet
+model — it reaches it through a portable runtime. What that CLI does not yet have,
+observed by running `parakeet-cli --help` on the Homebrew v1.9.1 build on 2026-07-26, is
+any JSON output flag, word timestamps, or confidence: it offers only `-otxt` and
+`-ps`. So it is not usable for this pipeline today, and the trigger below says when to
+re-check.
 
 ## What the probes actually showed
 
@@ -115,9 +120,9 @@ union — the time anybody was actually speaking — is **384,502 ms**, and the 
 records both. Parakeet's units span 477,520 ms, which is 93 seconds *more* than anyone
 was speaking, because a sentence-level unit runs across the pauses inside it. Overlap is
 measured against the unit's own span, so Parakeet cannot reach 1.0 no matter how
-correctly every label is assigned. whisper.cpp's units total 389,060 ms, comfortably
-inside the diarized speech, so its ceiling is 1.0. The two engines were being scored
-against different maxima.
+correctly every label is assigned. whisper.cpp's units total 389,060 ms, which also exceeds the union — but by 4.6
+seconds rather than 93, so its ceiling is near 1.0 where Parakeet's is near 0.8. The two
+engines were being scored against materially different maxima.
 
 **The correction.** `speaker_coverage_ratio` — the share of a unit that *any* speaker
 covers — was already computed per unit but never aggregated, which is why the confound
@@ -284,8 +289,9 @@ Two consequences, and the second is the important one.
    | `mlx-whisper` | 0.819 | 0.827 | 0.812 |
    | `faster-whisper-cpu` | 0.818 | **0.742** | 0.082 |
 
-   Turns that mangled a proper noun score within 0.01 of a typical turn on three stacks,
-   and 0.08 *above* typical on faster-whisper. Every stack's minimum confidence sits at
+   Turns that mangled a proper noun score within 0.02 of a typical turn on three stacks
+   (0.016 on whisper.cpp, 0.015 on Parakeet, 0.008 on mlx-whisper) and 0.08 *above*
+   typical on faster-whisper. Every stack's minimum confidence sits at
    or below what its name-losing turns score — 0.082 against 0.818 on faster-whisper — so
    a low-confidence threshold surfaces other turns first and reaches these last, if ever.
 
