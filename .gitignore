@@ -36,6 +36,7 @@ results-private/
 *.ogg
 *.mp4
 *.mov
+*.opus
 
 # Generated processing artifacts
 artifacts/

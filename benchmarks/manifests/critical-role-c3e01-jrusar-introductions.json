@@ -8,7 +8,7 @@
     "media_url": "https://www.youtube.com/watch?v=P8pLvV3FjPc",
     "publisher": "Critical Role",
     "published_at": "2021-10-21",
-    "accessed_at": "2026-07-24",
+    "accessed_at": "2026-07-26",
     "episode_duration_ms": 14304000
   },
   "excerpt": {
@@ -27,7 +27,7 @@
   },
   "references": {
     "caption_or_transcript": "community",
-    "reference_url": "https://criticalrole.fandom.com/wiki/Transcript:The_Draw_of_Destiny",
+    "reference_url": "https://criticalrole.fandom.com/wiki/The_Draw_of_Destiny/Transcript",
     "speaker_labels": true,
     "annotation_status": "provisional"
   },
@@ -49,10 +49,10 @@
   "rights": {
     "copyright_holder": "Critical Role Productions, LLC",
     "license": "All rights reserved; no benchmark redistribution permission identified",
-    "license_url": "https://www.youtube.com/static?template=terms",
+    "license_url": null,
     "local_processing": "unknown",
     "redistribution": "restricted",
-    "review_notes": "Keep as a streaming/reference alternate. Do not automate download or redistribute audio without a reviewed permission or legal basis.",
+    "review_notes": "No license document exists; access to the stream is governed by the YouTube Terms of Service (https://www.youtube.com/static?template=terms). Keep as a streaming/reference alternate. Do not automate download or redistribute audio without a reviewed permission or legal basis.",
     "accessed_at": "2026-07-24"
   },
   "selection": {

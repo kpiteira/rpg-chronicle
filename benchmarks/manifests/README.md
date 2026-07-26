@@ -7,7 +7,7 @@ embedding media. The schema is
 Validate every committed manifest:
 
 ```bash
-UV_CACHE_DIR=/tmp/rpg-chronicle-uv-cache uv run python scripts/validate_benchmark_manifests.py
+uv run python scripts/validate_benchmark_manifests.py
 ```
 
 ## Scope
