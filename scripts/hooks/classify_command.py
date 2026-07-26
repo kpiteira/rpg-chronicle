@@ -45,13 +45,19 @@ them, heredoc bodies (and herestrings, which are not heredocs and carry no
 terminator), assignments, wrappers with or without their own options,
 end-of-options markers, invocation by path, `git`'s own options between `git`
 and `push`, and a shell command nested
-inside another to three levels. What is not: a guarded command written to a
-script file and run; one reconstructed at runtime; and one carried inside a
-*non-shell* interpreter, since `python3 -c 'os.system("git push origin main")'`
-is Python, not shell, and reading it as shell finds a quoted string rather than
-three words. The gate is a guardrail against an unvalidated merge happening by
-accident, not a barrier against one pursued deliberately, which no PreToolUse
-hook could be.
+inside another to three levels.
+
+Where a command cannot be read, it is refused on a mention instead of parsed:
+code handed to a non-shell interpreter, since
+`python3 -c 'os.system("git push origin main")'` is Python and reading it as
+shell finds a quoted string rather than three words; and a script an
+interpreter takes from stdin or a file, as in `bash <<'EOF'` or
+`echo '...' | bash`, where nothing in the command names what will run.
+
+What remains uncovered: a guarded command written to a script file and run by
+name, and one reconstructed at runtime. The gate is a guardrail against an
+unvalidated merge happening by accident, not a barrier against one pursued
+deliberately, which no PreToolUse hook could be.
 """
 
 from __future__ import annotations
@@ -270,6 +276,11 @@ def base_name(word: str) -> str:
     return word.rsplit("/", 1)[-1]
 
 
+def collapse(text: str) -> str:
+    """Whitespace-insensitive text, so `gh  pr merge` reads as one phrase."""
+    return "\n".join(" ".join(line.split()) for line in text.splitlines())
+
+
 def find_merges(segment: list[str]) -> list[int]:
     """Every `gh pr merge` in a command, at any position.
 
@@ -358,8 +369,16 @@ def merge_target(segment: list[str], start: int) -> str:
             index += 1
             continue
         if argument.startswith("-") and not options_ended:
+            # `-R owner/repo`, `--repo=owner/repo` and `-Rowner/repo` all name
+            # one. Missing the attached forms drops the repository, and the
+            # gate then resolves the number against whichever repository the
+            # session stands in.
             if argument in ("-R", "--repo") and index + 1 < len(arguments):
                 repo = arguments[index + 1]
+            elif argument.startswith("--repo="):
+                repo = argument[len("--repo=") :]
+            elif argument.startswith("-R") and len(argument) > 2:
+                repo = argument[2:]
             index += 2 if argument in VALUE_FLAGS else 1
             continue
         if target == "-":
@@ -374,6 +393,22 @@ def command_argument(segment: list[str], start: int) -> int | None:
         if COMMAND_FLAG.match(segment[index]) and index + 1 < len(segment):
             return index + 1
     return None
+
+
+def reads_a_script_it_was_given(segment: list[str]) -> bool:
+    """True when an interpreter takes its script from somewhere unreadable.
+
+    A shell with no `-c` reads from stdin or from a file: `bash <<'EOF'`, or
+    `echo '...' | bash`. There is no argument to classify in either case -- the
+    heredoc body has already been dropped as data, and the piped string belongs
+    to a different command -- so the text is scanned for a mention instead.
+    """
+    words = [base_name(word) for word in segment]
+    return any(
+        word in INTERPRETERS | CODE_INTERPRETERS
+        and command_argument(segment, index) is None
+        for index, word in enumerate(words)
+    )
 
 
 def interpreted_scripts(segment: list[str]) -> tuple[list[str], list[str]]:
@@ -424,12 +459,21 @@ def classify(command: str, depth: int = 0) -> str:
         # refuses the whole call, which is the annoyance this module exists to
         # remove rather than relocate. Whitespace is collapsed first, so a tab
         # or a double space between the words does not slip the check.
-        readable = "\n".join(
-            " ".join(line.split())
-            for line in body.splitlines()
-            if not line.lstrip().startswith("#")
+        readable = collapse(
+            "\n".join(
+                line for line in body.splitlines() if not line.lstrip().startswith("#")
+            )
         )
         return "unparseable" if any(h in readable for h in GUARDED_HINTS) else "allow"
+
+    # An interpreter fed from stdin or a file hides whatever it will run. The
+    # raw text is searched rather than the normalized text, since the script may
+    # be in a heredoc body that normalization dropped, or in another command's
+    # quoted argument. Refusing on a mention is what the substring match did.
+    if any(reads_a_script_it_was_given(segment) for segment in parsed) and any(
+        hint in collapse(command) for hint in GUARDED_HINTS
+    ):
+        return "unparseable"
 
     merges: list[str] = []
     for segment in parsed:
