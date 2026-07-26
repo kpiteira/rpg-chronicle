@@ -41,6 +41,26 @@ ffmpeg -i $F -af "highpass=f=12000,astats" -f null -               # band energy
 ffmpeg -i $F -af "silencedetect=noise=-40dB:d=0.5" -f null -       # gaps
 ```
 
+The music determinations are the one figure below that is read off a picture rather than a
+number, so the commands that produced those pictures are here too:
+
+```bash
+# Dice & Die: intro bed, visible as a dense broadband block at 00:00:10-00:00:31
+ffmpeg -t 240 -i dicedie_e01.m4a \
+  -lavfi "showspectrumpic=s=1200x400:mode=combined:legend=1:scale=log" dicedie_e01_spec.png
+
+# Mystic Horizon: the five sampled windows, none of which showed music
+ffmpeg -t 240 -i mystic_ch1ep1.m4a -lavfi "showspectrumpic=..." mystic_spec.png
+for T in 3600 7200 10800 14100; do
+  ffmpeg -ss $T -t 90 -i mystic_ch1ep1.m4a \
+    -lavfi "showspectrumpic=s=900x300:mode=combined:legend=0:scale=log" mystic_at_$T.png
+done
+```
+
+Speech shows as vertical striations with gaps between them; a music bed shows as sustained
+horizontal bands. Ten minutes of a 3 h 57 m file is a sample, not an inspection, which is
+why that manifest says `null` and not `false`.
+
 ## Output
 
 ```text
