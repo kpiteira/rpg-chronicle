@@ -56,6 +56,88 @@ def test_manifest_corpus_is_diverse_and_rights_explicit() -> None:
         assert manifest["rights"]["redistribution"] in {"permitted", "restricted", "unknown"}
 
 
+def _hiddengrid() -> dict:
+    return json.loads((MANIFEST_DIR / "hiddengrid-swc-ep044-tower-play.json").read_text())
+
+
+def _write(tmp_path: Path, manifest: dict) -> Path:
+    (tmp_path / "candidate.json").write_text(json.dumps(manifest))
+    return tmp_path / "candidate.json"
+
+
+def test_every_verified_target_is_anchored_inside_the_excerpt_window() -> None:
+    """The window is what gets scored, so an anchor outside it points at unscored audio."""
+    for manifest in (json.loads(path.read_text()) for path in MANIFEST_DIR.glob("*.json")):
+        start_ms = manifest["excerpt"]["start_ms"]
+        end_ms = manifest["excerpt"]["end_ms"]
+        targets = [
+            target
+            for group in ("important_entities", "important_events")
+            for target in manifest["truth"][group]
+        ]
+        for target in targets:
+            if target["status"] != "verified":
+                continue
+            assert start_ms <= target["anchor_ms"] < end_ms, target
+            assert target["basis"] == "audio_observed", target
+            assert target["evidence"].strip(), target
+
+
+def test_an_anchor_outside_the_window_is_rejected(tmp_path: Path) -> None:
+    manifest = _hiddengrid()
+    manifest["truth"]["important_entities"][0]["anchor_ms"] = manifest["excerpt"]["end_ms"]
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("outside the excerpt window" in line for line in lines), lines
+
+
+def test_a_target_verified_without_an_anchor_is_rejected(tmp_path: Path) -> None:
+    manifest = _hiddengrid()
+    del manifest["truth"]["important_entities"][0]["anchor_ms"]
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("verified but carries no anchor_ms" in line for line in lines), lines
+
+
+def test_a_target_inferred_from_metadata_cannot_be_verified(tmp_path: Path) -> None:
+    """The defect this repository keeps guarding against: a title-derived claim sold as truth."""
+    manifest = _hiddengrid()
+    manifest["truth"]["important_entities"][0]["basis"] = "metadata_inferred"
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("basis is not audio_observed" in line for line in lines), lines
+
+
+def test_verified_truth_requires_a_recorded_method(tmp_path: Path) -> None:
+    manifest = _hiddengrid()
+    del manifest["truth"]["method"]
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("truth.method is required" in line for line in lines), lines
+
+
+def test_a_provisional_target_needs_neither_anchor_nor_method(tmp_path: Path) -> None:
+    """Provisional targets are candidates, not evidence; the rules bite only on verified ones."""
+    manifest = _hiddengrid()
+    del manifest["truth"]["method"]
+    for group in ("important_entities", "important_events"):
+        for target in manifest["truth"][group]:
+            target["status"] = "provisional"
+            target.pop("anchor_ms", None)
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0, lines
+
+
 def test_validator_reports_malformed_json_rather_than_raising(tmp_path: Path) -> None:
     (tmp_path / "truncated.json").write_text('{"schema_version": "0.1", "id": "truncated"')
 
