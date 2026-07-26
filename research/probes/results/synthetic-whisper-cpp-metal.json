@@ -1,0 +1,558 @@
+{
+  "probe_version": "1",
+  "stack": "whisper-cpp-metal",
+  "provider_of_record": "whisper.cpp",
+  "output_kind": "model output",
+  "input": {
+    "label": "synthetic",
+    "duration_s": 49.97,
+    "sha256": "4f0d9c072d229352885e37e96a2dbbe8320ac774e55cbe6b28cdf5c99b0e1095"
+  },
+  "environment": {
+    "machine": "arm64",
+    "platform": "macOS-26.3.1-arm64-arm-64bit",
+    "python": "3.12.13",
+    "cpu_count": 12
+  },
+  "metrics": {
+    "wall_clock_s": 2.422,
+    "model_load_s": 0.001,
+    "inference_s": 2.421,
+    "realtime_factor": 20.63,
+    "inference_realtime_factor": 20.64,
+    "peak_rss_mb": 27.0,
+    "peak_child_rss_mb": 1988.8,
+    "load_avg_1m_before": 7.5,
+    "load_avg_1m_after": 7.5
+  },
+  "shape": {
+    "produces_text": true,
+    "unit_count": 13,
+    "canonical_turn_count": 13,
+    "speaker_span_count": null,
+    "speaker_span_sum_ms": null,
+    "speech_union_ms": null,
+    "rejected_unit_count": 0,
+    "rejected_units": [],
+    "has_timestamps": true,
+    "distinct_physical_speakers": 5,
+    "physical_speakers": [
+      "SPEAKER_00",
+      "SPEAKER_01",
+      "SPEAKER_02",
+      "SPEAKER_04",
+      "SPEAKER_06"
+    ],
+    "turns_with_confidence": 13,
+    "confidence_min": 0.8266,
+    "confidence_mean": 0.9523,
+    "total_speech_ms": 44740,
+    "characters_of_text": 742,
+    "speaker_attribution": {
+      "mean_overlap_ratio": 0.881,
+      "min_overlap_ratio": 0.39,
+      "turns_below_0_8_overlap": 3,
+      "turns_with_no_speaker": 0,
+      "mean_coverage_ratio": 0.984,
+      "overlap_given_coverage": 0.895,
+      "total_unit_span_ms": 44740
+    }
+  },
+  "diarization_source": {
+    "path": "synthetic-sherpa-diarization.json",
+    "engine": "sherpa-onnx-offline-speaker-diarization"
+  },
+  "configuration": {
+    "model_file": "ggml-large-v3-turbo.bin",
+    "threads": "12",
+    "json_flag": "-ojf"
+  },
+  "native_artifact": {
+    "engine": "whisper.cpp",
+    "model_file": "ggml-large-v3-turbo.bin",
+    "cli": [
+      "whisper-cli",
+      "-m",
+      "ggml-large-v3-turbo.bin",
+      "-f",
+      "synthetic-table-talk.wav",
+      "-ojf",
+      "-of",
+      "synthetic-table-talk",
+      "-t",
+      "12"
+    ],
+    "systeminfo": "WHISPER : COREML = 0 | OPENVINO = 0 | MTL : EMBED_LIBRARY = 1 | CPU : NEON = 1 | ARM_FMA = 1 | FP16_VA = 1 | MATMUL_INT8 = 1 | DOTPROD = 1 | SME = 1 | ACCELERATE = 1 | OPENMP = 1 | REPACK = 1 | ",
+    "model": {
+      "type": "large",
+      "multilingual": true,
+      "vocab": 51866,
+      "audio": {
+        "ctx": 1500,
+        "state": 1280,
+        "head": 20,
+        "layer": 32
+      },
+      "text": {
+        "ctx": 448,
+        "state": 1280,
+        "head": 20,
+        "layer": 4
+      },
+      "mels": 128,
+      "ftype": 1
+    },
+    "result": {
+      "language": "en"
+    },
+    "transcription": [
+      {
+        "timestamps": {
+          "from": "00:00:00,000",
+          "to": "00:00:03,560"
+        },
+        "offsets": {
+          "from": 0,
+          "to": 3560
+        },
+        "text": " The road out of Vealthorn narrows as it climbs toward the Ashen Spire.",
+        "tokens": [
+          {
+            "text": "[_BEG_]",
+            "timestamps": {
+              "from": "00:00:00,000",
+              "to": "00:00:00,000"
+            },
+            "offsets": {
+              "from": 0,
+              "to": 0
+            },
+            "id": 50365,
+            "p": 0.99469,
+            "t_dtw": -1
+          },
+          {
+            "text": " The",
+            "timestamps": {
+              "from": "00:00:00,020",
+              "to": "00:00:00,180"
+            },
+            "offsets": {
+              "from": 20,
+              "to": 180
+            },
+            "id": 440,
+            "p": 0.963189,
+            "t_dtw": -1
+          },
+          {
+            "text": " road",
+            "timestamps": {
+              "from": "00:00:00,180",
+              "to": "00:00:00,410"
+            },
+            "offsets": {
+              "from": 180,
+              "to": 410
+            },
+            "id": 3060,
+            "p": 0.994296,
+            "t_dtw": -1
+          },
+          {
+            "text": " out",
+            "timestamps": {
+              "from": "00:00:00,420",
+              "to": "00:00:00,600"
+            },
+            "offsets": {
+              "from": 420,
+              "to": 600
+            },
+            "id": 484,
+            "p": 0.999327,
+            "t_dtw": -1
+          }
+        ],
+        "tokens_excerpted": {
+          "kept": 4,
+          "total": 21,
+          "note": "complete artifact written beside the audio via --full-out"
+        }
+      },
+      {
+        "timestamps": {
+          "from": "00:00:03,940",
+          "to": "00:00:07,100"
+        },
+        "offsets": {
+          "from": 3940,
+          "to": 7100
+        },
+        "text": " Eilera draws her hood up and checks the sigil on her palm again.",
+        "tokens": [
+          {
+            "text": " E",
+            "timestamps": {
+              "from": "00:00:03,940",
+              "to": "00:00:03,940"
+            },
+            "offsets": {
+              "from": 3940,
+              "to": 3940
+            },
+            "id": 462,
+            "p": 0.564515,
+            "t_dtw": -1
+          },
+          {
+            "text": "il",
+            "timestamps": {
+              "from": "00:00:03,940",
+              "to": "00:00:03,940"
+            },
+            "offsets": {
+              "from": 3940,
+              "to": 3940
+            },
+            "id": 388,
+            "p": 0.395356,
+            "t_dtw": -1
+          },
+          {
+            "text": "era",
+            "timestamps": {
+              "from": "00:00:03,940",
+              "to": "00:00:03,940"
+            },
+            "offsets": {
+              "from": 3940,
+              "to": 3940
+            },
+            "id": 1663,
+            "p": 0.961858,
+            "t_dtw": -1
+          },
+          {
+            "text": " draws",
+            "timestamps": {
+              "from": "00:00:03,960",
+              "to": "00:00:04,260"
+            },
+            "offsets": {
+              "from": 3960,
+              "to": 4260
+            },
+            "id": 20045,
+            "p": 0.999634,
+            "t_dtw": -1
+          }
+        ],
+        "tokens_excerpted": {
+          "kept": 4,
+          "total": 18,
+          "note": "complete artifact written beside the audio via --full-out"
+        }
+      },
+      {
+        "timestamps": {
+          "from": "00:00:07,600",
+          "to": "00:00:11,600"
+        },
+        "offsets": {
+          "from": 7600,
+          "to": 11600
+        },
+        "text": " Does Bran see anything moving on the ridge? I want a perception check.",
+        "tokens": [
+          {
+            "text": " Does",
+            "timestamps": {
+              "from": "00:00:07,600",
+              "to": "00:00:07,600"
+            },
+            "offsets": {
+              "from": 7600,
+              "to": 7600
+            },
+            "id": 4402,
+            "p": 0.999436,
+            "t_dtw": -1
+          },
+          {
+            "text": " Bran",
+            "timestamps": {
+              "from": "00:00:07,610",
+              "to": "00:00:07,660"
+            },
+            "offsets": {
+              "from": 7610,
+              "to": 7660
+            },
+            "id": 45265,
+            "p": 0.717651,
+            "t_dtw": -1
+          },
+          {
+            "text": " see",
+            "timestamps": {
+              "from": "00:00:07,660",
+              "to": "00:00:07,870"
+            },
+            "offsets": {
+              "from": 7660,
+              "to": 7870
+            },
+            "id": 536,
+            "p": 0.999178,
+            "t_dtw": -1
+          },
+          {
+            "text": " anything",
+            "timestamps": {
+              "from": "00:00:07,870",
+              "to": "00:00:08,430"
+            },
+            "offsets": {
+              "from": 7870,
+              "to": 8430
+            },
+            "id": 1340,
+            "p": 0.999971,
+            "t_dtw": -1
+          }
+        ],
+        "tokens_excerpted": {
+          "kept": 4,
+          "total": 16,
+          "note": "complete artifact written beside the audio via --full-out"
+        }
+      },
+      {
+        "timestamps": {
+          "from": "00:00:12,080",
+          "to": "00:00:15,180"
+        },
+        "offsets": {
+          "from": 12080,
+          "to": 15180
+        },
+        "text": " Roll it. The wind is loud enough that you are at disadvantage.",
+        "tokens": [
+          {
+            "text": " Roll",
+            "timestamps": {
+              "from": "00:00:12,080",
+              "to": "00:00:12,080"
+            },
+            "offsets": {
+              "from": 12080,
+              "to": 12080
+            },
+            "id": 9926,
+            "p": 0.998931,
+            "t_dtw": -1
+          },
+          {
+            "text": " it",
+            "timestamps": {
+              "from": "00:00:12,100",
+              "to": "00:00:12,200"
+            },
+            "offsets": {
+              "from": 12100,
+              "to": 12200
+            },
+            "id": 309,
+            "p": 0.999537,
+            "t_dtw": -1
+          },
+          {
+            "text": ".",
+            "timestamps": {
+              "from": "00:00:12,210",
+              "to": "00:00:12,530"
+            },
+            "offsets": {
+              "from": 12210,
+              "to": 12530
+            },
+            "id": 13,
+            "p": 0.9246,
+            "t_dtw": -1
+          },
+          {
+            "text": " The",
+            "timestamps": {
+              "from": "00:00:12,530",
+              "to": "00:00:12,710"
+            },
+            "offsets": {
+              "from": 12530,
+              "to": 12710
+            },
+            "id": 440,
+            "p": 0.989347,
+            "t_dtw": -1
+          }
+        ],
+        "tokens_excerpted": {
+          "kept": 4,
+          "total": 15,
+          "note": "complete artifact written beside the audio via --full-out"
+        }
+      }
+    ],
+    "transcription_excerpted": {
+      "kept": 4,
+      "total": 13,
+      "note": "complete artifact written beside the audio via --full-out"
+    },
+    "stderr_tail": [
+      "output_json: saving output to '<scratch>/synthetic-table-talk.json'",
+      "",
+      "whisper_print_timings:     load time =   465.13 ms",
+      "whisper_print_timings:     fallbacks =   0 p /   0 h",
+      "whisper_print_timings:      mel time =     8.87 ms",
+      "whisper_print_timings:   sample time =   134.05 ms /  1034 runs (     0.13 ms per run)",
+      "whisper_print_timings:   encode time =   999.03 ms /     2 runs (   499.52 ms per run)",
+      "whisper_print_timings:   decode time =     2.34 ms /     1 runs (     2.34 ms per run)",
+      "whisper_print_timings:   batchd time =   666.59 ms /  1026 runs (     0.65 ms per run)",
+      "whisper_print_timings:   prompt time =    13.09 ms /   132 runs (     0.10 ms per run)",
+      "whisper_print_timings:    total time =  2326.73 ms",
+      "ggml_metal_free: deallocating"
+    ]
+  },
+  "canonical_turns": [
+    {
+      "id": "t0000",
+      "start_ms": 0,
+      "end_ms": 3560,
+      "text": "The road out of Vealthorn narrows as it climbs toward the Ashen Spire.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.940869,
+      "speaker_overlap_ratio": 0.991,
+      "speaker_coverage_ratio": 0.991
+    },
+    {
+      "id": "t0001",
+      "start_ms": 3940,
+      "end_ms": 7100,
+      "text": "Eilera draws her hood up and checks the sigil on her palm again.",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.935678,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0002",
+      "start_ms": 7600,
+      "end_ms": 11600,
+      "text": "Does Bran see anything moving on the ridge? I want a perception check.",
+      "physical_speaker": "SPEAKER_02",
+      "confidence": 0.949437,
+      "speaker_overlap_ratio": 0.644,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0003",
+      "start_ms": 12080,
+      "end_ms": 15180,
+      "text": "Roll it. The wind is loud enough that you are at disadvantage.",
+      "physical_speaker": "SPEAKER_06",
+      "confidence": 0.993662,
+      "speaker_overlap_ratio": 0.39,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0004",
+      "start_ms": 15920,
+      "end_ms": 17900,
+      "text": "That is a 14. Not great.",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.973469,
+      "speaker_overlap_ratio": 0.988,
+      "speaker_coverage_ratio": 0.988
+    },
+    {
+      "id": "t0005",
+      "start_ms": 18340,
+      "end_ms": 23180,
+      "text": "Karikon keeps walking. He has no patience for ridge lines today.",
+      "physical_speaker": "SPEAKER_06",
+      "confidence": 0.826645,
+      "speaker_overlap_ratio": 0.526,
+      "speaker_coverage_ratio": 0.878
+    },
+    {
+      "id": "t0006",
+      "start_ms": 23600,
+      "end_ms": 27420,
+      "text": "Then you three reach the gate before the light goes. It is already open.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.998634,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0007",
+      "start_ms": 27920,
+      "end_ms": 29740,
+      "text": "Eilera stops. Open how?",
+      "physical_speaker": "SPEAKER_04",
+      "confidence": 0.951522,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0008",
+      "start_ms": 30120,
+      "end_ms": 31900,
+      "text": "Forced open. Or left open?",
+      "physical_speaker": "SPEAKER_04",
+      "confidence": 0.955427,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0009",
+      "start_ms": 32400,
+      "end_ms": 37340,
+      "text": "Left open. The bar is set neatly against the wall, as if by someone in her read.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.900759,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0010",
+      "start_ms": 37740,
+      "end_ms": 41700,
+      "text": "Karikon says what everyone is thinking. That is worse.",
+      "physical_speaker": "SPEAKER_06",
+      "confidence": 0.99743,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0011",
+      "start_ms": 42180,
+      "end_ms": 45440,
+      "text": "Bran wants to know if the warden of the spire is expecting us.",
+      "physical_speaker": "SPEAKER_02",
+      "confidence": 0.958231,
+      "speaker_overlap_ratio": 1.0,
+      "speaker_coverage_ratio": 1.0
+    },
+    {
+      "id": "t0012",
+      "start_ms": 45440,
+      "end_ms": 49960,
+      "text": "You will find out. Something inside the courtyard says your name first.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.998745,
+      "speaker_overlap_ratio": 0.914,
+      "speaker_coverage_ratio": 0.94
+    }
+  ]
+}

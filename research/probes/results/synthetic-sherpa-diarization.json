@@ -1,0 +1,159 @@
+{
+  "probe_version": "1",
+  "stack": "sherpa-diarization",
+  "provider_of_record": "sherpa-onnx-offline-speaker-diarization",
+  "output_kind": "model output",
+  "input": {
+    "label": "synthetic",
+    "duration_s": 49.97,
+    "sha256": "4f0d9c072d229352885e37e96a2dbbe8320ac774e55cbe6b28cdf5c99b0e1095"
+  },
+  "environment": {
+    "machine": "arm64",
+    "platform": "macOS-26.3.1-arm64-arm-64bit",
+    "python": "3.12.13",
+    "cpu_count": 12
+  },
+  "metrics": {
+    "wall_clock_s": 4.227,
+    "model_load_s": 0.372,
+    "inference_s": 3.854,
+    "realtime_factor": 11.82,
+    "inference_realtime_factor": 12.96,
+    "peak_rss_mb": 922.3,
+    "peak_child_rss_mb": 13.5,
+    "load_avg_1m_before": 5.83,
+    "load_avg_1m_after": 7.52
+  },
+  "shape": {
+    "produces_text": false,
+    "unit_count": 16,
+    "canonical_turn_count": 0,
+    "speaker_span_count": 16,
+    "speaker_span_sum_ms": 47620,
+    "speech_union_ms": 46591,
+    "rejected_unit_count": 0,
+    "rejected_units": [],
+    "has_timestamps": true,
+    "distinct_physical_speakers": 6,
+    "physical_speakers": [
+      "SPEAKER_00",
+      "SPEAKER_01",
+      "SPEAKER_02",
+      "SPEAKER_03",
+      "SPEAKER_04",
+      "SPEAKER_06"
+    ],
+    "turns_with_confidence": 0,
+    "confidence_min": null,
+    "confidence_mean": null,
+    "total_speech_ms": 0,
+    "characters_of_text": 0
+  },
+  "diarization_source": null,
+  "configuration": {
+    "segmentation_model": "model.onnx",
+    "embedding_model": "wespeaker_en_voxceleb_CAMPP.onnx",
+    "cluster_threshold": 0.5,
+    "num_clusters": -1,
+    "threads": 12,
+    "env": [
+      "RPG_PROBE_CLUSTER_THRESHOLD",
+      "RPG_PROBE_NUM_CLUSTERS"
+    ]
+  },
+  "native_artifact": {
+    "engine": "sherpa-onnx-offline-speaker-diarization",
+    "segmentation_model": "model.onnx",
+    "embedding_model": "wespeaker_en_voxceleb_CAMPP.onnx",
+    "clustering": {
+      "num_clusters": -1,
+      "threshold": 0.5
+    },
+    "segments": [
+      {
+        "start": 0.03096874989569187,
+        "end": 3.7603437900543213,
+        "speaker": "SPEAKER_00"
+      },
+      {
+        "start": 3.929093837738037,
+        "end": 9.025343894958496,
+        "speaker": "SPEAKER_01"
+      },
+      {
+        "start": 7.590969085693359,
+        "end": 8.029719352722168,
+        "speaker": "SPEAKER_02"
+      },
+      {
+        "start": 9.025343894958496,
+        "end": 11.607218742370605,
+        "speaker": "SPEAKER_02"
+      },
+      {
+        "start": 12.045969009399414,
+        "end": 12.97409439086914,
+        "speaker": "SPEAKER_00"
+      },
+      {
+        "start": 12.97409439086914,
+        "end": 13.969718933105469,
+        "speaker": "SPEAKER_03"
+      },
+      {
+        "start": 13.969718933105469,
+        "end": 15.60659408569336,
+        "speaker": "SPEAKER_06"
+      },
+      {
+        "start": 15.94409465789795,
+        "end": 17.98596954345703,
+        "speaker": "SPEAKER_01"
+      },
+      {
+        "start": 18.39097023010254,
+        "end": 20.09534454345703,
+        "speaker": "SPEAKER_06"
+      },
+      {
+        "start": 20.635345458984375,
+        "end": 23.369094848632812,
+        "speaker": "SPEAKER_06"
+      },
+      {
+        "start": 23.57159423828125,
+        "end": 27.554094314575195,
+        "speaker": "SPEAKER_00"
+      },
+      {
+        "start": 27.874719619750977,
+        "end": 32.025970458984375,
+        "speaker": "SPEAKER_04"
+      },
+      {
+        "start": 32.346595764160156,
+        "end": 37.89847183227539,
+        "speaker": "SPEAKER_00"
+      },
+      {
+        "start": 37.30784606933594,
+        "end": 41.79659652709961,
+        "speaker": "SPEAKER_06"
+      },
+      {
+        "start": 42.13409423828125,
+        "end": 45.55971908569336,
+        "speaker": "SPEAKER_02"
+      },
+      {
+        "start": 45.82971954345703,
+        "end": 49.96409606933594,
+        "speaker": "SPEAKER_00"
+      }
+    ],
+    "speech_union_ms": 46591,
+    "span_sum_ms": 47620
+  },
+  "canonical_turns": []
+}

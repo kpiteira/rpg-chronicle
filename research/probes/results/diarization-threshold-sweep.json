@@ -1,0 +1,185 @@
+{
+  "probe": "sherpa-onnx offline speaker diarization, clustering sweep",
+  "output_kind": "model output",
+  "provider_of_record": "sherpa-onnx pyannote-segmentation-3.0 + wespeaker CAM++",
+  "generated_by": "research/probes/sweep_diarization.py",
+  "why": "Fragmentation (one person, several labels) is recoverable; collision (several people, one label) fabricates attribution. Tuning trades one for the other, so which one a setting produces matters more than how close the count looks.",
+  "synthetic_clip": {
+    "truth_kind": "declared truth, generated locally; no engine saw it",
+    "expected_speakers": 4,
+    "by_threshold": {
+      "0.4": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 6,
+        "mean_turn_purity": 0.949,
+        "min_turn_purity": 0.537,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_06",
+          "PLAYER_B": "SPEAKER_01",
+          "PLAYER_C": "SPEAKER_08"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        },
+        "wall_clock_s": 3.19
+      },
+      "0.5": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 6,
+        "mean_turn_purity": 0.923,
+        "min_turn_purity": 0.463,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        },
+        "wall_clock_s": 3.235
+      },
+      "0.6": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 6,
+        "mean_turn_purity": 0.907,
+        "min_turn_purity": 0.463,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2,
+          "PLAYER_C": 2
+        },
+        "wall_clock_s": 3.098
+      },
+      "0.7": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 3,
+        "mean_turn_purity": 0.975,
+        "min_turn_purity": 0.695,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_02",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_00"
+        },
+        "colliding_labels": [
+          "SPEAKER_00",
+          "SPEAKER_02"
+        ],
+        "fragmented_true_speakers": {
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        },
+        "wall_clock_s": 3.329
+      },
+      "0.8": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 3,
+        "mean_turn_purity": 0.954,
+        "min_turn_purity": 0.695,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_02",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_00"
+        },
+        "colliding_labels": [
+          "SPEAKER_00",
+          "SPEAKER_02"
+        ],
+        "fragmented_true_speakers": {
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        },
+        "wall_clock_s": 3.108
+      },
+      "0.9": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 2,
+        "mean_turn_purity": 0.972,
+        "min_turn_purity": 0.695,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_01",
+          "PLAYER_B": "SPEAKER_01",
+          "PLAYER_C": "SPEAKER_00"
+        },
+        "colliding_labels": [
+          "SPEAKER_00",
+          "SPEAKER_01"
+        ],
+        "fragmented_true_speakers": {
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        },
+        "wall_clock_s": 3.348
+      }
+    },
+    "forced_num_clusters_4": {
+      "expected_speakers": 4,
+      "predicted_speaker_labels": 3,
+      "mean_turn_purity": 0.954,
+      "min_turn_purity": 0.695,
+      "dominant_label_per_true_speaker": {
+        "GM": "SPEAKER_00",
+        "PLAYER_A": "SPEAKER_02",
+        "PLAYER_B": "SPEAKER_02",
+        "PLAYER_C": "SPEAKER_00"
+      },
+      "colliding_labels": [
+        "SPEAKER_00",
+        "SPEAKER_02"
+      ],
+      "fragmented_true_speakers": {
+        "PLAYER_A": 2,
+        "PLAYER_B": 2
+      }
+    }
+  },
+  "restricted_clip": {
+    "input": "hiddengrid-ep044-000-600.wav",
+    "truth_kind": "partial -- the manifest records expected_physical_speakers: 7 (speaking roles) but proven_distinct_speakers: 2",
+    "caveat": "label counts only. Seven is a count of roles heard, not of people proven distinct, and there is no per-utterance truth to score against; the spans stay out of the repository because redistribution is restricted.",
+    "by_threshold": {
+      "0.4": {
+        "labels": 35,
+        "speaker_spans": 201
+      },
+      "0.5": {
+        "labels": 23,
+        "speaker_spans": 208
+      },
+      "0.6": {
+        "labels": 17,
+        "speaker_spans": 190
+      },
+      "0.7": {
+        "labels": 11,
+        "speaker_spans": 172
+      },
+      "0.8": {
+        "labels": 7,
+        "speaker_spans": 180
+      },
+      "0.9": {
+        "labels": 4,
+        "speaker_spans": 153
+      }
+    }
+  }
+}

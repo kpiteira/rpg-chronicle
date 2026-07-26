@@ -1,0 +1,90 @@
+{
+  "probe_version": "1",
+  "stack": "faster-whisper-cpu",
+  "provider_of_record": "faster-whisper",
+  "output_kind": "model output",
+  "input": {
+    "label": "hiddengrid-600s",
+    "duration_s": 600.0,
+    "sha256": "17a34a2bdf927c5f01b1efc1071a513d013db0fe32542a381781b22cfaace1c0"
+  },
+  "environment": {
+    "machine": "arm64",
+    "platform": "macOS-26.3.1-arm64-arm-64bit",
+    "python": "3.12.13",
+    "cpu_count": 12
+  },
+  "metrics": {
+    "wall_clock_s": 163.873,
+    "model_load_s": 1.942,
+    "inference_s": 161.931,
+    "realtime_factor": 3.66,
+    "inference_realtime_factor": 3.71,
+    "peak_rss_mb": 2644.0,
+    "peak_child_rss_mb": 13.4,
+    "load_avg_1m_before": 4.74,
+    "load_avg_1m_after": 5.72
+  },
+  "shape": {
+    "produces_text": true,
+    "unit_count": 240,
+    "canonical_turn_count": 240,
+    "speaker_span_count": null,
+    "speaker_span_sum_ms": null,
+    "speech_union_ms": null,
+    "rejected_unit_count": 0,
+    "rejected_units": 0,
+    "has_timestamps": true,
+    "distinct_physical_speakers": 23,
+    "physical_speakers": [
+      "SPEAKER_02",
+      "SPEAKER_03",
+      "SPEAKER_04",
+      "SPEAKER_05",
+      "SPEAKER_06",
+      "SPEAKER_07",
+      "SPEAKER_08",
+      "SPEAKER_09",
+      "SPEAKER_10",
+      "SPEAKER_11",
+      "SPEAKER_12",
+      "SPEAKER_13",
+      "SPEAKER_14",
+      "SPEAKER_16",
+      "SPEAKER_17",
+      "SPEAKER_18",
+      "SPEAKER_19",
+      "SPEAKER_21",
+      "SPEAKER_22",
+      "SPEAKER_23",
+      "SPEAKER_25",
+      "SPEAKER_27",
+      "SPEAKER_29"
+    ],
+    "turns_with_confidence": 240,
+    "confidence_min": 0.2693,
+    "confidence_mean": 0.7062,
+    "total_speech_ms": 311700,
+    "characters_of_text": 5459,
+    "speaker_attribution": {
+      "mean_overlap_ratio": 0.819,
+      "min_overlap_ratio": 0.0,
+      "turns_below_0_8_overlap": 86,
+      "turns_with_no_speaker": 8,
+      "mean_coverage_ratio": 0.881,
+      "overlap_given_coverage": 0.93,
+      "total_unit_span_ms": 311700
+    }
+  },
+  "diarization_source": {
+    "path": "hiddengrid-600s-sherpa-diarization.json",
+    "engine": "sherpa-onnx-offline-speaker-diarization"
+  },
+  "configuration": {
+    "model": "large-v3-turbo",
+    "device": "cpu",
+    "compute_type": "int8",
+    "word_timestamps": true
+  },
+  "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
+}

@@ -1,0 +1,332 @@
+{
+  "scored_against": "synthetic-table-talk",
+  "truth_kind": "declared truth, generated locally; no engine saw it",
+  "caveat": "Synthetic non-overlapping text-to-speech. Sanity and failure modes only -- not a quality benchmark and not evidence about room audio.",
+  "how_to_read_mean_turn_purity": "For a stack with text, purity is computed over FUSED turns, and fusion has already collapsed each unit to one winning speaker. On a clip whose turns align with silences that makes purity ~1.0 almost by construction: it measures the fusion step, not the diarizer. The sherpa-onnx entry, scored against raw diarizer spans, is the one that describes diarization quality.",
+  "scores": {
+    "faster-whisper-cpu": {
+      "speakers": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 5,
+        "mean_turn_purity": 1.0,
+        "min_turn_purity": 1.0,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        }
+      },
+      "text": {
+        "coined_noun_recall": 0.0,
+        "coined_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false
+        },
+        "what_was_produced_instead": {
+          "Vaelthorn": "The road out of Ealthorn narrows as it climbs toward the Ashen Spire.",
+          "Ilyra": "Eilera draws her hood up and checks the sigil on her palm again.",
+          "Brann": "Does Bran see anything moving on the ridge? I want a perception check.",
+          "Korrigan": "Karikon keeps walking. He has no patience for ridge lines today."
+        },
+        "english_word_name_recall": 1.0,
+        "english_word_names_found": {
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false,
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_noun_recall": 0.333,
+        "control_phrases_found": {
+          "perception check": true,
+          "disadvantage": true,
+          "courtyard": true,
+          "ridge": true
+        },
+        "control_phrase_recall": 1.0,
+        "truth_characters": 748,
+        "produced_characters": 784
+      },
+      "confidence": {
+        "available": true,
+        "turns_scored": 15,
+        "overall_min_confidence": 0.0817,
+        "mean_confidence_where_invented_noun_survived": null,
+        "mean_confidence_where_invented_noun_was_lost": 0.8175,
+        "truth_turns_excluded_as_mixed": 2,
+        "confidences_compared": {
+          "survived": 0,
+          "lost": 6
+        },
+        "lost_nouns": [
+          "Brann",
+          "Ilyra",
+          "Korrigan",
+          "Vaelthorn"
+        ]
+      }
+    },
+    "mlx-whisper": {
+      "speakers": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 5,
+        "mean_turn_purity": 1.0,
+        "min_turn_purity": 1.0,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        }
+      },
+      "text": {
+        "coined_noun_recall": 0.0,
+        "coined_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false
+        },
+        "what_was_produced_instead": {
+          "Vaelthorn": "The road out of Ealthorn narrows as it climbs toward the Ashen Spire.",
+          "Ilyra": "Eilera draws her hood up and checks the sigil on her palm again.",
+          "Brann": "Does Bran see anything moving on the ridge? I want a perception check.",
+          "Korrigan": "Karikon keeps walking. He has no patience for ridge lines today."
+        },
+        "english_word_name_recall": 1.0,
+        "english_word_names_found": {
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false,
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_noun_recall": 0.333,
+        "control_phrases_found": {
+          "perception check": true,
+          "disadvantage": true,
+          "courtyard": true,
+          "ridge": true
+        },
+        "control_phrase_recall": 1.0,
+        "truth_characters": 748,
+        "produced_characters": 1868
+      },
+      "confidence": {
+        "available": true,
+        "turns_scored": 14,
+        "overall_min_confidence": 0.8117,
+        "mean_confidence_where_invented_noun_survived": null,
+        "mean_confidence_where_invented_noun_was_lost": 0.8187,
+        "truth_turns_excluded_as_mixed": 2,
+        "confidences_compared": {
+          "survived": 0,
+          "lost": 6
+        },
+        "lost_nouns": [
+          "Brann",
+          "Ilyra",
+          "Korrigan",
+          "Vaelthorn"
+        ]
+      }
+    },
+    "parakeet-mlx": {
+      "speakers": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 5,
+        "mean_turn_purity": 0.952,
+        "min_turn_purity": 0.606,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_01",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        }
+      },
+      "text": {
+        "coined_noun_recall": 0.0,
+        "coined_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false
+        },
+        "what_was_produced_instead": {
+          "Vaelthorn": "The road out of Veelthorn narrows as it climbs toward the ashen spire.",
+          "Ilyra": "Eyleira draws her hood up and checks the sigil on her palm again.",
+          "Brann": "Does Bran see anything moving on the ridge? I want a perception check.",
+          "Korrigan": "Kari can keep walking. He had no patience for it line today."
+        },
+        "english_word_name_recall": 1.0,
+        "english_word_names_found": {
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false,
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_noun_recall": 0.333,
+        "control_phrases_found": {
+          "perception check": true,
+          "disadvantage": true,
+          "courtyard": true,
+          "ridge": true
+        },
+        "control_phrase_recall": 1.0,
+        "truth_characters": 748,
+        "produced_characters": 756
+      },
+      "confidence": {
+        "available": true,
+        "turns_scored": 23,
+        "overall_min_confidence": 0.918,
+        "mean_confidence_where_invented_noun_survived": null,
+        "mean_confidence_where_invented_noun_was_lost": 0.9612,
+        "truth_turns_excluded_as_mixed": 2,
+        "confidences_compared": {
+          "survived": 0,
+          "lost": 11
+        },
+        "lost_nouns": [
+          "Brann",
+          "Ilyra",
+          "Korrigan",
+          "Vaelthorn"
+        ]
+      }
+    },
+    "sherpa-diarization": {
+      "speakers": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 6,
+        "mean_turn_purity": 0.923,
+        "min_turn_purity": 0.463,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        }
+      }
+    },
+    "whisper-cpp-metal": {
+      "speakers": {
+        "expected_speakers": 4,
+        "predicted_speaker_labels": 5,
+        "mean_turn_purity": 0.997,
+        "min_turn_purity": 0.969,
+        "dominant_label_per_true_speaker": {
+          "GM": "SPEAKER_00",
+          "PLAYER_A": "SPEAKER_04",
+          "PLAYER_B": "SPEAKER_02",
+          "PLAYER_C": "SPEAKER_06"
+        },
+        "colliding_labels": [],
+        "fragmented_true_speakers": {
+          "GM": 2,
+          "PLAYER_A": 2,
+          "PLAYER_B": 2
+        }
+      },
+      "text": {
+        "coined_noun_recall": 0.0,
+        "coined_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false
+        },
+        "what_was_produced_instead": {
+          "Vaelthorn": "The road out of Vealthorn narrows as it climbs toward the Ashen Spire.",
+          "Ilyra": "Eilera draws her hood up and checks the sigil on her palm again.",
+          "Brann": "Does Bran see anything moving on the ridge? I want a perception check.",
+          "Korrigan": "Karikon keeps walking. He has no patience for ridge lines today."
+        },
+        "english_word_name_recall": 1.0,
+        "english_word_names_found": {
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_nouns_found": {
+          "Vaelthorn": false,
+          "Ilyra": false,
+          "Brann": false,
+          "Korrigan": false,
+          "Ashen Spire": true,
+          "Warden": true
+        },
+        "invented_noun_recall": 0.333,
+        "control_phrases_found": {
+          "perception check": true,
+          "disadvantage": true,
+          "courtyard": true,
+          "ridge": true
+        },
+        "control_phrase_recall": 1.0,
+        "truth_characters": 748,
+        "produced_characters": 754
+      },
+      "confidence": {
+        "available": true,
+        "turns_scored": 13,
+        "overall_min_confidence": 0.8266,
+        "mean_confidence_where_invented_noun_survived": null,
+        "mean_confidence_where_invented_noun_was_lost": 0.936,
+        "truth_turns_excluded_as_mixed": 2,
+        "confidences_compared": {
+          "survived": 0,
+          "lost": 6
+        },
+        "lost_nouns": [
+          "Brann",
+          "Ilyra",
+          "Korrigan",
+          "Vaelthorn"
+        ]
+      }
+    }
+  }
+}
