@@ -123,6 +123,43 @@ def _required_str(payload: dict[str, Any], key: str, *, where: str) -> str:
     return value.strip()
 
 
+def _object_list(
+    payload: dict[str, Any],
+    key: str,
+    *,
+    where: str,
+    required: bool = False,
+) -> list[dict[str, Any]]:
+    """Read a list of objects, refusing anything that is not exactly that.
+
+    Absent or null means an empty list, because zero questions is a legitimate answer
+    -- a model with nothing worth asking should say so. Present-but-not-a-list, or a
+    list holding something that is not an object, is malformed output and raises.
+
+    Tolerating those would drop claims silently: iterating a stray string yields
+    characters, and skipping every non-object entry turns a broken reply into a
+    quietly shorter review queue. That is the same failure this module refuses
+    everywhere else.
+    """
+    value = payload.get(key)
+    if value is None:
+        if required:
+            raise AnalysisFormatError(f"{where}: {key!r} must be a non-empty list")
+        return []
+    if not isinstance(value, list):
+        raise AnalysisFormatError(
+            f"{where}: {key!r} must be a list, got {type(value).__name__}"
+        )
+    if required and not value:
+        raise AnalysisFormatError(f"{where}: {key!r} must be a non-empty list")
+    for index, item in enumerate(value):
+        if not isinstance(item, dict):
+            raise AnalysisFormatError(
+                f"{where}: {key}[{index}] is not an object, got {type(item).__name__}"
+            )
+    return value
+
+
 def _turn_ids(payload: dict[str, Any], *, where: str) -> list[str]:
     value = payload.get("turn_ids")
     if not isinstance(value, list) or not value:
@@ -334,9 +371,8 @@ class ModelAnalysisProvider:
             window_user_prompt(window.turns, index=window.index, total=total),
         )
         where = f"window {window.index + 1}"
-        scenes = payload.get("scenes")
-        if not isinstance(scenes, list) or not scenes:
-            raise AnalysisFormatError(f"{where}: 'scenes' must be a non-empty list")
+        scenes = _object_list(payload, "scenes", where=where, required=True)
+        questions = _object_list(payload, "questions", where=where)
 
         # Cited ids are checked against the excerpt the model was shown, not the whole
         # session. A window that cites a turn from a different window has not made a
@@ -347,22 +383,23 @@ class ModelAnalysisProvider:
         # everything downstream works in the session's own vocabulary.
         resolver = TurnIdResolver(window.turn_ids)
         for scene in scenes:
-            if not isinstance(scene, dict):
-                raise AnalysisFormatError(f"{where}: a scene entry is not an object")
             scene["turn_ids"] = resolver.resolve(
                 _turn_ids(scene, where=where), where=where, what="a scene"
             )
-        for question in payload.get("questions") or []:
-            if isinstance(question, dict):
-                question["turn_ids"] = resolver.resolve(
-                    _turn_ids(question, where=where), where=where, what="a question"
-                )
+        for question in questions:
+            question["turn_ids"] = resolver.resolve(
+                _turn_ids(question, where=where), where=where, what="a question"
+            )
         return {
             "window_summary": _required_str(payload, "window_summary", where=where),
             "scenes": scenes,
-            "entities": payload.get("entities") or [],
-            "threads": payload.get("threads") or [],
-            "questions": payload.get("questions") or [],
+            # Entities and threads reach the native artifact for diagnosis and never
+            # become a claim in the review package, so their shape is checked only as
+            # far as it has to be. A four-hour run should not abort over a field
+            # nothing consumes.
+            "entities": _object_list(payload, "entities", where=where),
+            "threads": _object_list(payload, "threads", where=where),
+            "questions": questions,
         }
 
     def _synthesize(
@@ -376,24 +413,17 @@ class ModelAnalysisProvider:
             synthesis_user_prompt(window_payloads),
         )
         summary = _required_str(payload, "summary", where="synthesis")
-        raw = payload.get("questions")
-        if not isinstance(raw, list):
-            raise AnalysisFormatError("synthesis: 'questions' must be a list")
+        raw = _object_list(payload, "questions", where="synthesis")
         # Synthesis sees the whole session's findings, so it may cite any real turn --
         # but only a real one. It was never shown the transcript and has no business
         # inventing an id it did not receive.
         for item in raw:
-            if isinstance(item, dict):
-                item["turn_ids"] = resolver.resolve(
-                    _turn_ids(item, where="synthesis"),
-                    where="synthesis",
-                    what="a question",
-                )
-        questions = [
-            _question_draft(item, where="synthesis")
-            for item in raw
-            if isinstance(item, dict)
-        ]
+            item["turn_ids"] = resolver.resolve(
+                _turn_ids(item, where="synthesis"),
+                where="synthesis",
+                what="a question",
+            )
+        questions = [_question_draft(item, where="synthesis") for item in raw]
         # If synthesis returns nothing usable, the per-excerpt candidates are the
         # honest fallback: they were supported by turns the model actually read.
         return summary, questions or candidates
@@ -411,11 +441,14 @@ class ModelAnalysisProvider:
 
         window_payloads = [self._analyze_window(window, len(windows)) for window in windows]
 
-        candidates: list[_QuestionDraft] = []
-        for index, payload in enumerate(window_payloads):
-            for item in payload["questions"]:
-                if isinstance(item, dict):
-                    candidates.append(_question_draft(item, where=f"window {index + 1}"))
+        # Every entry is known to be an object by now: `_analyze_window` refuses a
+        # `questions` field that is not a list of them rather than skipping the odd
+        # one out.
+        candidates: list[_QuestionDraft] = [
+            _question_draft(item, where=f"window {index + 1}")
+            for index, payload in enumerate(window_payloads)
+            for item in payload["questions"]
+        ]
 
         turns_by_id = {turn.id: turn for turn in turns}
 

@@ -361,6 +361,23 @@ MALFORMED_REPLIES = {
     "bad-consequence": _reply([_GOOD_SCENE], [_question(consequence="catastrophic")]),
     "question-without-citation": _reply([_GOOD_SCENE], [_question(turn_ids=[])]),
     "recommendation-not-a-string": _reply([_GOOD_SCENE], [_question(recommendation=7)]),
+    # A malformed `questions` field must raise rather than be skipped. Iterating a
+    # stray string yields characters and silently drops every question in the reply,
+    # which is the "quietly shorter review queue" failure this module refuses.
+    "questions-a-string": json.dumps(
+        {"window_summary": "ok", "scenes": [_GOOD_SCENE], "questions": "none"}
+    ),
+    "questions-an-object": json.dumps(
+        {"window_summary": "ok", "scenes": [_GOOD_SCENE], "questions": {"a": 1}}
+    ),
+    "questions-holding-a-string": json.dumps(
+        {"window_summary": "ok", "scenes": [_GOOD_SCENE], "questions": ["nothing to ask"]}
+    ),
+    "scenes-a-string": json.dumps({"window_summary": "ok", "scenes": "one scene"}),
+    "scenes-holding-a-string": json.dumps({"window_summary": "ok", "scenes": ["a scene"]}),
+    "entities-a-string": json.dumps(
+        {"window_summary": "ok", "scenes": [_GOOD_SCENE], "entities": "none"}
+    ),
 }
 
 
@@ -370,6 +387,22 @@ def test_malformed_model_output_is_rejected_rather_than_repaired(reply, turns):
     provider = ModelAnalysisProvider(ScriptedBackend(replies=[reply]))
     with pytest.raises(AnalysisFormatError):
         provider.analyze(turns)
+
+
+@pytest.mark.parametrize("questions", [None, []], ids=["absent", "empty"])
+def test_asking_nothing_is_a_legitimate_answer(questions, turns):
+    """Zero questions is a result, not malformed output.
+
+    The strictness above must not make "I have nothing worth asking" impossible to
+    say, or the queue fills with questions asked to satisfy a schema.
+    """
+    payload = {"window_summary": "A summary.", "scenes": [_GOOD_SCENE]}
+    if questions is not None:
+        payload["questions"] = questions
+    provider = ModelAnalysisProvider(ScriptedBackend(replies=[json.dumps(payload)]))
+    result = provider.analyze(turns)
+    assert result.review_questions == []
+    assert result.scenes
 
 
 def test_literal_newlines_inside_a_string_are_accepted(turns):
