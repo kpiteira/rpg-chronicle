@@ -4,7 +4,7 @@ Version `0.1` manifests describe reproducible public or synthetic test cases wit
 embedding media. The schema is
 [`benchmark-manifest.schema.json`](../schema/benchmark-manifest.schema.json).
 
-Validate every committed manifest:
+Validate every committed manifest, from the repository root:
 
 ```bash
 uv run python scripts/validate_benchmark_manifests.py
