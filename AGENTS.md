@@ -3,7 +3,8 @@
 This repository is run by one Technical Program Manager (TPM) and long-lived specialist
 agents. GitHub Issues hold goals; pull requests hold implementation and review; the
 repository holds durable product and technical truth. Claude Code is the primary
-environment and others are used where they fit; this guide assumes neither (D-016).
+environment and others are used where they fit, so nothing in this guide depends on
+which one a session is running in (D-016).
 
 ## Roles and startup
 

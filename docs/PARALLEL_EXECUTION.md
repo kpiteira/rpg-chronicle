@@ -102,7 +102,8 @@ next merge. Decide unlisted paths with this, in order:
    asking. Changing another role's wiring, or the order of the stages, goes through the
    TPM — that is a contract change wearing a wiring change's clothes.
 5. **A single file every role must append to** is declared shared-append, with a stated
-   convention, and listed as such below. There is exactly one.
+   convention, and listed as such in the table. Keep that set small and explicit: a file
+   is shared-append only when splitting it is worse than sharing it, which is rare.
 
 A test that exercises a shared contract belongs to the consumer that needed the
 guarantee, not to the TPM. A path no rule claims — package plumbing, a shared test fake
@@ -232,10 +233,10 @@ Two shapes were considered and rejected for `.gitignore`:
   of answering it: goal #12 (review and analysis) needed to ignore
   `benchmarks/fixtures/generated/`, a path owned by benchmark research. The pattern's
   owner is frequently not the directory's owner.
-- **TPM ownership of the file.** Both real appends so far — `*.part` and `*.mismatch`
-  from goal #11, `benchmarks/fixtures/generated/` from goal #12 — served only the role
-  that added them and interested nobody else. Routing a two-line append through a
-  cross-role request buys nothing and costs a goal cycle.
+- **TPM ownership of the file.** Every append so far — media and partial-fetch patterns
+  from goal #11, the generated-fixture path from goal #12 — served only the role that
+  added it and interested nobody else. Routing a two-line append through a cross-role
+  request buys nothing and costs a goal cycle.
 
 ## Merge discipline
 
