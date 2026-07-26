@@ -317,9 +317,12 @@ def classify(command: str, depth: int = 0) -> str:
         # whole-line comments, which are never commands. Without that, a stray
         # apostrophe in a comment that merely mentions a guarded command
         # refuses the whole call, which is the annoyance this module exists to
-        # remove rather than relocate.
+        # remove rather than relocate. Whitespace is collapsed first, so a tab
+        # or a double space between the words does not slip the check.
         readable = "\n".join(
-            line for line in body.splitlines() if not line.lstrip().startswith("#")
+            " ".join(line.split())
+            for line in body.splitlines()
+            if not line.lstrip().startswith("#")
         )
         return "unparseable" if any(h in readable for h in GUARDED_HINTS) else "allow"
 
