@@ -122,6 +122,36 @@ def test_a_target_read_from_the_recording_can_be_verified_either_way(
     assert exit_code == 0, lines
 
 
+def test_verified_truth_requires_a_digest_for_the_bytes_it_is_anchored_in(
+    tmp_path: Path,
+) -> None:
+    """An anchor is an offset into particular bytes, so verified truth needs those bytes pinned."""
+    manifest = _hiddengrid()
+    del manifest["source"]["media_sha256"]
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("source.media_sha256 is required" in line for line in lines), lines
+
+
+def test_a_provisional_candidate_needs_no_digest_yet(tmp_path: Path) -> None:
+    """A candidate is still being assessed; the digest is owed when its truth is verified.
+
+    The contamination list stays in place here: it is keyed on how a target was read, not
+    on whether it is verified, so naming the provider is owed as soon as one was used.
+    """
+    manifest = _hiddengrid()
+    del manifest["source"]["media_sha256"]
+    for group in ("important_entities", "important_events"):
+        for target in manifest["truth"][group]:
+            target["status"] = "provisional"
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0, lines
+
+
 def test_machine_assisted_truth_must_name_the_providers_it_cannot_score(tmp_path: Path) -> None:
     """The contamination guard has to be checkable, not a sentence in a notes file."""
     manifest = _hiddengrid()
