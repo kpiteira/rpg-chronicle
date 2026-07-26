@@ -14,9 +14,11 @@ Role labels:
 - `agent:benchmark-research`
 - `agent:review-analysis`
 - `agent:vault-discovery`
-- `agent:tpm` — program and infrastructure work owned by the TPM itself
+- `agent:technical-program-manager` — program and infrastructure work owned by the TPM
 
-`agent:tpm` exists so that TPM changes travel the same path as specialist changes: one
+Every role label names the role exactly as `agents/<role-id>.md` does.
+
+The TPM label exists so that TPM changes travel the same path as specialist changes: one
 active goal, a pull request that closes it, a validator verdict, and the merge gate. Its
 independence is weaker, and that limit is recorded in D-014.
 

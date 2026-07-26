@@ -331,6 +331,18 @@ def test_an_unparseable_call_with_a_real_guarded_command_still_fails_closed() ->
     assert classify("# don't\ngh pr merge 7 --body \"unterminated") == "unparseable"
 
 
+@pytest.mark.parametrize(
+    "command",
+    [
+        'gh  pr   merge 7 --body "unterminated',
+        'git\tpush origin main --body "unterminated',
+    ],
+)
+def test_odd_spacing_does_not_slip_the_unparseable_check(command: str) -> None:
+    """Raised by Copilot: the fallback matched exact substrings only."""
+    assert classify(command) == "unparseable"
+
+
 def test_an_unreadable_payload_fails_closed() -> None:
     result = subprocess.run(
         [sys.executable, str(CLASSIFIER)],

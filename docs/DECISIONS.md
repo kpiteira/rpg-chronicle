@@ -95,8 +95,8 @@ primitives over bespoke mechanisms, and give bespoke commands collision-resistan
 The first live run of the goal loop found that a TPM change could not merge at all:
 `scripts/validate-goal.sh` requires the pull request to close a goal issue, and TPM
 housekeeping closed none, so no verdict could exist and the merge gate refused the merge
-forever. The fix is an `agent:tpm` role label rather than an exemption in the validator or
-the hook. TPM work now carries a goal issue, a pull request that closes it, a verdict, and
+forever. The fix is an `agent:technical-program-manager` role label rather than an
+exemption in the validator or the hook. TPM work now carries a goal issue, a pull request that closes it, a verdict, and
 the same gate as specialist work.
 
 Self-validation is weaker than specialist validation, because the TPM writes both the goal

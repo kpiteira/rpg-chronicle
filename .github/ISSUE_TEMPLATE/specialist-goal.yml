@@ -14,7 +14,7 @@ body:
         - benchmark-research
         - review-analysis
         - vault-discovery
-        - tpm
+        - technical-program-manager
     validations:
       required: true
   - type: input
