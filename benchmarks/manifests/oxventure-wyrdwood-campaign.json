@@ -14,8 +14,8 @@
   "excerpt": {
     "start_ms": 0,
     "end_ms": 7517000,
-    "timestamp_basis": "published_media_file",
-    "verification": "Durations read from each video's own player metadata rather than from descriptions, on 2026-07-26. Chapter 1 (H39LNrL_VH0) 7517 s = 2 h 05 m 17 s; chapter 2 (uAn2kSNRLuM) 6115 s = 1 h 41 m 55 s; chapter 3 (Pu-GlIu0Gqo) 4775 s = 1 h 19 m 35 s; chapter 4 (rT5VwYxJbf8) 4975 s = 1 h 22 m 55 s. Total 23382 s = 6 h 30 m across four files. The goal described these as 'four one-hour chapters'; measured, none is an hour and chapter 1 alone is over two. This manifest carries chapter 1's figures in the source and excerpt fields, with the other three recorded here, because the schema describes one media item. No audio was acquired - the candidate was ruled out on rights before any audio assessment."
+    "timestamp_basis": "publisher_player",
+    "verification": "Timestamps are on the publisher's player basis, not a file basis: no copies were acquired. Durations read from each video's own player metadata rather than from descriptions, on 2026-07-26. Chapter 1 (H39LNrL_VH0) 7517 s = 2 h 05 m 17 s; chapter 2 (uAn2kSNRLuM) 6115 s = 1 h 41 m 55 s; chapter 3 (Pu-GlIu0Gqo) 4775 s = 1 h 19 m 35 s; chapter 4 (rT5VwYxJbf8) 4975 s = 1 h 22 m 55 s. Total 23382 s = 6 h 30 m across four files. The goal described these as 'four one-hour chapters'; measured, none is an hour and chapter 1 alone is over two. This manifest carries chapter 1's figures in the source and excerpt fields, with the other three recorded here, because the schema describes one media item. No audio was acquired - the candidate was ruled out on rights before any audio assessment."
   },
   "recording_conditions": {
     "capture_layout": "unknown",

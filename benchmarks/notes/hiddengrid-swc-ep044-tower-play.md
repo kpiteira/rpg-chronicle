@@ -89,13 +89,13 @@ renegotiated. Inside 0–600 s the window offers, in one span:
 ## Who is speaking
 
 Seven distinct first-person speaking roles are heard in the window: the game master, and
-the players of Kat, Pulse, James, Gray, Freya and Gartog. How many *people* hold those
+the players of Kat, Pulse, James, Grey, Freya and Gartog. How many *people* hold those
 roles is a separate question, and this is where an earlier draft of this file got it
 wrong — worth recording, because the error is an easy one and the correction is the
 whole point of a "proven" number.
 
 Four exchanges put two roles in immediate succession, which establishes those two as
-different people: Kat with Pulse at 00:02:35, Kat with James at 00:04:04, James with Gray
+different people: Kat with Pulse at 00:02:35, Kat with James at 00:04:04, James with Grey
 at 00:04:10, Freya with the game master at 00:05:51. The draft read that as proving five
 distinct people. It does not. Those are four *pairwise* constraints, and no three of the
 roles are ever established as pairwise distinct among themselves, so the whole set is
@@ -103,7 +103,7 @@ satisfiable by two people:
 
 | Person | Roles |
 |---|---|
-| one | Freya, Gray, Kat |
+| one | Freya, Grey, Kat |
 | two | game master, James, Pulse |
 
 Nothing in the recorded evidence rules that out. Counting the roles that appear in the
@@ -164,9 +164,11 @@ cache and is not committed. What is committed is this recipe, the anchors, and t
 evidence — enough to check the reading, not enough to republish the episode.
 
 A target is `verified` only where both decodes carry it and a timestamp locates it.
-Where they disagree, the manifest says so rather than picking a winner: Gray/Greg,
-Kat/Cat, Gartog/Gartok/Garntak/Garth. Structure — music boundaries, gap statistics,
-loudness — comes from `ffmpeg` measurement, not from any model.
+Where they disagreed, the manifest said so rather than picking a winner: Gray/Greg,
+Kat/Cat, Gartog/Gartok/Garntak/Garth. Three of those are now settled — see
+[A human ear, and a written source](#a-human-ear-and-a-written-source) below. Structure —
+music boundaries, gap statistics, loudness — comes from `ffmpeg` measurement, not from any
+model.
 
 Contested passages were re-decoded by four further local models (whisper `base.en`,
 ggml `small.en`, ggml `small` multilingual, and `large-v3-turbo` at beam 8). One split
@@ -179,6 +181,8 @@ section is about:
 > contextual prior — this is the Maria Mercurial arc, and the name saturates the
 > surrounding episodes — manufacturing a name that may not be spoken. It is recorded as
 > unresolved. A human ear would settle it in five seconds, and none was available.
+
+An ear became available, and it did not settle it. See below.
 
 The surname *Mercurial* appears in **no** decode of the window, by any model; the full
 name is first spoken at about 00:21:42. The negative control below is therefore stated
@@ -205,6 +209,48 @@ any target is machine-assisted.
 The `nuyen` target is the deliberate counter-example: both reference decodes wrote "new
 yen", so the recorded truth differs from what either engine produced. Targets like it are
 worth more than targets both engines got right.
+
+## A human ear, and a written source
+
+Added at B03. An operator listened to the excerpt and answered B02's follow-up list, and a
+written source turned up that answers more of it than listening could. Four items changed;
+the more useful outcome is what the exercise revealed about the questions themselves.
+
+**Two of the four questions were unanswerable by ear, and that was our error.** Kat/Cat and
+Gray/Grey are homophone pairs. No amount of listening separates them, because the
+difference is orthographic and audio carries no orthography. B02 filed them next to
+Gartog/Garth in one list of "decoder disagreements", which is accurate but conflates two
+different kinds of question: one a listener can answer, one only a document can.
+
+The document exists. The publisher keeps a cast page —
+[Cast Of Shadows → Shadowrunners](https://www.hiddengrid.com/cast-of-shadows/shadowrunners/),
+read 2026-07-26 — listing the retired player characters of this campaign:
+
+| Cast page says | Effect |
+|---|---|
+| `Katherine (Kat) – Hunting her clone` | **Kat**, not Cat. The label was already right; it now rests on a source rather than a decoder's preference |
+| `Brother Shango / Mr Grey – Setting up an empire` | **Grey**. B02 recorded *Gray* — **wrong**, and now corrected throughout |
+| `Gartog – Working as Roadee for Maria Mercurial` | **Gartog**, settling the Gartog/Gartok pair the ear could not |
+| `James – Off in Germany with a special mask`, `Pulse – In prison` | Corroborates both |
+
+**Freya is not on that page.** That label still rests on decoder agreement alone, and is now
+the only character name here with no written source behind it.
+
+What the ear did settle: at 00:04:29 the listener hears Gray or Grey, which eliminates the
+"Greg" one decoder produced; at 00:08:46 they hear "Gartog", eliminating Garth and Garntak.
+Those two items are now `audio_observed`.
+
+**The 00:02:08 report is the interesting one, and it does not say what it appears to.**
+Asked about 00:02:08, the listener reported hearing *"Cat's gonna drive me"* — a sentence
+neither decoder produced there. But both decoders place "Kat's going to drive me" at
+**00:02:05–00:02:06**, two to three seconds earlier. The listener was answering about the
+neighbouring line. So the report corroborates a line already annotated, and the me/Maria
+split at 00:02:08 remains open — checked before concluding anything about the decoders,
+which is what the addendum asked for and what the timestamps then justified.
+
+The lesson is cheap to state and easy to forget: **when asking a person to adjudicate a
+machine's reading, give them the span, not a point.** A timestamp accurate to the second is
+not accurate enough to identify a sentence in overlapping speech.
 
 ## What a score here does and does not diagnose
 
