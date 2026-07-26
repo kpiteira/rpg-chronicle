@@ -1,0 +1,47 @@
+{
+  "probe_version": "1",
+  "stack": "whisper-cpp-metal",
+  "provider_of_record": "whisper.cpp",
+  "output_kind": "model output",
+  "input": {
+    "label": "hiddengrid-2400s",
+    "duration_s": 2400.0,
+    "sha256": "db72d8eded959925fa2b60cf50b0b5908d98ecf9d46d0cc7b678191c4bbdba66"
+  },
+  "environment": {
+    "machine": "arm64",
+    "platform": "macOS-26.3.1-arm64-arm-64bit",
+    "python": "3.12.13",
+    "cpu_count": 12
+  },
+  "metrics": {
+    "wall_clock_s": 119.494,
+    "model_load_s": 0.0,
+    "inference_s": 119.494,
+    "realtime_factor": 20.08,
+    "inference_realtime_factor": 20.08,
+    "peak_rss_mb": 37.1,
+    "peak_child_rss_mb": 2418.5,
+    "load_avg_1m_before": 28.18,
+    "load_avg_1m_after": 9.85
+  },
+  "shape": {
+    "produces_text": true,
+    "unit_count": 763,
+    "canonical_turn_count": 763,
+    "speaker_span_count": null,
+    "speaker_span_ms": null,
+    "rejected_unit_count": 0,
+    "rejected_units": 0,
+    "has_timestamps": true,
+    "distinct_physical_speakers": 0,
+    "physical_speakers": [],
+    "turns_with_confidence": 763,
+    "confidence_min": 0.4253,
+    "confidence_mean": 0.9482,
+    "total_speech_ms": 1523960,
+    "characters_of_text": 24289
+  },
+  "diarization_source": null,
+  "redaction": "Transcript text and the engine-native artifact are withheld: the input's licence restricts derivatives. Metrics and output shape are aggregate."
+}
