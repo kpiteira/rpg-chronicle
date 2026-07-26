@@ -119,6 +119,30 @@ different implementations and model families, both running locally on the privat
 - whisper.cpp `large-v3-turbo`, beam size 5;
 - openai-whisper `medium.en`.
 
+The exact invocations, so a second person can re-derive the reading rather than
+reconstruct the pipeline by guesswork. `$WAV` is the 16 kHz mono decode described in
+[`hiddengrid-swc-ep044-measurements.md`](hiddengrid-swc-ep044-measurements.md); the ggml
+models are the standard whisper.cpp conversions, and `openai-whisper` fetches its own
+weights on first use.
+
+```bash
+# The two window decodes that a target has to appear in to be verified
+whisper-cli -m ggml-large-v3-turbo.bin -f $WAV -l en \
+    --offset-t 0 --duration 600000 -bs 5 -ojf -of window_turbo
+whisper $WAV --model medium.en --language en --clip_timestamps 0,600 \
+    --output_format json --fp16 False
+
+# Consulted on contested passages only, after cutting the passage from $WAV
+whisper-cli -m ggml-large-v3-turbo.bin -f clip.wav -l en -bs 8 -nt
+whisper-cli -m ggml-small.en.bin        -f clip.wav -l en -bs 8 -nt
+whisper-cli -m ggml-small.bin           -f clip.wav -l en -bs 8 -nt
+whisper $WAV --model base.en --clip_timestamps 0,300 --output_format tsv --fp16 False
+```
+
+Decoder output is a transcript of a copyrighted recording, so it stays in the private
+cache and is not committed. What is committed is this recipe, the anchors, and the
+evidence — enough to check the reading, not enough to republish the episode.
+
 A target is `verified` only where both decodes carry it and a timestamp locates it.
 Where they disagree, the manifest says so rather than picking a winner: Gray/Greg,
 Kat/Cat, Gartog/Gartok/Garntak/Garth. Structure — music boundaries, gap statistics,

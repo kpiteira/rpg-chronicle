@@ -26,7 +26,9 @@ uv run python scripts/fetch_benchmark_media.py <manifest id>
 ```
 
 The script downloads into the private cache, digests the result, and compares it with the
-manifest. On a difference it quarantines the download as `*.mismatch` and exits non-zero:
+manifest. On a difference it quarantines the download as `*.mismatch` — `*.mismatch.2`,
+`*.mismatch.3` and so on when an earlier quarantine is already there, so evidence from a
+previous run is never overwritten — and exits non-zero:
 the recorded digest is not updated and no other source is substituted, because every truth
 anchor is an offset into the recorded bytes. Report the difference on the benchmark goal
 issue instead.

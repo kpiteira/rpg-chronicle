@@ -65,26 +65,11 @@ def _write(tmp_path: Path, manifest: dict) -> Path:
     return tmp_path / "candidate.json"
 
 
-def test_every_verified_target_is_anchored_inside_the_excerpt_window() -> None:
-    """The window is what gets scored, so an anchor outside it points at unscored audio."""
-    for manifest in (json.loads(path.read_text()) for path in MANIFEST_DIR.glob("*.json")):
-        start_ms = manifest["excerpt"]["start_ms"]
-        end_ms = manifest["excerpt"]["end_ms"]
-        targets = [
-            target
-            for group in ("important_entities", "important_events")
-            for target in manifest["truth"][group]
-        ]
-        for target in targets:
-            if target["status"] != "verified":
-                continue
-            anchor_ms = target.get("anchor_ms")
-            assert anchor_ms is not None, f"verified target has no anchor_ms: {target}"
-            assert start_ms <= anchor_ms < end_ms, f"anchor outside the window: {target}"
-            assert target.get("basis") in validator_script.VERIFIABLE_BASES, (
-                f"verified target is not based on the recording: {target}"
-            )
-            assert target.get("evidence", "").strip(), f"verified target has no evidence: {target}"
+# A test walking the committed manifests and re-asserting the anchor, basis, and evidence
+# rules used to live here. `test_validator_script_passes_on_the_committed_corpus` already
+# runs the validator over the same directory, and CI runs it again, so the only thing the
+# walk added was a second copy of the rules that stayed green when the rules were gutted.
+# The mutation tests below are what hold the behaviour.
 
 
 def test_an_anchor_outside_the_window_is_rejected(tmp_path: Path) -> None:
