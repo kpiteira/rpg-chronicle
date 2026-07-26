@@ -39,7 +39,8 @@ every prior refusal survive. A substring match refused *any* occurrence of the
 guarded text, including occurrences it had no business refusing -- that
 overreach is the defect being fixed, so the two cannot hold in full. What is
 covered: shell separators, line breaks, command substitution, quoting, heredoc
-bodies, assignments, wrappers with or without their own options, invocation by
+bodies (and herestrings, which are not heredocs and carry no terminator),
+assignments, wrappers with or without their own options, invocation by
 path, `git`'s own options between `git` and `push`, and a shell command nested
 inside another to three levels. What is not: a guarded command written to a
 script file and run; one reconstructed at runtime; and one carried inside a
@@ -145,6 +146,13 @@ def normalize_shell_text(command: str) -> str:
             # appear, leaving them in would refuse a call for describing one.
             break_at = command.find("\n", index)
             index = len(command) if break_at == -1 else break_at
+        elif command.startswith("<<<", index):
+            # A herestring, not a heredoc: its payload is on this line and
+            # there is no terminator to look for. Matching it as a heredoc
+            # registered a terminator that never arrived, and every following
+            # line was swallowed while searching for one.
+            out.append("<<<")
+            index += 3
         elif character == "<" and (heredoc := HEREDOC.match(command, index)):
             out.append(heredoc.group(0))
             pending.append(heredoc.group(2))
