@@ -54,7 +54,9 @@ what that means, because prose cannot:
 `single_mixed_track` says there is no per-speaker channel to diarize from and claims
 nothing about where the speakers were; that belongs in `observations` with its evidence.
 `expected_physical_speakers` is the upper reading and `proven_distinct_speakers` the
-floor — the true count lies between.
+floor — the true count lies between, and the two can be far apart. Proving *k* distinct
+people requires *k* speakers established as pairwise distinct from one another; a chain
+of "these two are different" observations, however long, can be satisfied by two people.
 
 `kind: person` is a physical speaker; `kind: character` is the fiction they voice. Keeping
 them apart in the corpus is what lets a result distinguish the two later.
