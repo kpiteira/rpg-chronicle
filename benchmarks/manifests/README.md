@@ -10,6 +10,12 @@ Validate every committed manifest, from the repository root:
 uv run python scripts/validate_benchmark_manifests.py
 ```
 
+Every manifest is reported on its own line as `valid: <path>` or as a failure naming the
+file and the reason: `<parse>` for a file that is not valid JSON, `<read>` for a file that
+cannot be decoded, a field path for a schema violation, and `<semantic>` for a rule the
+schema cannot express. One bad file fails the run with exit status 1 without hiding the
+findings for the other manifests.
+
 ## Scope
 
 The schema keeps source identity and access evidence, a logical excerpt, recording
