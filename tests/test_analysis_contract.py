@@ -57,11 +57,29 @@ def test_provider_declares_confidence_and_consequence_on_questions(make_provider
 
 
 @pytest.mark.parametrize("make_provider", PROVIDERS)
-def test_provider_is_deterministic_on_identical_input(make_provider, turns):
+def test_provider_adds_no_nondeterminism_of_its_own(make_provider, turns):
+    """Same input, same *provider* behaviour — which is not the same as same output.
+
+    Read this carefully for each provider, because the two cases prove different
+    things and conflating them would overstate the second:
+
+    - For the fixture provider this is end-to-end determinism. It replays a file.
+    - For the model provider it is determinism **of the provider layer only**, because
+      the backend underneath is a deterministic double. A real backend is not
+      deterministic and `docs/DECISIONS.md` D-009 says so, which is why no test in
+      this repository asserts generated text. What this pins is narrower and still
+      worth pinning: the provider does not shuffle claims, does not depend on set or
+      dict iteration order, and does not vary with the clock. If it did, two runs over
+      one transcript would order the review queue differently and the operator would
+      have no way to tell that from the model changing its mind.
+    """
     first = make_provider().analyze(turns)
     second = make_provider().analyze(turns)
     assert [scene.evidence.turn_ids for scene in first.scenes] == [
         scene.evidence.turn_ids for scene in second.scenes
+    ]
+    assert [question.issue for question in first.review_questions] == [
+        question.issue for question in second.review_questions
     ]
 
 
