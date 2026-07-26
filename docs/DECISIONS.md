@@ -4,9 +4,11 @@
 
 The software, public research, manifests, synthetic fixtures, and reproducible aggregate results live in a public GitHub repository. Private recordings, voices, campaign data, downloaded copyrighted audio, and vault contents remain external.
 
-## D-002: Codex as primary workspace — superseded by D-016
+## D-002: Codex as primary workspace — SUPERSEDED by D-016
 
-After bootstrap, Codex is the primary environment for research, implementation, review, and integration. Repository role files provide persistent agent context.
+*Historical. This records what was decided, not what to do now; D-016 replaces it.*
+
+This decision held that after bootstrap, Codex would be the primary environment for research, implementation, review, and integration, with repository role files providing persistent agent context. The role-files half of that survives in D-016; the choice of environment does not.
 
 ## D-003: Hybrid Path 3 to Path 2
 

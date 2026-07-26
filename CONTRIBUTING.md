@@ -15,7 +15,7 @@ Create them from current remote `main`, not a stale local branch:
 
 ```bash
 git fetch origin
-git switch -c agent/<role-id>/<goal-issue-number>-<slug> origin/main
+git switch -c agent/<role-id>/<goal-issue-number>-<short-slug> origin/main
 ```
 
 The prefix names the operating model, not the tool running the session (D-016).

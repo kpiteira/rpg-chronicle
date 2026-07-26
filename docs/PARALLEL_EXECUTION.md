@@ -161,7 +161,7 @@ append to, and two roles adding different files to one directory do not conflict
 ### Protocol definitions and their implementations
 
 `src/rpg_chronicle/providers.py` holds protocol definitions that every role downstream
-depends on, which by rule 3 makes it a shared boundary alongside `model.py`. It was
+depends on, which by rule 3 makes it a shared contract alongside `model.py`. It was
 previously assigned to reuse research, which fitted while transcription was the only
 provider and stopped fitting the moment a second role needed one: writing an
 `AnalysisProvider` is review and analysis's work, and the protocol it implements is not.
@@ -172,7 +172,7 @@ transcription package for the transcription provider. Only the protocol is share
 
 **Transition.** Goal #20 was activated with `providers.py` assigned to reuse research and
 completes under that assignment; changing a goal's scope mid-execution is the defect
-recorded in `docs/GOALS.md`. The shared-boundary rule applies from the next goal onward.
+recorded in `docs/GOALS.md`. The shared-contract rule applies from the next goal onward, and a specialist working #20 should read this note and not the table row alone.
 
 ### `.gitignore`
 

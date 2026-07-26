@@ -21,7 +21,8 @@ fixture processor output
 
 The path is resumable and preserves the processor-native artifact. What it has never
 done is carry real audio: no transcription engine is wired behind `TranscriptProvider`,
-so the front of the pipeline is still a fixture. Goal #20 is closing that.
+so the front of the pipeline is still a fixture. That gap is open and is tracked by goal
+#20, which is in review at the time of writing rather than merged.
 
 ## Active milestone
 
@@ -89,7 +90,7 @@ on synthetic input and unsatisfied on the public excerpt the milestone names.
   committed reference transcript for annotated windows. The other two are Standard
   YouTube Licence with local processing recorded as restricted.
   `mystic-horizon` is the longest, is the only one tiered `multi_hour_stress`, and is
-  the closest in duration to a real session; goal #21 is annotating it. `dice-and-die`
+  the closest in duration to a real session; goal #21 is open against it. `dice-and-die`
   is the fallback if that annotation proves impractical, not a rejected candidate.
 - Truth in the corpus so far is machine-assisted or human-heard on short windows, and
   the Hiddengrid manifest names the engines its targets derive from as contaminated for
