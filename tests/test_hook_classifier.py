@@ -147,6 +147,27 @@ def test_a_repo_flag_is_not_read_as_the_merge_target(command: str) -> None:
     assert classify(command) == "merge 7"
 
 
+@pytest.mark.parametrize(
+    "command",
+    [
+        "gh pr merge 7 --rebase && gh pr merge 8 --rebase",
+        "gh pr merge 7 --rebase\ngh pr merge 8 --rebase",
+        "sh -c 'gh pr merge 7 --rebase; gh pr merge 8 --rebase'",
+    ],
+)
+def test_merging_twice_in_one_call_is_refused(command: str) -> None:
+    """Defect 1's hazard in compound form, raised by the goal validator.
+
+    One verdict is checked per call, so classifying only the first merge would
+    clear the second on the first one's evidence.
+    """
+    assert classify(command) == "merge-multiple"
+
+
+def test_an_author_email_is_not_read_as_the_merge_target() -> None:
+    assert classify("gh pr merge --author-email a@b.c --rebase") == "merge -"
+
+
 def test_a_heredoc_marker_inside_quotes_does_not_swallow_later_lines() -> None:
     """Also from the validator: heredoc detection must respect quoting.
 

@@ -36,6 +36,11 @@ case "$decision" in
     echo "Simplify the command, or quote its arguments, and try again." >&2
     exit 2
     ;;
+  merge-multiple)
+    echo "This command merges more than one pull request; refusing to merge." >&2
+    echo "Run one merge per command, so each is checked against its own verdict." >&2
+    exit 2
+    ;;
   "merge "*)
     target=${decision#merge }
     ;;
