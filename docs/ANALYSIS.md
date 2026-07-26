@@ -79,6 +79,25 @@ the sentence after it. Citation scaffolding is roughly a third of the payload.
 The constant is now 2.5, erring toward planning more windows than needed. Erring the
 other way builds a request the backend rejects, which costs the whole run.
 
+## Why the fixture provider is still the default
+
+The goal's outcome describes the model provider "replacing declared fixture truth as the
+pipeline's default analysis path". It is selected with `--analysis model` and the
+fixture provider remains the default. That is a deliberate deviation, for one reason:
+
+**CI has no subscription.** The `verify` job runs the vertical slice end to end with no
+`--analysis` flag. Flipping the default would make every pull request in this repository
+depend on a paid, non-deterministic, two-minute network call — and would break the slice
+for any contributor who has not authenticated a CLI. `docs/DECISIONS.md` D-009 puts
+quality measurement in benchmarks and invariants in tests precisely so that CI does not
+depend on a model.
+
+The durable-outputs clause the goal actually specifies — "wired so the CLI can select
+it" — is met. Which provider is *default* is a program decision with consequences beyond
+this goal, so it is left to the TPM along with the sentence in `docs/STATUS.md` that
+still reads "The existing analysis is declared fixture truth" — accurate for the default
+path, and no longer the whole story.
+
 ## Cost, measured
 
 Reproduce with:
@@ -99,6 +118,14 @@ deterministic, so the fixture is byte-identical on every machine.
 260,511 characters once rendered with citations and instructions.
 
 **Model**: `claude-sonnet-5`, reached through the operator's Claude Code subscription.
+
+**Prompt version**: both columns below were measured **after** the cross-cutting prompt
+fix described in the next section, so the cost figures and the capture assessment come
+from the same prompts. The pre-fix run over the same fixture cost 109,017 input tokens,
+11,092 output, and 115 seconds — the fix moved the input figure by 0.4%, because it adds
+a few hundred tokens of instruction to a request already carrying a four-hour
+transcript. It moved the output figure by 9%, because the model then had more worth
+saying.
 
 | | One request (default) | Decomposed (`--max-input-tokens 30000`) |
 |---|---|---|
@@ -157,9 +184,16 @@ clapper. Nothing between the two mentions the object.
 > realizes, in horror, that the iron object they traded to Halgrim was that very
 > clapper.**"
 
-Connected explicitly, not merely mentioned twice. Also captured under decomposition,
-where the two halves fell in different windows and only the synthesis pass could join
-them.
+Connected explicitly, not merely mentioned twice.
+
+Also captured under decomposition, where the plant and its payoff fell in different
+windows and only the synthesis pass — which never sees the transcript, just the window
+findings — could join them:
+
+> "the party works out in horror that the 'bag of rust' picked up above the drowned mill
+> that same morning — **the very item sold to Halgrim** — was the bell's clapper, and
+> that Anhalla's taunt about not being able to pass the bell's sound was made because it
+> knew the bell could never ring (turn-02619, turn-02622, turn-02627, turn-02628)"
 
 ### 2. One entity under two names — captured, but only after a fix
 
