@@ -50,7 +50,10 @@ sys.exit(0)
 
 @pytest.fixture
 def gate(tmp_path: Path):
-    """Run the gate with a stubbed `gh`, returning (exit code, stderr)."""
+    """Run the gate with a stubbed `gh`.
+
+    Returns `(exit code, stderr, recorded gh calls)`.
+    """
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir()
     stub = bin_dir / "gh"

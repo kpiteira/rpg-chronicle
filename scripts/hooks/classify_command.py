@@ -79,6 +79,8 @@ VALUE_FLAGS = {
     "-F",
     "--field",
     "--match-head-commit",
+    "-R",
+    "--repo",
 }
 
 # Interpreters whose `-c` argument is itself a command. The old substring match
@@ -186,16 +188,27 @@ def segments(tokens: list[str]) -> list[list[str]]:
 
 
 def normalize(segment: list[str]) -> list[str]:
-    """Reduce a command to the words that name it."""
+    """Reduce a command to the words that name it.
+
+    A command is compared by its base name, so an absolute or relative path
+    reaches the same guards: `/usr/bin/git push origin main` names `git`.
+    """
     head = segment[0].lstrip(COMMAND_PREFIX)
     rest = [head, *segment[1:]] if head else segment[1:]
 
     index = 0
     while index < len(rest) and (
-        ASSIGNMENT.match(rest[index]) or rest[index] in COMMAND_WRAPPERS
+        ASSIGNMENT.match(rest[index]) or base_name(rest[index]) in COMMAND_WRAPPERS
     ):
         index += 1
-    return rest[index:]
+
+    if index >= len(rest):
+        return []
+    return [base_name(rest[index]), *rest[index + 1 :]]
+
+
+def base_name(word: str) -> str:
+    return word.rsplit("/", 1)[-1]
 
 
 def pushes_to_main(segment: list[str]) -> bool:
