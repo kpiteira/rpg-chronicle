@@ -15,6 +15,11 @@ Access review: 2026-07-24. Re-verified at integration on 2026-07-26:
   pattern. The manifest now points at `The_Draw_of_Destiny/Transcript`
   (MediaWiki pageid 27033). Fandom rejects non-browser clients, so automated
   re-checks should use the MediaWiki API rather than page URLs.
+- The Critical Role rights posture was re-reviewed: the
+  [Content Policy](https://critrole.com/critical-role-content-policy/) permits
+  non-commercial fan projects but is silent on downloading episodes, creating
+  transcripts, and machine processing. `local_processing: unknown` therefore
+  stands, now on the basis of the governing document rather than its absence.
 
 ## Outcome
 
