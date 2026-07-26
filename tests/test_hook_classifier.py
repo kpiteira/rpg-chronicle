@@ -167,6 +167,8 @@ def test_a_command_invoked_by_path_is_still_recognized(
         "gh pr merge -R owner/repo 7 --rebase",
         "gh pr merge --repo owner/repo 7 --rebase",
         "gh pr merge 7 -R owner/repo --rebase",
+        "gh pr merge --repo=owner/repo 7 --rebase",
+        "gh pr merge -Rowner/repo 7 --rebase",
     ],
 )
 def test_a_repo_flag_travels_with_the_merge_target(command: str) -> None:
@@ -282,6 +284,34 @@ def test_a_redirection_is_not_part_of_the_command(command: str, expected: str) -
     `git push >/dev/null origin main` lost `origin main` to a second segment
     and was allowed, and `gh pr merge 2>/dev/null 7` read the file descriptor
     as the pull request -- checking PR 2's verdict while merging PR 7.
+    """
+    assert classify(command) == expected
+
+
+@pytest.mark.parametrize(
+    ("command", "expected"),
+    [
+        ("bash <<'EOF'\ngit push origin main\nEOF", "unparseable"),
+        ("bash <<'EOF'\ngh pr merge 7 --rebase\nEOF", "unparseable"),
+        ("echo 'gh pr merge 7 --rebase' | bash", "unparseable"),
+        ("echo 'git push origin main' | sh", "unparseable"),
+        # Nothing guarded is mentioned, so there is nothing to refuse.
+        ("echo 'uv run pytest -q' | bash", "allow"),
+        ("bash <<'EOF'\nuv run pytest -q\nEOF", "allow"),
+        # A heredoc fed to something that is not an interpreter stays data;
+        # this is how a commit message may describe the merge command.
+        ("git commit -F - <<'MSG'\nmentions gh pr merge\nMSG", "allow"),
+    ],
+)
+def test_an_interpreter_fed_from_stdin_is_refused_on_mention(
+    command: str, expected: str
+) -> None:
+    """The last hole the goal validator found.
+
+    A shell with no `-c` reads its script from stdin or a file, so there is no
+    argument to classify: the heredoc body has been dropped as data and a piped
+    string belongs to another command. The substring match refused these, so
+    the text is scanned for a mention rather than parsed.
     """
     assert classify(command) == expected
 
