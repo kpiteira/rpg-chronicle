@@ -413,9 +413,10 @@ against a plausible-looking number would be fitting to a guess.
 
 ### A number in the scored results that looks like good news, and is not
 
-`research/probes/results/synthetic-scores.json` reports a mean turn purity of 1.0 with
-zero colliding labels for the Whisper-family stacks on the synthetic clip. Read
-straight, that contradicts this whole section. It should not be read straight.
+`research/probes/results/synthetic-scores.json` reports near-perfect mean turn purity
+with zero colliding labels for the Whisper-family stacks on the synthetic clip — 1.000
+for mlx-whisper and faster-whisper, 0.997 for whisper.cpp. Read straight, that
+contradicts this whole section. It should not be read straight.
 
 Purity there is computed over *fused* turns, and fusion has already collapsed each ASR
 unit to a single winning speaker. On a clip whose turn boundaries line up with silences,

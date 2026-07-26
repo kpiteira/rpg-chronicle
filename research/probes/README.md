@@ -233,6 +233,6 @@ rather than quietly left, because a metric that cannot fail is worse than no met
   simultaneous speakers counts that time twice before clamping. `overlap_given_coverage`
   is correspondingly deflated. On the 600 s window the span sum exceeds the union by
   about 6%, which leaves the ordering of stacks intact. The direction of the comparison
-  it supports holds; its third decimal does not. The scorecard warns against reading that
-  column closely, but on the separate ground that it is a ratio of aggregate means — this
-  double-count is disclosed here and not there.
+  it supports holds; its third decimal does not. The scorecard carries the same warning
+  beside the table that uses the column, naming both this double-count and the fact that
+  the column is a ratio of aggregate means.
