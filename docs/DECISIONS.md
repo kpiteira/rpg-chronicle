@@ -89,3 +89,18 @@ protocol lives in `AGENTS.md` alone; sessions bootstrap with the native loop usi
 per-role condition in `docs/PARALLEL_EXECUTION.md`. Rule going forward: prefer platform
 primitives over bespoke mechanisms, and give bespoke commands collision-resistant names
 (`/validate` is now `/validate-goal`).
+
+## D-014: The TPM merges through the gate it maintains
+
+The first live run of the goal loop found that a TPM change could not merge at all:
+`scripts/validate-goal.sh` requires the pull request to close a goal issue, and TPM
+housekeeping closed none, so no verdict could exist and the merge gate refused the merge
+forever. The fix is an `agent:tpm` role label rather than an exemption in the validator or
+the hook. TPM work now carries a goal issue, a pull request that closes it, a verdict, and
+the same gate as specialist work.
+
+Self-validation is weaker than specialist validation, because the TPM writes both the goal
+and the diff. It is accepted with that stated limit: a fresh-context read of the diff and
+the tautology check still apply, and the alternative -- the role that maintains the gate
+being the only role permitted around it -- is worse. Rule going forward: a control that
+cannot be applied to its own maintainer is not yet finished.

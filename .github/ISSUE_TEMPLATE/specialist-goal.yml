@@ -14,6 +14,7 @@ body:
         - benchmark-research
         - review-analysis
         - vault-discovery
+        - tpm
     validations:
       required: true
   - type: input
