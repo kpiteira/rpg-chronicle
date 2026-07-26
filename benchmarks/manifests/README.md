@@ -51,7 +51,18 @@ what that means, because prose cannot:
   against its own output;
 - `source.media_sha256` must be present once any target is verified. An anchor is an
   offset into particular bytes, and without a digest a later reader cannot tell whether
-  they still have those bytes.
+  they still have those bytes;
+- `rights.license_url` must be present when `rights.local_processing` is `permitted` — a
+  claim that a licence allows processing has to point at the licence that says so.
+
+Read licence and publication facts from the source's own markup, on the page that carries
+the notice: not from a feed, an aggregator, a rendered summary, or a prior manifest. Two
+manifests in this corpus have already carried a wrong licence or a wrong publication date
+that came from a secondary source.
+
+A candidate ruled out on rights is recorded, not deleted, with `r0_status: rejected` and
+the reason. `music_or_effects: null` is the honest value for such a candidate: nothing was
+listened to, and `false` would claim an observation nobody made.
 
 `recording_conditions.capture_layout` states only what the recording establishes.
 `single_mixed_track` says there is no per-speaker channel to diarize from and claims
@@ -82,7 +93,12 @@ Downloaded media, clips, transcripts, processor output, and runtime annotations 
 under the configured private `benchmark_cache`; the repository ignore rules cover the
 default `benchmark-cache/`, `audio/`, `artifacts/`, and common media extensions.
 
-## B01 candidates
+## The corpus
+
+[`../notes/corpus-coverage.md`](../notes/corpus-coverage.md) states what these items can
+and cannot diagnose together, which gaps remain, and what closing each would take. Read it
+before adding a candidate — the corpus is optimised for diagnostic diversity, not size, so
+a new item has to name a failure mode nothing else exposes.
 
 - `critical-role-c3e01-jrusar-introductions.json`: polished studio video, strong public
   navigation and transcript aids, but no recorded redistribution permission.
@@ -105,3 +121,18 @@ observations instead of title-derived guesses. Read
 before scoring anything against it: annotation there is machine-assisted, and the note
 names the engines that therefore cannot be scored against it without declaring the
 dependency. The Critical Role candidate's targets remain provisional and metadata-derived.
+
+## B03 candidates
+
+- `mystic-horizon-ch1ep1-killing-zombozos.json`: 3 h 57 m in one continuous livestreamed
+  file under CC BY 3.0 — the multi-hour tier, at the product's real target duration.
+- `dice-and-die-lmop-e01-stranger-danger.json`: unpolished amateur play under CC BY 3.0,
+  clipping at +2.2 dBFS, following a published adventure whose proper nouns give an
+  independent spelling reference.
+- `kix-dnd-amateurs-first-session.json` and `oxventure-wyrdwood-campaign.json`: rejected,
+  Standard YouTube Licence, kept with their reasons so the question is not reopened from
+  scratch. The KIX rejection is on licence rather than merit and is the best candidate to
+  seek permission for.
+
+Both admitted items are unannotated. They establish admissibility; annotating either is a
+separate outcome, as B02 was for Hiddengrid.
