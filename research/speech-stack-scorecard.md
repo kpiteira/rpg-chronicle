@@ -86,9 +86,13 @@ the source is CC BY-NC-ND.
 | `faster-whisper-cpu` | 163.9 s | 3.7x | 2,644 MB | 240 | 0 | 4.7 |
 | `sherpa-diarization` | 30.8 s | 19.5x | 3,654 MB | 208 spans | — | 6.7 |
 
-† Partly degenerate: this stack's committed synthetic counterpart ends in a
-`Rest Rest Rest…` repetition loop, so its wall clock includes time spent producing
-nothing. Do not quote 44.3 s or 13.6x as this engine's throughput.
+† Treat this row's timing as unreliable. What is *observed* on this run is that 104 of
+its 450 units could not become turns. What is *inferred* is that it degenerated the way
+its synthetic counterpart demonstrably did — that run ends in a `Rest Rest Rest…`
+repetition loop — because this input's text is redacted and cannot be inspected. The
+inference is well supported by the rejection rate but it is an inference, so: do not
+quote 44.3 s or 13.6x as this engine's throughput, and do not treat the loop as
+established on this input.
 
 Three readings of that table, in order of how much they change the decision.
 
@@ -163,10 +167,12 @@ than as evidence — the committed 450/104 stands on its own, and it is enough t
 discount the row.
 
 The same caution applies to mlx-whisper's **wall clock**, and the cost table above does
-not currently carry it. Its committed synthetic run ends in a roughly 200-token
-`Rest Rest Rest…` repetition loop, which is a familiar Whisper degenerate-decoding
-failure and burns inference time producing nothing. So its 44.3 s at 600 s and 13.6x
-realtime are a slow *and* partly degenerate draw, not a clean measurement of the engine.
+not currently carry it. Its committed *synthetic* run ends in a roughly 200-token
+`Rest Rest Rest…` repetition loop, a familiar Whisper degenerate-decoding failure that
+burns inference time producing nothing. Whether the 600 s run did the same cannot be
+checked — that text is redacted — but 104 of its 450 units being unusable points the same
+way. So its 44.3 s and 13.6x are best read as a slow and probably partly degenerate draw
+rather than a clean measurement of the engine.
 The rejection of mlx-whisper as "measurably the slowest Apple Silicon path" is safe
 because whisper.cpp runs the same model faster on the same machine, but the specific
 figure should not be quoted as this engine's throughput. That is a real advantage pointing the same way as before, but a
@@ -624,7 +630,9 @@ recorded evidence:
   reporting `--enable-gpl --enable-version3`; the absence of any Hugging Face token on
   the probe machine; the flags `parakeet-cli --help` offers on Homebrew v1.9.1; and the
   swap reading during the 40-minute run. All were observed at a terminal on 2026-07-26
-  and none is reproducible from the diff alone.
+  and none is reproducible from the diff alone. The machine description in this
+  document's header is a sixth: results record `arm64`, the macOS build string and
+  `cpu_count: 12`, not the "Apple M4 Pro, 24 GB" the header states.
 - **The benchmark input remains restricted.** Hiddengrid Episode 044 is CC BY-NC-ND with
   redistribution restricted; no audio, clip, or transcript of it appears in this
   repository, and the probe results drawn from it carry only aggregate metrics.
