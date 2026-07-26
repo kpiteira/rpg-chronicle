@@ -129,10 +129,15 @@ covers — was already computed per unit but never aggregated, which is why the 
 was invisible in the committed evidence. It is now reported, along with overlap divided
 by coverage, which is attribution purity given what was diarized at all.
 
-Read the last column as a summary rather than a statistic: it is the ratio of two
-aggregate means, not the mean of per-unit ratios, so the third decimal carries less
-information than it appears to. It is used here only to order stacks that the raw column
-ordered misleadingly.
+Read the last column as a summary rather than a statistic, for two reasons that both
+cost it precision. It is the ratio of two aggregate means rather than the mean of
+per-unit ratios. And `speaker_coverage_ratio` sums per-span overlaps before clamping at
+the unit span, so a moment with two simultaneous speakers is counted twice: on this
+window the span sum exceeds the true speech union by about 6%, which overstates coverage
+and correspondingly deflates the ratio built on it. The ordering survives both — the gap
+between 0.857 and 0.941 is far larger than either effect — but the third decimal does
+not, and this column is used only to order stacks that the raw column ordered
+misleadingly.
 
 | Stack | Unit span | Raw overlap | Coverage | Overlap given coverage |
 |---|---|---|---|---|
@@ -658,10 +663,14 @@ unreachable.
 model rather than the lexicon, and fine-tuning or a different model family becomes the
 lever instead of more vocabulary.
 
-**Move diarization off `sherpa-onnx` when** either:
+**Move diarization off `sherpa-onnx` when** either of the following holds. The first
+**already holds as this lands**, so the diarization choice should be read as an
+unresolved item carried forward rather than a settled component selection; follow-up 3
+proposes the comparison that would resolve it.
 
 - the cluster count on a known-speaker-count recording stays above the true count by
-  more than one after threshold tuning — the condition currently observed;
+  more than one after threshold tuning — **currently true**: six labels for four
+  speakers at every threshold that avoids merging distinct speakers;
 - pyannote's community pipeline is measured to beat it on the same audio by enough to
   justify accepting a Hugging Face account requirement into the setup path.
 
@@ -710,6 +719,6 @@ not schedule.
    is one — this scorecard is the evidence behind the decision, not the decision log
    entry. `docs/` is TPM-owned, so this is proposed rather than written: a short D-record
    naming the recommended stack, the four grounds, and a pointer here.
-6. **A tier-3 benchmark input does not exist.** Every conclusion about the target
+7. **A tier-3 benchmark input does not exist.** Every conclusion about the target
    acoustic condition is currently an extrapolation from two inputs that are wrong in
    opposite directions. This belongs to benchmark-research.
