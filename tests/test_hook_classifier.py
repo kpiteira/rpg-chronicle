@@ -7,6 +7,7 @@ payload on stdin -- because that is the contract the hook depends on.
 from __future__ import annotations
 
 import json
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -231,8 +232,43 @@ def test_refspec_forms_that_reach_main_are_refused(command: str) -> None:
 
 
 def test_nesting_beyond_one_level_is_classified() -> None:
-    """The docstring claims three levels; this exercises more than one."""
     assert classify("""sh -c 'sh -c "gh pr merge 7 --rebase"'""") == "merge 7"
+
+
+def test_nesting_past_the_limit_is_refused_not_allowed() -> None:
+    """A fail-open the goal validator reproduced.
+
+    The descent stopped at the limit and still reported `allow`, so depth was a
+    way through rather than a bound. Past the limit the command is refused.
+    """
+    deep = "git push origin main"
+    for _ in range(5):
+        deep = f"sh -c {shlex.quote(deep)}"
+    assert classify(deep) == "unparseable"
+
+
+@pytest.mark.parametrize(
+    ("command", "expected"),
+    [
+        ("""awk 'BEGIN{system("git push origin main")}'""", "unparseable"),
+        ("""php -r 'system("gh pr merge 7");'""", "unparseable"),
+        ("""python3.11 -c 'os.system("git push origin main")'""", "unparseable"),
+        ("""osascript -e 'do shell script "git push origin main"'""", "unparseable"),
+        ("fish -c 'git push origin main'", "push-main"),
+        # Nothing guarded is named, so nothing is refused.
+        ("""awk '{print $1}' file.txt""", "allow"),
+    ],
+)
+def test_more_interpreters_than_a_shell_are_recognized(
+    command: str, expected: str
+) -> None:
+    """From the goal validator: the interpreter lists were too short.
+
+    They remain lists -- see the module docstring on why no list-free option
+    exists here -- but a versioned name and the common non-shell interpreters
+    are covered, and `awk`'s positional program is scanned like any argument.
+    """
+    assert classify(command) == expected
 
 
 def test_an_author_email_is_not_read_as_the_merge_target() -> None:

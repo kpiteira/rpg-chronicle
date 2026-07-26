@@ -54,10 +54,23 @@ shell finds a quoted string rather than three words; and a script an
 interpreter takes from stdin or a file, as in `bash <<'EOF'` or
 `echo '...' | bash`, where nothing in the command names what will run.
 
-What remains uncovered: a guarded command written to a script file and run by
-name, and one reconstructed at runtime. The gate is a guardrail against an
-unvalidated merge happening by accident, not a barrier against one pursued
-deliberately, which no PreToolUse hook could be.
+Recognizing an interpreter means naming it, and SHELL_INTERPRETER and
+CODE_INTERPRETER are lists. Elsewhere in this module a list was the defect --
+enumerating wrappers dropped every wrapper not enumerated, and scanning for the
+guarded words removed the need. No such move exists here: knowing whether a
+command treats its argument as code requires knowing the command. The only
+list-free alternative is to refuse any argument that mentions a guarded
+command, which is the original defect, since writing about a merge is ordinary
+work in this repository. So the incompleteness is accepted and stated: an
+interpreter absent from those patterns is not guarded.
+
+That is the honest shape of this control. It cannot satisfy "every refusal the
+substring match made must survive", because that match refused any occurrence
+of the text, including the occurrences it had no business refusing. What
+remains uncovered: an unlisted interpreter, a guarded command written to a
+script file and run by name, and one reconstructed at runtime. The gate is a
+guardrail against an unvalidated merge happening by accident. Branch protection
+is the boundary that does not depend on this file being clever.
 """
 
 from __future__ import annotations
@@ -103,16 +116,27 @@ VALUE_FLAGS = {
     "--repo",
 }
 
-# Interpreters whose `-c` argument is itself a shell command, and so can be
-# classified in its own right. The old substring match caught
-# `sh -c "git push origin main"` by accident; this catches it on purpose.
-INTERPRETERS = {"sh", "bash", "zsh", "dash", "ksh"}
+# Interpreters whose script is shell, and so can be classified in its own
+# right. The old substring match caught `sh -c "git push origin main"` by
+# accident; this catches it on purpose. A trailing version is allowed, so
+# `bash5` and `python3.11` are recognized as what they are.
+SHELL_INTERPRETER = re.compile(r"^(sh|bash|zsh|dash|ksh|ash|fish)[0-9.]*$")
 
-# Interpreters whose `-c` argument is code in another language. It cannot be
-# read as shell -- `python3 -c 'os.system("git push origin main")'` yields a
-# quoted string, not three words -- so such an argument is refused when it so
-# much as mentions a guarded command, rather than parsed.
-CODE_INTERPRETERS = {"python", "python3", "perl", "ruby", "node"}
+# Interpreters whose script is code in another language. It cannot be read as
+# shell -- `python3 -c 'os.system("git push origin main")'` yields a quoted
+# string, not three words -- so its arguments are refused when they so much as
+# mention a guarded command, rather than parsed. Every argument is scanned, not
+# only a `-c`, because the flag differs per language and `awk` takes its
+# program as a positional.
+CODE_INTERPRETER = re.compile(
+    r"^(python|perl|ruby|node|php|lua|deno|bun|awk|gawk|mawk|nawk"
+    r"|tclsh|wish|Rscript|osascript|jshell|groovy|scala)[0-9.]*$"
+)
+
+# How deep a shell command may nest inside another before the classifier stops
+# reading and refuses. Continuing past the limit returned `allow`, which made
+# depth a way through rather than a bound.
+MAX_NESTING = 3
 
 # `-c`, and combined short flags ending in it: `bash -lc '...'`.
 COMMAND_FLAG = re.compile(r"^-[A-Za-z]*c$")
@@ -400,6 +424,11 @@ def command_argument(segment: list[str], start: int) -> int | None:
     return None
 
 
+def carries_foreign_code(segment: list[str]) -> bool:
+    """True when this command runs code the classifier cannot read as shell."""
+    return any(CODE_INTERPRETER.match(base_name(word)) for word in segment)
+
+
 def reads_a_script_it_was_given(segment: list[str]) -> bool:
     """True when an interpreter takes its script from somewhere unreadable.
 
@@ -408,32 +437,32 @@ def reads_a_script_it_was_given(segment: list[str]) -> bool:
     heredoc body has already been dropped as data, and the piped string belongs
     to a different command -- so the text is scanned for a mention instead.
     """
-    words = [base_name(word) for word in segment]
     return any(
-        word in INTERPRETERS | CODE_INTERPRETERS
+        SHELL_INTERPRETER.match(base_name(word))
         and command_argument(segment, index) is None
-        for index, word in enumerate(words)
+        for index, word in enumerate(segment)
     )
 
 
-def interpreted_scripts(segment: list[str]) -> tuple[list[str], list[str]]:
-    """Arguments this command will itself run.
+def interpreted_scripts(segment: list[str]) -> list[str]:
+    """Shell text this command will itself run.
 
-    Returns shell text to classify in its own right, and foreign code that can
-    only be scanned for a mention. Both arrive as a single token once quoting is
-    resolved, so neither can be seen by scanning words.
+    An interpreter's `-c` argument and whatever `eval` was handed. Both arrive
+    as a single token once quoting is resolved, so neither can be seen by
+    scanning words.
     """
-    words = [base_name(word) for word in segment]
-    shell: list[str] = []
-    foreign: list[str] = []
-    for index, word in enumerate(words):
-        if word in INTERPRETERS and (at := command_argument(segment, index)):
-            shell.append(segment[at])
-        elif word in CODE_INTERPRETERS and (at := command_argument(segment, index)):
-            foreign.append(segment[at])
-        elif word == "eval" and (at := first_operand(segment, index)):
-            shell.append(segment[at])
-    return shell, foreign
+    scripts: list[str] = []
+    for index, word in enumerate(segment):
+        name = base_name(word)
+        if SHELL_INTERPRETER.match(name):
+            at = command_argument(segment, index)
+        elif name == "eval":
+            at = first_operand(segment, index)
+        else:
+            continue
+        if at is not None:
+            scripts.append(segment[at])
+    return scripts
 
 
 def first_operand(segment: list[str], start: int) -> int | None:
@@ -487,13 +516,20 @@ def classify(command: str, depth: int = 0) -> str:
 
         merges.extend(merge_target(segment, merge) for merge in find_merges(segment))
 
-        shell, foreign = interpreted_scripts(segment)
-        if any(hint in code for code in foreign for hint in GUARDED_HINTS):
+        # Foreign code is scanned whole: the flag that carries it differs per
+        # language, and `awk` takes its program as a positional argument.
+        if carries_foreign_code(segment) and any(
+            hint in collapse(" ".join(segment)) for hint in GUARDED_HINTS
+        ):
             return "unparseable"
 
-        if depth >= 3:
-            continue
-        for script in shell:
+        scripts = interpreted_scripts(segment)
+        if scripts and depth >= MAX_NESTING:
+            # Refusing rather than skipping. Stopping the descent while still
+            # reporting `allow` made nesting a way through instead of a bound.
+            return "unparseable"
+
+        for script in scripts:
             nested = classify(script, depth + 1)
             if nested in ("push-main", "merge-multiple", "unparseable"):
                 return nested
