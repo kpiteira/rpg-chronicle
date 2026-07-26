@@ -221,6 +221,25 @@ def test_a_fingerprint_pointing_at_no_file_is_rejected(tmp_path: Path) -> None:
     assert any("is not a file in this repository" in line for line in lines), lines
 
 
+@pytest.mark.parametrize(
+    "declared",
+    ["/etc/passwd", "../outside.json", "benchmarks/../../outside.json"],
+)
+def test_a_fingerprint_path_may_not_escape_the_repository(declared: str) -> None:
+    """The validator follows a path a manifest supplies, so the path is untrusted input.
+
+    The schema pattern rejects these too, and this checks the validator's own guard rather
+    than that pattern: two layers, because the one that reads the file is the one that must
+    refuse. Called directly for exactly that reason - going through the schema would never
+    reach this code and the test would pass without exercising it.
+    """
+    errors = validator_script._fingerprint_errors(
+        {"method": "rms_envelope_v1", "path": declared, "sha256": "0" * 64}
+    )
+
+    assert any("resolves outside the repository" in error for error in errors), errors
+
+
 def test_a_fingerprint_whose_digest_stopped_matching_is_rejected(tmp_path: Path) -> None:
     """This is the one digest in a manifest that can be checked outright, because the file it
     names is committed here. Regenerating the fingerprint without updating the manifest is

@@ -21,9 +21,10 @@ mono 16 kHz. It is measurement, not media: at one frame per second it is a few t
 numbers describing how loud the room was, and no speech can be recovered from it.
 
 Two resolutions, because they answer different questions. The coarse pass, one frame per
-second across the whole recording, identifies it and catches gross misalignment. The fine
-pass, one frame per 10 ms over a short probe window, locates the offset closely enough for
-millisecond anchors.
+second across the whole recording, locates the lag however far off it is - it does not decide
+identity, and a genuine copy shifted by a fraction of a second scores badly on it. The fine
+pass, one frame per 10 ms over a short probe window, decides identity and measures the offset
+closely enough for millisecond anchors.
 
 Usage:
 
@@ -166,11 +167,13 @@ def parse_rms_levels(output: str) -> list[float]:
     would make the check depend on a tool the test does not care about.
     """
     values: list[float] = []
-    for match in re.finditer(r"lavfi\.astats\.1\.RMS_level=(-?[\d.]+|-?inf|nan)", output):
-        token = match.group(1)
+    for match in re.finditer(r"lavfi\.astats\.1\.RMS_level=(-?[\d.]+|[-+]?inf|nan)", output):
         # Digital silence reports as -inf, which no arithmetic survives; floor it instead,
         # because a silent frame is information about the recording, not a missing value.
-        values.append(SILENCE_FLOOR_DB if token in {"-inf", "nan"} else float(token))
+        # Tested against math.isfinite rather than a list of spellings: an earlier version
+        # floored "-inf" and "nan" and let a bare "inf" through into the correlation.
+        level = float(match.group(1))
+        values.append(level if math.isfinite(level) else SILENCE_FLOOR_DB)
     return values
 
 
@@ -191,9 +194,14 @@ def _pearson(a: list[float], b: list[float]) -> float:
 def align(reference: list[float], candidate: list[float], max_lag_frames: int) -> Alignment:
     """Find the lag, in frames, at which the candidate best reproduces the reference.
 
-    A positive lag means the candidate is later than the reference: its content at frame t
-    corresponds to the reference at t minus lag. The result is in frames, not seconds - see
-    Alignment - because this function is never told what a frame is worth.
+    Sign convention, stated the way the code behaves rather than the way it reads: the
+    candidate's frame ``t + lag`` matches the reference's frame ``t``. So a **negative** lag
+    means the candidate starts later in the recording - a copy with its opening trimmed off -
+    and a positive lag means it starts earlier. An earlier docstring here said the opposite,
+    and the CLI line built on it told readers to correct their anchors the wrong way.
+
+    The result is in frames, not seconds - see Alignment - because this function is never
+    told what a frame is worth.
     """
     best = Alignment(-1.0, 0.0, 0)
     for lag in range(-max_lag_frames, max_lag_frames + 1):
@@ -265,19 +273,25 @@ def verify(audio: Path, fingerprint_path: Path) -> tuple[Alignment, Offset | Non
     coarse_lag_seconds = coarse.lag_seconds(coarse_frame_ms)
     probe_start = float(document["fine_probe_start_seconds"]) + coarse_lag_seconds
     fine_reference = [float(v) for v in document["fine"]]
+    # How early the candidate window actually starts. Normally FINE_SEARCH_SECONDS, but the
+    # start cannot go below zero, and when that clamp bites the head start is smaller. Using
+    # the constant regardless biased the offset by the difference - reachable with a short
+    # recording or a small --probe-start.
+    candidate_start = max(0.0, probe_start - FINE_SEARCH_SECONDS)
+    head_start = probe_start - candidate_start
     fine_candidate = envelope(
         audio,
         frame_ms=document["fine_frame_ms"],
-        start_seconds=max(0.0, probe_start - FINE_SEARCH_SECONDS),
+        start_seconds=candidate_start,
         duration_seconds=float(document["fine_probe_seconds"]) + 2 * FINE_SEARCH_SECONDS,
     )
     fine = align(fine_reference, fine_candidate, max_lag_frames=max_lag_frames)
-    # The candidate window began FINE_SEARCH_SECONDS early, so the lag it reports is
-    # measured from there rather than from the probe start.
+    if not fine.comparable:
+        return coarse, None
+    # The candidate window began head_start early, so the lag it reports is measured from
+    # there rather than from the probe start.
     offset = (
-        coarse_lag_seconds
-        - FINE_SEARCH_SECONDS
-        + fine.lag_seconds(float(document["fine_frame_ms"]))
+        coarse_lag_seconds - head_start + fine.lag_seconds(float(document["fine_frame_ms"]))
     )
     return coarse, Offset(fine.correlation, offset, fine.frames_compared)
 
@@ -325,6 +339,11 @@ def main(argv: list[str] | None = None) -> int:
         print("statement about this input, not about the recording: an excerpt cannot be")
         print("identified this way, and a full copy can.")
         return 1
+    if fine is None and coarse.peak_found:
+        print("TOO SHORT TO JUDGE: the copy aligns coarsely but does not reach the probe")
+        print("window the fingerprint measures finely, so identity cannot be decided and no")
+        print("offset can be measured. This happens with an excerpt rather than a full copy.")
+        return 1
     if fine is None:
         print(f"DIFFERENT RECORDING: no alignment above {COARSE_PEAK_FLOOR_R} to refine")
         print("This copy does not follow the same loudness envelope. Committed anchors do")
@@ -342,7 +361,7 @@ def main(argv: list[str] | None = None) -> int:
         print("Anchors apply as committed; the offset is below the annotation's precision.")
     else:
         print(
-            f"Add {-fine.offset_seconds:+.3f} s to committed anchors "
+            f"Add {fine.offset_seconds:+.3f} s to committed anchors "
             "to locate them in this copy."
         )
     return 0

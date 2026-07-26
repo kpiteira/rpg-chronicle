@@ -161,7 +161,20 @@ def _fingerprint_errors(fingerprint: dict | None) -> list[str]:
     if not fingerprint:
         return []
     errors: list[str] = []
-    path = ROOT / fingerprint["path"]
+    declared = fingerprint["path"]
+    path = (ROOT / declared).resolve()
+    # A manifest is data, and the validator reads what it names, so the name has to be
+    # constrained before it is followed. An absolute path or a ".." segment would have this
+    # hashing a file outside the repository and calling it the fingerprint - which both
+    # reads what it should not and voids the guarantee that a fingerprint is committed here.
+    if not path.is_relative_to(ROOT):
+        return [
+            (
+                f"source.content_fingerprint.path {declared!r} resolves outside the "
+                "repository; a fingerprint has to be a file committed here or it "
+                "guarantees nothing"
+            )
+        ]
     if not path.is_file():
         errors.append(
             f"source.content_fingerprint.path {fingerprint['path']!r} is not a file in this "

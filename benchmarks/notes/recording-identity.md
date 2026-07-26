@@ -9,8 +9,9 @@ Fingerprints: [`../fingerprints/`](../fingerprints/).
 This file is the demonstration behind the claim that a second person holding a different
 download can establish that their copy is the recording this corpus annotated, and that the
 committed offsets apply to it. The goal asked for that to be demonstrated rather than
-asserted, so what follows is the actual runs and their actual output, including the two
-places where the procedure was wrong before it was right.
+asserted, so what follows is the actual runs and their actual output, including every place
+the procedure was wrong before it was right - which turned out to be several, and one of them
+would have sent readers 25 seconds off with no sign that anything had happened.
 
 ## The problem, stated exactly
 
@@ -125,7 +126,7 @@ coarse lag: +0 s (locates the fine pass; does not judge)
 fine correlation: 0.9999 over 5694 frames
 offset to apply: +0.060 s
 SAME RECORDING
-Add -0.060 s to committed anchors to locate them in this copy.
+Add +0.060 s to committed anchors to locate them in this copy.
 exit=0
 ########## shifted_exact.webm
 coarse correlation: 0.7769 over 14214 frames
@@ -133,7 +134,7 @@ coarse lag: -12 s (locates the fine pass; does not judge)
 fine correlation: 0.9989 over 5738 frames
 offset to apply: -12.380 s
 SAME RECORDING
-Add +12.380 s to committed anchors to locate them in this copy.
+Add -12.380 s to committed anchors to locate them in this copy.
 exit=0
 ########## same_campaign_ep2.webm
 coarse correlation: 0.0465 over 1469 frames
@@ -143,6 +144,29 @@ This copy does not follow the same loudness envelope. Committed anchors do
 not apply to it, and no offset can make them apply.
 exit=1
 ```
+
+### Which way to apply it, settled by experiment
+
+The correction is **add the reported offset, sign included**. Not the inverse of it, which is
+what this tool printed until review caught the docstring behind it disagreeing with the code.
+
+That was settled against the recording rather than by reading the code a third time. The
+committed anchor at 03:29:51 is the game master narrating a hundred souls consumed. Applied
+both ways against the trimmed copy, and both windows transcribed:
+
+| Correction | Position in the trimmed copy | What is actually there |
+|---|---|---|
+| anchor **+** offset (−12.380) | 12578.92 s | *"of energy and power, dwelling deep inside you, and she did not just consume one, not two"* |
+| anchor **−** offset | 12603.68 s | *"so I looked it up… ants have souls, right?"* — 25 s late |
+
+The first is the anchored line. So a negative offset means the copy starts later in the
+recording, and adding it moves an anchor earlier to compensate.
+
+Worth being blunt about what this was. Every correlation in the table above was right, the
+verdicts were right, and the offsets were right — and the one line telling a reader what to
+*do* with the offset negated it. A reader following it would have landed 24.8 s away on this
+copy, with nothing to suggest anything had gone wrong. It is the most consequential defect in
+this goal and it was found by a reviewer reading a docstring, not by any test or any run.
 
 The recovered offset on the trimmed copy is worth reading closely, because it is the number
 the whole exercise is for. The trim was 12.347 s; the tool reports 12.380 s. The 33 ms
