@@ -303,9 +303,17 @@ def merge_target(segment: list[str], start: int) -> str:
     target = "-"
     repo = ""
     index = 0
+    options_ended = False
     while index < len(arguments):
         argument = arguments[index]
-        if argument.startswith("-"):
+        # `gh` supports `--` so that a branch beginning with a dash can be
+        # named. Reading it as an option would leave the gate resolving the
+        # current branch instead, which is the hazard this goal is about.
+        if argument == "--" and not options_ended:
+            options_ended = True
+            index += 1
+            continue
+        if argument.startswith("-") and not options_ended:
             if argument in ("-R", "--repo") and index + 1 < len(arguments):
                 repo = arguments[index + 1]
             index += 2 if argument in VALUE_FLAGS else 1
@@ -339,9 +347,22 @@ def interpreted_scripts(segment: list[str]) -> tuple[list[str], list[str]]:
             shell.append(segment[at])
         elif word in CODE_INTERPRETERS and (at := command_argument(segment, index)):
             foreign.append(segment[at])
-        elif word == "eval" and index + 1 < len(segment):
-            shell.append(segment[index + 1])
+        elif word == "eval" and (at := first_operand(segment, index)):
+            shell.append(segment[at])
     return shell, foreign
+
+
+def first_operand(segment: list[str], start: int) -> int | None:
+    """Index of the first token after `start` that is not an option.
+
+    `eval -- "gh pr merge 7"` puts an end-of-options marker in the way.
+    """
+    for index in range(start + 1, len(segment)):
+        if segment[index] == "--":
+            return index + 1 if index + 1 < len(segment) else None
+        if not segment[index].startswith("-"):
+            return index
+    return None
 
 
 def classify(command: str, depth: int = 0) -> str:
