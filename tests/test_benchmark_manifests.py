@@ -79,7 +79,7 @@ def test_every_verified_target_is_anchored_inside_the_excerpt_window() -> None:
             if target["status"] != "verified":
                 continue
             assert start_ms <= target["anchor_ms"] < end_ms, target
-            assert target["basis"] == "audio_observed", target
+            assert target["basis"] in validator_script.VERIFIABLE_BASES, target
             assert target["evidence"].strip(), target
 
 
@@ -111,7 +111,42 @@ def test_a_target_inferred_from_metadata_cannot_be_verified(tmp_path: Path) -> N
     exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
 
     assert exit_code == 1
-    assert any("basis is not audio_observed" in line for line in lines), lines
+    assert any("its basis is not one of" in line for line in lines), lines
+
+
+def test_machine_assisted_and_by_ear_are_both_verifiable_and_stay_distinguishable(
+    tmp_path: Path,
+) -> None:
+    """Tooling can verify a target; it may not pass itself off as a human ear.
+
+    The committed Hiddengrid targets are machine-assisted, and a consumer reading only the
+    enum has to be able to see that.
+    """
+    manifest = _hiddengrid()
+    bases = {
+        target["basis"]
+        for group in ("important_entities", "important_events")
+        for target in manifest["truth"][group]
+    }
+    assert bases == {"audio_machine_assisted"}
+
+    manifest["truth"]["important_entities"][0]["basis"] = "audio_observed"
+    exit_code, _ = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 0
+
+
+def test_a_proven_speaker_count_above_the_estimate_is_rejected(tmp_path: Path) -> None:
+    """The proven count is a floor under the estimate; above it, one of the two is wrong."""
+    manifest = _hiddengrid()
+    manifest["recording_conditions"]["proven_distinct_speakers"] = (
+        manifest["recording_conditions"]["expected_physical_speakers"] + 1
+    )
+
+    exit_code, lines = validator_script.validate_manifest_dir(_write(tmp_path, manifest).parent)
+
+    assert exit_code == 1
+    assert any("the proven count is a floor" in line for line in lines), lines
 
 
 def test_verified_truth_requires_a_recorded_method(tmp_path: Path) -> None:

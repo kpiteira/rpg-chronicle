@@ -63,13 +63,25 @@ def digest_file(path: Path) -> Digest:
     return Digest(sha256.hexdigest(), size_bytes)
 
 
-def compare(source: dict, actual: Digest) -> list[str]:
-    """Report every way the fetched bytes differ from what the manifest recorded.
+@dataclass(frozen=True)
+class Comparison:
+    """What the bytes turned out to be, against what the manifest claimed.
 
-    A manifest that records no digest cannot be reproduced, so that is itself a finding
-    rather than a silent pass.
+    Two failures are kept apart because they call for different actions. Bytes that
+    disagree with a recorded value mean the source changed under the annotation, and the
+    cached copy must not be treated as the item. A manifest that records nothing to check
+    against is unverifiable, which is a gap in the manifest -- the bytes may be perfectly
+    good, so destroying the cache entry over it would be wrong.
     """
+
+    findings: list[str]
+    mismatched: bool
+
+
+def compare(source: dict, actual: Digest) -> Comparison:
+    """Report every way the fetched bytes differ from what the manifest recorded."""
     findings: list[str] = []
+    mismatched = False
     expected_sha256 = source.get("media_sha256")
     expected_bytes = source.get("media_bytes")
 
@@ -77,10 +89,12 @@ def compare(source: dict, actual: Digest) -> list[str]:
         findings.append("manifest records no source.media_sha256, so the fetch cannot be verified")
     elif expected_sha256 != actual.sha256:
         findings.append(f"sha256 is {actual.sha256}, manifest records {expected_sha256}")
+        mismatched = True
 
     if expected_bytes is not None and expected_bytes != actual.size_bytes:
         findings.append(f"size is {actual.size_bytes} bytes, manifest records {expected_bytes}")
-    return findings
+        mismatched = True
+    return Comparison(findings, mismatched)
 
 
 def load_manifest(identifier: str) -> dict:
@@ -166,14 +180,25 @@ def main(argv: list[str] | None = None) -> int:
     print(f"sha256: {actual.sha256}")
     print(f"bytes: {actual.size_bytes}")
 
-    findings = compare(source, actual)
-    if not findings:
+    comparison = compare(source, actual)
+    if not comparison.findings:
         print(f"verified: {manifest['id']} matches the manifest")
         return 0
 
+    if not comparison.mismatched:
+        # Nothing to check against. The bytes may be fine, so the cached copy is left alone.
+        for finding in comparison.findings:
+            print(f"UNVERIFIABLE: {finding}")
+        print(
+            "The download was kept, but nothing establishes that it is the audio the "
+            "manifest describes. Record the digest above in the manifest only if you can "
+            "vouch for where these bytes came from."
+        )
+        return 1
+
     quarantine = target.with_suffix(target.suffix + ".mismatch")
     target.rename(quarantine)
-    for finding in findings:
+    for finding in comparison.findings:
         print(f"MISMATCH: {finding}")
     print(f"quarantined: {quarantine}")
     print(

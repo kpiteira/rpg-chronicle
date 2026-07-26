@@ -37,8 +37,10 @@ A target is `verified` only when it was observed in the recording. The validator
 what that means, because prose cannot:
 
 - `anchor_ms` is required and must fall inside the excerpt window;
-- `basis` must be `audio_observed` — a target inferred from a title, description, or index
-  stays `provisional`, whatever the annotator believes;
+- `basis` must be `audio_observed` (a human ear) or `audio_machine_assisted` (the recording
+  read through tooling) — a target inferred from a title, description, or index stays
+  `provisional`, whatever the annotator believes. The two verifiable values stay separate
+  so a consumer reading the field alone can tell machine-read truth from heard truth;
 - `evidence` must say what was observed;
 - `truth.method` must record how the truth was established, including which provider
   produced any machine-assisted output.
