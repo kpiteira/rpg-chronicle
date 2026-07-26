@@ -41,13 +41,15 @@ bounds what the result means.
   "identity": {"...": "which recording these offsets are into"},
   "attribution": {"...": "CC BY 3.0, see below"},
   "producers": ["whisper.cpp large-v3-turbo (beam 5)", "openai-whisper medium.en"],
+  "agreement": {"...": "window-level, see below"},
   "segments": [
     {
       "start_ms": 60000,
       "end_ms": 64560,
       "primary": "what the primary engine produced",
       "secondary": "what the second engine produced over the same span",
-      "token_agreement": 0.83
+      "secondary_support": 0.83,
+      "words": 13
     }
   ]
 }
@@ -61,11 +63,22 @@ of overhang.
 `primary` and `secondary` are kept apart rather than merged. Merging them would invent a
 third transcript neither engine produced and hide exactly the information a corrector needs.
 
-`token_agreement` is the word-level overlap between the two, and it is a triage signal, not a
-quality score. Low agreement means a listener should hear that segment. High agreement means
-both engines produced the same words, which is not the same as their being the right words —
-two engines from the same lineage share failure modes, and this pair produced identical wrong
-readings elsewhere in the corpus.
+`secondary_support` is the share of this segment's `primary` words that survive a token-level
+alignment against the second engine's text. The alignment is computed over the **whole window**
+and then attributed back to segments, so the two engines splitting the same speech into
+different segments does not read as disagreement — which it did in the first version of this,
+and which halved every number.
+
+It is a triage signal, not a quality score. Low support means a listener should hear that
+segment. High support means both engines produced the same words, which is not the same as
+their being the right words: two engines from the same lineage share failure modes, and this
+pair produced three different wrong spellings of one character name in this very recording.
+
+The window-level `agreement` block is the number to read first, and it says something the
+per-segment figures do not. Across the three windows, 87–93% of the *second* engine's words are
+found in the first engine's, while the first produces up to 41% more words than the second. The
+disagreement is overwhelmingly **omission, not contradiction** — `medium.en` hears less, rather
+than hearing differently. So agreement between these two is a weaker check than it sounds.
 
 ## Offsets are into a particular recording
 
