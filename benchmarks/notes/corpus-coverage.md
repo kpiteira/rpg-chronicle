@@ -29,7 +29,7 @@ Durations come from each file's own metadata, never from a description.
 | Polished professional | `critical-role-c3e01-jrusar-introductions` | Reference only; local processing unknown, targets provisional |
 | Amateur online, edited | `hiddengrid-swc-ep044-tower-play` | **Scoreable.** Verified truth over a ten-minute window |
 | Amateur online, unpolished | `dice-and-die-lmop-e01-stranger-danger` | Admitted, unannotated |
-| Multi-hour stress | `mystic-horizon-ch1ep1-killing-zombozos` | Admitted, unannotated |
+| Multi-hour stress | `mystic-horizon-ch1ep1-killing-zombozos` | **Scoreable.** Annotated at B04: three threads over two hours, nine minutes of draft transcript |
 | Single room, single microphone | — | **Empty** |
 | Controlled or degraded | `benchmarks/fixtures/r0_synthetic_session.json` only | No manifest, no real degraded audio |
 
@@ -45,16 +45,19 @@ Durations come from each file's own metadata, never from a description.
 - **The product's actual recording condition.** Every item in the corpus is remote play mixed to a single track: Hiddengrid gated and levelled, Dice & Die over Roll20 by its own description, and Mystic Horizon remote by inference — its description credits a cast by handle and carries a Discord invite, but never says the session was played over Discord. Not one is a room with people in it and a microphone on the table. The corpus can say a pipeline handles online actual play; it cannot yet say anything about an iPad on a table four feet from four people.
 - **Deliberate degradation.** No item tests a known, controlled impairment.
 - **Campaign-arc continuity.** Whether understanding carries across sessions is untested. The rejected Oxventure lead was proposed for this and would have suited it, licence aside.
-- **Anything at all about the two new items' content.** They are admitted, not annotated. Their recording conditions are measured; their entities, events, and coherence are unknown.
+- **Anything about `dice-and-die-lmop-e01-stranger-danger`'s content.** It is admitted, not annotated: recording conditions measured, entities and coherence unknown. The Mystic Horizon item was annotated at B04 and this row no longer covers it; see [`mystic-horizon-ch1ep1-annotation.md`](mystic-horizon-ch1ep1-annotation.md).
 
 ## Is a genuine single-file long session still missing?
 
 **No — that gap is filled.** `mystic-horizon-ch1ep1-killing-zombozos` is 3 h 57 m 18 s in
 one file, streamed live, under CC BY. Measured, not read from a description.
 
-Two qualifications. Nobody has listened to it, so its *suitability* rests on measurement
-and the publisher's framing rather than on content. And it is remote play, so it tests
-duration without testing the room.
+Two qualifications, one of which B04 has since narrowed. Its *suitability* no longer rests
+on measurement and the publisher's framing: it was annotated at B04, and the content holds
+up — three threads with both ends anchored, the longest running 3 h 42 m. Nobody has
+*listened* to it, though. The annotation is two engines agreeing, and the human correction
+pass is prepared and outstanding. The second qualification stands unchanged: it is remote
+play, so it tests duration without testing the room.
 
 The four-hour target is met at 3 h 57 m, and more length is available in the same campaign
 — but "same channel, so same licence" is exactly the assumption this goal forbids, so the

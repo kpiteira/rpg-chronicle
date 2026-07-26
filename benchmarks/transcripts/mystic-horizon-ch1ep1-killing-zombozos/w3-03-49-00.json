@@ -1,0 +1,297 @@
+{
+  "manifest_id": "mystic-horizon-ch1ep1-killing-zombozos",
+  "window": {
+    "label": "W3",
+    "start_ms": 13740000,
+    "end_ms": 13920000,
+    "chosen_as": "late and quiet: 3 h 49 m in, 4 dB below W1, where both long threads close"
+  },
+  "status": "uncorrected_machine_draft",
+  "usable_for_word_error_rate": false,
+  "why_not": "No person has listened to this. Both texts are machine output, so a word error rate against either measures agreement with that engine rather than accuracy. See benchmarks/transcripts/README.md.",
+  "producers": [
+    "whisper.cpp large-v3-turbo (beam 5, Metal)",
+    "openai-whisper medium.en (CPU)"
+  ],
+  "agreement": {
+    "primary_words": 365,
+    "secondary_words": 341,
+    "primary_words_supported_by_secondary": 317,
+    "share_of_primary_supported": 0.868,
+    "share_of_secondary_found_in_primary": 0.93
+  },
+  "identity": {
+    "anchor_basis": "published_media_file; offsets are milliseconds from the start of the recording",
+    "content_fingerprint": "benchmarks/fingerprints/mystic-horizon-ch1ep1-killing-zombozos.json",
+    "content_fingerprint_sha256": "26fa8a9bd207ff13c06f69e3583e0dd929082af4ddd1377f0368e0d9e908b646",
+    "verify": "uv run python scripts/audio_identity.py verify <your-copy> --against benchmarks/fingerprints/mystic-horizon-ch1ep1-killing-zombozos.json",
+    "note": "This source re-encodes on delivery, so these offsets are into a recording and not into bytes. Verify your copy and apply any offset it reports before using them."
+  },
+  "attribution": {
+    "work": "D&D: Mystic Horizon | Ch. 1 Ep. 1 | Killing Zombozos",
+    "author": "SIR HORSE",
+    "source": "https://www.youtube.com/watch?v=-ZzSFGgczrI",
+    "license": "CC BY 3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/",
+    "license_read_from_source_on": "2026-07-26",
+    "modification": "Excerpt of three minutes from a 3 h 57 m work, machine-transcribed by two engines. Not the complete work."
+  },
+  "segments": [
+    {
+      "start_ms": 13738500,
+      "end_ms": 13742660,
+      "primary": "yeah i'm all good you did the thing again where you like stop",
+      "secondary": "You did the thing again where you like stop existing and just look into the void for like",
+      "secondary_support": 0.692,
+      "words": 13
+    },
+    {
+      "start_ms": 13743860,
+      "end_ms": 13745940,
+      "primary": "existing and just look into the void for like",
+      "secondary": "You did the thing again where you like stop existing and just look into the void for like",
+      "secondary_support": 1.0,
+      "words": 9
+    },
+    {
+      "start_ms": 13747700,
+      "end_ms": 13753060,
+      "primary": "a good solid like second five seconds i was just looking and i kind of point",
+      "secondary": "A good solid like second five seconds I was just looking and I kind of point I was just looking that way to make sure uh, none of the zombies wandered out",
+      "secondary_support": 1.0,
+      "words": 16
+    },
+    {
+      "start_ms": 13753620,
+      "end_ms": 13757300,
+      "primary": "i was just looking that way to make sure uh none of the zombies wandered out",
+      "secondary": "I was just looking and I kind of point I was just looking that way to make sure uh, none of the zombies wandered out",
+      "secondary_support": 1.0,
+      "words": 16
+    },
+    {
+      "start_ms": 13761540,
+      "end_ms": 13763780,
+      "primary": "how would you know that the door is not there",
+      "secondary": "How would you know that the door is not there the door's not fair but it doesn't mean they wander into our site",
+      "secondary_support": 1.0,
+      "words": 10
+    },
+    {
+      "start_ms": 13765220,
+      "end_ms": 13767700,
+      "primary": "the door's not there but it doesn't mean they'd wander into our site",
+      "secondary": "How would you know that the door is not there the door's not fair but it doesn't mean they wander into our site",
+      "secondary_support": 0.846,
+      "words": 13
+    },
+    {
+      "start_ms": 13772660,
+      "end_ms": 13775300,
+      "primary": "you don't know where it's not there bro sure sure",
+      "secondary": "You don't know where",
+      "secondary_support": 0.4,
+      "words": 10
+    },
+    {
+      "start_ms": 13779060,
+      "end_ms": 13780260,
+      "primary": "hey i believe you bro",
+      "secondary": "",
+      "secondary_support": 0.0,
+      "words": 5
+    },
+    {
+      "start_ms": 13783380,
+      "end_ms": 13785220,
+      "primary": "now i uh sit down in the study to",
+      "secondary": "Then now I uh sit down and to study the thieves camp for the rest of the until the long rest",
+      "secondary_support": 0.667,
+      "words": 9
+    },
+    {
+      "start_ms": 13786820,
+      "end_ms": 13789300,
+      "primary": "thieves camp for the rest of the until a long rest",
+      "secondary": "Then now I uh sit down and to study the thieves camp for the rest of the until the long rest",
+      "secondary_support": 0.909,
+      "words": 11
+    },
+    {
+      "start_ms": 13793860,
+      "end_ms": 13795620,
+      "primary": "yeah i know some of this brad yeah let me help you",
+      "secondary": "Yeah, I know some of this brad yeah, let me help you but thank you",
+      "secondary_support": 1.0,
+      "words": 12
+    },
+    {
+      "start_ms": 13797060,
+      "end_ms": 13809060,
+      "primary": "thank you um so rug mill swapping his uh study for uh helping me help you study okay cool",
+      "secondary": "Yeah, I know some of this brad yeah, let me help you but thank you Um It's a rug mill swapping his uh study for helping me help you study. Okay, cool",
+      "secondary_support": 0.895,
+      "words": 19
+    },
+    {
+      "start_ms": 13812980,
+      "end_ms": 13816500,
+      "primary": "uh oh wait you say you're swapping damn it",
+      "secondary": "Uh, oh wait you say you're swapping damn it. Okay. So rug mill's like not studying anymore",
+      "secondary_support": 1.0,
+      "words": 9
+    },
+    {
+      "start_ms": 13816500,
+      "end_ms": 13819540,
+      "primary": "okay okay so so rug mill's like not studying anymore",
+      "secondary": "Uh, oh wait you say you're swapping damn it. Okay. So rug mill's like not studying anymore",
+      "secondary_support": 0.8,
+      "words": 10
+    },
+    {
+      "start_ms": 13821540,
+      "end_ms": 13825540,
+      "primary": "and he's helping me like study since uh he knows thieves camp",
+      "secondary": "And he's helping me like study since uh, he knows thieves can't",
+      "secondary_support": 0.917,
+      "words": 12
+    },
+    {
+      "start_ms": 13831220,
+      "end_ms": 13832260,
+      "primary": "just gonna do that",
+      "secondary": "Just gonna do that",
+      "secondary_support": 1.0,
+      "words": 4
+    },
+    {
+      "start_ms": 13835620,
+      "end_ms": 13838100,
+      "primary": "okay so how long is he helping you study",
+      "secondary": "Okay, so how long is he helping you study, uh pretty much until a long rest I think",
+      "secondary_support": 1.0,
+      "words": 9
+    },
+    {
+      "start_ms": 13840100,
+      "end_ms": 13841540,
+      "primary": "pretty much until a long rest i think",
+      "secondary": "Okay, so how long is he helping you study, uh pretty much until a long rest I think",
+      "secondary_support": 1.0,
+      "words": 8
+    },
+    {
+      "start_ms": 13844340,
+      "end_ms": 13846340,
+      "primary": "okay so right now it's a lot four",
+      "secondary": "Okay, so we're now at four",
+      "secondary_support": 0.5,
+      "words": 8
+    },
+    {
+      "start_ms": 13847860,
+      "end_ms": 13851940,
+      "primary": "closer to five so six nine ten eleven six hours",
+      "secondary": "Close to five so six eight nine ten eleven six hours",
+      "secondary_support": 0.9,
+      "words": 10
+    },
+    {
+      "start_ms": 13853380,
+      "end_ms": 13859940,
+      "primary": "it'll be at eight point five nice and then obviously we can take a long rest",
+      "secondary": "It'll be at eight point five nice And then obviously we can take a long rest hey",
+      "secondary_support": 1.0,
+      "words": 16
+    },
+    {
+      "start_ms": 13861700,
+      "end_ms": 13861940,
+      "primary": "hey",
+      "secondary": "And then obviously we can take a long rest hey",
+      "secondary_support": 1.0,
+      "words": 1
+    },
+    {
+      "start_ms": 13865860,
+      "end_ms": 13868820,
+      "primary": "so i just got a night like night rug mill",
+      "secondary": "So I just got like night rug",
+      "secondary_support": 0.7,
+      "words": 10
+    },
+    {
+      "start_ms": 13871220,
+      "end_ms": 13876980,
+      "primary": "all right nice i'm gonna go back to where i put my bedroll and then laid out and go to sleep on it",
+      "secondary": "Nice I'm gonna go back to where I put my bed roll and then lay it out and go to sleep on it",
+      "secondary_support": 0.826,
+      "words": 23
+    },
+    {
+      "start_ms": 13878340,
+      "end_ms": 13885780,
+      "primary": "how'd you guys like this uh this week's definitely chaotic i was not expecting you",
+      "secondary": "How'd you guys like this? Uh this week's Definitely chaotic I was not expecting you guys to be freaking destroying an impale and giving 100 souls",
+      "secondary_support": 1.0,
+      "words": 15
+    },
+    {
+      "start_ms": 13885780,
+      "end_ms": 13889380,
+      "primary": "guys to be freaking destroying an anthill and giving a hundred souls",
+      "secondary": "I was not expecting you guys to be freaking destroying an impale and giving 100 souls",
+      "secondary_support": 0.75,
+      "words": 12
+    },
+    {
+      "start_ms": 13890180,
+      "end_ms": 13893860,
+      "primary": "me personally i would never die bro yeah like a lot of chaos happened like",
+      "secondary": "Personally, I would never die bro. Yeah, like a lot of chaos happened like",
+      "secondary_support": 0.933,
+      "words": 15
+    },
+    {
+      "start_ms": 13894820,
+      "end_ms": 13900980,
+      "primary": "like we almost died to zombies sammy did die we got a hundred souls",
+      "secondary": "Like we almost died to zombies Sammy did die We got 100 souls",
+      "secondary_support": 0.857,
+      "words": 14
+    },
+    {
+      "start_ms": 13903700,
+      "end_ms": 13906980,
+      "primary": "i feel like a lot of chaos and unpredictable things happened today",
+      "secondary": "I feel like a lot of chaos and unpredictable things happen today",
+      "secondary_support": 0.917,
+      "words": 12
+    },
+    {
+      "start_ms": 13908340,
+      "end_ms": 13910740,
+      "primary": "honestly i thought i was gonna get my weapon if i die",
+      "secondary": "Honestly, I thought I was gonna get my weapon if I die",
+      "secondary_support": 1.0,
+      "words": 12
+    },
+    {
+      "start_ms": 13911940,
+      "end_ms": 13916500,
+      "primary": "like i don't know somehow but uh your weapon is nowhere near here right now",
+      "secondary": "like I don't know somehow but your weapon's nowhere near here right now. I don't even think i'm gonna go",
+      "secondary_support": 0.8,
+      "words": 15
+    },
+    {
+      "start_ms": 13917460,
+      "end_ms": 13918900,
+      "primary": "i don't even think i'm gonna go",
+      "secondary": "I don't know somehow but your weapon's nowhere near here right now. I don't even think i'm gonna go",
+      "secondary_support": 1.0,
+      "words": 7
+    }
+  ]
+}
