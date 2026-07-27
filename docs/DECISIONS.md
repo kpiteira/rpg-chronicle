@@ -319,10 +319,29 @@ trade the module already made for every other claim.
 
 ### Schema versioning
 
-`0.1` → `0.2`. A `0.1` session loads and resumes: every added field is optional on a turn
-or an empty list on the session, so an older file comes back with them empty rather than
-fabricated. A session declaring a version this build does not know is refused rather than
+`0.1` → `0.2`. A `0.1` session loads and resumes, but **not** by defaulting every added
+field to empty, which is what this decision first claimed and what a goal-validator run
+disproved by producing a real `0.1` session and resuming it. Every `0.1` turn the fixture
+and audio paths ever wrote carries a `confidence` and no `confidence_kind` — precisely the
+shape `0.2` refuses to construct — so "load with the new fields empty" meant an unhandled
+`ValueError` on resumption for every session anyone actually had.
+
+Loading a `0.1` turn therefore keeps the number and marks its provenance
+`unstated (recorded before schema 0.2)`. That is the honest answer available: the quantity
+was never recorded, and naming it `declared` or guessing an engine would invent provenance
+for a number whose provenance is gone. A consumer can see it must not compare that turn
+against one from a named engine, which is the field doing its job on the case where nobody
+wrote the answer down. The migration applies to `0.1` files only; a `0.2` file that omits
+the kind is still refused.
+
+A migrated session is rewritten declaring `0.2`, because it now contains a `0.2` field and
+a version that recorded where a file came from rather than what is in it would mislead the
+next reader. A session declaring a version this build does not know is refused rather than
 loaded, because resuming from a file you have partly understood is worse than stopping.
+
+The general lesson is worth more than the fix: an invariant added to a live type is a
+migration whether or not anyone calls it one, and the test that claimed to cover it
+hand-wrote the one input shape that survived the invariant by accident.
 
 Rule going forward: a shared contract grows when a consumer can show it cannot act
 correctly without the field — not when a consumer would find the field convenient, and not

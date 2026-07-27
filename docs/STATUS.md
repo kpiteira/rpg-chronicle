@@ -133,9 +133,9 @@ discarded, apart from three machine-draft transcripts that were deleted as regen
   `speaker_coverage` and `speaker_purity` on a turn, and `entities` and `threads` on the
   session. The boundary leak is closed — a consumer reading only canonical turns can now
   tell an uncertain speaker attribution from a certain one, and a test at the
-  `AnalysisProvider` boundary fails if the provider stops saying so. A `0.1` session still
-  loads, with the new fields empty rather than fabricated; a session from an unknown
-  schema is refused rather than partly understood.
+  `AnalysisProvider` boundary fails if the provider stops saying so. A `0.1` session loads
+  and resumes, with its confidence kept and its provenance marked as never recorded rather
+  than guessed; a session from an unknown schema is refused rather than partly understood.
 - Two things were refused with the reason recorded: per-speaker channel handling, which
   nobody has designed and no corpus item needs, and the entity-shaped data that
   `docs/VAULT_INTEGRATION.md` and `docs/UX.md` describe but no producer emits.

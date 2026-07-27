@@ -25,12 +25,18 @@ from .providers import AnalysisProvider, TranscriptProvider
 
 SCHEMA_VERSION = "0.2"
 
-# 0.1 sessions are readable: every field 0.2 added is optional on a turn or defaults to an
-# empty list on the session, so an older file loads and resumes with those fields empty
-# rather than fabricated. The reverse is not true, and `_load_session` refuses it: a file
-# written by a newer version may contain a field this code would silently drop, and
-# resuming from a session you have partly understood is worse than stopping.
+# 0.1 sessions are readable, but not by defaulting every added field to empty. A 0.1 turn
+# carries a `confidence` and no `confidence_kind`, which is exactly what 0.2 refuses to
+# construct, so loading one needs an answer rather than a default: the quantity was never
+# recorded, and saying so is the only honest thing available. Naming it "declared" or
+# guessing an engine would invent provenance for a number whose provenance is gone.
+#
+# The reverse direction is refused outright: a file written by a newer version may contain
+# a field this code would silently drop, and resuming from a session you have partly
+# understood is worse than stopping.
 KNOWN_SCHEMA_VERSIONS = ("0.1", "0.2")
+
+UNSTATED_CONFIDENCE_KIND = "unstated (recorded before schema 0.2)"
 
 
 def _write_json(path: Path, payload: Any) -> None:
@@ -44,6 +50,23 @@ class UnreadableSessionError(ValueError):
     """Raised when a stored session was written by a schema this code does not know."""
 
 
+def _migrated_turn(item: dict[str, Any], stored: str) -> dict[str, Any]:
+    """Make a stored turn constructible under the current schema.
+
+    Only one field needs it. A 0.1 turn recorded a confidence without recording what the
+    number was, which 0.2 refuses; the number is kept and its provenance is marked
+    unstated, because it genuinely is. A consumer thresholding on confidence can now see
+    that it must not compare this turn against a turn from a named engine -- which is the
+    whole reason the field exists, applied to the case where the answer is "nobody wrote
+    it down".
+    """
+    if stored != "0.1":
+        return item
+    if item.get("confidence") is None or item.get("confidence_kind"):
+        return item
+    return {**item, "confidence_kind": UNSTATED_CONFIDENCE_KIND}
+
+
 def _load_session(path: Path) -> CanonicalSession:
     data = json.loads(path.read_text())
     stored = data.get("schema_version")
@@ -53,7 +76,9 @@ def _load_session(path: Path) -> CanonicalSession:
             f"{', '.join(KNOWN_SCHEMA_VERSIONS)}. Resuming from a session that may carry "
             "fields this code would drop is worse than stopping."
         )
-    data["turns"] = [TranscriptTurn(**item) for item in data.get("turns", [])]
+    data["turns"] = [
+        TranscriptTurn(**_migrated_turn(item, stored)) for item in data.get("turns", [])
+    ]
     data["scenes"] = [
         Scene(**{**item, "evidence": Evidence(**item["evidence"])})
         for item in data.get("scenes", [])
@@ -70,6 +95,11 @@ def _load_session(path: Path) -> CanonicalSession:
         ReviewQuestion(**{**item, "evidence": Evidence(**item["evidence"])})
         for item in data.get("review_questions", [])
     ]
+    # A migrated session is rewritten at every stage boundary, so it must declare what it
+    # now contains. Leaving 0.1 on a file that has gained a 0.2 field would make the
+    # version a record of where the file came from rather than of what is in it, and the
+    # next reader would trust the wrong one.
+    data["schema_version"] = SCHEMA_VERSION
     allowed = {item.name for item in fields(CanonicalSession)}
     return CanonicalSession(**{key: value for key, value in data.items() if key in allowed})
 

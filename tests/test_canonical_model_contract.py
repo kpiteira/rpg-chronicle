@@ -19,7 +19,7 @@ import pytest
 
 from rpg_chronicle.analysis.provider import ModelAnalysisProvider
 from rpg_chronicle.model import CanonicalSession, TranscriptTurn
-from rpg_chronicle.pipeline import UnreadableSessionError, run_pipeline
+from rpg_chronicle.pipeline import SCHEMA_VERSION, UnreadableSessionError, run_pipeline
 from rpg_chronicle.providers import AnalysisResult, FixtureTranscriptProvider
 from rpg_chronicle.transcription.engine import (
     DiarizationResult,
@@ -168,12 +168,29 @@ def test_an_attribution_share_outside_zero_to_one_is_refused(field_name):
 
 
 def _session_payload(schema_version: str) -> dict:
+    """A stored session with the turn shape 0.1 actually wrote.
+
+    The keys and the confidence value are copied from a `canonical-session.json` produced
+    by `run-fixture` at c57bd0f, the commit before this change. That matters: an earlier
+    version of this test hand-wrote a turn with no `confidence`, which is the one shape
+    that survives the 0.2 invariant by accident, so it passed while every real 0.1 session
+    failed to load. The goal validator caught it. The payload here is the failing case.
+    """
     return {
         "schema_version": schema_version,
         "session_id": "s1",
         "source": {"path": "somewhere.json"},
         "status": "transcribed",
-        "turns": [{"id": "t1", "start_ms": 0, "end_ms": 10, "text": "Words."}],
+        "turns": [
+            {
+                "id": "turn-001",
+                "start_ms": 0,
+                "end_ms": 10,
+                "text": "Words.",
+                "physical_speaker": "speaker-1",
+                "confidence": 0.98,
+            }
+        ],
         "scenes": [],
         "review_questions": [],
         "processor_artifacts": {},
@@ -182,19 +199,54 @@ def _session_payload(schema_version: str) -> dict:
 
 
 def test_a_session_written_before_these_fields_existed_still_loads(tmp_path):
-    """0.1 files predate every field added here, and resumption must not need a migration."""
+    """0.1 files predate every field added here, and resumption must survive them."""
     path = tmp_path / "canonical-session.json"
     path.write_text(json.dumps(_session_payload("0.1")))
 
-    from rpg_chronicle.pipeline import _load_session
+    from rpg_chronicle.pipeline import UNSTATED_CONFIDENCE_KIND, _load_session
 
     session = _load_session(path)
     assert isinstance(session, CanonicalSession)
+    turn = session.turns[0]
+    # The number is kept and its provenance is marked as what it is: never recorded.
+    assert turn.confidence == pytest.approx(0.98)
+    assert turn.confidence_kind == UNSTATED_CONFIDENCE_KIND
     # Absent, not invented: nothing here fabricates an attribution nobody measured.
-    assert session.turns[0].speaker_coverage is None
-    assert session.turns[0].confidence_kind is None
+    assert turn.speaker_coverage is None
+    assert turn.speaker_purity is None
     assert session.entities == []
     assert session.threads == []
+
+
+def test_a_0_2_turn_still_may_not_omit_the_quantity(tmp_path):
+    """The migration is for 0.1 files only; it must not become a way in for new ones."""
+    path = tmp_path / "canonical-session.json"
+    path.write_text(json.dumps(_session_payload("0.2")))
+
+    from rpg_chronicle.pipeline import _load_session
+
+    with pytest.raises(ValueError, match="confidence_kind"):
+        _load_session(path)
+
+
+def test_a_resumed_0_1_session_runs_to_review_ready(tmp_path):
+    """The failure the validator reproduced was resumption, not loading in isolation."""
+    session_dir = tmp_path / "s1"
+    session_dir.mkdir()
+    (session_dir / "canonical-session.json").write_text(json.dumps(_session_payload("0.1")))
+
+    session = run_pipeline(
+        source=Path("benchmarks/fixtures/r0_synthetic_session.json"),
+        output_dir=tmp_path,
+        transcript_provider=FixtureTranscriptProvider(),
+        analysis_provider=ModelAnalysisProvider(FakeBackend()),
+        session_id="s1",
+    )
+    assert session.status == "review_ready"
+    # The rewritten file declares what it now holds, not where it came from.
+    stored = json.loads((session_dir / "canonical-session.json").read_text())
+    assert stored["schema_version"] == SCHEMA_VERSION
+    assert stored["turns"][0]["confidence_kind"]
 
 
 def test_a_session_from_a_schema_this_build_does_not_know_is_refused(tmp_path):
