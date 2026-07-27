@@ -21,7 +21,7 @@ Usage:
     uv run python scripts/fetch_benchmark_media.py --verify-only <manifest-id>
 
 The cache directory comes from ``--cache``, else ``RPG_CHRONICLE_BENCHMARK_CACHE``, else
-``benchmark-cache/`` at the repository root. Point the environment variable at the
+``benchmark-cache/`` inside the content directory. Point the environment variable at the
 ``paths.benchmark_cache`` you configured in your private ``config/paths.yaml``.
 """
 
@@ -40,8 +40,14 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST_DIR = ROOT / "benchmarks/manifests"
-DEFAULT_CACHE = ROOT / "benchmark-cache"
+#: Recordings, manifests and answer keys live together outside the repository, because a
+#: manifest describes one recording and an answer key is meaningless without it. See
+#: `docs/CONTENT_AUDIT.md`. Overridable so a second machine need not use the same path.
+CONTENT_ROOT = Path(
+    os.environ.get("RPG_CHRONICLE_HOME", Path.home() / ".rpg-chronicle")
+).expanduser().resolve()
+MANIFEST_DIR = CONTENT_ROOT / "benchmarks/manifests"
+DEFAULT_CACHE = CONTENT_ROOT / "benchmark-cache"
 CHUNK_BYTES = 1 << 20
 # Applies per socket operation, not to the whole transfer, so a large episode over a slow
 # link is fine while a host that stalls fails instead of hanging a verification tool.
@@ -157,9 +163,9 @@ def cache_dir(explicit: str | None) -> Path:
     ``paths.benchmark_cache`` from a private config.
     """
     if explicit:
-        return Path(explicit).expanduser()
+        return Path(explicit).expanduser().resolve()
     configured = os.environ.get("RPG_CHRONICLE_BENCHMARK_CACHE")
-    return Path(configured).expanduser() if configured else DEFAULT_CACHE
+    return Path(configured).expanduser().resolve() if configured else DEFAULT_CACHE
 
 
 def build_request(url: str) -> urllib.request.Request:

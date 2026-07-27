@@ -54,8 +54,14 @@ def commands() -> list[str]:
     return found
 
 
-def test_ci_runs_the_benchmark_manifest_validator() -> None:
-    assert any("scripts/validate_benchmark_manifests.py" in run for run in commands())
+def test_ci_does_not_try_to_validate_manifests_it_cannot_see() -> None:
+    """Manifests and answer keys live beside the recordings, outside this repository.
+
+    CI has no content directory, so a manifest-validation step here would either fail or,
+    worse, pass by finding nothing. The validator is a tool the operator runs; this asserts
+    the step stays gone, because re-adding it would look like restoring a check.
+    """
+    assert not any("validate_benchmark_manifests" in run for run in commands())
 
 
 def test_ci_runs_the_test_suite() -> None:
