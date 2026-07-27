@@ -42,6 +42,12 @@ jobs:
     # than prevents -- a failed check on an issue event does not remove the label.
     if: github.event.action != 'closed' && contains(github.event.issue.labels.*.name, 'goal:active')
     runs-on: ubuntu-latest
+    # Job-level permissions replace the workflow's, they do not add to them. This job
+    # needs contents:read for the checkout that brings scripts/goal-body-hash.sh, and
+    # issues:read for the comments; it writes nothing.
+    permissions:
+      contents: read
+      issues: read
     steps:
       - uses: actions/checkout@v4
       - name: Fail if the active goal has no matching goal-check verdict

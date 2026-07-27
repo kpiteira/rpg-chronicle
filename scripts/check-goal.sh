@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Check a goal issue against docs/GOAL_RULES.md before it is activated.
 #
-# Usage: scripts/check-goal.sh <issue-number> [--rules <path>] [--no-comment]
+# Usage: scripts/check-goal.sh <issue-number> [--rules <path>] [--no-comment] [--bare]
 #
 #   --rules <path>   measure against an alternate rule file (default docs/GOAL_RULES.md).
 #                    Used by scripts/replay-goal-check.sh to show that a verdict comes
@@ -42,7 +42,7 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-[ -n "$issue" ] || { echo "usage: scripts/check-goal.sh <issue-number> [--rules <path>] [--no-comment]" >&2; exit 2; }
+[ -n "$issue" ] || { echo "usage: scripts/check-goal.sh <issue-number> [--rules <path>] [--no-comment] [--bare]" >&2; exit 2; }
 [ -f "$rules" ] || { echo "rule file not found: $rules" >&2; exit 2; }
 
 body_hash=$("$root/scripts/goal-body-hash.sh" "$issue")
