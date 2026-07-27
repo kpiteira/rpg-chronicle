@@ -1,16 +1,32 @@
-"""Validate committed benchmark manifests against the versioned JSON Schema."""
+"""Validate benchmark manifests against the versioned JSON Schema.
+
+The schema is committed here; the manifests it validates are not. A manifest describes one
+recording and carries the answer key for it, and an answer key is meaningless without the
+recording it answers for, so both live beside the audio in the content directory. See
+`docs/CONTENT_AUDIT.md`.
+
+That makes this a tool the operator runs rather than a CI step: CI has no content directory,
+and giving it one would mean committing the thing this arrangement exists to keep out.
+"""
 
 from __future__ import annotations
 
 import hashlib
 import json
+import os
 from pathlib import Path
 
 from jsonschema import Draft202012Validator, FormatChecker
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_PATH = ROOT / "benchmarks/schema/benchmark-manifest.schema.json"
-MANIFEST_DIR = ROOT / "benchmarks/manifests"
+
+#: Where recordings, manifests, answer keys and fingerprints live. Overridable so a second
+#: machine, or a test, can point somewhere else without editing this file.
+CONTENT_ROOT = Path(
+    os.environ.get("RPG_CHRONICLE_HOME", Path.home() / ".rpg-chronicle")
+).expanduser()
+MANIFEST_DIR = CONTENT_ROOT / "benchmarks/manifests"
 
 # A target can be verified from the recording by ear or through tooling. It can never be
 # verified from a title, a description, or an index, however plausible the guess.
@@ -18,11 +34,13 @@ VERIFIABLE_BASES = {"audio_observed", "audio_machine_assisted"}
 
 
 def _display(path: Path) -> str:
-    """Name a manifest relative to the repository when it lives inside it."""
-    try:
-        return str(path.relative_to(ROOT))
-    except ValueError:
-        return str(path)
+    """Name a manifest relative to the content directory when it lives inside it."""
+    for base in (CONTENT_ROOT, ROOT):
+        try:
+            return str(path.relative_to(base))
+        except ValueError:
+            continue
+    return str(path)
 
 
 def _one_line(message: str) -> str:
@@ -40,7 +58,7 @@ def _truth_targets(instance: dict) -> list[tuple[str, dict]]:
     ]
 
 
-def _semantic_errors(instance: dict) -> list[str]:
+def _semantic_errors(instance: dict, content_root: Path) -> list[str]:
     """Check the rules the schema cannot express, which are the ones that carry the meaning.
 
     A time anchor outside the excerpt window points at audio nobody scores, and a target
@@ -139,7 +157,7 @@ def _semantic_errors(instance: dict) -> list[str]:
             "re-encodes. An anchor is an offset into a particular recording, and without "
             "either a reader cannot tell whether they are holding it"
         )
-    errors.extend(_fingerprint_errors(fingerprint))
+    errors.extend(_fingerprint_errors(fingerprint, content_root))
     if machine_assisted and not instance["truth"].get("contaminating_providers"):
         errors.append(
             "truth.contaminating_providers is required once a target is machine-assisted; "
@@ -149,45 +167,44 @@ def _semantic_errors(instance: dict) -> list[str]:
     return errors
 
 
-def _fingerprint_errors(fingerprint: dict | None) -> list[str]:
+def _fingerprint_errors(fingerprint: dict | None, content_root: Path) -> list[str]:
     """Check that a declared fingerprint is one a reader can actually use.
 
     Presence satisfies the schema and proves nothing. The whole point of the field is that a
     reader runs the fingerprint against their own copy, so a typoed path or a digest that
     stopped matching leaves a manifest passing validation while its anchors are unusable -
-    which is the exact failure the field was added to close. Unlike media_sha256, this
-    digest is checkable here, because the file it names is committed in this repository.
+    which is the exact failure the field was added to close. Unlike media_sha256, this digest
+    is checkable, because the file it names sits beside the manifest in the content directory.
     """
     if not fingerprint:
         return []
     errors: list[str] = []
     declared = fingerprint["path"]
-    path = (ROOT / declared).resolve()
+    path = (content_root / declared).resolve()
     # A manifest is data, and the validator reads what it names, so the name has to be
     # constrained before it is followed. An absolute path or a ".." segment would have this
-    # hashing a file outside the repository and calling it the fingerprint - which both
-    # reads what it should not and voids the guarantee that a fingerprint is committed here.
-    if not path.is_relative_to(ROOT):
+    # hashing a file anywhere on the disk and calling it the fingerprint - which both reads
+    # what it should not and voids the guarantee that a fingerprint sits with its recording.
+    if not path.is_relative_to(content_root):
         return [
             (
-                f"source.content_fingerprint.path {declared!r} resolves outside the "
-                "repository; a fingerprint has to be a file committed here or it "
-                "guarantees nothing"
+                f"source.content_fingerprint.path {declared!r} resolves outside the content "
+                "directory; a fingerprint has to sit beside the recording it identifies or "
+                "it guarantees nothing"
             )
         ]
     if not path.is_file():
         errors.append(
-            f"source.content_fingerprint.path {fingerprint['path']!r} is not a file in this "
-            "repository; a fingerprint a reader cannot open establishes nothing"
+            f"source.content_fingerprint.path {fingerprint['path']!r} is not a file in the "
+            "content directory; a fingerprint a reader cannot open establishes nothing"
         )
         return errors
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     if digest != fingerprint["sha256"]:
         errors.append(
             f"source.content_fingerprint.sha256 does not match {fingerprint['path']}: "
-            f"recorded {fingerprint['sha256']}, file is {digest}. The fingerprint is "
-            "committed here, so this digest is the one thing about identity that can be "
-            "checked outright, and it has to be right"
+            f"recorded {fingerprint['sha256']}, file is {digest}. This digest is the one "
+            "thing about identity that can be checked outright, and it has to be right"
         )
     return errors
 
@@ -195,6 +212,7 @@ def _fingerprint_errors(fingerprint: dict | None) -> list[str]:
 def validate_manifest_dir(
     manifest_dir: Path = MANIFEST_DIR,
     schema_path: Path = SCHEMA_PATH,
+    content_root: Path | None = None,
 ) -> tuple[int, list[str]]:
     """Validate every ``*.json`` manifest in ``manifest_dir``.
 
@@ -202,6 +220,7 @@ def validate_manifest_dir(
     unreadable or unparseable manifest is a reported failure for that file, not an
     aborted run: the remaining manifests are still validated.
     """
+    root = content_root if content_root is not None else manifest_dir.parent.parent
     schema = json.loads(schema_path.read_text())
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
     paths = sorted(manifest_dir.glob("*.json"))
@@ -221,7 +240,7 @@ def validate_manifest_dir(
             continue
 
         errors = sorted(validator.iter_errors(instance), key=lambda error: list(error.path))
-        semantic_errors = [] if errors else _semantic_errors(instance)
+        semantic_errors = [] if errors else _semantic_errors(instance, root)
         if errors:
             failures += 1
             for error in errors:
@@ -235,7 +254,13 @@ def validate_manifest_dir(
             lines.append(f"valid: {_display(path)}")
 
     if not paths:
-        return 1, ["No benchmark manifests found."]
+        return 1, [
+            (
+                f"No benchmark manifests found in {manifest_dir}. Manifests and answer "
+                "keys live beside the recordings, outside this repository; set "
+                "RPG_CHRONICLE_HOME if the content directory is not ~/.rpg-chronicle."
+            )
+        ]
     return int(bool(failures)), lines
 
 

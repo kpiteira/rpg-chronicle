@@ -12,9 +12,21 @@ Start with reusable transcription, diarization, and local-LLM components behind 
 
 ## Repository boundary
 
-This public repository contains reusable software, documentation, benchmark manifests, synthetic fixtures, and reproducible research results.
+This public repository contains reusable software, documentation, schemas, synthetic fixtures, and reproducible research results.
 
-It must not contain private campaign data, voice profiles, downloaded copyrighted audio, session recordings, private vault contents, or secrets. Runtime data may live anywhere on local disks or a NAS and is referenced through configuration.
+It must not contain content of any kind: no session recordings, no transcripts, no
+per-recording manifests or answer keys, no private campaign data, voice profiles, vault
+contents, or secrets. A licence permitting reuse does not change this — it answers whether
+we may publish something, never whether we should.
+
+Content lives in `~/.rpg-chronicle` (override with `RPG_CHRONICLE_HOME`), beside the audio
+it describes. `docs/CONTENT_AUDIT.md` records the audit that established the line, every
+tracked file against one test. Synthetic sessions under `benchmarks/fixtures/` are the sole
+exception: tests execute them, `uv run pytest` fails without them, and nobody's speech is
+in them.
+
+Runtime data may live anywhere on local disks or a NAS and is referenced through
+configuration.
 
 ## Start
 
