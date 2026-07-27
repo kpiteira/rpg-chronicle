@@ -97,7 +97,11 @@ fi
 
 printf '%s\n' "$verdict"
 
-# Fail closed: only an explicit pass exits 0. A malformed verdict is not a pass, and the
-# lifecycle workflow applies the same rule when it looks for the comment.
-printf '%s' "$verdict" | grep -qE '"verdict": *"pass"' && exit 0
+# Fail closed: only an explicit top-level pass exits 0. Parsed rather than grepped,
+# because the checker quotes the goal's own text into its findings and a goal that
+# discusses verdict JSON -- a governance goal about this very check, say -- would put the
+# pass substring inside a blocking verdict. Malformed output parses to nothing and fails.
+if [ "$(printf '%s' "$verdict" | jq -er '.verdict' 2>/dev/null || true)" = "pass" ]; then
+  exit 0
+fi
 exit 1

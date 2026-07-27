@@ -82,7 +82,14 @@ jobs:
             echo "::error::#${ISSUE} is active with no goal-check verdict for its current body (${body_hash}). Run scripts/check-goal.sh ${ISSUE}."
             exit 1
           fi
-          if ! printf '%s' "$verdict" | grep -qE '"verdict": *"pass"'; then
+
+          # Parse the fenced JSON rather than grepping the comment. The checker quotes the
+          # goal's own text into its findings, so a goal that discusses verdict JSON would
+          # put the pass substring inside a blocking verdict. Unparseable output fails.
+          state=$(printf '%s' "$verdict" \
+            | sed -n '/^```json$/,/^```$/p' | sed '1d;$d' \
+            | jq -er '.verdict' 2>/dev/null || true)
+          if [ "$state" != "pass" ]; then
             echo "::error::#${ISSUE} carries a blocking or malformed goal-check verdict for its current body."
             exit 1
           fi

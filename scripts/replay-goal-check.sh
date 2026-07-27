@@ -48,7 +48,10 @@ trap 'rm -rf "$workdir"' EXIT
 run() { # run <issue> <expected>
   local issue="$1" expected="$2" verdict actual
   verdict=$("$root/scripts/check-goal.sh" "$issue" --no-comment || true)
-  actual=$(printf '%s' "$verdict" | grep -oE '"verdict": *"[a-z]+"' | grep -oE '(pass|block)' | head -1)
+  # Parsed, not grepped: the checker quotes goal text into its findings, so a substring
+  # match could read a quoted verdict as this run's own and silently invalidate the
+  # evidence. Malformed output yields "none", which matches no expectation.
+  actual=$(printf '%s' "$verdict" | jq -er '.verdict' 2>/dev/null || true)
   printf '=== #%s expected:%s actual:%s\n%s\n\n' "$issue" "$expected" "${actual:-none}" "$verdict"
   [ "${actual:-none}" = "$expected" ]
 }
