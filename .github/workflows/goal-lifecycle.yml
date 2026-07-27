@@ -2,6 +2,12 @@ name: goal-lifecycle
 
 on:
   issues:
+    # No `edited`. A goal-check verdict is bound to a hash of the goal body, so editing the
+    # body after a passing check is exactly the case the binding exists to catch -- and an
+    # `edited` trigger would catch it automatically. It would also spend a workflow run
+    # that no edit spends today, which this goal's constraint reserved for the operator to
+    # decide. The specialist-side confirmation in AGENTS.md covers the case meanwhile: a
+    # session starting a goal checks that the verdict matches the body as it now reads.
     types: [opened, closed, labeled, unlabeled, reopened]
 
 permissions:
@@ -34,6 +40,63 @@ jobs:
             fi
           done <<< "$rows"
           exit $status
+
+  require-goal-check:
+    # An active goal must carry a passing goal-check verdict bound to its current body.
+    # This job never invokes a model: scripts/check-goal.sh does that locally, and this
+    # only looks for what it left behind. Like every other control here it reports rather
+    # than prevents -- a failed check on an issue event does not remove the label.
+    if: github.event.action != 'closed' && contains(github.event.issue.labels.*.name, 'goal:active')
+    runs-on: ubuntu-latest
+    # Job-level permissions replace the workflow's, they do not add to them. This job
+    # needs contents:read for the checkout that brings scripts/goal-body-hash.sh, and
+    # issues:read for the comments; it writes nothing.
+    permissions:
+      contents: read
+      issues: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail if the active goal has no matching goal-check verdict
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          body_hash=$(scripts/goal-body-hash.sh "$ISSUE")
+
+          # Select whole comments carrying the marker, so a "pass" elsewhere in the
+          # discussion cannot be read as this goal's verdict -- and take the last one, so
+          # a re-check that now blocks is not satisfied by an earlier passing verdict for
+          # the same body.
+          select_marker() {
+            gh issue view "$ISSUE" --json comments \
+              --jq "[.comments[].body | select(contains(\"$1 body:${body_hash}\"))] | last // empty"
+          }
+
+          if [ -n "$(select_marker goal-check-override)" ]; then
+            echo "goal check overridden by the operator for body ${body_hash}"
+            exit 0
+          fi
+
+          verdict=$(select_marker goal-checker)
+
+          if [ -z "$verdict" ]; then
+            echo "::error::#${ISSUE} is active with no goal-check verdict for its current body (${body_hash}). Run scripts/check-goal.sh ${ISSUE}."
+            exit 1
+          fi
+
+          # Parse the fenced JSON rather than grepping the comment. The checker quotes the
+          # goal's own text into its findings, so a goal that discusses verdict JSON would
+          # put the pass substring inside a blocking verdict. Unparseable output fails.
+          state=$(printf '%s' "$verdict" \
+            | sed -n '/^```json$/,/^```$/p' | sed '1d;$d' \
+            | jq -er '.verdict' 2>/dev/null || true)
+          if [ "$state" != "pass" ]; then
+            echo "::error::#${ISSUE} carries a blocking or malformed goal-check verdict for its current body."
+            exit 1
+          fi
+          echo "goal check passes for body ${body_hash}"
 
   notify-tpm-on-completion:
     if: github.event.action == 'closed'

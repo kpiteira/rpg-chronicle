@@ -162,3 +162,107 @@ mechanism built before the first attempt would be built against a guess.
 
 Rule going forward: a decision that names a vendor should be re-read whenever the work
 stops matching it, and the places it leaked into should be listed when it is recorded.
+
+## D-017: The goal is checked before it becomes a mandate
+
+Every control this repository had pointed at a *diff*. `scripts/validate-goal.sh` measures
+a pull request against its goal issue, the merge gate refuses a merge without a verdict
+bound to the head commit, and CI runs the privacy guard over the tree. All three assume
+the goal is sound, and all three correctly pass work that did what a defective goal asked.
+Goal #21 asked for a committed human-corrected reference transcript, reasoning from CC BY
+3.0; the specialist delivered it, the validator passed the pull request, and 1,178 words of
+a real recording's speech entered a public repository. Removing it took two further goals.
+
+`scripts/check-goal.sh` adds the missing reader. It runs a fresh headless process over the
+goal issue against `docs/GOAL_RULES.md` — R1 to R7, each carrying the source that governs
+it — and posts a JSON verdict bound to a hash of the goal body, so a goal edited after
+being checked no longer carries a matching verdict. `docs/GOALS.md` puts it before the
+`goal:active` label; `AGENTS.md` has the specialist confirm it before starting.
+
+### What the replay measured
+
+`scripts/replay-goal-check.sh` runs the checker over goals whose outcome is known, with the
+corpus chosen by a stated criterion rather than by which goals give the wanted answer.
+Goals whose durable outputs committed material about a real recording must block; goals
+whose durable outputs were software or governance must pass.
+
+- **#21, #11, #14 block.** #21's verdict quotes its own licence argument back at it. #11
+  and #14 block on committed per-recording manifests, answer keys and rights
+  determinations — exactly the artifacts `docs/CONTENT_AUDIT.md` later removed.
+- **#12 and #17 pass**, with advisories about internal inconsistency and nothing else.
+- **#11 and #14 were expected to pass, and did not.** Both were sound under the rules in
+  force when they were written; both violate R1 as it now stands. The expectation was
+  wrong, not the checker, and the corpus records the mis-prediction rather than being
+  refitted around it.
+
+### The reliability measurement, and what was changed after it
+
+A third run of the corpus reversed #11 and #14 to **pass**. Their passing rationales named
+the goals' own prohibitions as the reason — #14 *"forbids committing media, clips,
+derivatives, or full transcripts under any rights position"* — while the manifests, truth
+items and rights determinations in their durable outputs went unremarked. The checker was
+reading the prohibitions and not the outputs.
+
+R1 was rewritten against that specific miss: two named kinds of material rather than one
+sentence with a subordinate clause, the instruction **read the durable outputs, not the
+prohibitions**, and #11 and #14 as the worked example of a goal that honours the first kind
+while committing the second. Two runs after the change, all five goals classify correctly.
+
+Under the shipped configuration, per goal: #21 blocks 5 of 5; #12 and #17 pass in every
+run; #11 and #14 block in 4 of 5, the miss being the run that motivated the rewrite. In
+three runs with R1 removed and `--bare`, #21 never blocks on content.
+
+This is tuning against the corpus and should be read as such. What makes it defensible is
+that the change clarifies an existing rule from real history rather than inventing one to
+catch these two issues, and that the failure it names generalises. What it does not
+establish is reliability on a borderline goal the corpus has never seen. N is five runs.
+
+Two goals sit in neither list, because including them either way would be fitting the
+corpus to the result:
+
+- **#20** blocks on R5: a reuse-research goal claiming `src/rpg_chronicle/providers.py`, a
+  TPM-owned shared contract, with no cross-role request named. That goal merged.
+- **#25** blocks on R7, for listing "Two schemas" as a durable output after its own
+  amendment withdrew the split. The goal validator raised the same defect as an advisory on
+  PR #29 — *after* the work was done. The checker found it in the goal text, before it.
+
+### Whether the rule file does anything
+
+Removing R1 from the rules and re-running #21 was not conclusive at first: it still
+blocked, and its verdict named `CLAUDE.md` as the source. The checker runs inside the
+repository, where `CLAUDE.md` is loaded automatically and states the content rule as a
+non-negotiable, so the mutation had not removed the rule from its reach.
+
+Re-run with `--bare`, which runs the checker from a scratch directory, the answer is
+clean: **without R1 the content violation passes unremarked.** The verdict says so
+outright — *"no R1 is present, so this verdict covers R2–R7 and says nothing about
+whatever R1 governs"* — and blocks instead on an unrelated R5 finding. R1 is load-bearing;
+in normal operation it is also duplicated by `CLAUDE.md`, which is why it took removing
+the repository context to see.
+
+### Stated limits
+
+- **The block rate on real goals is high** — five of the seven goals replayed block. Each
+  block names a rule and quotes the offending text, and each is defensible, but a control
+  that blocks most goals is one a session under time pressure will route around. The
+  answer is that a block before activation is cheap: #25's would have been one line.
+- **Reliability is measured and it is not one.** The section above gives the numbers. The
+  blatant case is stable; the borderline cases moved once and moved back after the rule was
+  rewritten, on N of five runs. A verdict is a reading, not a measurement.
+- **The TPM writes the goal, the checker, and the rules** (D-014). A blocking verdict is
+  overridable by a `goal-check-override body:<hash>` comment with a reason. That the
+  override is the operator's is a **convention, not a control**: the workflow checks no
+  author and requires no reason, and an author check would not help, since
+  `scripts/check-goal.sh` already posts under the repository owner's token.
+- **A goal edited after being checked is not caught automatically.** The workflow does not
+  trigger on `edited`, because that would spend a workflow run no edit spends today and the
+  goal reserved that decision for the operator. The binding still holds where it matters:
+  the specialist confirms the verdict matches the body as it now reads before starting, and
+  the next label event reports a mismatch. Adding `edited` to the trigger list is a
+  one-line change if the operator wants the automatic version.
+- **It reports, it does not prevent.** The `require-goal-check` job fails on an issue event;
+  nothing removes the label. Same class as the merge gate, and D-015 says why that is
+  accepted.
+
+Rule going forward: when a control passes work that turned out to be wrong, check whether
+it was measuring the right artifact before hardening it.

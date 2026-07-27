@@ -16,8 +16,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-# The validator is not a long-lived role with a goal queue; it has no label.
-NOT_A_ROLE = {"goal-validator"}
+# Neither the validator nor the checker is a long-lived role with a goal queue. They are
+# briefs for a headless process that reads one artifact and emits a verdict, so neither
+# has a label, an issue-form option, or an active goal to be counted.
+NOT_A_ROLE = {"goal-validator", "goal-checker"}
 
 
 def role_ids() -> set[str]:

@@ -70,12 +70,42 @@ The TPM:
 2. checks milestone priority and cross-workstream dependencies;
 3. creates or refines one issue;
 4. assigns the GitHub milestone;
-5. applies exactly one `agent:*` label and `goal:active`;
-6. removes `goal:proposed` or `goal:blocked`;
-7. confirms the specialist now has exactly one active open goal.
+5. runs `scripts/check-goal.sh <issue>` and obtains a passing verdict;
+6. applies exactly one `agent:*` label and `goal:active`;
+7. removes `goal:proposed` or `goal:blocked`;
+8. confirms the specialist now has exactly one active open goal.
 
 The TPM may keep future ideas as `goal:proposed`, but should avoid building a detailed
 task inventory that becomes stale.
+
+## The pre-activation check
+
+Step 5 exists because every other control in this repository points at the diff. The goal
+validator measures a pull request against its goal issue and the merge gate refuses a
+merge without a verdict; both assume the goal is sound, and both correctly pass work that
+did what a defective goal asked. Goal #21 asked for a committed reference transcript on a
+licence argument, and the transcript merged. See `docs/DECISIONS.md` D-017.
+
+`scripts/check-goal.sh` reads the issue in a fresh headless process against
+`docs/GOAL_RULES.md`, which gathers the rules a goal may not authorise a violation of.
+It posts its verdict as an issue comment bound to a hash of the goal body, so a goal
+edited after being checked no longer carries a matching verdict. The `require-goal-check`
+job in `.github/workflows/goal-lifecycle.yml` looks for that comment when an issue
+carrying `goal:active` is opened, labelled, unlabelled or reopened. It invokes no model,
+and like every other control here it reports rather than prevents.
+
+Editing a goal body is deliberately **not** a trigger, so an edit after a passing check is
+reported at the next label event rather than immediately. What covers it meanwhile is the
+specialist: `AGENTS.md` has a session confirm the verdict matches the body as it now reads
+before starting. D-017 says why the automatic version was not taken.
+
+A blocking verdict is answered by fixing the goal and re-running the check. It is
+**overridable by the operator, not by the TPM**: a comment on the issue containing
+`goal-check-override body:<hash>` and the reason. The TPM writing its own override would
+make the control worthless, since the TPM writes the goal.
+
+Goals activated before this check existed carry no verdict, and nothing retroactively
+demands one. The obligation begins at the next activation.
 
 ## Amending a goal already in execution
 

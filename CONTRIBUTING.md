@@ -129,6 +129,19 @@ The PR description or comments should preserve:
 - architecture/decision/risk impact;
 - follow-up goal candidates.
 
+## Checking before activation
+
+Both controls below read a *diff*. The goal itself is read once, before it becomes a
+mandate, by the goal checker:
+
+```bash
+scripts/check-goal.sh <issue-number>
+```
+
+The TPM runs it before applying `goal:active`; a specialist starting a goal confirms the
+verdict exists and matches the goal body as it now reads. See `agents/goal-checker.md`,
+`docs/GOAL_RULES.md`, and *The pre-activation check* in `docs/GOALS.md`.
+
 ## Validation before merge
 
 Copilot review is a defect check. Goal satisfaction is checked separately, in a fresh
