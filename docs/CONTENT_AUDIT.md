@@ -122,7 +122,18 @@ external content is not a reason to exclude the tool.
   person ever said. Noted honestly: nothing executes these; they are research records, which
   is a legitimate category, not a test.
 - **Keep — prose (3):** `speech-stack-scorecard.md`, `probes/README.md`, `README.md`.
-- **Reduce (2):** `real-audio-run.md` (~8 words quoted), `benchmark-candidates.md` (~14 words).
+- **Keep, correcting an earlier finding in this document (2):** `real-audio-run.md` and
+  `benchmark-candidates.md` were first recorded here as needing reduction, on a count of
+  "~8" and "~14" quoted words. That count was wrong. It came from a regular expression
+  treating apostrophes as quote delimiters, so it scored ordinary possessives — "the
+  product's own pipeline", "R01's probe" — as quoted speech, along with shell paths.
+  Re-read directly: `real-audio-run.md` contains no quotation at all, and
+  `benchmark-candidates.md`'s single instance is the **published episode title** taken from
+  the source's own metadata, which is a citation and not something anybody said.
+
+  Recorded rather than quietly amended, because a measurement in an audit is exactly the
+  kind of number that gets inherited. The criterion is unchanged; the finding under it was
+  wrong.
 
 ### `benchmarks/` — 23 files, 3 keep, 20 leave or reduce
 
@@ -133,12 +144,14 @@ external content is not a reason to exclude the tool.
   pay off in beat-11. `scripts/generate_long_session.py` expands it; the expansion is
   gitignored. **Commit the recipe, generate the artifact, ignore the output** — the pattern
   this whole audit was groping toward.
-- **Keep, with a required edit: `schema/benchmark-manifest.schema.json`.** A contract, not
+- **Keep: `schema/benchmark-manifest.schema.json`.** A contract, not
   data: `redistribution` must be one of three values, `accessed_at` is required, `license_url`
   must be a URI or explicitly null. It forces an annotator to answer what they would skip.
-  **But `truth` is in its `required` list**, so a catalogue-only manifest fails against it. It
-  must split into two schemas — a catalogue and a truth set — which is the structural form of
-  the distinction this audit recovered.
+  An earlier draft of this audit required splitting it in two — a catalogue and an answer
+  key — reasoning that they would live in different places. They do not: both move to the
+  content directory, so the justification does not hold and the requirement was withdrawn on
+  the goal before any work was done against it. One schema, staying here as the contract for
+  external files.
 - **Leave: `manifests/` (6 manifests + README).** Nothing in `src/` reads a manifest — not one
   line. Their only consumers are the validator (which exists because they exist) and
   `fetch_benchmark_media.py`, a tool that downloads audio to an external cache. A manifest is

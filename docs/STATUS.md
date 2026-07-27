@@ -90,6 +90,17 @@ measures how *well* the path carries audio. It ran on ten minutes, not four hour
 
 ### Benchmark corpus
 
+**None of it is in this repository.** Manifests, answer keys, per-recording notes and
+fingerprints live in the content directory beside the audio — `~/.rpg-chronicle` by
+default, `RPG_CHRONICLE_HOME` to override. A manifest describes one recording and an
+answer key is meaningless without it, and nothing in `src/` reads either.
+`docs/CONTENT_AUDIT.md` records the audit, every tracked file against one test. What
+stays here is the schema, the tooling, and the findings in
+`research/what-real-recordings-do.md`.
+
+The facts below describe that content, which still exists — it moved rather than being
+discarded, apart from three machine-draft transcripts that were deleted as regenerable.
+
 - Six candidates carry manifests with a versioned validating schema, explicit rights
   states read from source markup with access dates, and reproducible source evidence.
 - Rights states differ and the differences matter more than the count. Two candidates
@@ -105,7 +116,8 @@ measures how *well* the path carries audio. It ran on ten minutes, not four hour
   `kix-dnd-amateurs-first-session` (3 h 25 m), `dice-and-die-lmop-e01` (2 h 37 m) and
   `oxventure-wyrdwood-campaign` chapter 1 (2 h 05 m). Only two are CC BY 3.0 —
   `mystic-horizon` and `dice-and-die` — so only those two licences would permit a
-  committed reference transcript for annotated windows. The other two are Standard
+  attributed reference transcript at all — though not one committed here, since no
+  transcript is repository material regardless of licence. The other two are Standard
   YouTube Licence with local processing recorded as restricted.
   `mystic-horizon` is the longest, is the only one tiered `multi_hour_stress`, and is
   the closest in duration to a real session; goal #21 is open against it. `dice-and-die`
@@ -150,9 +162,13 @@ committing one.
 
 ## Known blockers
 
-- No reference transcript exists, so accuracy is unmeasurable. Every quality claim —
-  word error rate, diarization error rate, analysis quality on real play — is blocked
-  behind this and nothing else.
+- No human-corrected reference exists, so **recognition** accuracy on real voices is
+  unmeasurable. This is narrower than it has been stated before: `long_session_plan.json`
+  carries known planted structure, so whether the analysis catches a callback placed in
+  one beat and paid off four hours later is measurable today — no recording, no listener,
+  no rights question. That is the first evaluation dimension `docs/EVALUATION.md` lists.
+  A reference, when one exists, lives in the content directory and only its score comes
+  back here.
 - Diarization does not recover speaker counts. The product principle is a useful
   anonymous transcript over failed perfect diarization, so this constrains what the
   review package can assert rather than stopping the pipeline.
