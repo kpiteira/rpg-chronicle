@@ -6,15 +6,29 @@ moved to the content directory with the recordings they describe (`docs/CONTENT_
 Each was measured on a specific recording. The recording is not the point and is not named
 here; what generalises is the property and what it forced.
 
-## Channel imbalance is normal, so "the audio" and "channel zero" are not the same signal
+## A stereo file is not two microphones
 
-An amateur single-microphone session measured **two channels differing by 34 dB**. A probe
-that takes the first channel is not sampling the room, it is sampling whichever side of a
-badly-balanced capture happened to be louder.
+Every amateur item measured is a **single mixed track carried on two near-identical
+channels**. The evidence is the L−R residual — subtract one channel from the other and what
+remains sits **34 dB below programme** on one item and **53 dB below** on another, the
+second being a duplicated mono source outright.
 
-**What it forced:** the diarizer refuses multi-channel input rather than silently taking
-channel zero, which an earlier probe did. Downmixing is a decision the caller makes
-explicitly.
+So stereo buys nothing here. There is no per-speaker channel to separate anyone from, and
+everything about who spoke has to come from diarization on one signal — which is why the
+diarizer being the unsolved half matters as much as it does.
+
+**What it forces:** the diarizer refuses multi-channel input rather than silently taking
+channel zero. Note that this is *not* because channel zero would be the wrong signal — on
+these items it is the same signal. It is because a recording that genuinely carried
+per-speaker channels would need handling nobody has designed, and silently discarding
+channels is the wrong default for a case the corpus has not yet met.
+
+**Recorded because I got it backwards.** An earlier version of this file said the two
+channels *differ* by 34 dB and concluded that taking the first channel samples "whichever
+side of a badly-balanced capture happened to be louder". That inverts the measurement: a
+residual 34 dB below programme means the channels are nearly the same, not far apart. The
+reading propagated into a code comment and a run write-up before the goal validator caught
+it by reading the notes this commit deletes.
 
 ## Fantasy names defeat recognition, and two engines fail differently
 

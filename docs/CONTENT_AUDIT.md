@@ -158,7 +158,7 @@ external content is not a reason to exclude the tool.
   input configuration for an operation that happens entirely outside the repository.
 - **Leave: `notes/` (6 files).** Per-recording annotation and measurement notes. The
   *generalisations* in them are worth keeping and belong in `research/` prose: channel
-  imbalance up to 34 dB on amateur single-mic audio; fantasy names defeating both engines;
+  amateur items being single mixed tracks with an L-R residual 34 dB below programme; fantasy names defeating both engines;
   audio level anti-predicting recognition reliability, so measure overlap; 14% of a real
   session yielding no words while containing no silence. The per-item narration follows the
   recordings out.
