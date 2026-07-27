@@ -185,9 +185,10 @@ def _merge_entities_and_threads(
     Aliases accumulate the same way, and the canonical name is not resolved here. The
     model proposes; deciding that "Kaelith" and "Kayleth" are one name with one correct
     spelling is what `docs/UX.md` puts in front of a person, and it needs both spellings
-    to survive to be asked at all.
+    to survive to be asked at all. The same holds for a name two windows disagree about
+    the kind of: nothing here picks a winner.
     """
-    entities: dict[str, dict[str, Any]] = {}
+    entities: dict[tuple[str, str], dict[str, Any]] = {}
     for payload in window_payloads:
         for entry in payload.get("entities", []):
             name = _required_str(entry, "name", where="entity")
@@ -198,8 +199,14 @@ def _merge_entities_and_threads(
                 for item in entry.get("aliases", [])
                 if isinstance(item, str) and item.strip()
             ]
+            # Identity includes what kind of thing it is. If two windows call the same
+            # name a character and a faction, the model has not identified one thing, and
+            # picking whichever window came first would hide a disagreement behind an
+            # arbitrary result that depends on window order. Both records survive and the
+            # reviewer sees the conflict directly -- the same treatment aliases get, for
+            # the same reason: resolving it is a person's job, not a merge rule's.
             record = entities.setdefault(
-                name.casefold(),
+                (name.casefold(), kind.casefold()),
                 {"name": name, "kind": kind, "aliases": [], "turn_ids": []},
             )
             for alias in aliases:

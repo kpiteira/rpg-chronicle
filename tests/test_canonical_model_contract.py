@@ -17,8 +17,8 @@ from pathlib import Path
 
 import pytest
 
-from rpg_chronicle.analysis.provider import ModelAnalysisProvider
-from rpg_chronicle.model import CanonicalSession, TranscriptTurn
+from rpg_chronicle.analysis.provider import ModelAnalysisProvider, _merge_entities_and_threads
+from rpg_chronicle.model import CanonicalSession, TranscriptTurn, UnsupportedEvidenceError
 from rpg_chronicle.pipeline import SCHEMA_VERSION, UnreadableSessionError, run_pipeline
 from rpg_chronicle.providers import AnalysisResult, FixtureTranscriptProvider
 from rpg_chronicle.transcription.engine import (
@@ -165,6 +165,63 @@ def test_a_turn_with_no_confidence_needs_no_quantity():
 def test_an_attribution_share_outside_zero_to_one_is_refused(field_name):
     with pytest.raises(ValueError, match=field_name):
         TranscriptTurn(id="t1", start_ms=0, end_ms=10, text="Words.", **{field_name: 1.4})
+
+
+class TestEntityMerging:
+    """What happens when two overlapping windows describe the same name."""
+
+    @staticmethod
+    def _turns() -> list[TranscriptTurn]:
+        return [
+            TranscriptTurn(
+                id=f"turn-{index:03d}",
+                start_ms=index * 10,
+                end_ms=index * 10 + 9,
+                text=f"Line {index}.",
+            )
+            for index in range(1, 4)
+        ]
+
+    @staticmethod
+    def _window(name: str, kind: str, aliases: list[str], turn_ids: list[str]) -> dict:
+        return {
+            "entities": [{"name": name, "kind": kind, "aliases": aliases, "turn_ids": turn_ids}],
+            "threads": [],
+        }
+
+    def test_one_name_in_two_windows_becomes_one_entity_with_both_spellings(self):
+        turns = self._turns()
+        merged, _ = _merge_entities_and_threads(
+            [
+                self._window("Kaelith", "character", ["Kayleth"], ["turn-001"]),
+                self._window("Kaelith", "character", ["Kaeleth"], ["turn-003"]),
+            ],
+            {turn.id: turn for turn in turns},
+        )
+        assert len(merged) == 1
+        assert sorted(merged[0].aliases) == ["Kaeleth", "Kayleth"]
+        # Evidence accumulates rather than splitting into two near-identical records.
+        assert merged[0].evidence.turn_ids == ["turn-001", "turn-003"]
+
+    def test_a_name_two_windows_disagree_about_is_not_silently_resolved(self):
+        """First-mention-wins would hide the disagreement behind window ordering."""
+        turns = self._turns()
+        merged, _ = _merge_entities_and_threads(
+            [
+                self._window("The Ashen Hand", "faction", [], ["turn-001"]),
+                self._window("The Ashen Hand", "character", [], ["turn-002"]),
+            ],
+            {turn.id: turn for turn in turns},
+        )
+        assert sorted(entity.kind for entity in merged) == ["character", "faction"]
+
+    def test_a_fabricated_citation_on_an_entity_aborts_like_any_other_claim(self):
+        turns = self._turns()
+        with pytest.raises(UnsupportedEvidenceError):
+            _merge_entities_and_threads(
+                [self._window("Nobody", "character", [], ["turn-999"])],
+                {turn.id: turn for turn in turns},
+            )
 
 
 def _session_payload(schema_version: str) -> dict:
