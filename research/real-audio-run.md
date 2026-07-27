@@ -147,6 +147,8 @@ a projection; this is ten minutes and does not generalise to it.
   emitting several short spans for one speaker inside a long turn would otherwise hand
   that turn to whoever interjected once.
 - `run-audio` requires 16 kHz mono and refuses anything else rather than downmixing.
-  B02 measured this recording's two channels differing by 34 dB, so "the first channel"
-  and "the audio" are not the same signal and a silent choice between them would make
-  the measurement describe something nobody selected.
+  B02 measured this recording as a single mixed track on two near-identical channels — an
+  L−R residual 34 dB *below* programme — so downmixing is safe here and is still the
+  caller's explicit choice, because a recording that did carry per-speaker channels would
+  need handling nobody has designed. An earlier wording of this line said the channels
+  *differed* by 34 dB, which inverts the measurement.

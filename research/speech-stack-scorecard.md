@@ -73,7 +73,7 @@ re-check.
 
 ### Cost
 
-Measured on the 0–600 s window of Hiddengrid Episode 044 (`benchmarks/manifests/
+Measured on the 0–600 s window of Hiddengrid Episode 044 (the content directory's `benchmarks/manifests/
 hiddengrid-swc-ep044-tower-play.json`), 16 kHz mono. Full results in
 `research/probes/results/`; text and engine-native artifacts are withheld there because
 this source's redistribution is restricted.
@@ -414,7 +414,7 @@ threshold, and the count climbs with input length — 23 at 10 minutes, 32 at 20
 
 So the count is tunable on real audio. What to tune it toward is the harder question,
 and the benchmark manifest — corrected by B02 after this sweep ran — now answers it only
-partly: `benchmarks/manifests/hiddengrid-swc-ep044-tower-play.json` records
+partly: the content directory's `benchmarks/manifests/hiddengrid-swc-ep044-tower-play.json` records
 `expected_physical_speakers: 7` alongside `proven_distinct_speakers: 2`. Seven is a count
 of first-person speaking *roles* heard in the window; how many people hold those roles is
 a different question the audio barely answers, and only two are proven acoustically

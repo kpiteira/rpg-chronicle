@@ -5,7 +5,7 @@ exception - never need a decoder. They build synthetic envelopes whose relations
 by construction: same shape, same shape shifted, different shape. What is pinned here is the
 logic that turns two envelopes into a verdict, which is where every decision in this module
 lives. The real recording is exercised separately and that run is written up in
-benchmarks/notes/recording-identity.md, with the numbers those runs produced.
+the content directory's benchmarks/notes/recording-identity.md, with the numbers those runs produced.
 """
 
 from __future__ import annotations
@@ -327,7 +327,7 @@ def test_the_coarse_search_range_follows_the_fingerprint_frame_size(
     assert fine is not None, "the coarse pass found the peak and must have refined it"
 
 
-# Measured on the real recording; every run is in benchmarks/notes/recording-identity.md.
+# Measured on the real recording; every run is in the content directory's benchmarks/notes/recording-identity.md.
 # Each threshold is bounded by the worst a genuine copy scored on the pass it governs, and by
 # the best a different recording scored. The two passes get different bounds because they see
 # different numbers: a genuine copy trimmed by 12.347 s scores 0.7769 coarsely and 0.9989
@@ -373,7 +373,7 @@ def test_thresholds_sit_between_the_observed_extremes(name: str) -> None:
     measurement and it cannot: the bounds are literals transcribed from runs that needed four
     hours of audio, and nothing here re-derives them. Moving a threshold outside the gap those
     runs found fails, which is the point - it forces whoever moves it to go back to
-    benchmarks/notes/recording-identity.md rather than nudge a number. What actually holds the
+    the content directory's benchmarks/notes/recording-identity.md rather than nudge a number. What actually holds the
     discrimination is elsewhere in this file, where a different recording is rejected and a
     copy that locates without agreeing is rejected too.
 

@@ -117,11 +117,14 @@ class SherpaDiarizationEngine:
         diarizer = sherpa_onnx.OfflineSpeakerDiarization(config)
         samples, sample_rate = sf.read(str(audio), dtype="float32", always_2d=True)
         if samples.shape[1] != 1:
-            # Refusing rather than picking channel zero. R01's probe took the first
-            # channel silently, and B02 later measured this benchmark's two channels
-            # differing by 34 dB -- so "the first channel" and "the audio" are not the
-            # same signal, and a cost or label measured on one is not evidence about
-            # the other.
+            # Refusing rather than picking channel zero, which R01's probe did silently.
+            # Not because channel zero is the wrong signal: every benchmark item measured
+            # is a single mixed track on near-identical channels, an L-R residual 34 dB
+            # below programme. It is because a recording that genuinely carried
+            # per-speaker channels would need handling nobody has designed, and silently
+            # discarding channels is the wrong default for a case not yet met. An earlier
+            # version of this comment said the channels differed by 34 dB, inverting the
+            # measurement; see research/what-real-recordings-do.md.
             raise EngineResponseError(
                 f"{audio.name} has {samples.shape[1]} channels; {self.name} needs mono. "
                 "Downmix it first so the signal that was diarized is the signal that "

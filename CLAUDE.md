@@ -13,7 +13,10 @@ anything else in a session:
 ## Non-negotiable
 
 - Never commit or merge to `main`, locally or remotely.
-- Never commit recordings, transcripts, voice profiles, vault content, or secrets.
+- Never commit recordings, transcripts, voice profiles, vault content, or secrets. Nor
+  per-recording manifests, answer keys or annotation notes: content lives in
+  `~/.rpg-chronicle`, and a permissive licence does not make it repository material. See
+  `docs/CONTENT_AUDIT.md`.
 - Never assert declared fixture truth in a test and present it as capability. See the
   tautology check in `agents/goal-validator.md`.
 - Ask the user only for consequential product decisions, per the goal protocol.
