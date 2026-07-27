@@ -121,7 +121,7 @@ no benefit.
 | `docs/` governance, `README.md`, `AGENTS.md`, `CONTRIBUTING.md`, `agents/`, `.github/` | TPM |
 | `scripts/validate-goal.sh`, `scripts/hooks/`, `scripts/setup-role-worktree.sh`, `scripts/install-bootstrap.sh` | TPM |
 | `research/` per file by rule 1, transcription provider implementations | Reuse research by default — see below |
-| `benchmarks/manifests/`, `benchmarks/schema/`, `benchmarks/notes/`, `docs/EVALUATION.md`, `scripts/fetch_benchmark_media.py`, `scripts/validate_benchmark_manifests.py` | Benchmark research |
+| `benchmarks/schema/`, `docs/EVALUATION.md`, `scripts/fetch_benchmark_media.py`, `scripts/validate_benchmark_manifests.py`, and the content directory's `benchmarks/` | Benchmark research |
 | `src/rpg_chronicle/analysis/` and review code, `benchmarks/fixtures/`, `docs/UX.md`, `docs/ANALYSIS.md`, `scripts/generate_long_session.py` | Review and analysis |
 | `docs/VAULT_INTEGRATION.md`, vault adapter contracts | Vault discovery |
 | `src/rpg_chronicle/model.py`, `src/rpg_chronicle/providers.py`, `docs/ARCHITECTURE_BOUNDARIES.md` | TPM (shared contract) |

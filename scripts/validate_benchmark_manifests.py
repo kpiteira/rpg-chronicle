@@ -223,6 +223,12 @@ def validate_manifest_dir(
     Returns the process exit code and the report lines, one line per finding. An
     unreadable or unparseable manifest is a reported failure for that file, not an
     aborted run: the remaining manifests are still validated.
+
+    ``content_root`` is where a manifest's relative paths - the content fingerprint - are
+    resolved from. Defaulting it to ``manifest_dir.parent.parent`` assumes the caller laid
+    the directory out as ``<root>/benchmarks/manifests``, which is true of the content
+    directory and need not be true of a caller passing an arbitrary path. Pass it
+    explicitly when the layout differs; the fallback is a convenience, not a contract.
     """
     root = (content_root if content_root is not None else manifest_dir.parent.parent).resolve()
     schema = json.loads(schema_path.read_text())
