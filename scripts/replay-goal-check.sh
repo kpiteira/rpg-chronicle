@@ -17,6 +17,10 @@
 #     #12  a model-backed AnalysisProvider behind a vendor-neutral seam.
 #     #17  governance documents describing the repository as it is.
 #
+#   MUST BLOCK on structure rather than content.
+#     #31  a goal authored for this corpus with four required sections absent, closed
+#          immediately, never labelled, never a real goal.
+#
 # Two goals are deliberately absent from both lists, because the checker found real
 # defects in them and putting them in either list would be fitting the corpus to the
 # result. They are recorded in docs/DECISIONS.md D-017 instead:
@@ -62,6 +66,10 @@ run 11 block || status=1
 run 14 block || status=1
 run 12 pass  || status=1
 run 17 pass  || status=1
+# Structural completeness, R7. #31 is a closed issue created for this purpose: a goal with
+# four required sections absent and acceptance evidence that reads "the work is done well
+# and the specialist is satisfied with the result".
+run 31 block || status=1
 
 # R1 removed: the section from its heading up to the next rule heading.
 awk '/^## R1 —/{skip=1} /^## R2 —/{skip=0} !skip' "$rules" > "$workdir/rules-no-r1.md"

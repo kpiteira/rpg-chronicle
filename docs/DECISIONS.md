@@ -250,8 +250,17 @@ the repository context to see.
   blatant case is stable; the borderline cases moved once and moved back after the rule was
   rewritten, on N of five runs. A verdict is a reading, not a measurement.
 - **The TPM writes the goal, the checker, and the rules** (D-014). A blocking verdict is
-  overridable by the operator only, recorded as a `goal-check-override body:<hash>` comment
-  with a reason.
+  overridable by a `goal-check-override body:<hash>` comment with a reason. That the
+  override is the operator's is a **convention, not a control**: the workflow checks no
+  author and requires no reason, and an author check would not help, since
+  `scripts/check-goal.sh` already posts under the repository owner's token.
+- **The `edited` trigger spends Actions minutes** the goal reserved, and the breach is
+  named here rather than left implicit. It is kept because without it the body-hash binding
+  is unreachable — an edit after a passing check produces no event at all — and it is
+  bounded: `enforce-single-active-goal` is excluded from `edited`, and `require-goal-check`
+  runs only when the issue carries `goal:active`, so editing any other issue skips every
+  job and consumes no runner time. The repository is public (D-001), where standard runners
+  are free, so the budget the constraint protects is not the one being spent.
 - **It reports, it does not prevent.** The `require-goal-check` job fails on an issue event;
   nothing removes the label. Same class as the merge gate, and D-015 says why that is
   accepted.

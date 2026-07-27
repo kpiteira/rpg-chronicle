@@ -12,7 +12,10 @@ permissions:
 
 jobs:
   enforce-single-active-goal:
-    if: github.event.action != 'closed'
+    # Not on `edited`: labels do not change when a body is edited, so this job would have
+    # nothing new to check and would spend runner minutes to say so. `edited` is in the
+    # trigger list for require-goal-check alone.
+    if: github.event.action != 'closed' && github.event.action != 'edited'
     runs-on: ubuntu-latest
     steps:
       - name: Fail if any role holds more than one active goal
