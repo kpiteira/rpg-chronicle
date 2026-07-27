@@ -76,10 +76,11 @@ class TranscriptTurn:
             raise ValueError(f"Invalid timestamps for turn {self.id}")
         if not self.text.strip():
             raise ValueError(f"Turn {self.id} has no text")
-        if self.confidence is not None and self.confidence_kind is None:
+        if self.confidence is not None and not (self.confidence_kind or "").strip():
             raise ValueError(
                 f"Turn {self.id} carries a confidence with no confidence_kind. "
-                "An unnamed confidence is the ambiguity this field exists to remove."
+                "An unnamed confidence is the ambiguity this field exists to remove, and "
+                "a blank name is an unnamed one."
             )
         for name in ("speaker_coverage", "speaker_purity"):
             value = getattr(self, name)

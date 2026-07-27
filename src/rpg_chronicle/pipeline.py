@@ -112,8 +112,12 @@ def _build_review_package(session: CanonicalSession) -> dict[str, Any]:
         # Named things and open threads reach the reviewer, which is what `docs/UX.md`
         # asks the core surface to show. Aliases travel with the entity: the spellings a
         # recognizer disagreed about are the thing a person can settle in seconds.
+        # The id travels with each. Keying on the name would be wrong for the reason the
+        # name is carried at all: it is the model's proposal, not a resolved identity, and
+        # a reviewer settling two spellings into one changes it.
         "entities": [
             {
+                "id": entity.id,
                 "name": entity.name,
                 "kind": entity.kind,
                 "aliases": list(entity.aliases),
@@ -123,6 +127,7 @@ def _build_review_package(session: CanonicalSession) -> dict[str, Any]:
         ],
         "open_threads": [
             {
+                "id": thread.id,
                 "description": thread.description,
                 "evidence": thread.evidence.__dict__,
             }

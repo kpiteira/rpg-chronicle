@@ -146,6 +146,15 @@ def test_a_confidence_with_no_stated_quantity_is_refused():
         TranscriptTurn(id="t1", start_ms=0, end_ms=10, text="Words.", confidence=0.9)
 
 
+@pytest.mark.parametrize("blank", ["", "   ", "\t"])
+def test_a_confidence_named_with_whitespace_is_still_unnamed(blank):
+    """Omission is not the only way to leave the quantity unstated."""
+    with pytest.raises(ValueError, match="confidence_kind"):
+        TranscriptTurn(
+            id="t1", start_ms=0, end_ms=10, text="Words.", confidence=0.9, confidence_kind=blank
+        )
+
+
 def test_a_turn_with_no_confidence_needs_no_quantity():
     turn = TranscriptTurn(id="t1", start_ms=0, end_ms=10, text="Words.")
     assert turn.confidence is None
@@ -214,3 +223,7 @@ def test_entities_and_threads_reach_the_review_package(tmp_path):
     )
     assert package["open_threads"], "a reviewer sees nothing left open"
     assert session.entities and session.threads
+    # Referencable by id rather than by name: the name is the model's proposal, and a
+    # reviewer settling two spellings into one is expected to change it.
+    assert all(entity["id"] for entity in package["entities"])
+    assert all(thread["id"] for thread in package["open_threads"])
