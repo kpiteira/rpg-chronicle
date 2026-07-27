@@ -52,9 +52,12 @@ trap 'rm -rf "$workdir"' EXIT
 
 gh issue view "$issue" --json title,body,labels,milestone > "$workdir/goal.json"
 
-# No tools: agents/goal-checker.md states the checker's context is the goal, the rules
-# and its own brief. A checker that goes reading the repository is answering a different
-# question from the one it was asked.
+# No tools: the prompt is the goal, the rules and the brief, and the checker cannot go
+# reading the repository to answer a different question from the one it was asked.
+#
+# The prompt is not the whole context. Running from the repository root loads CLAUDE.md,
+# so the standing instructions are present as well -- correct for a real check, and the
+# reason --bare exists for the one question that needs them absent. D-017.
 cwd="$root"
 if [ "$bare" -eq 1 ]; then
   cwd="$workdir"

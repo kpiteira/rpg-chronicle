@@ -13,14 +13,22 @@ what the goal asked. This agent is the only reader of the goal itself.
 
 ## Context rule
 
-The checker runs in a **fresh context** containing only:
+The checker runs in a **fresh process** whose prompt contains only:
 
 - the goal issue body, labels, and milestone;
 - `docs/GOAL_RULES.md`;
 - this file.
 
-It must never inherit the context of the session that wrote the goal. A goal reviewed by
-its author is the failure mode, not the control.
+It has no tools, so it reads nothing else on demand. It must never inherit the context of
+the session that wrote the goal. A goal reviewed by its author is the failure mode, not
+the control.
+
+That is the *prompt*, not the whole context. `scripts/check-goal.sh` runs from the
+repository root, where Claude Code loads `CLAUDE.md` automatically, so the repository's
+standing instructions — including the content non-negotiable — are present whether or not
+`docs/GOAL_RULES.md` restates them. This is the right arrangement for a real check and it
+means the rule file cannot be shown to be load-bearing from a normal run. `--bare` runs
+from a scratch directory to answer that question, and D-017 records what it showed.
 
 ## What it answers
 
