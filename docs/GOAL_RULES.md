@@ -11,9 +11,18 @@ has actually happened here was phrased as a reasonable exception.
 
 ## R1 — Content stays out of the repository
 
-No recording, clip, derivative, transcript, voice profile, vault content, or secret is
-committed. Nor per-recording manifests, answer keys, annotation notes, or fingerprints:
-those describe one recording and are meaningless without it.
+Two kinds of material, and a goal has to clear both.
+
+**The recording and anything derived from its sound.** No recording, clip, derivative,
+transcript, voice profile, vault content, or secret is committed.
+
+**Anything that describes one particular recording.** Per-recording manifests, answer
+keys, truth items, annotation notes, rights determinations, fingerprints. These are
+meaningless without the recording they describe, nothing in `src/rpg_chronicle/` has ever
+read one, and they were never software. A goal clears the first kind and fails the second
+whenever it says *no media, no clip, no transcript* and then makes a manifest or an answer
+key for a real recording a durable output. **Read the durable outputs, not the
+prohibitions.** The prohibitions are usually correct and they are not what to check.
 
 Source: `CLAUDE.md` (non-negotiable), `docs/CONTENT_AUDIT.md` (the audit and the test).
 
@@ -30,6 +39,14 @@ A violating goal looks like: *"the first candidate whose licence permits a commi
 reference transcript"* — goal #21, which produced 1,178 words of a real recording's speech
 in a public repository. It reads as diligent. It cites the correct licence. It is the
 exact failure this rule exists to stop.
+
+A violating goal also looks like goals #11 and #14, which are harder and which a checker
+has read both ways. Both forbid committed media outright — #14 says *"No media, clip,
+derivative, or full transcript is committed, for any candidate, under any rights
+position"* — and both then require, as durable outputs, a per-recording manifest with its
+truth items, and a source-linked rights determination per candidate. The prohibition is
+honoured and the second kind of material is committed anyway. Those artifacts were removed
+from the repository by `docs/CONTENT_AUDIT.md`.
 
 ## R2 — Demonstrated capability is never declared truth
 

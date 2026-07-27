@@ -195,6 +195,28 @@ whose durable outputs were software or governance must pass.
   wrong, not the checker, and the corpus records the mis-prediction rather than being
   refitted around it.
 
+### The reliability measurement, and what was changed after it
+
+A third run of the corpus reversed #11 and #14 to **pass**. Their passing rationales named
+the goals' own prohibitions as the reason — #14 *"forbids committing media, clips,
+derivatives, or full transcripts under any rights position"* — while the manifests, truth
+items and rights determinations in their durable outputs went unremarked. The checker was
+reading the prohibitions and not the outputs.
+
+R1 was rewritten against that specific miss: two named kinds of material rather than one
+sentence with a subordinate clause, the instruction **read the durable outputs, not the
+prohibitions**, and #11 and #14 as the worked example of a goal that honours the first kind
+while committing the second. Two runs after the change, all five goals classify correctly.
+
+Under the shipped configuration, per goal: #21 blocks 5 of 5; #12 and #17 pass in every
+run; #11 and #14 block in 4 of 5, the miss being the run that motivated the rewrite. In
+three runs with R1 removed and `--bare`, #21 never blocks on content.
+
+This is tuning against the corpus and should be read as such. What makes it defensible is
+that the change clarifies an existing rule from real history rather than inventing one to
+catch these two issues, and that the failure it names generalises. What it does not
+establish is reliability on a borderline goal the corpus has never seen. N is five runs.
+
 Two goals sit in neither list, because including them either way would be fitting the
 corpus to the result:
 
@@ -224,9 +246,9 @@ the repository context to see.
   block names a rule and quotes the offending text, and each is defensible, but a control
   that blocks most goals is one a session under time pressure will route around. The
   answer is that a block before activation is cheap: #25's would have been one line.
-- **Reliability is not demonstrated.** Each goal was checked once or twice, which is
-  evidence of capability, not of consistency. Across the runs of #21, the blocking finding
-  was R1 whenever R1 was present, and R5 when it was not.
+- **Reliability is measured and it is not one.** The section above gives the numbers. The
+  blatant case is stable; the borderline cases moved once and moved back after the rule was
+  rewritten, on N of five runs. A verdict is a reading, not a measurement.
 - **The TPM writes the goal, the checker, and the rules** (D-014). A blocking verdict is
   overridable by the operator only, recorded as a `goal-check-override body:<hash>` comment
   with a reason.
