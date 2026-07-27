@@ -2,7 +2,10 @@ name: goal-lifecycle
 
 on:
   issues:
-    types: [opened, closed, labeled, unlabeled, reopened]
+    # `edited` is here for require-goal-check: a goal-check verdict is bound to a hash of
+    # the goal body, and editing the body after a passing check is the case that binding
+    # exists to catch. Without this trigger that edit produces no event at all.
+    types: [opened, closed, edited, labeled, unlabeled, reopened]
 
 permissions:
   issues: write

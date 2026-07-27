@@ -90,9 +90,10 @@ licence argument, and the transcript merged. See `docs/DECISIONS.md` D-017.
 `docs/GOAL_RULES.md`, which gathers the rules a goal may not authorise a violation of.
 It posts its verdict as an issue comment bound to a hash of the goal body, so a goal
 edited after being checked no longer carries a matching verdict. The `require-goal-check`
-job in `.github/workflows/goal-lifecycle.yml` looks for that comment whenever an issue
-carrying `goal:active` changes; it invokes no model, and like every other control here it
-reports rather than prevents.
+job in `.github/workflows/goal-lifecycle.yml` looks for that comment when an issue
+carrying `goal:active` is opened, edited, labelled, unlabelled or reopened — the `edited`
+trigger is what makes a post-check edit visible rather than silent. It invokes no model,
+and like every other control here it reports rather than prevents.
 
 A blocking verdict is answered by fixing the goal and re-running the check. It is
 **overridable by the operator, not by the TPM**: a comment on the issue containing
