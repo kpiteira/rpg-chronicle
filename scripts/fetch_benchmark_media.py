@@ -40,8 +40,14 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
-MANIFEST_DIR = ROOT / "benchmarks/manifests"
-DEFAULT_CACHE = ROOT / "benchmark-cache"
+#: Recordings, manifests and answer keys live together outside the repository, because a
+#: manifest describes one recording and an answer key is meaningless without it. See
+#: `docs/CONTENT_AUDIT.md`. Overridable so a second machine need not use the same path.
+CONTENT_ROOT = Path(
+    os.environ.get("RPG_CHRONICLE_HOME", Path.home() / ".rpg-chronicle")
+).expanduser()
+MANIFEST_DIR = CONTENT_ROOT / "benchmarks/manifests"
+DEFAULT_CACHE = CONTENT_ROOT / "benchmark-cache"
 CHUNK_BYTES = 1 << 20
 # Applies per socket operation, not to the whole transfer, so a large episode over a slow
 # link is fine while a host that stalls fails instead of hanging a verification tool.
