@@ -274,11 +274,23 @@ def test_a_provisional_candidate_needs_no_digest_yet(tmp_path: Path) -> None:
     assert exit_code == 0, lines
 
 
-#: The fixture's own target anchors, so a thread test never hardcodes a number that came
-#: from a particular recording. FIRST_ANCHOR and LAST_ANCHOR are real targets; the tests
-#: below mutate around them.
-FIRST_ANCHOR = 60000
-LAST_ANCHOR = 480000
+def _anchors() -> tuple[int, int]:
+    """The fixture's own first and last target anchors.
+
+    Read from the fixture rather than written out, so a thread test never carries a number
+    that has to be kept in step with a file by hand. An earlier version stated exactly this
+    in a comment while hardcoding the values underneath it.
+    """
+    anchors = sorted(
+        target["anchor_ms"]
+        for group in ("important_entities", "important_events")
+        for target in _example()["truth"][group]
+        if target.get("anchor_ms") is not None
+    )
+    return anchors[0], anchors[-1]
+
+
+FIRST_ANCHOR, LAST_ANCHOR = _anchors()
 
 
 def _threaded(first: int, last: int) -> dict:

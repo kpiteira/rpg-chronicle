@@ -21,7 +21,7 @@ Usage:
     uv run python scripts/fetch_benchmark_media.py --verify-only <manifest-id>
 
 The cache directory comes from ``--cache``, else ``RPG_CHRONICLE_BENCHMARK_CACHE``, else
-``benchmark-cache/`` at the repository root. Point the environment variable at the
+``benchmark-cache/`` inside the content directory. Point the environment variable at the
 ``paths.benchmark_cache`` you configured in your private ``config/paths.yaml``.
 """
 
