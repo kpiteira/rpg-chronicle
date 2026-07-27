@@ -254,13 +254,12 @@ the repository context to see.
   override is the operator's is a **convention, not a control**: the workflow checks no
   author and requires no reason, and an author check would not help, since
   `scripts/check-goal.sh` already posts under the repository owner's token.
-- **The `edited` trigger spends Actions minutes** the goal reserved, and the breach is
-  named here rather than left implicit. It is kept because without it the body-hash binding
-  is unreachable — an edit after a passing check produces no event at all — and it is
-  bounded: `enforce-single-active-goal` is excluded from `edited`, and `require-goal-check`
-  runs only when the issue carries `goal:active`, so editing any other issue skips every
-  job and consumes no runner time. The repository is public (D-001), where standard runners
-  are free, so the budget the constraint protects is not the one being spent.
+- **A goal edited after being checked is not caught automatically.** The workflow does not
+  trigger on `edited`, because that would spend a workflow run no edit spends today and the
+  goal reserved that decision for the operator. The binding still holds where it matters:
+  the specialist confirms the verdict matches the body as it now reads before starting, and
+  the next label event reports a mismatch. Adding `edited` to the trigger list is a
+  one-line change if the operator wants the automatic version.
 - **It reports, it does not prevent.** The `require-goal-check` job fails on an issue event;
   nothing removes the label. Same class as the merge gate, and D-015 says why that is
   accepted.

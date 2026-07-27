@@ -2,20 +2,20 @@ name: goal-lifecycle
 
 on:
   issues:
-    # `edited` is here for require-goal-check: a goal-check verdict is bound to a hash of
-    # the goal body, and editing the body after a passing check is the case that binding
-    # exists to catch. Without this trigger that edit produces no event at all.
-    types: [opened, closed, edited, labeled, unlabeled, reopened]
+    # No `edited`. A goal-check verdict is bound to a hash of the goal body, so editing the
+    # body after a passing check is exactly the case the binding exists to catch -- and an
+    # `edited` trigger would catch it automatically. It would also spend a workflow run
+    # that no edit spends today, which this goal's constraint reserved for the operator to
+    # decide. The specialist-side confirmation in AGENTS.md covers the case meanwhile: a
+    # session starting a goal checks that the verdict matches the body as it now reads.
+    types: [opened, closed, labeled, unlabeled, reopened]
 
 permissions:
   issues: write
 
 jobs:
   enforce-single-active-goal:
-    # Not on `edited`: labels do not change when a body is edited, so this job would have
-    # nothing new to check and would spend runner minutes to say so. `edited` is in the
-    # trigger list for require-goal-check alone.
-    if: github.event.action != 'closed' && github.event.action != 'edited'
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
       - name: Fail if any role holds more than one active goal
