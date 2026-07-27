@@ -45,7 +45,7 @@ ROOT = Path(__file__).resolve().parents[1]
 #: `docs/CONTENT_AUDIT.md`. Overridable so a second machine need not use the same path.
 CONTENT_ROOT = Path(
     os.environ.get("RPG_CHRONICLE_HOME", Path.home() / ".rpg-chronicle")
-).expanduser()
+).expanduser().resolve()
 MANIFEST_DIR = CONTENT_ROOT / "benchmarks/manifests"
 DEFAULT_CACHE = CONTENT_ROOT / "benchmark-cache"
 CHUNK_BYTES = 1 << 20
@@ -163,9 +163,9 @@ def cache_dir(explicit: str | None) -> Path:
     ``paths.benchmark_cache`` from a private config.
     """
     if explicit:
-        return Path(explicit).expanduser()
+        return Path(explicit).expanduser().resolve()
     configured = os.environ.get("RPG_CHRONICLE_BENCHMARK_CACHE")
-    return Path(configured).expanduser() if configured else DEFAULT_CACHE
+    return Path(configured).expanduser().resolve() if configured else DEFAULT_CACHE
 
 
 def build_request(url: str) -> urllib.request.Request:

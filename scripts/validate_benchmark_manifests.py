@@ -25,7 +25,7 @@ SCHEMA_PATH = ROOT / "benchmarks/schema/benchmark-manifest.schema.json"
 #: machine, or a test, can point somewhere else without editing this file.
 CONTENT_ROOT = Path(
     os.environ.get("RPG_CHRONICLE_HOME", Path.home() / ".rpg-chronicle")
-).expanduser()
+).expanduser().resolve()
 MANIFEST_DIR = CONTENT_ROOT / "benchmarks/manifests"
 
 # A target can be verified from the recording by ear or through tooling. It can never be
@@ -180,6 +180,10 @@ def _fingerprint_errors(fingerprint: dict | None, content_root: Path) -> list[st
         return []
     errors: list[str] = []
     declared = fingerprint["path"]
+    content_root = content_root.resolve()
+    # Resolved on both sides or the comparison below is meaningless: a relative content root
+    # -- which RPG_CHRONICLE_HOME may well be -- would never contain an absolute resolved
+    # path, and every valid fingerprint would be reported as escaping the directory.
     path = (content_root / declared).resolve()
     # A manifest is data, and the validator reads what it names, so the name has to be
     # constrained before it is followed. An absolute path or a ".." segment would have this
@@ -220,7 +224,7 @@ def validate_manifest_dir(
     unreadable or unparseable manifest is a reported failure for that file, not an
     aborted run: the remaining manifests are still validated.
     """
-    root = content_root if content_root is not None else manifest_dir.parent.parent
+    root = (content_root if content_root is not None else manifest_dir.parent.parent).resolve()
     schema = json.loads(schema_path.read_text())
     validator = Draft202012Validator(schema, format_checker=FormatChecker())
     paths = sorted(manifest_dir.glob("*.json"))

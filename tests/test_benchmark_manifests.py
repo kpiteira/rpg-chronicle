@@ -517,3 +517,32 @@ def test_validator_script_says_where_it_looked_when_it_finds_nothing(tmp_path: P
     assert result.returncode == 1
     assert "RPG_CHRONICLE_HOME" in result.stdout
     assert str(tmp_path) in result.stdout
+
+
+def test_a_relative_content_root_still_accepts_its_own_fingerprint(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """RPG_CHRONICLE_HOME may be relative, and a comparison has to resolve both sides.
+
+    The fingerprint path is resolved before the containment check. Comparing a resolved
+    absolute path against an unresolved relative root never matches, so every valid
+    fingerprint would be reported as escaping the content directory - a rejection that
+    looks like a path-traversal finding and is really a bug in the check.
+    """
+    content_root = tmp_path / "content"
+    manifests = content_root / "benchmarks" / "manifests"
+    manifests.mkdir(parents=True)
+    manifest = _example()
+    del manifest["source"]["media_sha256"]
+    manifest["source"]["content_fingerprint"] = _fingerprint_in(content_root)
+    _write(manifests, manifest)
+
+    monkeypatch.chdir(tmp_path)
+    # Called directly, with a relative root. Going through validate_manifest_dir would not
+    # exercise this: it resolves the root before _fingerprint_errors sees it, so the test
+    # would pass whether or not the guard below resolves its own side.
+    errors = validator_script._fingerprint_errors(
+        manifest["source"]["content_fingerprint"], Path("content")
+    )
+
+    assert errors == [], errors
