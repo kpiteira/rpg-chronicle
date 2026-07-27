@@ -54,8 +54,8 @@ def _write(tmp_path: Path, manifest: dict) -> Path:
 # rules used to live here. It was a second copy of the rules that stayed green when the
 # rules were gutted; the mutation tests below are what hold the behaviour.
 #
-# The manifests it walked are no longer committed at all, and CI no longer validates any -
-# it has no content directory. What checks a real content directory is
+# The manifests it walked are no longer committed at all, and CI no longer validates any
+# of them, because CI has no content directory. What checks a real content directory is
 # `uv run python scripts/validate_benchmark_manifests.py`, which the operator runs.
 
 

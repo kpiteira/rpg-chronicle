@@ -115,7 +115,7 @@ discarded, apart from three machine-draft transcripts that were deleted as regen
 - Four candidates carry multi-hour excerpts: `mystic-horizon` (3 h 57 m),
   `kix-dnd-amateurs-first-session` (3 h 25 m), `dice-and-die-lmop-e01` (2 h 37 m) and
   `oxventure-wyrdwood-campaign` chapter 1 (2 h 05 m). Only two are CC BY 3.0 —
-  `mystic-horizon` and `dice-and-die` — so only those two licences would permit a
+  `mystic-horizon` and `dice-and-die` — so only those two licences would permit an
   attributed reference transcript at all — though not one committed here, since no
   transcript is repository material regardless of licence. The other two are Standard
   YouTube Licence with local processing recorded as restricted.
