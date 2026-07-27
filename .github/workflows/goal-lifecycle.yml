@@ -35,6 +35,48 @@ jobs:
           done <<< "$rows"
           exit $status
 
+  require-goal-check:
+    # An active goal must carry a passing goal-check verdict bound to its current body.
+    # This job never invokes a model: scripts/check-goal.sh does that locally, and this
+    # only looks for what it left behind. Like every other control here it reports rather
+    # than prevents -- a failed check on an issue event does not remove the label.
+    if: github.event.action != 'closed' && contains(github.event.issue.labels.*.name, 'goal:active')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail if the active goal has no matching goal-check verdict
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          body_hash=$(scripts/goal-body-hash.sh "$ISSUE")
+
+          # Select whole comments carrying the marker, so a "pass" elsewhere in the
+          # discussion cannot be read as this goal's verdict.
+          select_marker() {
+            gh issue view "$ISSUE" --json comments \
+              --jq ".comments[].body | select(contains(\"$1 body:${body_hash}\"))"
+          }
+
+          if [ -n "$(select_marker goal-check-override)" ]; then
+            echo "goal check overridden by the operator for body ${body_hash}"
+            exit 0
+          fi
+
+          verdict=$(select_marker goal-checker)
+
+          if [ -z "$verdict" ]; then
+            echo "::error::#${ISSUE} is active with no goal-check verdict for its current body (${body_hash}). Run scripts/check-goal.sh ${ISSUE}."
+            exit 1
+          fi
+          if ! printf '%s' "$verdict" | grep -qE '"verdict": *"pass"'; then
+            echo "::error::#${ISSUE} carries a blocking or malformed goal-check verdict for its current body."
+            exit 1
+          fi
+          echo "goal check passes for body ${body_hash}"
+
   notify-tpm-on-completion:
     if: github.event.action == 'closed'
     runs-on: ubuntu-latest

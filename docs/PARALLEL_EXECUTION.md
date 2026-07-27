@@ -119,7 +119,7 @@ no benefit.
 | Path | Owner |
 |---|---|
 | `docs/` governance, `README.md`, `AGENTS.md`, `CONTRIBUTING.md`, `agents/`, `.github/` | TPM |
-| `scripts/validate-goal.sh`, `scripts/hooks/`, `scripts/setup-role-worktree.sh`, `scripts/install-bootstrap.sh` | TPM |
+| `scripts/validate-goal.sh`, `scripts/check-goal.sh`, `scripts/goal-body-hash.sh`, `scripts/replay-goal-check.sh`, `scripts/hooks/`, `scripts/setup-role-worktree.sh`, `scripts/install-bootstrap.sh` | TPM |
 | `research/` per file by rule 1, transcription provider implementations | Reuse research by default — see below |
 | `benchmarks/schema/`, `docs/EVALUATION.md`, `scripts/fetch_benchmark_media.py`, `scripts/validate_benchmark_manifests.py`, and the content directory's `benchmarks/` | Benchmark research |
 | `src/rpg_chronicle/analysis/` and review code, `benchmarks/fixtures/`, `docs/UX.md`, `docs/ANALYSIS.md`, `scripts/generate_long_session.py` | Review and analysis |

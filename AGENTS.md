@@ -66,6 +66,11 @@ that loop the specialist must:
    - If none or more than one exists, report the operational configuration problem;
      do not invent or choose a goal.
 4. Read the issue, linked decisions, milestone, comments, and acceptance evidence.
+   Confirm the issue carries a passing goal-check verdict, or an operator override, for
+   the goal body as it now reads (`docs/GOALS.md`, *The pre-activation check*). A goal
+   activated without one is an operational configuration problem to report, not a goal to
+   start. Goals activated before that check existed carry no verdict; the requirement
+   applies to activations after it.
 5. Inspect relevant repository state and existing pull requests.
 6. Post a concise start note on the issue and execute autonomously.
 7. Ask the user only when genuine product input is required—meaning the repository,
