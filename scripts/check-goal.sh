@@ -45,6 +45,12 @@ done
 [ -n "$issue" ] || { echo "usage: scripts/check-goal.sh <issue-number> [--rules <path>] [--no-comment] [--bare]" >&2; exit 2; }
 [ -f "$rules" ] || { echo "rule file not found: $rules" >&2; exit 2; }
 
+# Absolute from here on. The rule file is read inside the subshell that --bare moves to a
+# scratch directory, so a path relative to the caller's directory would resolve there and
+# not where the caller meant. Relative paths stay relative to the caller, which is what a
+# caller expects; they are only pinned before the directory changes underneath them.
+rules=$(cd "$(dirname "$rules")" && pwd)/$(basename "$rules")
+
 body_hash=$("$root/scripts/goal-body-hash.sh" "$issue")
 
 workdir=$(mktemp -d)

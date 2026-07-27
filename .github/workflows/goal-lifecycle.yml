@@ -60,10 +60,12 @@ jobs:
           body_hash=$(scripts/goal-body-hash.sh "$ISSUE")
 
           # Select whole comments carrying the marker, so a "pass" elsewhere in the
-          # discussion cannot be read as this goal's verdict.
+          # discussion cannot be read as this goal's verdict -- and take the last one, so
+          # a re-check that now blocks is not satisfied by an earlier passing verdict for
+          # the same body.
           select_marker() {
             gh issue view "$ISSUE" --json comments \
-              --jq ".comments[].body | select(contains(\"$1 body:${body_hash}\"))"
+              --jq "[.comments[].body | select(contains(\"$1 body:${body_hash}\"))] | last // empty"
           }
 
           if [ -n "$(select_marker goal-check-override)" ]; then
