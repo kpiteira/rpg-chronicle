@@ -162,3 +162,77 @@ mechanism built before the first attempt would be built against a guess.
 
 Rule going forward: a decision that names a vendor should be re-read whenever the work
 stops matching it, and the places it leaked into should be listed when it is recorded.
+
+## D-017: The goal is checked before it becomes a mandate
+
+Every control this repository had pointed at a *diff*. `scripts/validate-goal.sh` measures
+a pull request against its goal issue, the merge gate refuses a merge without a verdict
+bound to the head commit, and CI runs the privacy guard over the tree. All three assume
+the goal is sound, and all three correctly pass work that did what a defective goal asked.
+Goal #21 asked for a committed human-corrected reference transcript, reasoning from CC BY
+3.0; the specialist delivered it, the validator passed the pull request, and 1,178 words of
+a real recording's speech entered a public repository. Removing it took two further goals.
+
+`scripts/check-goal.sh` adds the missing reader. It runs a fresh headless process over the
+goal issue against `docs/GOAL_RULES.md` — R1 to R7, each carrying the source that governs
+it — and posts a JSON verdict bound to a hash of the goal body, so a goal edited after
+being checked no longer carries a matching verdict. `docs/GOALS.md` puts it before the
+`goal:active` label; `AGENTS.md` has the specialist confirm it before starting.
+
+### What the replay measured
+
+`scripts/replay-goal-check.sh` runs the checker over goals whose outcome is known, with the
+corpus chosen by a stated criterion rather than by which goals give the wanted answer.
+Goals whose durable outputs committed material about a real recording must block; goals
+whose durable outputs were software or governance must pass.
+
+- **#21, #11, #14 block.** #21's verdict quotes its own licence argument back at it. #11
+  and #14 block on committed per-recording manifests, answer keys and rights
+  determinations — exactly the artifacts `docs/CONTENT_AUDIT.md` later removed.
+- **#12 and #17 pass**, with advisories about internal inconsistency and nothing else.
+- **#11 and #14 were expected to pass, and did not.** Both were sound under the rules in
+  force when they were written; both violate R1 as it now stands. The expectation was
+  wrong, not the checker, and the corpus records the mis-prediction rather than being
+  refitted around it.
+
+Two goals sit in neither list, because including them either way would be fitting the
+corpus to the result:
+
+- **#20** blocks on R5: a reuse-research goal claiming `src/rpg_chronicle/providers.py`, a
+  TPM-owned shared contract, with no cross-role request named. That goal merged.
+- **#25** blocks on R7, for listing "Two schemas" as a durable output after its own
+  amendment withdrew the split. The goal validator raised the same defect as an advisory on
+  PR #29 — *after* the work was done. The checker found it in the goal text, before it.
+
+### Whether the rule file does anything
+
+Removing R1 from the rules and re-running #21 was not conclusive at first: it still
+blocked, and its verdict named `CLAUDE.md` as the source. The checker runs inside the
+repository, where `CLAUDE.md` is loaded automatically and states the content rule as a
+non-negotiable, so the mutation had not removed the rule from its reach.
+
+Re-run with `--bare`, which runs the checker from a scratch directory, the answer is
+clean: **without R1 the content violation passes unremarked.** The verdict says so
+outright — *"no R1 is present, so this verdict covers R2–R7 and says nothing about
+whatever R1 governs"* — and blocks instead on an unrelated R5 finding. R1 is load-bearing;
+in normal operation it is also duplicated by `CLAUDE.md`, which is why it took removing
+the repository context to see.
+
+### Stated limits
+
+- **The block rate on real goals is high** — five of the seven goals replayed block. Each
+  block names a rule and quotes the offending text, and each is defensible, but a control
+  that blocks most goals is one a session under time pressure will route around. The
+  answer is that a block before activation is cheap: #25's would have been one line.
+- **Reliability is not demonstrated.** Each goal was checked once or twice, which is
+  evidence of capability, not of consistency. Across the runs of #21, the blocking finding
+  was R1 whenever R1 was present, and R5 when it was not.
+- **The TPM writes the goal, the checker, and the rules** (D-014). A blocking verdict is
+  overridable by the operator only, recorded as a `goal-check-override body:<hash>` comment
+  with a reason.
+- **It reports, it does not prevent.** The `require-goal-check` job fails on an issue event;
+  nothing removes the label. Same class as the merge gate, and D-015 says why that is
+  accepted.
+
+Rule going forward: when a control passes work that turned out to be wrong, check whether
+it was measuring the right artifact before hardening it.
