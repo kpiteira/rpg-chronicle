@@ -142,6 +142,11 @@ a projection; this is ten minutes and does not generalise to it.
   engine-native artifact, which is the honest place for it while `model.py` is
   TPM-owned — but a review layer reading only canonical turns still cannot tell a
   0.6-coverage attribution from a certain one.
+
+  **Resolved by T04 (#33), D-018.** All three values now reach the canonical turn and the
+  native artifact keeps its copy. A review layer reading only canonical turns can tell the
+  0.6-coverage attribution apart, and a test at the `AnalysisProvider` boundary fails if
+  the provider stops populating them.
 - The `attribute()` rule here fixes a flaw in R01's probe: it chooses the speaker with
   the greatest *total* overlap, not the single longest overlapping span. A diarizer
   emitting several short spans for one speaker inside a long turn would otherwise hand

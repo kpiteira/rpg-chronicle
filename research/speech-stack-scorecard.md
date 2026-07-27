@@ -257,6 +257,11 @@ than to this role, and both are proposed rather than made here:
   because, on the measured diarization, two thirds of turns from some stacks carry a
   label that describes only part of the turn.
 
+**Both requests were granted.** `TranscriptTurn` now carries `confidence_kind`,
+`speaker_coverage` and `speaker_purity`, and the speech provider populates all three
+(D-018). A confidence with no stated kind is refused at construction. Read this section as
+the evidence that produced the fields, not as an outstanding ask.
+
 ### The finding that changes the product, not the stack
 
 On the rights-clear synthetic clip — where the truth is the generator's script, which no
@@ -735,10 +740,9 @@ not schedule.
 1. **Integrate the recommended stack behind `TranscriptProvider`.** The goal excluded
    this deliberately. The mapping above is the specification; the work is real and
    nobody else is holding it.
-2. **Carry confidence provenance and attribution quality in the canonical model.** Two
-   fields in `src/rpg_chronicle/model.py`, which is the TPM's shared boundary, and both
-   are needed before a review layer can act on either signal without being misled.
-   Consumer evidence for the request is in this document.
+2. ~~**Carry confidence provenance and attribution quality in the canonical model.**~~
+   **Done** — granted as three fields rather than two, in T04 (#33) and recorded as D-018.
+   The evidence in this document is what carried it.
 3. **Diarization is the open research problem, not recognition.** Recognition is
    borrowable today. Speaker identity is not, and the highest-value next probe is
    pyannote's community pipeline against sherpa-onnx on B02's annotated audio — which

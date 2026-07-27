@@ -1,0 +1,216 @@
+"""What a consumer can know from canonical turns alone.
+
+D-006 says downstream reads canonical turns and nothing else, and `AnalysisProvider`
+enforces it. Before D-018 the transcription provider knew how well a speaker label
+covered its turn and what quantity its confidence was, and recorded both in the
+engine-native artifact -- which is precisely where a consumer bound by D-006 cannot look.
+
+Every test here is written so that it fails if the field it names is removed from
+`TranscriptTurn`. A test that merely asserted a field exists would pass with the whole
+boundary broken, which is the failure `agents/goal-validator.md` rejects.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pytest
+
+from rpg_chronicle.analysis.provider import ModelAnalysisProvider
+from rpg_chronicle.model import CanonicalSession, TranscriptTurn
+from rpg_chronicle.pipeline import UnreadableSessionError, run_pipeline
+from rpg_chronicle.providers import AnalysisResult, FixtureTranscriptProvider
+from rpg_chronicle.transcription.engine import (
+    DiarizationResult,
+    RecognitionResult,
+    RecognizedSegment,
+    SpeakerSpan,
+)
+from rpg_chronicle.transcription.provider import SpeechTranscriptProvider
+
+from .fake_backend import FakeBackend
+
+
+class StubRecognizer:
+    name = "stub-recognizer"
+
+    def __init__(self, segments: list[RecognizedSegment], confidence_kind: str) -> None:
+        self._segments = segments
+        self._confidence_kind = confidence_kind
+
+    def preflight(self) -> None:
+        return None
+
+    def recognize(self, audio: Path) -> RecognitionResult:
+        return RecognitionResult(
+            segments=self._segments,
+            native={"engine": self.name},
+            confidence_kind=self._confidence_kind,
+        )
+
+
+class StubDiarizer:
+    name = "stub-diarizer"
+
+    def __init__(self, spans: list[SpeakerSpan]) -> None:
+        self._spans = spans
+
+    def preflight(self) -> None:
+        return None
+
+    def diarize(self, audio: Path) -> DiarizationResult:
+        return DiarizationResult(
+            spans=self._spans,
+            native={"engine": self.name},
+            speaker_labels=sorted({span.label for span in self._spans}),
+            reliability="unreliable",
+        )
+
+
+def _transcribe(tmp_path, *, confidence_kind: str) -> list[TranscriptTurn]:
+    """One clean turn and one that straddles a speaker change, through the real provider."""
+    tmp_path.mkdir(parents=True, exist_ok=True)
+    audio = tmp_path / "session.wav"
+    audio.write_bytes(b"not really audio; the engines are stubbed")
+    segments = [
+        RecognizedSegment(start_ms=0, end_ms=1000, text="A clean turn.", confidence=0.9),
+        RecognizedSegment(start_ms=1000, end_ms=2000, text="A straddling turn.", confidence=0.9),
+    ]
+    spans = [
+        SpeakerSpan(start_ms=0, end_ms=1000, label="speaker-1"),
+        SpeakerSpan(start_ms=1000, end_ms=1500, label="speaker-1"),
+        SpeakerSpan(start_ms=1500, end_ms=2000, label="speaker-2"),
+    ]
+    provider = SpeechTranscriptProvider(
+        recognizer=StubRecognizer(segments, confidence_kind),
+        diarizer=StubDiarizer(spans),
+    )
+    return provider.transcribe(audio).turns
+
+
+class RecordingAnalysisProvider:
+    """An `AnalysisProvider` that sees only what D-006 lets it see.
+
+    It is given canonical turns and nothing else -- no engine-native artifact, no
+    recognizer, no diarizer -- which is the whole point: whatever it can decide here, a
+    real review layer can decide too.
+    """
+
+    name = "attribution-reader"
+
+    def __init__(self) -> None:
+        self.shaky: list[str] = []
+
+    def analyze(self, turns: list[TranscriptTurn]) -> AnalysisResult:
+        for turn in turns:
+            if turn.speaker_purity is not None and turn.speaker_purity < 0.75:
+                self.shaky.append(turn.id)
+        return AnalysisResult(summary="", scenes=[], review_questions=[])
+
+
+def test_a_consumer_reading_only_canonical_turns_can_tell_a_straddling_turn_apart(tmp_path):
+    turns = _transcribe(tmp_path, confidence_kind="stub probability")
+    consumer = RecordingAnalysisProvider()
+    consumer.analyze(turns)
+
+    # Both turns carry a speaker label, and by the label alone they are indistinguishable.
+    assert [turn.physical_speaker for turn in turns] == ["speaker-1", "speaker-1"]
+    # The second is half one speaker and half another. Only the second is reported.
+    assert consumer.shaky == [turns[1].id]
+
+
+def test_the_straddling_turn_is_the_one_whose_purity_is_low(tmp_path):
+    """The distinction above is a real measurement, not an artefact of turn order."""
+    turns = _transcribe(tmp_path, confidence_kind="stub probability")
+    assert turns[0].speaker_coverage == pytest.approx(1.0)
+    assert turns[0].speaker_purity == pytest.approx(1.0)
+    assert turns[1].speaker_coverage == pytest.approx(1.0)
+    assert turns[1].speaker_purity == pytest.approx(0.5)
+
+
+def test_two_turns_carrying_the_same_number_from_different_engines_are_distinguishable(tmp_path):
+    """0.9 from a log-probability and 0.9 from a native confidence are not one quantity."""
+    whisper_like = _transcribe(tmp_path / "a", confidence_kind="decoder log-probability")
+    parakeet_like = _transcribe(tmp_path / "b", confidence_kind="native token confidence")
+
+    assert whisper_like[0].confidence == parakeet_like[0].confidence == pytest.approx(0.9)
+    assert whisper_like[0].confidence_kind == "decoder log-probability"
+    assert parakeet_like[0].confidence_kind == "native token confidence"
+    assert whisper_like[0].confidence_kind != parakeet_like[0].confidence_kind
+
+
+def test_a_confidence_with_no_stated_quantity_is_refused():
+    """The ambiguity the field removes cannot be reintroduced by omitting it."""
+    with pytest.raises(ValueError, match="confidence_kind"):
+        TranscriptTurn(id="t1", start_ms=0, end_ms=10, text="Words.", confidence=0.9)
+
+
+def test_a_turn_with_no_confidence_needs_no_quantity():
+    turn = TranscriptTurn(id="t1", start_ms=0, end_ms=10, text="Words.")
+    assert turn.confidence is None
+    assert turn.confidence_kind is None
+
+
+@pytest.mark.parametrize("field_name", ["speaker_coverage", "speaker_purity"])
+def test_an_attribution_share_outside_zero_to_one_is_refused(field_name):
+    with pytest.raises(ValueError, match=field_name):
+        TranscriptTurn(id="t1", start_ms=0, end_ms=10, text="Words.", **{field_name: 1.4})
+
+
+def _session_payload(schema_version: str) -> dict:
+    return {
+        "schema_version": schema_version,
+        "session_id": "s1",
+        "source": {"path": "somewhere.json"},
+        "status": "transcribed",
+        "turns": [{"id": "t1", "start_ms": 0, "end_ms": 10, "text": "Words."}],
+        "scenes": [],
+        "review_questions": [],
+        "processor_artifacts": {},
+        "provenance": {},
+    }
+
+
+def test_a_session_written_before_these_fields_existed_still_loads(tmp_path):
+    """0.1 files predate every field added here, and resumption must not need a migration."""
+    path = tmp_path / "canonical-session.json"
+    path.write_text(json.dumps(_session_payload("0.1")))
+
+    from rpg_chronicle.pipeline import _load_session
+
+    session = _load_session(path)
+    assert isinstance(session, CanonicalSession)
+    # Absent, not invented: nothing here fabricates an attribution nobody measured.
+    assert session.turns[0].speaker_coverage is None
+    assert session.turns[0].confidence_kind is None
+    assert session.entities == []
+    assert session.threads == []
+
+
+def test_a_session_from_a_schema_this_build_does_not_know_is_refused(tmp_path):
+    path = tmp_path / "canonical-session.json"
+    path.write_text(json.dumps(_session_payload("9.9")))
+
+    from rpg_chronicle.pipeline import _load_session
+
+    with pytest.raises(UnreadableSessionError, match="9.9"):
+        _load_session(path)
+
+
+def test_entities_and_threads_reach_the_review_package(tmp_path):
+    """Through the model-backed provider, so this is merged output and not fixture truth."""
+    session = run_pipeline(
+        source=Path("benchmarks/fixtures/r0_synthetic_session.json"),
+        output_dir=tmp_path,
+        transcript_provider=FixtureTranscriptProvider(),
+        analysis_provider=ModelAnalysisProvider(FakeBackend()),
+    )
+    package = json.loads((tmp_path / session.session_id / "review-package.json").read_text())
+
+    assert package["entities"], "a reviewer sees no named thing at all"
+    assert any(entity["aliases"] for entity in package["entities"]), (
+        "aliases are the point of carrying entities: the spellings a person can settle"
+    )
+    assert package["open_threads"], "a reviewer sees nothing left open"
+    assert session.entities and session.threads

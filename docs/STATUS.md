@@ -128,15 +128,17 @@ discarded, apart from three machine-draft transcripts that were deleted as regen
 
 ### Boundaries and process
 
-- The canonical schema is version `0.1` and intentionally narrow. Three consumers have
-  now asked it to grow — confidence provenance and speaker-attribution quality from #10,
-  somewhere for entities, aliases, and unresolved threads from #12, and #20 recording
-  per-turn attribution `coverage` and `purity` in the engine-native artifact because
-  canonical turns have nowhere to hold them. That last one is the boundary leaking:
-  D-006 says downstream consumes canonical turns only, and a consumer reading only
-  canonical turns cannot tell an uncertain speaker attribution from a certain one. All
-  three carry consumer evidence, none has been granted, and extending the shared
-  contract is a TPM goal of its own.
+- The canonical schema is version `0.2` and still intentionally narrow. The three requests
+  that stood against it were granted in #33 and recorded as D-018: `confidence_kind`,
+  `speaker_coverage` and `speaker_purity` on a turn, and `entities` and `threads` on the
+  session. The boundary leak is closed — a consumer reading only canonical turns can now
+  tell an uncertain speaker attribution from a certain one, and a test at the
+  `AnalysisProvider` boundary fails if the provider stops saying so. A `0.1` session still
+  loads, with the new fields empty rather than fabricated; a session from an unknown
+  schema is refused rather than partly understood.
+- Two things were refused with the reason recorded: per-speaker channel handling, which
+  nobody has designed and no corpus item needs, and the entity-shaped data that
+  `docs/VAULT_INTEGRATION.md` and `docs/UX.md` describe but no producer emits.
 - The external reference vault must remain read-only during discovery.
 - The initial bootstrap establishes the shared product, operating, and executable
   foundation; agents must preserve it and never assume unfamiliar files are disposable.

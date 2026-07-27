@@ -21,7 +21,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
-from ..model import ReviewQuestion, Scene, TranscriptTurn, evidence_for
+from ..model import Entity, ReviewQuestion, Scene, Thread, TranscriptTurn, evidence_for
 from ..providers import AnalysisResult
 from .backend import BackendResponseError, ModelBackend, ModelRequest, TokenUsage
 from .decompose import TokenBudget, Window, plan_windows
@@ -168,6 +168,79 @@ def _turn_ids(payload: dict[str, Any], *, where: str) -> list[str]:
     if len(ids) != len(value):
         raise AnalysisFormatError(f"{where}: 'turn_ids' contains a non-string entry")
     return ids
+
+
+def _merge_entities_and_threads(
+    window_payloads: list[dict[str, Any]],
+    turns_by_id: dict[str, TranscriptTurn],
+) -> tuple[list[Entity], list[Thread]]:
+    """Turn per-window entity and thread payloads into session-level claims.
+
+    Windows overlap, so the same person is named in two of them. Merging by canonical
+    name rather than by cited turns is deliberate and is the opposite of how scenes
+    deduplicate: a scene *is* its span, while an entity is the same entity wherever it
+    appears, and its evidence should accumulate across the session rather than split
+    into two near-identical records.
+
+    Aliases accumulate the same way, and the canonical name is not resolved here. The
+    model proposes; deciding that "Kaelith" and "Kayleth" are one name with one correct
+    spelling is what `docs/UX.md` puts in front of a person, and it needs both spellings
+    to survive to be asked at all.
+    """
+    entities: dict[str, dict[str, Any]] = {}
+    for payload in window_payloads:
+        for entry in payload.get("entities", []):
+            name = _required_str(entry, "name", where="entity")
+            kind = _required_str(entry, "kind", where="entity")
+            ids = _turn_ids(entry, where="entity")
+            aliases = [
+                item
+                for item in entry.get("aliases", [])
+                if isinstance(item, str) and item.strip()
+            ]
+            record = entities.setdefault(
+                name.casefold(),
+                {"name": name, "kind": kind, "aliases": [], "turn_ids": []},
+            )
+            for alias in aliases:
+                if alias not in record["aliases"] and alias.casefold() != name.casefold():
+                    record["aliases"].append(alias)
+            for turn_id in ids:
+                if turn_id not in record["turn_ids"]:
+                    record["turn_ids"].append(turn_id)
+
+    merged_entities = [
+        Entity(
+            id=f"entity-{index:03d}",
+            name=record["name"],
+            kind=record["kind"],
+            aliases=record["aliases"],
+            evidence=evidence_for(turns_by_id, record["turn_ids"]),
+        )
+        for index, record in enumerate(entities.values(), start=1)
+    ]
+
+    threads: list[Thread] = []
+    seen_threads: set[frozenset[str]] = set()
+    for payload in window_payloads:
+        for entry in payload.get("threads", []):
+            description = _required_str(entry, "description", where="thread")
+            ids = _turn_ids(entry, where="thread")
+            # A thread, unlike an entity, is identified by what it points at: the same
+            # obligation described twice in overlapping windows cites the same turns.
+            key = frozenset(ids)
+            if key in seen_threads:
+                continue
+            seen_threads.add(key)
+            threads.append(
+                Thread(
+                    id=f"thread-{len(threads) + 1:03d}",
+                    description=description,
+                    evidence=evidence_for(turns_by_id, ids),
+                )
+            )
+
+    return merged_entities, threads
 
 
 def _confidence(payload: dict[str, Any], *, where: str) -> float:
@@ -398,10 +471,10 @@ class ModelAnalysisProvider:
         return {
             "window_summary": _required_str(payload, "window_summary", where=where),
             "scenes": scenes,
-            # Entities and threads reach the native artifact for diagnosis and never
-            # become a claim in the review package, so their shape is checked only as
-            # far as it has to be. A four-hour run should not abort over a field
-            # nothing consumes.
+            # Shape only. Entities and threads become claims in `_merge_entities_and_threads`,
+            # where their citations are resolved and a fabricated one aborts the run like
+            # any other. Doing it here would abort a window before the merge can tell a
+            # boundary duplicate from a fabrication.
             "entities": _object_list(payload, "entities", where=where),
             "threads": _object_list(payload, "threads", where=where),
             "questions": questions,
@@ -498,6 +571,7 @@ class ModelAnalysisProvider:
             )
 
         questions = self._bounded_questions(drafts, turns_by_id)
+        entities, threads = _merge_entities_and_threads(window_payloads, turns_by_id)
 
         native = {
             "provider": self.name,
@@ -517,6 +591,8 @@ class ModelAnalysisProvider:
             summary=summary,
             scenes=scenes,
             review_questions=questions,
+            entities=entities,
+            threads=threads,
             native_artifact=native,
         )
 
