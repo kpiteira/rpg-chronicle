@@ -103,6 +103,13 @@ D-005 is the standing rule and this surface is the shape of it.
 `--answers <file>` takes the same decisions as JSON instead of interactively. It is the
 same code path, so the scripted and the typed answer cannot drift apart.
 
+Concretely, on `benchmarks/fixtures/r0_correction_session_1.json`: **four decisions** for a
+session of ten turns. Each arrives with the turns it cites — three, two, one and one
+respectively, eleven lines of excerpt in total — and each names the entities that evidence
+points at. Nothing else is displayed, and there is no command that displays more. A run
+that produced eighty of these screens would have failed the attention budget above even if
+every one were correct.
+
 ### What a correction reaches
 
 Two operations, and no more:

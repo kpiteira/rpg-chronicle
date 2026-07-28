@@ -756,3 +756,86 @@ def test_apply_answers_reports_what_it_did(tmp_path):
     assert outcome.changed_entities == ("entity-002",)
     assert outcome.vocabulary_entries == ("the Tallow Warden",)
     assert outcome.dispositions["question-003"] == "deferred"
+
+
+# -- the command a person actually types ------------------------------------------------
+
+
+def _cli(*argv):
+    from rpg_chronicle import cli
+
+    parser = cli._parser()
+    args = parser.parse_args(argv)
+    handlers = {"run-fixture": cli._run_fixture, "review": cli._review}
+    handlers[args.command](args)
+
+
+def test_the_review_command_applies_a_sheet_and_says_what_it_did(tmp_path, capsys):
+    output = tmp_path / "campaign"
+    _cli("run-fixture", str(FIRST), "--output", str(output))
+    sheet = tmp_path / "answers.json"
+    sheet.write_text(json.dumps({"answered_by": "karl", "answers": [SPELL_THE_CHANDLER]}))
+
+    _cli("review", str(output / "r0-correction-hollow-bell-1"), "--answers", str(sheet))
+
+    printed = capsys.readouterr().out
+    assert "1 answered" in printed
+    assert "'Vesh Kalder' -> 'Vesh Calder'" in printed
+    stored = load_session(output / "r0-correction-hollow-bell-1" / "canonical-session.json")
+    assert _named(stored, "Vesh Calder")
+
+
+def test_a_dry_run_reports_the_change_and_writes_nothing(tmp_path, capsys):
+    output = tmp_path / "campaign"
+    _cli("run-fixture", str(FIRST), "--output", str(output))
+    session_dir = output / "r0-correction-hollow-bell-1"
+    before = (session_dir / "canonical-session.json").read_text()
+    sheet = tmp_path / "answers.json"
+    sheet.write_text(json.dumps({"answered_by": "karl", "answers": [SPELL_THE_CHANDLER]}))
+
+    _cli("review", str(session_dir), "--answers", str(sheet), "--dry-run")
+
+    assert "nothing was written" in capsys.readouterr().out
+    assert (session_dir / "canonical-session.json").read_text() == before
+    assert not (session_dir / RECORD_FILENAME).exists()
+    assert not (output / STORE_FILENAME).exists()
+
+
+def test_a_refused_sheet_is_a_usage_error_rather_than_a_traceback(tmp_path, monkeypatch):
+    """Through `main`, not around it. Re-implementing the handler here would test a copy
+    of the error handling rather than the one a person hits."""
+    from rpg_chronicle import cli
+
+    output = tmp_path / "campaign"
+    _cli("run-fixture", str(FIRST), "--output", str(output))
+    sheet = tmp_path / "answers.json"
+    sheet.write_text(
+        json.dumps({"answered_by": "karl", "answers": [{"question_id": "nope", "action": "defer"}]})
+    )
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "rpg-chronicle",
+            "review",
+            str(output / "r0-correction-hollow-bell-1"),
+            "--answers",
+            str(sheet),
+        ],
+    )
+    with pytest.raises(SystemExit, match="answers refused"):
+        cli.main()
+
+
+def test_a_run_with_no_carry_forward_reproduces_the_analysis_alone(tmp_path, capsys):
+    output = tmp_path / "campaign"
+    _cli("run-fixture", str(FIRST), "--output", str(output))
+    sheet = tmp_path / "answers.json"
+    sheet.write_text(json.dumps({"answered_by": "karl", "answers": [SPELL_THE_CHANDLER]}))
+    _cli("review", str(output / "r0-correction-hollow-bell-1"), "--answers", str(sheet))
+    capsys.readouterr()
+
+    _cli("run-fixture", str(SECOND), "--output", str(output), "--no-carry-forward")
+
+    assert "carried forward" not in capsys.readouterr().out
+    later = load_session(output / "r0-correction-hollow-bell-2" / "canonical-session.json")
+    assert _named(later, "Vesh Kalder")
