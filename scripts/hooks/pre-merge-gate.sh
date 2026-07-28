@@ -113,13 +113,31 @@ if [ -z "$verdict" ]; then
   exit 2
 fi
 
-if ! printf '%s' "$verdict" | grep -q "<!-- goal-validator sha:${head_sha} -->"; then
+# Anchored, so the marker has to be the comment's own rather than a stale sha quoted
+# somewhere inside a verdict's findings. The comment scripts/validate-goal.sh posts starts
+# with this line, so anchoring only ever refuses more.
+if ! printf '%s' "$verdict" | grep -q "^<!-- goal-validator sha:${head_sha} -->"; then
   echo "The latest goal-validator verdict on PR #${pr} predates its current head commit." >&2
   echo "Re-run: scripts/validate-goal.sh ${pr}" >&2
   exit 2
 fi
 
-if ! printf '%s' "$verdict" | grep -qE '"verdict": *"pass"'; then
+# Parse the verdict rather than grep for it. `grep -qE '"verdict": *"pass"'` finds the
+# substring anywhere in the comment, and the validator quotes the pull request's own text
+# into its findings -- so a pull request that touches this file puts the pass substring
+# inside a blocking verdict. scripts/verdict_state.py is the single reader; the goal
+# validator uses the same one, so the two layers cannot disagree about what a verdict says.
+# It is silent and non-zero on anything it cannot read, which is a refusal here.
+state=$(printf '%s' "$verdict" | python3 "${here}/../verdict_state.py" 2>/dev/null || true)
+
+if [ -z "$state" ]; then
+  echo "The latest goal-validator comment on PR #${pr} is not a readable verdict:" >&2
+  printf '%s\n' "$verdict" >&2
+  echo "Re-run scripts/validate-goal.sh ${pr}." >&2
+  exit 2
+fi
+
+if [ "$state" != "pass" ]; then
   echo "The goal validator did not record an explicit pass for PR #${pr}:" >&2
   printf '%s\n' "$verdict" >&2
   echo "Address the findings and re-run scripts/validate-goal.sh ${pr}." >&2

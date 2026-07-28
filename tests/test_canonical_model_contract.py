@@ -263,6 +263,84 @@ class TestEntityMerging:
             )
 
 
+class TestThreadMerging:
+    """What happens when two threads cite the same turns.
+
+    The goal validator found this on #34: threads deduplicated on the cited turn ids alone,
+    so a turn opening two obligations produced one thread and the other was gone without a
+    trace. See #38 and `docs/DECISIONS.md` D-019.
+    """
+
+    @staticmethod
+    def _turns() -> list[TranscriptTurn]:
+        return [
+            TranscriptTurn(
+                id=f"turn-{index:03d}",
+                start_ms=index * 10,
+                end_ms=index * 10 + 9,
+                text=f"Line {index}.",
+            )
+            for index in range(1, 4)
+        ]
+
+    def _merge(self, *windows: list[dict]) -> list:
+        _, threads = _merge_entities_and_threads(
+            [{"entities": [], "threads": list(window)} for window in windows],
+            {turn.id: turn for turn in self._turns()},
+        )
+        return threads
+
+    def test_two_obligations_opened_in_one_turn_both_survive(self):
+        """The defect. Deleting `description.strip().casefold()` from the key in
+        `_merge_entities_and_threads` makes this fail: the second thread is dropped and
+        only the debt survives."""
+        threads = self._merge(
+            [
+                {"description": "The party owes the innkeeper for the horses.", "turn_ids": ["turn-001"]},
+                {"description": "The party swore to return by the new moon.", "turn_ids": ["turn-001"]},
+            ]
+        )
+        assert [thread.description for thread in threads] == [
+            "The party owes the innkeeper for the horses.",
+            "The party swore to return by the new moon.",
+        ]
+        assert [thread.id for thread in threads] == ["thread-001", "thread-002"]
+
+    def test_one_obligation_seen_by_two_windows_is_still_one_thread(self):
+        """The property the citation key was there for, which the fix must not lose.
+
+        Windows overlap, so the boundary turn is described twice. Both descriptions come
+        back from the model verbatim in that case, and one thread is the right answer.
+        """
+        entry = {"description": "The seal on the north door is unbroken.", "turn_ids": ["turn-002"]}
+        threads = self._merge([dict(entry)], [dict(entry)])
+        assert len(threads) == 1
+
+    def test_the_same_obligation_worded_differently_is_two_threads_and_that_is_the_trade(self):
+        """The residual, pinned rather than left to be discovered.
+
+        Nothing here can tell a paraphrase from a second obligation, so the merge takes the
+        error a reviewer can see over the one nobody can. A near-duplicate is visible in the
+        review package; a dropped thread is not visible anywhere.
+        """
+        threads = self._merge(
+            [
+                {"description": "The seal on the north door is unbroken.", "turn_ids": ["turn-002"]},
+                {"description": "Nobody has broken the north door's seal.", "turn_ids": ["turn-002"]},
+            ]
+        )
+        assert len(threads) == 2
+
+    def test_whitespace_and_case_do_not_split_one_thread(self):
+        threads = self._merge(
+            [
+                {"description": "The seal is unbroken.", "turn_ids": ["turn-002"]},
+                {"description": "  the seal is unbroken.  ", "turn_ids": ["turn-002"]},
+            ]
+        )
+        assert len(threads) == 1
+
+
 def _session_payload(schema_version: str) -> dict:
     """A stored session with the turn shape 0.1 actually wrote.
 

@@ -68,7 +68,9 @@ Annotated items and their per-item notes live in the content directory under
 `benchmarks/`. Read an item's note before reporting any number against it.
 
 Provenance is checked by `scripts/validate_benchmark_manifests.py`, which the operator runs
-against that directory. It is no longer a CI step: CI has no content directory, and giving
-it one would mean committing what the policy above keeps out. That is a real reduction in
+against that directory — `~/.rpg-chronicle/benchmarks/manifests` by default, or a directory
+named as its first argument, with `--content-root` when that directory is not laid out as
+`<root>/benchmarks/manifests`. It is no longer a CI step: CI has no content directory, and
+giving it one would mean committing what the policy above keeps out. That is a real reduction in
 automated enforcement and the price of the split — `research/what-real-recordings-do.md`
 holds the findings that survived it.

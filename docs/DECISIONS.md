@@ -254,18 +254,40 @@ the repository context to see.
   override is the operator's is a **convention, not a control**: the workflow checks no
   author and requires no reason, and an author check would not help, since
   `scripts/check-goal.sh` already posts under the repository owner's token.
-- **A goal edited after being checked is not caught automatically.** The workflow does not
-  trigger on `edited`, because that would spend a workflow run no edit spends today and the
-  goal reserved that decision for the operator. The binding still holds where it matters:
-  the specialist confirms the verdict matches the body as it now reads before starting, and
-  the next label event reports a mismatch. Adding `edited` to the trigger list is a
-  one-line change if the operator wants the automatic version.
+- **A goal edited after being checked was not caught automatically.** Corrected in #38;
+  see the amendment below. The limit as originally recorded: the workflow did not trigger
+  on `edited`, so the hash binding was sound and unreachable, and a mismatch was reported
+  only at the next label event.
 - **It reports, it does not prevent.** The `require-goal-check` job fails on an issue event;
   nothing removes the label. Same class as the merge gate, and D-015 says why that is
   accepted.
 
 Rule going forward: when a control passes work that turned out to be wrong, check whether
 it was measuring the right artifact before hardening it.
+
+### Amendment (#38): the `edited` trigger
+
+`edited` is now in `.github/workflows/goal-lifecycle.yml`. The limit above stands as a
+record of what was shipped and why; this is what it cost and what changed.
+
+What it cost is that the binding was **unreachable for the whole of its first week**. Five
+goals were activated in that window. Any of them could have been edited after its passing
+check and the workflow would have said nothing until the next label event — which, for a
+goal that is activated once and then worked, is no event at all. The control was not weak
+there; it was absent, while `docs/GOALS.md` described it as present. That is the shape D-017
+is about, one layer up: a control that reports a pass it has not established.
+
+What made the trigger acceptable is that its cost was measured rather than assumed. The
+constraint it breached was "no new CI minutes", and the honest reading is that an edit to a
+*non-goal* issue still starts the workflow. What it does not do is spend a job:
+`enforce-single-active-goal` now excludes `edited` outright, because a body change cannot
+alter how many goals a role holds, and `require-goal-check` was already gated on
+`goal:active`. An edit to anything else evaluates two `if` conditions and runs nothing.
+
+The residual is that the label is still not removed. `require-goal-check` fails the run and
+reports; a session that ignores a red check on its own goal issue is not stopped. Same class
+as D-015, and the answer is the same: this is a report, and branch protection is the only
+boundary.
 
 ## D-018: The canonical model carries what its consumers had evidence for
 
@@ -346,3 +368,46 @@ hand-wrote the one input shape that survived the invariant by accident.
 Rule going forward: a shared contract grows when a consumer can show it cannot act
 correctly without the field — not when a consumer would find the field convenient, and not
 when a document describes data no producer emits.
+
+## D-019: A control that reports a false pass is worse than no control
+
+Three of this repository's tools claimed more than they did, in the same shape: each had a
+path where it produced a confident answer about something it had not checked. They are
+recorded together because the shape is the finding, not any one of them.
+
+- **The merge gate and the goal validator decided a verdict by grepping for
+  `"verdict": "pass"` anywhere in the output.** That is not the same question as *what is
+  the verdict*. Both now read `scripts/verdict_state.py`, one implementation for both, which
+  parses exactly one JSON object and returns nothing on anything else. The divergence is
+  measured in `tests/test_verdict_state.py` against the grep it replaced: a blocking verdict
+  carrying a nested prior verdict, prose around the object, a second object, and non-JSON
+  output all cleared the grep and none clear the reader. One case that was *expected* to
+  diverge does not, and the test says so: a well-formed finding that quotes `"verdict":
+  "pass"` has its quotes escaped by JSON and never matched the grep either. The exposure was
+  narrower than the argument for fixing it assumed, and the fix is still right, because
+  "narrower" is not "absent" and the grep also cleared unparseable output.
+- **`scripts/validate_benchmark_manifests.py` discarded its arguments.** A positional path
+  or a `--content-root` was accepted by the shell and dropped, so someone pointing it at a
+  second content directory got a clean report about the first one. It now parses both and
+  exits non-zero on an argument it does not understand. Silence was the defect; refusing is
+  the fix.
+- **Two distinct threads citing the same turns collapsed to the first.**
+  `_merge_entities_and_threads` keyed threads on the set of cited turn ids alone, so a turn
+  opening two obligations at once yielded one thread and the other disappeared with no trace
+  for a reader to notice. The key now includes the description.
+
+The last one has a residual worth naming, because it is a trade and not a clean win: two
+windows *paraphrasing* one obligation now produce two threads. Nothing available at that
+point can tell a paraphrase from a second obligation, so the merge takes the error a
+reviewer can see over the error nobody can. A near-duplicate is in the review package; a
+dropped thread is nowhere. This is the same reasoning that already governs a disputed entity
+kind, and it is the same reasoning D-006 uses about the canonical boundary — the reviewer is
+the resolver, and a merge rule that resolves silently is making a product decision it has no
+evidence for.
+
+A scene is deliberately left keyed on its span alone. A scene *is* its span, so two scenes
+over the same turns are one scene; a thread is a claim about turns, and two claims about the
+same turns are two claims.
+
+Rule going forward: when a control cannot answer, it says so. Producing the reassuring
+answer instead is the failure mode all three of these shared.

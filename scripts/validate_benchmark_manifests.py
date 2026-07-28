@@ -7,13 +7,23 @@ recording it answers for, so both live beside the audio in the content directory
 
 That makes this a tool the operator runs rather than a CI step: CI has no content directory,
 and giving it one would mean committing the thing this arrangement exists to keep out.
+
+Usage::
+
+    scripts/validate_benchmark_manifests.py [manifest-dir] [--content-root DIR]
+
+Both default to the content directory. Naming a manifest directory that is not laid out as
+``<root>/benchmarks/manifests`` needs ``--content-root`` too, because that is where a
+manifest's fingerprint path is resolved from.
 """
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
+import sys
 from pathlib import Path
 
 from jsonschema import Draft202012Validator, FormatChecker
@@ -274,12 +284,47 @@ def validate_manifest_dir(
     return int(bool(failures)), lines
 
 
-def main() -> int:
-    exit_code, lines = validate_manifest_dir()
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """Read the arguments this tool is given, and refuse the ones it does not understand.
+
+    The version before this parsed nothing: a positional path or a ``--content-root`` was
+    accepted by the shell, discarded here, and the default directory validated instead. The
+    output named the manifests it had actually read, so the mistake was visible to anyone
+    who looked closely and invisible to anyone reading the exit code -- someone pointing
+    this at a second tree got a confident report about the first one.
+    """
+    parser = argparse.ArgumentParser(
+        prog="validate_benchmark_manifests.py",
+        description="Validate benchmark manifests against the versioned JSON Schema.",
+    )
+    parser.add_argument(
+        "manifest_dir",
+        nargs="?",
+        type=Path,
+        default=None,
+        help=f"directory of *.json manifests (default: {MANIFEST_DIR})",
+    )
+    parser.add_argument(
+        "--content-root",
+        type=Path,
+        default=None,
+        help=(
+            "directory a manifest's content_fingerprint.path is resolved from "
+            "(default: the manifest directory's grandparent)"
+        ),
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+    manifest_dir = (args.manifest_dir or MANIFEST_DIR).expanduser()
+    content_root = args.content_root.expanduser() if args.content_root else None
+    exit_code, lines = validate_manifest_dir(manifest_dir, content_root=content_root)
     for line in lines:
         print(line)
     return exit_code
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    raise SystemExit(main(sys.argv[1:]))
