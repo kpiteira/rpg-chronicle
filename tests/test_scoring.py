@@ -252,28 +252,28 @@ def test_declared_truth_is_refused_for_a_different_reason_than_contamination():
     [
         # The real shape: a manifest names engine and model, a session records the engine
         # in one field and the model file in another, and the two strings never match.
-        ("whisper.cpp large-v3-turbo", True),
-        # A different model family must not be caught by the same session.
-        ("openai-whisper medium.en", False),
-        # A different size of the same family must not be caught either, or the check
-        # would condemn every whisper.cpp run the moment any whisper model annotated
-        # anything.
-        ("whisper.cpp small.en", False),
-        # Container format, not an engine. Left in, it would match every whisper.cpp run.
-        ("ggml", False),
+        ("whisper.cpp large-v3-turbo", "contaminated"),
+        # A different implementation is not caught. `cpp` contradicts `openai`.
+        ("openai-whisper medium.en", "clean"),
+        # A different size of the same implementation is refused rather than cleared, and
+        # this is over-refusal by design: the session records the bare string `whisper.cpp`
+        # alongside its model, and that string alone is consistent with any whisper.cpp
+        # model. The consequence is worth knowing -- no whisper.cpp run is ever cleared
+        # against a manifest naming any whisper.cpp model -- and the safe direction.
+        ("whisper.cpp small.en", "undetermined"),
+        # Container format, not an engine, and filtered as noise. Left in, a manifest
+        # entry of `ggml` would condemn every whisper.cpp run ever made.
+        ("ggml", "clean"),
     ],
 )
-def test_contamination_matching_separates_engines_that_differ(declared, expected):
-    session = {
-        "provenance": {"transcript_provider": "whisper.cpp+sherpa-onnx"},
-        "processor_artifacts": {"transcript": "processor-native/transcript.json"},
-    }
-    identity = contamination.EngineIdentity(
-        strings=["whisper.cpp+sherpa-onnx", "whisper.cpp", "ggml-large-v3-turbo.bin"]
-    )
-    matched = bool(contamination.tokens(declared)) and contamination.tokens(declared) <= identity.tokens
-    assert matched is expected
-    assert session  # the shape above is what `engine_identity` reads; see the next test
+def test_contamination_matching_separates_engines_that_differ(tmp_path, declared, expected):
+    """Exercised through `assess`, so it describes the harness rather than a copy of it.
+
+    An earlier version of this test re-derived the subset expression inside the test body
+    and asserted that against itself, which would have passed with `assess` deleted.
+    """
+    session = write_session(tmp_path, real_artifact())
+    assert contamination.assess(session, tmp_path, [declared]).state == expected
 
 
 def real_artifact(with_model: bool = True) -> dict:
@@ -377,9 +377,9 @@ def test_anchors_are_read_against_a_clipped_run_rather_than_scored_as_misses():
     )
 
 
-def test_a_session_and_a_manifest_describing_different_audio_refuse_to_produce_a_number():
-    session_dir = FIXTURES / "session-baseline"
-    session = copy.deepcopy(load_session(session_dir))
+def misaligned_session() -> dict:
+    """The baseline run, moved to a clock the manifest's anchors do not address."""
+    session = copy.deepcopy(load_session(FIXTURES / "session-baseline"))
     for turn in session["turns"]:
         turn["start_ms"] += 9_000_000
         turn["end_ms"] += 9_000_000
@@ -387,11 +387,54 @@ def test_a_session_and_a_manifest_describing_different_audio_refuse_to_produce_a
         for item in session[group]:
             item["evidence"]["start_ms"] += 9_000_000
             item["evidence"]["end_ms"] += 9_000_000
+    return session
 
-    report = score(load_manifest(str(MANIFEST)), session_dir, session)
+
+def test_no_anchor_derived_figure_survives_a_clock_the_anchors_do_not_address():
+    """Every anchor-derived figure, not just the first one that needed the guard.
+
+    An anchor read against the wrong clock returns zero rather than failing, and a zero
+    here is indistinguishable from a run that captured nothing. This asserts each of the
+    three computations that read an anchor -- event coverage, entity anchor corroboration,
+    and whether a review question covers a missed target -- rather than one of them, which
+    is how the gap got shipped the first time.
+    """
+    session_dir = FIXTURES / "session-baseline"
+    report = score(load_manifest(str(MANIFEST)), session_dir, misaligned_session())
+    assert report["time_basis"]["anchors_inside_session"] == 0
+
     plot = dimension(report, "plot_capture")
     assert plot["measured"] is False
     assert "not describing the same span" in plot["missing"]
+
+    # Accusing the run of not surfacing an error, on evidence that cannot be read, is
+    # worse than saying nothing.
+    errors = dimension(report, "surfaced_errors")
+    assert errors["measured"] is False
+    assert "not describing the same span" in errors["missing"]
+
+    # Entity capture keeps the half of itself that reads no clock, and the anchored half
+    # is absent rather than zero.
+    entities = dimension(report, "entity_capture")
+    assert entities["measured"] is True
+    assert entities["value"]["recall_by_name"] == metric(
+        run("baseline"), "entity_capture", "recall_by_name"
+    )
+    assert "recall_anchor_corroborated" not in entities["value"]
+    assert "anchor_corroborated" not in entities["value"]
+    assert "not describing the same span" in entities["value"]["anchor_corroboration_unavailable"]
+    for bucket in entities["value"]["by_basis"].values():
+        assert "anchor_corroborated" not in bucket
+
+
+def test_the_aligned_case_still_reports_every_anchor_derived_figure():
+    """The guard must not be a blanket suppression that quietly hides working numbers."""
+    report = run("baseline")
+    entities = dimension(report, "entity_capture")
+    assert entities["value"]["recall_anchor_corroborated"] is not None
+    assert "anchor_corroboration_unavailable" not in entities["value"]
+    assert dimension(report, "plot_capture")["measured"] is True
+    assert dimension(report, "surfaced_errors")["measured"] is True
 
 
 # ---------------------------------------------------------------------------- matching

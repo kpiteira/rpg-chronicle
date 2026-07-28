@@ -106,9 +106,23 @@ truth being replayed, so scoring it measures whoever wrote the fixture.
 
 A manifest anchor is an offset into published media; a session's turns are offsets into
 whatever file was recognized. The harness picks between the two hypotheses by which one
-actually lands anchors inside the session, reports the choice, and refuses the
-anchor-based dimensions when neither does. Guessing would report a confident zero, which
-looks exactly like a run that captured nothing.
+actually lands anchors inside the session, and reports the choice.
+
+When neither hypothesis lands an anchor, the session and the manifest are not describing
+the same audio, and **every** figure derived from an anchor is withdrawn — not one of
+them. An anchor read against the wrong clock does not fail loudly; it returns zero, and a
+zero here is indistinguishable from a run that captured nothing. Concretely:
+
+- `plot_capture` is unmeasurable, anchor coverage being its only mechanical handle;
+- `surfaced_errors` is unmeasurable whenever a missed target carries an anchor, because
+  otherwise every miss reads as unsurfaced — an accusation made on evidence that cannot be
+  read;
+- `entity_capture` keeps `recall_by_name`, which is lexical and consults no clock, and
+  drops the anchor-corroborated lower bound instead of reporting it as zero.
+
+The partial version of this guard — protecting `plot_capture` alone while the other two
+printed confident zeros — shipped in the first draft of this harness and was caught by the
+goal validator on PR #43.
 
 ### What the corpus cannot currently measure
 

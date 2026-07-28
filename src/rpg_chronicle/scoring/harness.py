@@ -237,7 +237,26 @@ def _share(numerator: int, denominator: int) -> float | None:
     return round(numerator / denominator, 4) if denominator else None
 
 
-def _by_basis(outcomes: list[TargetOutcome]) -> dict[str, dict[str, Any]]:
+def misalignment(basis: TimeBasis) -> str | None:
+    """Why anchors cannot be used, or None when they can.
+
+    Every anchor-derived figure has to consult this, not just the one that first needed
+    it. An anchor read against the wrong clock does not fail loudly: it produces zero,
+    and a zero here is indistinguishable from a run that captured nothing. Reporting one
+    unmarked is the failure mode this whole dimension set exists to avoid, so the reason
+    is written once and each anchor-derived computation asks for it.
+    """
+    if basis.aligned:
+        return None
+    return (
+        f"no annotated anchor falls inside the session's turn span {basis.session_span}, "
+        "on either the media-offset or the excerpt-relative hypothesis. The session and "
+        "the manifest are not describing the same span of audio, so every anchor-derived "
+        "figure would be a confident zero rather than a measurement"
+    )
+
+
+def _by_basis(outcomes: list[TargetOutcome], anchors_usable: bool = True) -> dict[str, dict[str, Any]]:
     """Recall split by how the truth behind each target was established.
 
     One number over a mixed answer key hides the thing most worth knowing. Matching four
@@ -247,10 +266,13 @@ def _by_basis(outcomes: list[TargetOutcome]) -> dict[str, dict[str, Any]]:
     groups: dict[str, dict[str, Any]] = {}
     for outcome in outcomes:
         key = outcome.basis or "unstated"
-        bucket = groups.setdefault(key, {"targets": 0, "matched_by_name": 0, "anchor_corroborated": 0})
+        bucket = groups.setdefault(key, {"targets": 0, "matched_by_name": 0})
         bucket["targets"] += 1
         bucket["matched_by_name"] += int(outcome.matched_by_name)
-        bucket["anchor_corroborated"] += int(outcome.anchor_corroborated)
+        if anchors_usable:
+            bucket["anchor_corroborated"] = bucket.get("anchor_corroborated", 0) + int(
+                outcome.anchor_corroborated
+            )
     for bucket in groups.values():
         bucket["recall_by_name"] = _share(bucket["matched_by_name"], bucket["targets"])
     return groups
@@ -303,6 +325,26 @@ def entity_capture(
     matched = sum(1 for outcome in outcomes if outcome.matched_by_name)
     corroborated = sum(1 for outcome in outcomes if outcome.anchor_corroborated)
     anchored = sum(1 for outcome in outcomes if outcome.anchor_ms is not None)
+    unusable = misalignment(basis)
+
+    value: dict[str, Any] = {
+        "targets": len(outcomes),
+        "session_entities": len(session.get("entities") or []),
+        "matched_by_name": matched,
+        "recall_by_name": _share(matched, len(outcomes)),
+        "anchored_targets": anchored,
+        "by_basis": _by_basis(outcomes, anchors_usable=unusable is None),
+        "missed_targets": [outcome.path for outcome in outcomes if outcome.missed],
+    }
+    if unusable is None:
+        value["anchor_corroborated"] = corroborated
+        value["recall_anchor_corroborated"] = _share(corroborated, len(outcomes))
+    else:
+        # The lower bound is dropped rather than reported as zero. `recall_by_name` stays,
+        # because it is lexical and reads no clock at all -- so the dimension keeps the
+        # half of itself that is still true instead of vanishing entirely.
+        value["anchor_corroboration_unavailable"] = unusable
+
     return Dimension(
         name="entity_capture",
         criterion="plot/entity capture",
@@ -316,24 +358,20 @@ def entity_capture(
         ),
         caveat=(
             "recall_by_name is an upper bound: it establishes that the run produced the "
-            "name, not that it produced it as the thing the annotator heard. "
-            "recall_anchor_corroborated is the matching lower bound -- the name was "
-            f"produced citing turns that span the annotated moment -- computed over the "
-            f"{anchored} targets that carry an anchor. The true figure is between them, "
-            "and no judge has been run to narrow it. Neither number says the entity was "
-            "described correctly; both say only that the name was found"
+            "name, not that it produced it as the thing the annotator heard. Neither "
+            "number says the entity was described correctly; both say only that the name "
+            "was found. "
+            + (
+                "recall_anchor_corroborated is the matching lower bound -- the name was "
+                f"produced citing turns that span the annotated moment -- computed over "
+                f"the {anchored} targets that carry an anchor. The true figure is between "
+                "them, and no judge has been run to narrow it"
+                if unusable is None
+                else "The anchor-corroborated lower bound is absent rather than zero: "
+                + unusable
+            )
         ),
-        value={
-            "targets": len(outcomes),
-            "session_entities": len(session.get("entities") or []),
-            "matched_by_name": matched,
-            "recall_by_name": _share(matched, len(outcomes)),
-            "anchored_targets": anchored,
-            "anchor_corroborated": corroborated,
-            "recall_anchor_corroborated": _share(corroborated, len(outcomes)),
-            "by_basis": _by_basis(outcomes),
-            "missed_targets": [outcome.path for outcome in outcomes if outcome.missed],
-        },
+        value=value,
     )
 
 
@@ -374,7 +412,8 @@ def plot_capture(
                 "an anchor"
             ),
         )
-    if not basis.aligned:
+    unusable = misalignment(basis)
+    if unusable is not None:
         return Dimension(
             name="plot_capture",
             criterion="plot/entity capture",
@@ -382,11 +421,8 @@ def plot_capture(
             basis="none",
             caveat="",
             missing=(
-                f"no annotated anchor falls inside the session's turn span "
-                f"{basis.session_span}, on either the media-offset or the "
-                "excerpt-relative hypothesis. The session and the manifest are not "
-                "describing the same span of audio, and a coverage figure computed across "
-                "that mismatch would be a confident zero rather than a measurement"
+                "anchor coverage is the only mechanical handle on an event target, and "
+                + unusable
             ),
         )
 
@@ -570,6 +606,22 @@ def surfaced_errors(
     missed_anchored = [
         outcome for outcome in outcomes if outcome.missed and outcome.anchor_ms is not None
     ]
+    unusable = misalignment(basis)
+    if unusable is not None and missed_anchored:
+        # Whether a question covers a missed target is decided by comparing the question's
+        # evidence span with the target's anchor, so on a mismatched clock every miss reads
+        # as unsurfaced. That is the accusation this dimension exists to make, and making
+        # it wrongly is worse than not making it.
+        return Dimension(
+            name="surfaced_errors",
+            criterion="surfaced errors",
+            measured=False,
+            basis="none",
+            caveat="",
+            missing=(
+                f"{len(missed_anchored)} missed targets carry anchors and " + unusable
+            ),
+        )
     surfaced = [
         outcome
         for outcome in missed_anchored
