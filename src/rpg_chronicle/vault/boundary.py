@@ -34,6 +34,8 @@ from dataclasses import dataclass
 
 from .survey import Note, Section
 
+_HEADING_LINE = re.compile(r"^(#{1,6})[ \t]+(.+?)[ \t]*$")
+
 AUTHORED = "authored"
 """Written by a person, or old enough that nobody can say otherwise. Never overwritten."""
 
@@ -83,32 +85,32 @@ def section_body(text: str, note: Note, section: Section) -> str:
 
     A subsection is part of its parent, which is what a reader would say too. A `###`
     under a `##` is that `##`'s content, so replacing the `##` region replaces both.
+
+    The section is located by **line number**, not by searching for its title. Searching
+    was wrong in a way that matters here: a note holding both `# Foo` and `## Foo`, or the
+    same section title twice, would match whichever came first and digest the wrong span —
+    so a region could be reported unchanged while its actual text had been edited, which
+    is the one failure this module exists to prevent. `Section.line` identifies exactly
+    one heading, so there is nothing left to disambiguate.
     """
-    ordered = list(note.sections)
-    try:
-        position = ordered.index(section)
-    except ValueError:  # pragma: no cover - defensive; a caller passing a foreign section
-        raise ValueError(f"section {section.title!r} does not belong to {note.path}") from None
+    lines = text.splitlines(keepends=True)
+    index = section.line - 1
+    if not 0 <= index < len(lines):  # pragma: no cover - defensive
+        raise ValueError(f"section {section.title!r} is not at line {section.line} of {note.path}")
 
-    pattern = re.compile(
-        r"^#{1,6}[ \t]+" + re.escape(section.title) + r"[ \t]*$", re.MULTILINE
-    )
-    match = pattern.search(text)
-    if match is None:  # pragma: no cover - sections come from this same text
-        raise ValueError(f"section {section.title!r} not found in {note.path}")
-    start = match.end()
+    heading = _HEADING_LINE.match(lines[index])
+    if heading is None or heading.group(2).strip() != section.title:
+        raise ValueError(  # pragma: no cover - sections come from this same text
+            f"line {section.line} of {note.path} is not the heading {section.title!r}"
+        )
 
+    start = sum(len(line) for line in lines[: index + 1])
     end = len(text)
-    for following in ordered[position + 1 :]:
-        if following.level > section.level:
-            continue
-        tail = re.compile(
-            r"^#{1," + str(following.level) + r"}[ \t]+" + re.escape(following.title) + r"[ \t]*$",
-            re.MULTILINE,
-        ).search(text, start)
-        if tail:
-            end = tail.start()
-        break
+    for offset, line in enumerate(lines[index + 1 :], start=index + 1):
+        following = _HEADING_LINE.match(line)
+        if following and len(following.group(1)) <= section.level:
+            end = sum(len(item) for item in lines[:offset])
+            break
     return text[start:end]
 
 
