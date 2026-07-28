@@ -219,16 +219,56 @@ def test_serialisation_carries_the_evidence_not_a_verdict() -> None:
     assert "canonical" not in payload and "winner" not in payload
 
 
-@pytest.mark.parametrize("floor", [1.0, 2.0, 3.0])
-def test_a_higher_floor_never_selects_less(floor: float) -> None:
-    """Raising the floor widens the queue; it must not silently reorder what it catches."""
-    turns = [Turn("t0", "Garthog and the modifier."), Turn("t1", "Bran waits.")]
-    selected = {
-        form
-        for candidate in find_uncertain_names(turns, lexicon=ORDINARY, floor=floor)
-        for form in candidate.spellings
-    }
-    assert "Garthog" in selected
+def test_the_floor_decides_the_size_of_the_queue() -> None:
+    """The floor is the product-facing control, so it needs coverage that can fail.
+
+    `--rarity-floor` is what trades catching one more mangled name against tripling the
+    review queue, and that trade is the write-up's central claim. The previous version of
+    this test asserted only that `Garthog` was selected at every floor, which is true with
+    the argument thrown away entirely -- so the control had no behavioural coverage
+    anywhere in the suite.
+
+    Three properties, and the second is the one with teeth:
+
+    * raising the floor never drops anything it already selected;
+    * raising it far enough selects strictly more;
+    * the words it adds are the ones between the two floors, not arbitrary.
+
+    **Tautology check.** Hardcoding any single floor inside `is_rare`, or ignoring the
+    argument, makes this fail: the selections at 3.0 and 4.5 become equal and the strict
+    superset assertion goes.
+    """
+    turns = [
+        Turn("t0", "Garthog and the modifier."),
+        Turn("t1", "Bran waits by the ridge."),
+    ]
+
+    def selected(floor: float) -> set[str]:
+        return {
+            form
+            for candidate in find_uncertain_names(turns, lexicon=ORDINARY, floor=floor)
+            for form in candidate.spellings
+        }
+
+    # Garthog is absent from the lexicon, so no floor above zero can miss it.
+    low, high = selected(3.0), selected(4.5)
+    assert low == {"Garthog"}
+
+    # Bran (3.3) and modifier (3.5) sit between the two floors; ridge (4.2) does too,
+    # and Garthog stays. Nothing selected at 3.0 is lost at 4.5.
+    assert low < high, "raising the floor selected no more than the lower one did"
+    assert high == {"Garthog", "Bran", "modifier", "ridge"}
+
+
+def test_the_floor_is_a_threshold_not_a_rounding() -> None:
+    """A word exactly at the floor is common enough to keep out of the queue.
+
+    Stated because the boundary is a product decision rather than an implementation
+    detail: `>= floor` means a floor of 3.3 excludes `Bran` and 3.4 includes it.
+    """
+    turns = [Turn("t0", "Bran waits.")]
+    assert find_uncertain_names(turns, lexicon=ORDINARY, floor=3.3) == []
+    assert find_uncertain_names(turns, lexicon=ORDINARY, floor=3.4)[0].spellings == ("Bran",)
 
 
 def test_the_provider_records_that_it_did_not_run_rather_than_an_empty_list() -> None:
