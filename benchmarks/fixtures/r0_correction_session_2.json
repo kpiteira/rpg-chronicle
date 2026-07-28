@@ -1,0 +1,124 @@
+{
+  "session": {
+    "id": "r0-correction-hollow-bell-2",
+    "title": "The Hollow Bell, second sitting",
+    "note": "Invented, and a different transcript from the first sitting rather than a replay of it. Its declared analysis names the chandler with the spelling the first sitting's reviewer rejected, and names the warden by the alias the reviewer folded away. Nothing in this file knows that a correction exists; whether the second run differs is therefore a property of the software, not of the fixture."
+  },
+  "engine_output": {
+    "engine": "declared-fixture",
+    "turns": [
+      {
+        "id": "turn-001",
+        "start_ms": 0,
+        "end_ms": 9000,
+        "text": "The crypt door is open a hand's width and there is tallow on the step, still soft.",
+        "physical_speaker": "speaker-1",
+        "confidence": 0.92,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-002",
+        "start_ms": 9000,
+        "end_ms": 18000,
+        "text": "Then Ormunt came down here tonight, and he did not come alone.",
+        "physical_speaker": "speaker-3",
+        "confidence": 0.69,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-003",
+        "start_ms": 18000,
+        "end_ms": 27000,
+        "text": "Vesh Kalder is waiting at the top of the stair. He will not come down, and he will not say why.",
+        "physical_speaker": "speaker-1",
+        "confidence": 0.6,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-004",
+        "start_ms": 27000,
+        "end_ms": 36000,
+        "text": "Leave him. What is written on the second coffin, the one with the iron band?",
+        "physical_speaker": "speaker-2",
+        "confidence": 0.9,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-005",
+        "start_ms": 36000,
+        "end_ms": 46000,
+        "text": "A name and a date, both scratched out, and under them the word 'paid' in a newer hand.",
+        "physical_speaker": "speaker-1",
+        "confidence": 0.87,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-006",
+        "start_ms": 46000,
+        "end_ms": 55000,
+        "text": "So the toll has been paid before. That is the thing to ask him about, not the bell.",
+        "physical_speaker": "speaker-3",
+        "confidence": 0.85,
+        "confidence_kind": "declared"
+      }
+    ]
+  },
+  "expected_analysis": {
+    "summary": "The party reaches the crypt and finds it recently opened. A scratched-out name on a banded coffin, marked paid in a newer hand, suggests the crypt toll is older than the party assumed.",
+    "scenes": [
+      {
+        "id": "scene-001",
+        "title": "The crypt door stands open",
+        "summary": "Soft tallow on the step shows somebody came down tonight.",
+        "turn_ids": ["turn-001", "turn-002"]
+      },
+      {
+        "id": "scene-002",
+        "title": "The banded coffin",
+        "summary": "A scratched-out name and date, with 'paid' written under them in a newer hand.",
+        "turn_ids": ["turn-004", "turn-005", "turn-006"]
+      }
+    ],
+    "entities": [
+      {
+        "id": "entity-001",
+        "name": "Ormunt",
+        "kind": "character",
+        "aliases": [],
+        "turn_ids": ["turn-002"]
+      },
+      {
+        "id": "entity-002",
+        "name": "Vesh Kalder",
+        "kind": "character",
+        "aliases": [],
+        "turn_ids": ["turn-003"]
+      },
+      {
+        "id": "entity-003",
+        "name": "the banded coffin",
+        "kind": "item",
+        "aliases": [],
+        "turn_ids": ["turn-004", "turn-005"]
+      }
+    ],
+    "threads": [
+      {
+        "id": "thread-001",
+        "description": "Somebody paid the crypt toll before the party ever heard of it, and the name is scratched out.",
+        "turn_ids": ["turn-005", "turn-006"]
+      }
+    ],
+    "review_questions": [
+      {
+        "id": "question-001",
+        "issue": "It is unclear whether the scratched-out name on the coffin is legible at all.",
+        "recommendation": null,
+        "why_it_matters": "Whether the party can recover the name decides if this thread is followable now or later.",
+        "turn_ids": ["turn-005"],
+        "confidence": 0.55,
+        "consequence": "medium"
+      }
+    ]
+  }
+}

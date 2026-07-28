@@ -38,6 +38,8 @@ def _args(output: Path, **overrides) -> argparse.Namespace:
         "overlap_turns": 8,
         "max_questions": 10,
         "cost_report": None,
+        "vocabulary": None,
+        "no_carry_forward": False,
     }
     return argparse.Namespace(**{**defaults, **overrides})
 
@@ -62,7 +64,9 @@ def test_an_unusable_backend_leaves_the_output_directory_untouched(
     would exist if the ordering were reversed.
     """
     monkeypatch.delenv("RPG_CHRONICLE_ABSENT_KEY", raising=False)
-    monkeypatch.setattr(cli, "_model_provider", lambda args: ModelAnalysisProvider(backend))
+    monkeypatch.setattr(
+        cli, "_model_provider", lambda args, vocabulary=None: ModelAnalysisProvider(backend)
+    )
 
     output = tmp_path / "out"
     with pytest.raises(expected):
@@ -92,7 +96,7 @@ def test_the_ordering_is_what_makes_that_true(tmp_path, monkeypatch):
 
 def test_a_successful_model_run_writes_a_cost_report(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(
-        cli, "_model_provider", lambda args: ModelAnalysisProvider(FakeBackend())
+        cli, "_model_provider", lambda args, vocabulary=None: ModelAnalysisProvider(FakeBackend())
     )
     report = tmp_path / "cost.json"
     cli._run_fixture(_args(tmp_path / "out", cost_report=report))

@@ -1,0 +1,205 @@
+{
+  "session": {
+    "id": "r0-correction-hollow-bell-1",
+    "title": "The Hollow Bell, first sitting",
+    "note": "Invented. Nobody's speech is in this file. It exists so the correction loop can be demonstrated end to end without a model, and it plants the two decisions docs/UX.md names as worth a person's attention: which spelling of a name is right, and whether two names are one thing. The wrong spelling is planted twice so a carry-forward into r0_correction_session_2.json is observable rather than asserted."
+  },
+  "engine_output": {
+    "engine": "declared-fixture",
+    "turns": [
+      {
+        "id": "turn-001",
+        "start_ms": 0,
+        "end_ms": 7000,
+        "text": "The bell tower has been silent for eleven years, and tonight it rings twice.",
+        "physical_speaker": "speaker-1",
+        "confidence": 0.94,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-002",
+        "start_ms": 7000,
+        "end_ms": 15000,
+        "text": "We go and look. Who is still awake in the lower town at this hour?",
+        "physical_speaker": "speaker-2",
+        "confidence": 0.91,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-003",
+        "start_ms": 15000,
+        "end_ms": 24000,
+        "text": "A chandler called Vesh Kalder is still working. He waves you inside without being asked.",
+        "physical_speaker": "speaker-1",
+        "confidence": 0.62,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-004",
+        "start_ms": 24000,
+        "end_ms": 33000,
+        "text": "Vesh Calder says the bell was rung from underneath, not from the tower stair.",
+        "physical_speaker": "speaker-1",
+        "confidence": 0.58,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-005",
+        "start_ms": 33000,
+        "end_ms": 42000,
+        "text": "Underneath means the crypt. Does anyone hold a key to the crypt these days?",
+        "physical_speaker": "speaker-3",
+        "confidence": 0.93,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-006",
+        "start_ms": 42000,
+        "end_ms": 52000,
+        "text": "The Tallow Warden keeps it. He has kept it since the fire, and he answers to nobody in the town.",
+        "physical_speaker": "speaker-1",
+        "confidence": 0.9,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-007",
+        "start_ms": 52000,
+        "end_ms": 61000,
+        "text": "Ormunt still has that key? I thought the council took it off him after the fire.",
+        "physical_speaker": "speaker-2",
+        "confidence": 0.67,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-008",
+        "start_ms": 61000,
+        "end_ms": 70000,
+        "text": "They tried. Ormunt kept it anyway, and the council has not asked twice.",
+        "physical_speaker": "speaker-1",
+        "confidence": 0.71,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-009",
+        "start_ms": 70000,
+        "end_ms": 79000,
+        "text": "Fine. We pay the crypt toll if it comes to that, and we argue about it afterwards.",
+        "physical_speaker": "speaker-3",
+        "confidence": 0.88,
+        "confidence_kind": "declared"
+      },
+      {
+        "id": "turn-010",
+        "start_ms": 79000,
+        "end_ms": 88000,
+        "text": "Somebody go and get the good lantern before we do anything else, please.",
+        "physical_speaker": "speaker-2",
+        "confidence": 0.86,
+        "confidence_kind": "declared"
+      }
+    ]
+  },
+  "expected_analysis": {
+    "summary": "A bell silent for eleven years rings twice at night. A chandler in the lower town tells the party it was rung from beneath the tower, which points at the crypt, and the crypt key is held by a man the town has stopped arguing with.",
+    "scenes": [
+      {
+        "id": "scene-001",
+        "title": "The bell rings twice",
+        "summary": "The party hears the tower bell and decides to go down into the lower town.",
+        "turn_ids": ["turn-001", "turn-002"]
+      },
+      {
+        "id": "scene-002",
+        "title": "The chandler's account",
+        "summary": "A chandler still working at night says the bell was rung from underneath the tower.",
+        "turn_ids": ["turn-003", "turn-004"]
+      },
+      {
+        "id": "scene-003",
+        "title": "Who holds the crypt key",
+        "summary": "The party works out that the crypt key never went back to the council.",
+        "turn_ids": ["turn-005", "turn-006", "turn-007", "turn-008"]
+      }
+    ],
+    "entities": [
+      {
+        "id": "entity-001",
+        "name": "Vesh Kalder",
+        "kind": "character",
+        "aliases": ["Vesh Calder"],
+        "turn_ids": ["turn-003", "turn-004"]
+      },
+      {
+        "id": "entity-002",
+        "name": "the Tallow Warden",
+        "kind": "character",
+        "aliases": [],
+        "turn_ids": ["turn-006"]
+      },
+      {
+        "id": "entity-003",
+        "name": "Ormunt",
+        "kind": "character",
+        "aliases": [],
+        "turn_ids": ["turn-007", "turn-008"]
+      },
+      {
+        "id": "entity-004",
+        "name": "the crypt under the bell tower",
+        "kind": "place",
+        "aliases": [],
+        "turn_ids": ["turn-005", "turn-006"]
+      }
+    ],
+    "threads": [
+      {
+        "id": "thread-001",
+        "description": "Who rang the bell from beneath the tower, and why now.",
+        "turn_ids": ["turn-001", "turn-004"]
+      },
+      {
+        "id": "thread-002",
+        "description": "The party has agreed in principle to pay a crypt toll it has not seen the price of.",
+        "turn_ids": ["turn-009"]
+      }
+    ],
+    "review_questions": [
+      {
+        "id": "question-001",
+        "issue": "Two names may be the same person: 'the Tallow Warden' and 'Ormunt'.",
+        "recommendation": "Treat them as one character, canonically 'the Tallow Warden'.",
+        "why_it_matters": "He holds the only crypt key, so a split record would lose track of who the party has to deal with.",
+        "turn_ids": ["turn-006", "turn-007", "turn-008"],
+        "confidence": 0.45,
+        "consequence": "high"
+      },
+      {
+        "id": "question-002",
+        "issue": "The chandler's surname was heard two ways: 'Vesh Kalder' and 'Vesh Calder'.",
+        "recommendation": "Vesh Kalder",
+        "why_it_matters": "He is the party's only witness to how the bell was rung, and the spelling will become a campaign entity.",
+        "turn_ids": ["turn-003", "turn-004"],
+        "confidence": 0.6,
+        "consequence": "high"
+      },
+      {
+        "id": "question-003",
+        "issue": "It is unclear whether the party has committed to paying the crypt toll or only to arguing about it later.",
+        "recommendation": null,
+        "why_it_matters": "An accepted obligation and a postponed one lead to different next sessions.",
+        "turn_ids": ["turn-009"],
+        "confidence": 0.5,
+        "consequence": "medium"
+      },
+      {
+        "id": "question-004",
+        "issue": "It is unclear who was asked to fetch the lantern.",
+        "recommendation": null,
+        "why_it_matters": "It may be a small character beat about who runs errands for the party.",
+        "turn_ids": ["turn-010"],
+        "confidence": 0.4,
+        "consequence": "low"
+      }
+    ]
+  }
+}

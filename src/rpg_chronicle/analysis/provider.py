@@ -18,6 +18,7 @@ from __future__ import annotations
 import json
 import re
 import time
+from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -26,6 +27,7 @@ from ..providers import AnalysisResult
 from .backend import BackendResponseError, ModelBackend, ModelRequest, TokenUsage
 from .decompose import TokenBudget, Window, plan_windows
 from .prompts import (
+    ApprovedName,
     synthesis_system_prompt,
     synthesis_user_prompt,
     window_system_prompt,
@@ -392,6 +394,7 @@ class ModelAnalysisProvider:
         budget: TokenBudget | None = None,
         max_questions: int = DEFAULT_MAX_QUESTIONS,
         format_retries: int = 1,
+        approved_names: Sequence[ApprovedName] = (),
     ) -> None:
         if max_questions < 1:
             raise ValueError("max_questions must be at least 1")
@@ -401,6 +404,10 @@ class ModelAnalysisProvider:
         self._budget = budget or TokenBudget()
         self._max_questions = max_questions
         self._format_retries = format_retries
+        # Names a person settled in an earlier session. The provider does not read the
+        # store they came from and does not write to it: it is handed a list, and what it
+        # does with it is visible in the prompt and counted in the native artifact.
+        self._approved_names = tuple(approved_names)
         self.cost = AnalysisCost()
 
     @property
@@ -459,7 +466,12 @@ class ModelAnalysisProvider:
     def _analyze_window(self, window: Window, total: int) -> dict[str, Any]:
         payload = self._ask(
             window_system_prompt(max_questions=self._max_questions),
-            window_user_prompt(window.turns, index=window.index, total=total),
+            window_user_prompt(
+                window.turns,
+                index=window.index,
+                total=total,
+                approved_names=self._approved_names,
+            ),
         )
         where = f"window {window.index + 1}"
         # A window may legitimately contain no scene. Twenty minutes of rules
@@ -602,6 +614,7 @@ class ModelAnalysisProvider:
                 "overlap_turns": self._budget.overlap_turns,
             },
             "max_questions": self._max_questions,
+            "approved_names_supplied": len(self._approved_names),
             "questions_before_bound": len(drafts),
             "windows": window_payloads,
         }

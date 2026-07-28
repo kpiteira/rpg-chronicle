@@ -22,6 +22,9 @@ from .model import (
     TranscriptTurn,
 )
 from .providers import AnalysisProvider, TranscriptProvider
+from .review.apply import carry_forward
+from .review.record import RECORD_FILENAME, CorrectionRecord, utc_now
+from .review.vocabulary import Vocabulary
 
 SCHEMA_VERSION = "0.2"
 
@@ -39,7 +42,7 @@ KNOWN_SCHEMA_VERSIONS = ("0.1", "0.2")
 UNSTATED_CONFIDENCE_KIND = "unstated (recorded before schema 0.2)"
 
 
-def _write_json(path: Path, payload: Any) -> None:
+def write_json(path: Path, payload: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(json.dumps(payload, indent=2) + "\n")
@@ -67,7 +70,7 @@ def _migrated_turn(item: dict[str, Any], stored: str) -> dict[str, Any]:
     return {**item, "confidence_kind": UNSTATED_CONFIDENCE_KIND}
 
 
-def _load_session(path: Path) -> CanonicalSession:
+def load_session(path: Path) -> CanonicalSession:
     data = json.loads(path.read_text())
     stored = data.get("schema_version")
     if stored not in KNOWN_SCHEMA_VERSIONS:
@@ -125,7 +128,7 @@ def _attribution_is_uncertain(turn: TranscriptTurn) -> bool:
     return bool(measured) and min(measured) < ATTRIBUTION_REPORTING_FLOOR
 
 
-def _build_review_package(session: CanonicalSession) -> dict[str, Any]:
+def build_review_package(session: CanonicalSession) -> dict[str, Any]:
     return {
         "schema_version": SCHEMA_VERSION,
         "session_id": session.session_id,
@@ -176,8 +179,14 @@ def _build_review_package(session: CanonicalSession) -> dict[str, Any]:
             for turn in session.turns
             if _attribution_is_uncertain(turn)
         ],
+        # The id and the status travel with each question because an answer has to name
+        # what it is answering, and a second visit has to be able to tell what is still
+        # open. A queue that could only be read was the shape of the promise the four
+        # actions made and nothing kept.
         "needs_attention": [
             {
+                "id": question.id,
+                "status": question.status,
                 "issue": question.issue,
                 "recommendation": question.recommendation,
                 "why_it_matters": question.why_it_matters,
@@ -197,14 +206,22 @@ def run_pipeline(
     transcript_provider: TranscriptProvider,
     analysis_provider: AnalysisProvider,
     session_id: str | None = None,
+    vocabulary: Vocabulary | None = None,
+    now: str | None = None,
 ) -> CanonicalSession:
-    """Run or resume the vertical slice and return the canonical session."""
+    """Run or resume the vertical slice and return the canonical session.
+
+    `vocabulary` carries names a person approved in an earlier session into this one. It
+    is applied where the entities are produced and nowhere else, so a session already
+    analysed is never revised behind the operator's back by an approval made after the
+    fact -- whether it should be is a product question, not one this code answers quietly.
+    """
     session_id = session_id or source.stem
     session_dir = output_dir / session_id
     canonical_path = session_dir / "canonical-session.json"
 
     if canonical_path.exists():
-        session = _load_session(canonical_path)
+        session = load_session(canonical_path)
     else:
         session = CanonicalSession(
             schema_version=SCHEMA_VERSION,
@@ -212,25 +229,25 @@ def run_pipeline(
             source={"kind": source.suffix.lstrip(".") or "unknown", "path": str(source.resolve())},
             status="imported",
         )
-        _write_json(canonical_path, session.to_dict())
+        write_json(canonical_path, session.to_dict())
 
     if not session.turns:
         result = transcript_provider.transcribe(source)
         native_path = session_dir / "processor-native" / "transcript.json"
-        _write_json(native_path, result.native_artifact)
+        write_json(native_path, result.native_artifact)
         session.turns = result.turns
         session.processor_artifacts["transcript"] = str(native_path.relative_to(session_dir))
         session.provenance["transcript_provider"] = getattr(
             transcript_provider, "name", type(transcript_provider).__name__
         )
         session.status = "transcribed"
-        _write_json(canonical_path, session.to_dict())
+        write_json(canonical_path, session.to_dict())
 
     if not session.scenes or not session.summary:
         analysis = analysis_provider.analyze(session.turns)
         if analysis.native_artifact:
             native_path = session_dir / "processor-native" / "analysis.json"
-            _write_json(native_path, analysis.native_artifact)
+            write_json(native_path, analysis.native_artifact)
             session.processor_artifacts["analysis"] = str(native_path.relative_to(session_dir))
         session.summary = analysis.summary
         session.scenes = analysis.scenes
@@ -243,10 +260,21 @@ def run_pipeline(
         session.provenance["analysis_is_declared_truth"] = bool(
             getattr(analysis_provider, "is_declared_truth", False)
         )
+        if vocabulary is not None and vocabulary.entries:
+            record_path = session_dir / RECORD_FILENAME
+            record = CorrectionRecord.load(record_path, session_id=session.session_id)
+            carry_forward(session, vocabulary, record=record, now=now or utc_now())
+            if record.entries:
+                record.write(record_path)
+                session.provenance["corrections"] = {
+                    "record": RECORD_FILENAME,
+                    "entries": len(record.entries),
+                    "last_answered_at": record.entries[-1].answered_at,
+                }
         session.status = "analyzed"
-        _write_json(canonical_path, session.to_dict())
+        write_json(canonical_path, session.to_dict())
 
-    _write_json(session_dir / "review-package.json", _build_review_package(session))
+    write_json(session_dir / "review-package.json", build_review_package(session))
     session.status = "review_ready"
-    _write_json(canonical_path, session.to_dict())
+    write_json(canonical_path, session.to_dict())
     return session
