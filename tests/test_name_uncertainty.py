@@ -220,3 +220,42 @@ def test_a_higher_floor_never_selects_less(floor: float) -> None:
         for form in candidate.spellings
     }
     assert "Garthog" in selected
+
+
+def test_the_provider_records_that_it_did_not_run_rather_than_an_empty_list() -> None:
+    """Zero candidates and no lexicon are different facts and must be distinguishable.
+
+    A consumer reading `candidates: 0` from a provider that was never given a lexicon
+    would conclude the recogniser held every name steady, which is the opposite of what
+    happened.
+    """
+    from pathlib import Path
+
+    from rpg_chronicle.transcription.engine import RecognitionResult, RecognizedSegment
+    from rpg_chronicle.transcription.provider import SpeechTranscriptProvider
+
+    class Recognizer:
+        name = "stub"
+
+        def preflight(self) -> None:
+            return None
+
+        def recognize(self, audio: Path) -> RecognitionResult:
+            return RecognitionResult(
+                segments=[RecognizedSegment(0, 1000, "Garthog waits.")],
+                native={},
+                confidence_kind="stub probability",
+            )
+
+    without = SpeechTranscriptProvider(Recognizer()).transcribe(Path("a.wav"))
+    block = without.native_artifact["name_uncertainty"]
+    assert block["computed"] is False and block["candidates"] == []
+    assert "no lexicon" in block["why_not"]
+
+    with_lexicon = SpeechTranscriptProvider(
+        Recognizer(), lexicon=ORDINARY
+    ).transcribe(Path("a.wav"))
+    block = with_lexicon.native_artifact["name_uncertainty"]
+    assert block["computed"] is True and block["candidates"] == 1
+    assert block["detail"][0]["forms"][0]["text"] == "Garthog"
+    assert "not a confidence" in block["caution"]
