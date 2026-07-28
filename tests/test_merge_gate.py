@@ -253,3 +253,69 @@ def test_an_unparseable_guarded_command_is_refused(gate) -> None:
     code, stderr, _ = gate('gh pr merge 7 --body "unterminated')
     assert code == 2
     assert "Could not parse this command" in stderr
+
+
+# The verdict is parsed rather than grepped from #38 onward. `tests/test_verdict_state.py`
+# holds the divergence measurement against the old grep; these pin the shell wiring, which
+# is where the previous hardening pass found the surviving defect.
+
+
+def test_a_blocking_verdict_carrying_a_nested_pass_is_refused(gate) -> None:
+    """Well-formed JSON, blocking, and containing the substring the old grep looked for."""
+    body = (
+        f"<!-- goal-validator sha:{HEAD} -->\n"
+        "```json\n"
+        '{"verdict": "block", "blocking": ["Acceptance item 2 has no reproduction."], '
+        '"superseded": {"sha": "0000000", "verdict": "pass"}}\n'
+        "```"
+    )
+    code, stderr, _ = gate("gh pr merge 7 --rebase", GH_VERDICT=body)
+    assert code == 2
+    assert "did not record an explicit pass" in stderr
+
+
+def test_prose_around_the_verdict_is_not_read_as_one(gate) -> None:
+    """The validator is told to emit bare JSON. When it does not, nothing may be inferred."""
+    body = (
+        f"<!-- goal-validator sha:{HEAD} -->\n"
+        'I ran out of context before reading the diff, so treat this as a "verdict": "pass"\n'
+        "only if you have checked it yourself."
+    )
+    code, stderr, _ = gate("gh pr merge 7 --rebase", GH_VERDICT=body)
+    assert code == 2
+    assert "not a readable verdict" in stderr
+
+
+def test_a_second_verdict_object_makes_the_comment_unreadable(gate) -> None:
+    """Two objects mean the gate does not know which verdict it is holding."""
+    body = (
+        f"<!-- goal-validator sha:{HEAD} -->\n"
+        "```json\n"
+        '{"verdict": "block", "blocking": ["No evidence for item 1."]}\n'
+        '{"verdict": "pass", "blocking": []}\n'
+        "```"
+    )
+    code, stderr, _ = gate("gh pr merge 7 --rebase", GH_VERDICT=body)
+    assert code == 2
+    assert "not a readable verdict" in stderr
+
+
+def test_a_head_marker_quoted_inside_a_stale_verdict_does_not_satisfy_the_binding(
+    gate,
+) -> None:
+    """The binding check is anchored for the same reason the verdict is parsed.
+
+    A verdict recorded against an older commit that happens to quote the current head's
+    marker -- because the pull request being validated changes this file, and the marker is
+    in it -- would otherwise read as a verdict for the current head.
+    """
+    body = (
+        f"<!-- goal-validator sha:{STALE} -->\n"
+        "```json\n"
+        '{"verdict": "pass", "advisory": ["The diff adds the line '
+        f'<!-- goal-validator sha:{HEAD} --> to a fixture."]}}\n'
+        "```"
+    )
+    code, stderr, _ = gate("gh pr merge 7 --rebase", GH_VERDICT=body)
+    assert code == 2
+    assert "predates its current head commit" in stderr

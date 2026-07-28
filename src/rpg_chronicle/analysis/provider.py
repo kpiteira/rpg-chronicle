@@ -228,14 +228,25 @@ def _merge_entities_and_threads(
     ]
 
     threads: list[Thread] = []
-    seen_threads: set[frozenset[str]] = set()
+    seen_threads: set[tuple[frozenset[str], str]] = set()
     for payload in window_payloads:
         for entry in payload.get("threads", []):
             description = _required_str(entry, "description", where="thread")
             ids = _turn_ids(entry, where="thread")
-            # A thread, unlike an entity, is identified by what it points at: the same
-            # obligation described twice in overlapping windows cites the same turns.
-            key = frozenset(ids)
+            # A thread is identified by what it points at *and* by what it says about it.
+            # Citations alone were the first key, and they lose data: one turn can open two
+            # obligations at once -- "we owe the innkeeper for the horses, and we swore to
+            # be back by the new moon" -- and keying on the turns alone kept whichever the
+            # earlier window happened to describe. The other obligation vanished, with no
+            # trace anywhere for a reader to notice it had gone. That is the difference
+            # from a scene, which genuinely *is* its span.
+            #
+            # The residual is the opposite error, and it is the one worth having: two
+            # windows paraphrasing one obligation now yield two threads. A near-duplicate
+            # is in front of the reviewer, who can see it is one thing said twice; a
+            # dropped thread is in front of nobody. This is the treatment a disputed entity
+            # kind gets a few lines up, for the same reason.
+            key = (frozenset(ids), description.strip().casefold())
             if key in seen_threads:
                 continue
             seen_threads.add(key)

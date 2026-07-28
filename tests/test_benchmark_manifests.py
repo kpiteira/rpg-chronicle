@@ -473,9 +473,11 @@ def _content_root_with(tmp_path: Path, **manifests: dict) -> Path:
     return tmp_path
 
 
-def _run_validator_script(content_root: Path) -> subprocess.CompletedProcess[str]:
+def _run_validator_script(
+    content_root: Path, *arguments: str
+) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
-        [sys.executable, str(VALIDATOR_SCRIPT)],
+        [sys.executable, str(VALIDATOR_SCRIPT), *arguments],
         cwd=ROOT,
         capture_output=True,
         text=True,
@@ -548,3 +550,67 @@ def test_a_relative_content_root_still_accepts_its_own_fingerprint(
     )
 
     assert errors == [], errors
+
+
+# The tool's own arguments. Before #38 it parsed none of them: a positional path or a
+# `--content-root` was accepted by the shell and dropped here, so the default directory was
+# validated and the report described a tree the caller had not asked about. Silence is the
+# defect -- an unrecognised argument has to stop the run, not change what it means.
+
+
+def test_a_positional_path_is_the_directory_that_gets_validated(tmp_path: Path) -> None:
+    """Two content directories, and the report has to be about the one that was named."""
+    default_root = _content_root_with(tmp_path / "default", example=_example())
+    named_root = _content_root_with(tmp_path / "named", elsewhere=_example())
+
+    result = _run_validator_script(
+        default_root, str(named_root / "benchmarks" / "manifests")
+    )
+
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "elsewhere.json" in result.stdout
+    assert "example.json" not in result.stdout
+
+
+def test_content_root_is_where_a_fingerprint_path_is_resolved(tmp_path: Path) -> None:
+    """`--content-root` is the argument that matters most and was the most silently lost.
+
+    A manifest's fingerprint path is relative to the content root. Point the tool at a
+    manifest directory laid out some other way and the fallback grandparent is wrong, so
+    the fingerprint resolves to nothing; naming the root has to fix it rather than be
+    discarded.
+    """
+    manifest = _example()
+    payload = b"not the recording, but a file that stands in for one"
+    content_root = tmp_path / "content"
+    (content_root / "media").mkdir(parents=True)
+    (content_root / "media" / "stand-in.txt").write_bytes(payload)
+    manifest["source"]["content_fingerprint"] = {
+        "path": "media/stand-in.txt",
+        "sha256": hashlib.sha256(payload).hexdigest(),
+        "method": "sha256",
+    }
+    # Deliberately not <root>/benchmarks/manifests, so the grandparent fallback misses.
+    manifests = tmp_path / "loose" / "manifests"
+    manifests.mkdir(parents=True)
+    (manifests / "candidate.json").write_text(json.dumps(manifest))
+
+    without_root = _run_validator_script(tmp_path / "unused", str(manifests))
+    with_root = _run_validator_script(
+        tmp_path / "unused", str(manifests), "--content-root", str(content_root)
+    )
+
+    assert without_root.returncode == 1
+    assert "content_fingerprint.path" in without_root.stdout
+    assert with_root.returncode == 0, with_root.stdout + with_root.stderr
+
+
+def test_an_unknown_argument_stops_the_run(tmp_path: Path) -> None:
+    """The whole point: an argument the tool does not understand must not be ignored."""
+    content_root = _content_root_with(tmp_path, example=_example())
+
+    result = _run_validator_script(content_root, "--content-toot", str(content_root))
+
+    assert result.returncode != 0
+    assert "valid: " not in result.stdout
+    assert "--content-toot" in result.stderr

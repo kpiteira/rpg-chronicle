@@ -67,7 +67,20 @@ PROMPT
 gh pr comment "$pr" --body-file "$workdir/comment.md"
 printf '%s\n' "$verdict"
 
-# Fail closed: only an explicit pass exits 0. The merge-gate hook applies the
-# same rule, so a malformed verdict cannot drift through either layer.
-printf '%s' "$verdict" | grep -qE '"verdict": *"pass"' && exit 0
+# Fail closed: only an explicit pass exits 0. The merge-gate hook applies the same rule
+# through the same reader, so a malformed verdict cannot drift through either layer.
+#
+# This was a grep for the substring `"verdict": "pass"` anywhere in the output, which is
+# not the same question. The validator quotes the pull request's own text into its
+# findings, so a change to this script -- or to the gate, or to the goal rules -- puts that
+# substring inside a *blocking* verdict, and the grep reads it as a pass. See
+# scripts/verdict_state.py for the cases and #38 for the measurement.
+state=$(printf '%s' "$verdict" | python3 "$root/scripts/verdict_state.py" || true)
+
+if [ -z "$state" ]; then
+  echo "The validator's output could not be read as a verdict; treating it as a block." >&2
+  exit 1
+fi
+[ "$state" = "pass" ] && exit 0
+echo "The goal validator recorded \"${state}\" for PR #${pr}." >&2
 exit 1
