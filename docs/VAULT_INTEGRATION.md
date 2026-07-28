@@ -26,13 +26,19 @@ presented as an Obsidian convention is a fabrication with a citation.
 
 ## Checking this document
 
-The claims below are checkable rather than asserted. `tests/fixtures/synthetic_vault/`
-is an invented vault reproducing each observed shape, and the loader prints the same
-list this document walks:
+The claims below are checkable rather than asserted. `tests/fixtures/synthetic_vault/` is
+an invented vault reproducing the observed shapes, and the loader reports them:
 
 ```bash
 uv run rpg-chronicle vault-survey tests/fixtures/synthetic_vault
 ```
+
+**Two kinds of check, and they are not the same strength.** Most claims here appear as a
+line in that report, so a reader can hold the two side by side. A few are present in the
+fixture and asserted by `tests/test_vault_survey.py` without being printed — the session
+note's narrative-then-roll-up shape is the main one, because it is a claim about the
+*order* of a note's sections rather than a count. Neither the report nor this document
+should be read as covering the other completely; the tests are the union.
 
 The fixture is authored, not redacted — no name, title or phrase in it came from a real
 vault. `tests/test_vault_survey.py` executes it.

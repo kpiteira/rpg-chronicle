@@ -54,7 +54,7 @@ def test_a_wrong_path_fails_loudly(tmp_path):
 
 
 def test_every_markdown_note_is_found(survey):
-    assert len(survey.notes) == 36
+    assert len(survey.notes) == 37
     assert all(note.path.endswith(".md") for note in survey.notes)
 
 
@@ -95,8 +95,56 @@ def test_note_types_come_from_frontmatter_not_from_the_folder(survey):
     chronicle = {n.note_type for n in survey.notes if n.folder.startswith("Chronicle")}
     assert len(chronicle) > 1, "one folder holds several declared types"
 
+    # And the converse, which is the half that makes folder-implies-type wrong in both
+    # directions rather than just one: a single type spread across several folders.
+    quest_folders = {n.folder for n in survey.notes if n.note_type == "quest"}
+    assert len(quest_folders) > 1, "one declared type is spread across several folders"
+
     sessions = [n for n in survey.notes if n.folder == "Sessions"]
     assert sessions and all(n.note_type is None for n in sessions)
+
+
+def test_the_type_vocabulary_itself_drifts(survey):
+    """Singular and plural of one type coexist, and so do synonyms for one idea.
+
+    Nobody designed the vocabulary; it grew. A consumer that treated `type:` as an
+    enumeration would reject notes the operator considers ordinary, and one that
+    normalised the spellings would be editing the operator's own classification scheme.
+    """
+    types = set(survey.note_types())
+    assert {"historical_event", "historical_events"} <= types, "singular and plural coexist"
+    assert {"event", "historical_event"} <= types, "two spellings for one idea"
+
+
+def test_a_session_note_has_a_narrative_half_and_a_roll_up_half(survey):
+    """The shape a change package would have to produce, asserted rather than described.
+
+    A session note runs bespoke sections in play order and then a roll-up block whose
+    subsections are conventional. The roll-up *grows*: later sessions carry subsections
+    earlier ones do not. So even the conventional half is not a fixed template, which is
+    why `docs/VAULT_INTEGRATION.md` says a package should propose a roll-up shape and
+    expect the operator's own to differ.
+    """
+    sessions = sorted(
+        (n for n in survey.notes if n.folder == "Sessions" and n.body_sections()),
+        key=lambda note: note.title,
+    )
+    assert len(sessions) >= 3
+
+    roll_ups = []
+    for note in sessions:
+        titles = [s.title for s in note.body_sections()]
+        assert "Session Summary" in titles, "every session note closes with a roll-up"
+        start = titles.index("Session Summary")
+        # Narrative first, roll-up after: the summary is never the opening section.
+        assert start > 0, f"{note.title} opens with its roll-up"
+        roll_ups.append(
+            [s for s in note.body_sections()[start + 1 :] if s.level > 2]
+        )
+
+    # The roll-up grew between the earliest and latest session in the fixture, the way it
+    # grew in the observed vault. A fixed set here would let software assume a template.
+    assert len(roll_ups[-1]) > len(roll_ups[0])
 
 
 def test_one_key_carries_more_than_one_value_shape(survey):
