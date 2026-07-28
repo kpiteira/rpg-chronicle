@@ -33,12 +33,23 @@ an invented vault reproducing the observed shapes, and the loader reports them:
 uv run rpg-chronicle vault-survey tests/fixtures/synthetic_vault
 ```
 
-**Two kinds of check, and they are not the same strength.** Most claims here appear as a
-line in that report, so a reader can hold the two side by side. A few are present in the
-fixture and asserted by `tests/test_vault_survey.py` without being printed — the session
-note's narrative-then-roll-up shape is the main one, because it is a claim about the
-*order* of a note's sections rather than a count. Neither the report nor this document
-should be read as covering the other completely; the tests are the union.
+**Three strengths of check, and they are not interchangeable.** Say which a claim has
+before relying on it:
+
+1. **Printed.** Most claims appear as a line in that report, so a reader can hold the two
+   side by side. This is the strongest.
+2. **Asserted.** Present in the fixture and checked by `tests/test_vault_survey.py`
+   without being printed — the session note's narrative-then-roll-up shape is the main
+   one, because it is a claim about the *order* of a note's sections rather than a count.
+3. **Recorded only.** *What the observed vault did not use* — no tags, callouts, Dataview
+   queries or block references — is an observation about absence. The survey does not
+   look for any of them, so nothing prints or asserts it, and the fixture's not using
+   them demonstrates nothing. It is one vault's style, written down so a later reader
+   knows it was checked by eye and not by software.
+
+An earlier draft said "the tests are the union", which was the fourth totalising sentence
+in this document to outrun its evidence. They are not: category 3 has no test, by
+construction.
 
 The fixture is authored, not redacted — no name, title or phrase in it came from a real
 vault. `tests/test_vault_survey.py` executes it.

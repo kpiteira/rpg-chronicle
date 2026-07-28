@@ -428,7 +428,14 @@ def approved_names(vocabulary: Vocabulary | None) -> tuple[ApprovedName, ...]:
 
 
 def _vault_survey(args: argparse.Namespace) -> None:
-    survey = survey_vault(args.vault)
+    # Handled here rather than in `main()`. Rule 4 of docs/PARALLEL_EXECUTION.md lets a
+    # role add its own wiring to this file; a shared `except` clause would have changed
+    # the error path of every other role's command too, which is the other half of the
+    # rule.
+    try:
+        survey = survey_vault(args.vault)
+    except NotADirectoryError as error:
+        raise SystemExit(str(error)) from error
     print(format_report(survey), end="")
     if args.json:
         topology = survey.link_topology()
@@ -462,16 +469,19 @@ def _vault_survey(args: argparse.Namespace) -> None:
 
 
 def _vault_digest(args: argparse.Namespace) -> None:
-    if args.include_app_state:
-        print(
-            vault_digest(
-                args.vault,
-                ignored_directories=frozenset(),
-                ignored_filenames=frozenset(),
+    try:
+        if args.include_app_state:
+            print(
+                vault_digest(
+                    args.vault,
+                    ignored_directories=frozenset(),
+                    ignored_filenames=frozenset(),
+                )
             )
-        )
-        return
-    print(vault_digest(args.vault))
+            return
+        print(vault_digest(args.vault))
+    except NotADirectoryError as error:
+        raise SystemExit(str(error)) from error
 
 
 def _model_provider(
@@ -818,10 +828,6 @@ def main() -> None:
         raise SystemExit(f"vocabulary unusable: {error}") from error
     except UnreadableRecordError as error:
         raise SystemExit(f"correction record unusable: {error}") from error
-    try:
-        handlers[args.command](args)
-    except NotADirectoryError as error:
-        raise SystemExit(f"{error}") from error
     except BackendUnavailableError as error:
         # A configuration failure, not a crash. The message names what is missing
         # and never the value of anything.
