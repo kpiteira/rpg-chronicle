@@ -13,6 +13,7 @@ anything inside it.
 from __future__ import annotations
 
 from .boundary import (
+    AMBIGUOUS,
     AUTHORED,
     RECLAIMED,
     TOOL_OWNED,
@@ -34,6 +35,7 @@ from .survey import (
 )
 
 __all__ = [
+    "AMBIGUOUS",
     "AUTHORED",
     "RECLAIMED",
     "TOOL_OWNED",

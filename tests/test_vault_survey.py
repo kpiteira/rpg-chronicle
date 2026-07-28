@@ -25,6 +25,7 @@ from pathlib import Path
 import pytest
 
 from rpg_chronicle.vault import (
+    AMBIGUOUS,
     AUTHORED,
     RECLAIMED,
     TOOL_OWNED,
@@ -52,10 +53,30 @@ def test_a_wrong_path_fails_loudly(tmp_path):
         survey_vault(tmp_path / "no-such-vault")
 
 
-def test_notes_are_found_and_application_state_is_not(survey):
+def test_every_markdown_note_is_found(survey):
     assert len(survey.notes) == 36
     assert all(note.path.endswith(".md") for note in survey.notes)
-    assert not any(".obsidian" in note.path for note in survey.notes)
+
+
+def test_application_state_is_walked_past(tmp_path):
+    """Exercised against a vault that actually has an `.obsidian/`, not the fixture.
+
+    The fixture ships none — committing invented Obsidian workspace state would be
+    committing noise — so asserting the exclusion against it held vacuously and would
+    have passed with the exclusion removed.
+    """
+    vault = tmp_path / "vault"
+    (vault / ".obsidian").mkdir(parents=True)
+    (vault / ".trash").mkdir()
+    (vault / "Real Note.md").write_text("# Real Note\n")
+    (vault / ".obsidian" / "notes-in-here-are-not-notes.md").write_text("# Config\n")
+    (vault / ".trash" / "Deleted.md").write_text("# Deleted\n")
+
+    found = survey_vault(vault)
+    assert [note.path for note in found.notes] == ["Real Note.md"]
+
+    everything = survey_vault(vault, ignored_directories=frozenset())
+    assert len(everything.notes) == 3
 
 
 def test_note_types_come_from_frontmatter_not_from_the_folder(survey):
@@ -179,11 +200,17 @@ def test_section_conventions_are_conventions_and_not_a_schema(survey):
 
 
 def test_no_note_carries_a_signal_of_who_wrote_it(survey):
-    """The observation the whole boundary rests on, asserted rather than assumed.
+    """The observation the whole boundary rests on, pinned for the fixture.
 
-    If a vault ever does grow a provenance key this test fails, and it should: the
-    boundary in `boundary.py` is built on there being nothing to read, and would need
-    revisiting rather than quietly continuing to work.
+    Be exact about the scope, because an earlier version of this docstring was not. This
+    asserts that *the fixture* carries no provenance key, so the fixture cannot drift away
+    from the shape it was authored to reproduce. It says nothing about any real vault and
+    cannot: no real vault is in CI, and none should be.
+
+    The detector itself is tested separately, by
+    `test_a_provenance_key_is_recognised_however_it_is_spelled`. Checking a real vault
+    means running `rpg-chronicle vault-survey` against it and reading the `provenance`
+    line — on demand, not continuously. `docs/VAULT_INTEGRATION.md` states the same split.
     """
     assert survey.provenance_signals() == ()
 
@@ -358,18 +385,18 @@ class TestAuthoredAndGeneratedBoundary:
         title = next(s for s in note.sections if s.level == 1)
         assert "title text" in section_body((vault / "note.md").read_text(), note, title)
 
-    def test_a_duplicate_section_title_fails_closed_rather_than_writing(self, tmp_path):
-        """The lookup key is ambiguous where `section_body` is not. It must cost only capability.
+    def test_a_duplicate_section_title_is_refused_rather_than_resolved(self, tmp_path):
+        """A target naming a title two sections answer to must be refused, not picked.
 
-        `GeneratedRegion` is keyed by `(note path, section title)`, so two sections sharing
-        a title collapse to one record. That is safe for a structural reason worth
-        demonstrating rather than asserting: the digest covers one specific span, so at
-        most one of the two can match it and the other classifies `RECLAIMED`. Whichever
-        section a caller asks about, the answer is never "write over it".
+        This test exists because its previous version was wrong twice over, and both are
+        worth keeping visible. It asserted `len(problems) <= 1`, which passes for the empty
+        list and would pass with `unsafe_targets` stubbed to return nothing — a tautology.
+        And the property it claimed was false: resolving the title to the first match meant
+        that when the record digested the *first* of the two sections, `unsafe_targets`
+        returned `[]`, which a caller reads as permission to write.
 
-        Checked from both directions — a record made for the first section, and one made
-        for the second — because a mechanism that fails closed only when the collision
-        happens to fall one way is not failing closed.
+        Both directions are checked, because a refusal that only happens when the
+        collision falls one way is not a refusal.
         """
         vault = tmp_path / "vault"
         vault.mkdir()
@@ -379,27 +406,45 @@ class TestAuthoredAndGeneratedBoundary:
         (vault / "note.md").write_text(source)
         note = survey_vault(vault).notes[0]
         first, second = (s for s in note.body_sections() if s.title == "Update")
+        keep = next(s for s in note.body_sections() if s.title == "Keep")
 
         for owned in (first, second):
             record = GeneratedRegion(
                 note.path, "Update", digest_body(section_body(source, note, owned))
             )
+            records = {record.key: record}
+
+            # Handed a specific section, classification is exact: the digest belongs to
+            # one span, so the other section is reclaimed rather than mistaken for it.
             verdicts = [
-                classify_region(source, note, section, {record.key: record})
-                for section in (first, second)
+                classify_region(source, note, section, records) for section in (first, second)
             ]
-            # Exactly one matches the digest; the other is reclaimed, never authored-by-mistake.
             assert sorted(verdicts) == sorted([TOOL_OWNED, RECLAIMED])
 
+            # Asked to resolve the title itself, the check refuses. Naming the reason
+            # exactly is the assertion -- an empty list here is the defect this replaces.
             problems = unsafe_targets(
                 {note.path: source},
                 {note.path: note},
                 [(note.path, "Update")],
-                {record.key: record},
+                records,
             )
-            # The one target names two sections; whichever the check resolves, it is not a
-            # licence to write over the other.
-            assert len(problems) <= 1
+            assert problems == [(note.path, "Update", AMBIGUOUS)]
+
+        # And an unambiguous title in the same note still resolves, so the refusal is
+        # about ambiguity rather than the check having become useless.
+        owned_keep = GeneratedRegion(
+            note.path, "Keep", digest_body(section_body(source, note, keep))
+        )
+        assert (
+            unsafe_targets(
+                {note.path: source},
+                {note.path: note},
+                [(note.path, "Keep")],
+                {owned_keep.key: owned_keep},
+            )
+            == []
+        )
 
     def test_a_region_includes_its_subsections(self, survey):
         """Replacing a `##` replaces the `###`s under it, which is what a reader expects."""

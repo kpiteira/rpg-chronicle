@@ -45,6 +45,14 @@ TOOL_OWNED = "tool-owned"
 RECLAIMED = "reclaimed"
 """The tool wrote it and a person has since edited it. Authored from now on."""
 
+AMBIGUOUS = "ambiguous section title"
+"""Two sections in one note answer to this title, so a target naming it means neither.
+
+Not a classification of a region — a refusal to pick one. It exists because the
+alternative, resolving to the first match, produced a *permission to write* for a target
+nobody could have meant unambiguously.
+"""
+
 
 @dataclass(frozen=True)
 class GeneratedRegion:
@@ -58,18 +66,21 @@ class GeneratedRegion:
     `content_digest` is over the region body as written. It is what turns "the tool wrote
     this" into "the tool wrote this and nobody has touched it since".
 
-    **A known limit, stated because it is easy to read this as stronger than it is.** The
-    key is `(note path, section title)`, so a note carrying the same section title twice
-    cannot be told apart at this level — the ambiguity `section_body` was line-indexed to
-    remove still exists in the *lookup*. It is safe rather than resolved, and safe for a
-    structural reason rather than by luck: the digest is taken over one specific span, so
-    at most one of two same-titled sections can match it, and the other classifies
-    `RECLAIMED`. Every outcome is therefore "do not write", which is the correct direction.
-    `test_a_duplicate_section_title_fails_closed_rather_than_writing` demonstrates it.
+    **A known limit.** The key is `(note path, section title)`, so a note carrying the
+    same section title twice cannot be told apart here — the ambiguity `section_body` was
+    line-indexed to remove still exists in the *lookup*.
 
-    What it costs is capability, not safety: the tool cannot own either of two same-titled
-    regions reliably. V02 should key on something stable — a section index, or an
-    identifier the tool assigns when it writes — rather than inherit this.
+    An earlier version of this docstring reasoned that the ambiguity was harmless because
+    at most one of two same-titled sections can match a digest, so the other is
+    `RECLAIMED`. That is true of `classify_region`, which is handed a specific section,
+    and it was false of `unsafe_targets`, which resolves a title itself: when the record
+    digested the *first* of the two, the check returned an empty list — a permission to
+    write. The goal validator found it by running the test rather than reading the claim.
+
+    `unsafe_targets` now refuses an ambiguous title outright (`AMBIGUOUS`), so the
+    limitation costs capability and not safety: the tool cannot own either of two
+    same-titled regions. V02 should key on something stable — a section index, or an
+    identifier the tool assigns as it writes — rather than inherit this.
     """
 
     note_path: str
@@ -171,14 +182,19 @@ def unsafe_targets(
         if note is None:
             problems.append((note_path, section_title, "note does not exist"))
             continue
-        section = next(
-            (s for s in note.body_sections() if s.title == section_title),
-            None,
-        )
-        if section is None:
+        matches = [s for s in note.body_sections() if s.title == section_title]
+        if not matches:
             problems.append((note_path, section_title, "section does not exist"))
             continue
-        verdict = classify_region(sources[note_path], note, section, records)
+        if len(matches) > 1:
+            # Two sections answer to this title, so the target names both and neither.
+            # Resolving it to the first was the earlier behaviour and was wrong in the
+            # worst available direction: when the record happened to digest the first
+            # section, this returned an empty list -- a permission to write -- for a
+            # target the caller could not have meant unambiguously.
+            problems.append((note_path, section_title, AMBIGUOUS))
+            continue
+        verdict = classify_region(sources[note_path], note, matches[0], records)
         if verdict != TOOL_OWNED:
             problems.append((note_path, section_title, verdict))
     return problems
