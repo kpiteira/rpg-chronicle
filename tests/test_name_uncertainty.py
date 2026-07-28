@@ -55,7 +55,7 @@ class StubLexicon:
 ORDINARY = StubLexicon(
     {
         "the": 7.0, "road": 5.0, "out": 6.0, "of": 7.0, "narrows": 4.0, "toward": 5.0,
-        "checks": 5.0, "modifier": 3.5, "modifiers": 3.5, "bran": 3.3, "warden": 4.2,
+        "checks": 5.0, "modifier": 3.5, "bran": 3.3, "warden": 4.2,
         "see": 6.0, "anything": 5.5, "moving": 5.0, "on": 6.5, "ridge": 4.2,
         "want": 6.0, "perception": 4.5, "check": 5.5, "does": 6.0, "cat": 5.5,
         "nag": 3.6, "and": 7.0, "again": 5.5, "her": 6.0, "up": 6.0, "is": 7.0,
@@ -97,6 +97,15 @@ def test_a_plural_of_a_common_word_is_not_a_candidate() -> None:
 
     Only asking about the singular separates them, and without that check every regular
     plural the lexicon happens to omit arrives as a name.
+
+    The stub deliberately gives `modifiers` no entry at all, so it is *below* the floor
+    and the rarity check passes it through to the plural branch. An earlier version
+    declared it at 3.5, which meant the rarity check filtered it first and this test named
+    a branch it never reached -- it kept passing with the branch deleted, which is what
+    the tautology rule exists to catch.
+
+    **Tautology check.** Replacing the plural branch in `is_rare` with `return True` makes
+    this fail: `modifiers` joins `vegetators` in the candidate list.
     """
     turns = [Turn("t0", "Apply the modifiers."), Turn("t1", "The vegetators moved.")]
     candidates = find_uncertain_names(turns, lexicon=ORDINARY, floor=2.0)
