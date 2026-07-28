@@ -33,6 +33,7 @@ from .engine import (
     RecognizedSegment,
     SpeakerSpan,
 )
+from .name_uncertainty import DEFAULT_RARITY_FLOOR, Lexicon, find_uncertain_names
 
 UNRELIABLE_SPEAKERS = "unreliable"
 
@@ -108,9 +109,13 @@ class SpeechTranscriptProvider:
         self,
         recognizer: RecognitionEngine,
         diarizer: DiarizationEngine | None = None,
+        lexicon: Lexicon | None = None,
+        rarity_floor: float = DEFAULT_RARITY_FLOOR,
     ) -> None:
         self._recognizer = recognizer
         self._diarizer = diarizer
+        self._lexicon = lexicon
+        self._rarity_floor = rarity_floor
 
     @property
     def name(self) -> str:
@@ -127,6 +132,42 @@ class SpeechTranscriptProvider:
         self._recognizer.preflight()
         if self._diarizer is not None:
             self._diarizer.preflight()
+
+    def _name_uncertainty(self, turns: list[TranscriptTurn]) -> dict[str, Any]:
+        """Which names the recogniser probably got wrong, and what the answer is worth.
+
+        Absent a lexicon this records that it did not run rather than emitting an empty
+        list, because "no lexicon was supplied" and "no name looked wrong" are different
+        facts and a consumer reading zero candidates must be able to tell them apart.
+        """
+        if self._lexicon is None:
+            return {
+                "computed": False,
+                "why_not": (
+                    "no lexicon supplied; install the opt-in speech group and pass one"
+                ),
+                "candidates": [],
+            }
+        candidates = find_uncertain_names(
+            turns, lexicon=self._lexicon, floor=self._rarity_floor
+        )
+        return {
+            "computed": True,
+            "lexicon": getattr(self._lexicon, "name", type(self._lexicon).__name__),
+            "rarity_floor": self._rarity_floor,
+            "candidates": len(candidates),
+            "self_contradicted": sum(
+                1 for c in candidates if len({f.text.lower() for f in c.forms}) > 1
+            ),
+            "caution": (
+                "Not a probability of error, and not a confidence. It says the string is "
+                "rare in general English or that the engine spelled one name several "
+                "ways. A name the recogniser deleted outright leaves nothing to point at "
+                "and does not appear here; a name built from ordinary words -- Warden, "
+                "Ashen Spire -- is invisible to it by construction."
+            ),
+            "detail": [c.to_dict() for c in candidates],
+        }
 
     def transcribe(self, source: Path) -> TranscriptResult:
         recognition = self._recognizer.recognize(source)
@@ -215,5 +256,6 @@ class SpeechTranscriptProvider:
                 "rejected_segments": len(rejected),
                 "rejected": rejected,
             },
+            "name_uncertainty": self._name_uncertainty(turns),
         }
         return TranscriptResult(turns=turns, native_artifact=native)

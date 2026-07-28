@@ -1,0 +1,784 @@
+{
+  "probe": "name-uncertainty",
+  "lexicon": "wordfreq (en)",
+  "output_kind": "model output measured against published manifest truth",
+  "caveat": "Verified entity labels come from the benchmark manifests and are machine-assisted for most items, so they are evidence about which names exist and not a word-error-rate reference. No recognized speech is reproduced here; selected rare token types are single words.",
+  "materials": [
+    {
+      "material": "synthetic-table-talk, planted names, whisper.cpp (committed, rights-clear)",
+      "restricted": false,
+      "turns": 13,
+      "what_the_recogniser_did": [
+        {
+          "name": "Vaelthorn",
+          "outcome": "replaced",
+          "exact_occurrences": 0,
+          "near_misses": {
+            "Vealthorn": 1
+          },
+          "correspondence": "declared by R01",
+          "should_be_flagged": true
+        },
+        {
+          "name": "Ilyra",
+          "outcome": "replaced",
+          "exact_occurrences": 0,
+          "near_misses": {
+            "Eilera": 2
+          },
+          "correspondence": "declared by R01",
+          "should_be_flagged": true
+        },
+        {
+          "name": "Brann",
+          "outcome": "replaced",
+          "exact_occurrences": 0,
+          "near_misses": {
+            "Bran": 2
+          },
+          "correspondence": "declared by R01",
+          "should_be_flagged": true
+        },
+        {
+          "name": "Korrigan",
+          "outcome": "replaced",
+          "exact_occurrences": 0,
+          "near_misses": {
+            "Karikon": 2
+          },
+          "correspondence": "declared by R01",
+          "should_be_flagged": true
+        },
+        {
+          "name": "Warden",
+          "outcome": "clean",
+          "exact_occurrences": 1,
+          "near_misses": {},
+          "should_be_flagged": false
+        }
+      ],
+      "outcome_counts": {
+        "clean": 1,
+        "contradicted": 0,
+        "replaced": 4,
+        "lost": 0
+      },
+      "floor_sweep": {
+        "1.0": {
+          "candidates": 3,
+          "self_contradicted": 0,
+          "turns_selected": 5,
+          "turns_total": 13,
+          "share_of_turns_selected": 0.3846,
+          "wall_ms": 28.1,
+          "targets": 4,
+          "targets_flagged": 3,
+          "targets_missed": [
+            "Brann"
+          ],
+          "clean_names_wrongly_flagged": [],
+          "candidates_detail": [
+            {
+              "id": "n0000",
+              "grounds": "no lexicon contains it",
+              "occurrences": 2,
+              "forms": [
+                {
+                  "text": "Eilera",
+                  "occurrences": 2,
+                  "turn_ids": [
+                    "t0001",
+                    "t0007"
+                  ],
+                  "zipf": 0.0
+                }
+              ]
+            },
+            {
+              "id": "n0001",
+              "grounds": "no lexicon contains it",
+              "occurrences": 2,
+              "forms": [
+                {
+                  "text": "Karikon",
+                  "occurrences": 2,
+                  "turn_ids": [
+                    "t0005",
+                    "t0010"
+                  ],
+                  "zipf": 0.0
+                }
+              ]
+            },
+            {
+              "id": "n0002",
+              "grounds": "no lexicon contains it",
+              "occurrences": 1,
+              "forms": [
+                {
+                  "text": "Vealthorn",
+                  "occurrences": 1,
+                  "turn_ids": [
+                    "t0000"
+                  ],
+                  "zipf": 0.0
+                }
+              ]
+            }
+          ]
+        },
+        "2.0": {
+          "candidates": 3,
+          "self_contradicted": 0,
+          "turns_selected": 5,
+          "turns_total": 13,
+          "share_of_turns_selected": 0.3846,
+          "wall_ms": 0.1,
+          "targets": 4,
+          "targets_flagged": 3,
+          "targets_missed": [
+            "Brann"
+          ],
+          "clean_names_wrongly_flagged": [],
+          "candidates_detail": [
+            {
+              "id": "n0000",
+              "grounds": "no lexicon contains it",
+              "occurrences": 2,
+              "forms": [
+                {
+                  "text": "Eilera",
+                  "occurrences": 2,
+                  "turn_ids": [
+                    "t0001",
+                    "t0007"
+                  ],
+                  "zipf": 0.0
+                }
+              ]
+            },
+            {
+              "id": "n0001",
+              "grounds": "no lexicon contains it",
+              "occurrences": 2,
+              "forms": [
+                {
+                  "text": "Karikon",
+                  "occurrences": 2,
+                  "turn_ids": [
+                    "t0005",
+                    "t0010"
+                  ],
+                  "zipf": 0.0
+                }
+              ]
+            },
+            {
+              "id": "n0002",
+              "grounds": "no lexicon contains it",
+              "occurrences": 1,
+              "forms": [
+                {
+                  "text": "Vealthorn",
+                  "occurrences": 1,
+                  "turn_ids": [
+                    "t0000"
+                  ],
+                  "zipf": 0.0
+                }
+              ]
+            }
+          ]
+        },
+        "3.0": {
+          "candidates": 5,
+          "self_contradicted": 0,
+          "turns_selected": 5,
+          "turns_total": 13,
+          "share_of_turns_selected": 0.3846,
+          "wall_ms": 0.1,
+          "targets": 4,
+          "targets_flagged": 3,
+          "targets_missed": [
+            "Brann"
+          ],
+          "clean_names_wrongly_flagged": [],
+          "candidates_detail": [
+            {
+              "id": "n0000",
+              "grounds": "no lexicon contains it",
+              "occurrences": 2,
+              "forms": [
+                {
+                  "text": "Eilera",
+                  "occurrences": 2,
+                  "turn_ids": [
+                    "t0001",
+                    "t0007"
+                  ],
+                  "zipf": 0.0
+                }
+              ]
+            },
+            {
+              "id": "n0001",
+              "grounds": "no lexicon contains it",
+              "occurrences": 2,
+              "forms": [
+                {
+                  "text": "Karikon",
+                  "occurrences": 2,
+                  "turn_ids": [
+                    "t0005",
+                    "t0010"
+                  ],
+                  "zipf": 0.0
+                }
+              ]
+            },
+            {
+              "id": "n0002",
+              "grounds": "rare in general English",
+              "occurrences": 1,
+              "forms": [
+                {
+                  "text": "Ashen",
+                  "occurrences": 1,
+                  "turn_ids": [
+                    "t0000"
+                  ],
+                  "zipf": 2.48
+                }
+              ]
+            },
+            {
+              "id": "n0003",
+              "grounds": "rare in general English",
+              "occurrences": 1,
+              "forms": [
+                {
+                  "text": "sigil",
+                  "occurrences": 1,
+                  "turn_ids": [
+                    "t0001"
+                  ],
+                  "zipf": 2.37
+                }
+              ]
+            },
+            {
+              "id": "n0004",
+              "grounds": "no lexicon contains it",
+              "occurrences": 1,
+              "forms": [
+                {
+                  "text": "Vealthorn",
+                  "occurrences": 1,
+                  "turn_ids": [
+                    "t0000"
+                  ],
+                  "zipf": 0.0
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "confidence_comparison": {
+        "lowest_5_percent": {
+          "turns_selected": 1,
+          "signal_turns_it_contains": 1,
+          "signal_turns_total": 5
+        },
+        "lowest_10_percent": {
+          "turns_selected": 1,
+          "signal_turns_it_contains": 1,
+          "signal_turns_total": 5
+        },
+        "lowest_20_percent": {
+          "turns_selected": 2,
+          "signal_turns_it_contains": 1,
+          "signal_turns_total": 5
+        }
+      },
+      "short_form_length": 6
+    },
+    {
+      "material": "hiddengrid-swc-ep044, 0-600 s, canonical session from #20",
+      "restricted": true,
+      "turns": 301,
+      "what_the_recogniser_did": [
+        {
+          "outcome": "clean",
+          "exact_occurrences": 1,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "replaced",
+          "exact_occurrences": 0,
+          "should_be_flagged": true,
+          "near_miss_count": 1
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 4,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 1,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 8,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "lost",
+          "exact_occurrences": 0,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 2,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "contradicted",
+          "exact_occurrences": 1,
+          "should_be_flagged": true,
+          "near_miss_count": 1
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 1,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "lost",
+          "exact_occurrences": 0,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        }
+      ],
+      "outcome_counts": {
+        "clean": 6,
+        "contradicted": 1,
+        "replaced": 1,
+        "lost": 2
+      },
+      "floor_sweep": {
+        "1.0": {
+          "candidates": 4,
+          "self_contradicted": 1,
+          "turns_selected": 5,
+          "turns_total": 301,
+          "share_of_turns_selected": 0.0166,
+          "wall_ms": 1.9,
+          "targets": 2,
+          "targets_flagged": 1,
+          "targets_missed": 1,
+          "clean_names_wrongly_flagged": 0,
+          "candidate_form_counts": [
+            2,
+            1,
+            1,
+            1
+          ]
+        },
+        "2.0": {
+          "candidates": 6,
+          "self_contradicted": 1,
+          "turns_selected": 7,
+          "turns_total": 301,
+          "share_of_turns_selected": 0.0233,
+          "wall_ms": 1.0,
+          "targets": 2,
+          "targets_flagged": 1,
+          "targets_missed": 1,
+          "clean_names_wrongly_flagged": 0,
+          "candidate_form_counts": [
+            2,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "3.0": {
+          "candidates": 14,
+          "self_contradicted": 2,
+          "turns_selected": 17,
+          "turns_total": 301,
+          "share_of_turns_selected": 0.0565,
+          "wall_ms": 1.1,
+          "targets": 2,
+          "targets_flagged": 2,
+          "targets_missed": 0,
+          "clean_names_wrongly_flagged": 1,
+          "candidate_form_counts": [
+            2,
+            2,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "confidence_comparison": {
+        "lowest_5_percent": {
+          "turns_selected": 15,
+          "signal_turns_it_contains": 2,
+          "signal_turns_total": 7
+        },
+        "lowest_10_percent": {
+          "turns_selected": 30,
+          "signal_turns_it_contains": 2,
+          "signal_turns_total": 7
+        },
+        "lowest_20_percent": {
+          "turns_selected": 60,
+          "signal_turns_it_contains": 4,
+          "signal_turns_total": 7
+        }
+      },
+      "short_form_length": 6,
+      "redaction": "Counts only. Selected token types and verified entity labels are derived from a redistribution-restricted recording and stay in the content directory; rerun with --full-out to see them."
+    },
+    {
+      "material": "hiddengrid-swc-ep044, longer window (hg3600.json)",
+      "restricted": true,
+      "turns": 1947,
+      "what_the_recogniser_did": [
+        {
+          "outcome": "clean",
+          "exact_occurrences": 1,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "replaced",
+          "exact_occurrences": 0,
+          "should_be_flagged": true,
+          "near_miss_count": 1
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 10,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 11,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 15,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 7,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 3,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "contradicted",
+          "exact_occurrences": 2,
+          "should_be_flagged": true,
+          "near_miss_count": 4
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 1,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "lost",
+          "exact_occurrences": 0,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        }
+      ],
+      "outcome_counts": {
+        "clean": 7,
+        "contradicted": 1,
+        "replaced": 1,
+        "lost": 1
+      },
+      "floor_sweep": {
+        "1.0": {
+          "candidates": 8,
+          "self_contradicted": 1,
+          "turns_selected": 14,
+          "turns_total": 1947,
+          "share_of_turns_selected": 0.0072,
+          "wall_ms": 8.0,
+          "targets": 2,
+          "targets_flagged": 1,
+          "targets_missed": 1,
+          "clean_names_wrongly_flagged": 0,
+          "candidate_form_counts": [
+            6,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "2.0": {
+          "candidates": 13,
+          "self_contradicted": 1,
+          "turns_selected": 19,
+          "turns_total": 1947,
+          "share_of_turns_selected": 0.0098,
+          "wall_ms": 5.7,
+          "targets": 2,
+          "targets_flagged": 1,
+          "targets_missed": 1,
+          "clean_names_wrongly_flagged": 0,
+          "candidate_form_counts": [
+            6,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "3.0": {
+          "candidates": 42,
+          "self_contradicted": 4,
+          "turns_selected": 62,
+          "turns_total": 1947,
+          "share_of_turns_selected": 0.0318,
+          "wall_ms": 6.9,
+          "targets": 2,
+          "targets_flagged": 2,
+          "targets_missed": 0,
+          "clean_names_wrongly_flagged": 1,
+          "candidate_form_counts": [
+            6,
+            2,
+            2,
+            2,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "confidence_comparison": {
+        "lowest_5_percent": {
+          "turns_selected": 97,
+          "signal_turns_it_contains": 3,
+          "signal_turns_total": 19
+        },
+        "lowest_10_percent": {
+          "turns_selected": 194,
+          "signal_turns_it_contains": 6,
+          "signal_turns_total": 19
+        },
+        "lowest_20_percent": {
+          "turns_selected": 389,
+          "signal_turns_it_contains": 7,
+          "signal_turns_total": 19
+        }
+      },
+      "short_form_length": 6,
+      "redaction": "Counts only. Selected token types and verified entity labels are derived from a redistribution-restricted recording and stay in the content directory; rerun with --full-out to see them."
+    },
+    {
+      "material": "mystic-horizon-ch1ep1, three annotated windows",
+      "restricted": true,
+      "turns": 122,
+      "what_the_recogniser_did": [
+        {
+          "outcome": "clean",
+          "exact_occurrences": 1,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 1,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "lost",
+          "exact_occurrences": 0,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 2,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "clean",
+          "exact_occurrences": 1,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "lost",
+          "exact_occurrences": 0,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        },
+        {
+          "outcome": "lost",
+          "exact_occurrences": 0,
+          "should_be_flagged": false,
+          "near_miss_count": 0
+        }
+      ],
+      "outcome_counts": {
+        "clean": 4,
+        "contradicted": 0,
+        "replaced": 0,
+        "lost": 3
+      },
+      "floor_sweep": {
+        "1.0": {
+          "candidates": 3,
+          "self_contradicted": 0,
+          "turns_selected": 3,
+          "turns_total": 122,
+          "share_of_turns_selected": 0.0246,
+          "wall_ms": 1.3,
+          "targets": 0,
+          "targets_flagged": 0,
+          "targets_missed": 0,
+          "clean_names_wrongly_flagged": 0,
+          "candidate_form_counts": [
+            1,
+            1,
+            1
+          ]
+        },
+        "2.0": {
+          "candidates": 4,
+          "self_contradicted": 0,
+          "turns_selected": 4,
+          "turns_total": 122,
+          "share_of_turns_selected": 0.0328,
+          "wall_ms": 0.8,
+          "targets": 0,
+          "targets_flagged": 0,
+          "targets_missed": 0,
+          "clean_names_wrongly_flagged": 0,
+          "candidate_form_counts": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        "3.0": {
+          "candidates": 9,
+          "self_contradicted": 0,
+          "turns_selected": 10,
+          "turns_total": 122,
+          "share_of_turns_selected": 0.082,
+          "wall_ms": 0.9,
+          "targets": 0,
+          "targets_flagged": 0,
+          "targets_missed": 0,
+          "clean_names_wrongly_flagged": 1,
+          "candidate_form_counts": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        }
+      },
+      "confidence_comparison": {},
+      "short_form_length": 6,
+      "redaction": "Counts only. Selected token types and verified entity labels are derived from a redistribution-restricted recording and stay in the content directory; rerun with --full-out to see them."
+    }
+  ]
+}
