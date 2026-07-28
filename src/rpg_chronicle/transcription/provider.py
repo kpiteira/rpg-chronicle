@@ -128,10 +128,19 @@ class SpeechTranscriptProvider:
 
         Both engines are checked, so a run that would die at the diarization step after
         twenty minutes of recognition dies immediately instead.
+
+        The lexicon is checked for the same reason and was not, at first. `WordfreqLexicon`
+        imports its table lazily, so a missing dependency surfaced only once recognition
+        had finished and the name pass ran -- which is the identical failure this method
+        already existed to prevent for `soundfile`. A lexicon with nothing to preflight is
+        skipped, so a test's hand-written stub needs no ceremony.
         """
         self._recognizer.preflight()
         if self._diarizer is not None:
             self._diarizer.preflight()
+        lexicon_preflight = getattr(self._lexicon, "preflight", None)
+        if callable(lexicon_preflight):
+            lexicon_preflight()
 
     def _name_uncertainty(self, turns: list[TranscriptTurn]) -> dict[str, Any]:
         """Which names the recogniser probably got wrong, and what the answer is worth.
@@ -139,6 +148,12 @@ class SpeechTranscriptProvider:
         Absent a lexicon this records that it did not run rather than emitting an empty
         list, because "no lexicon was supplied" and "no name looked wrong" are different
         facts and a consumer reading zero candidates must be able to tell them apart.
+
+        `candidates` is an integer in both branches. It was a list in one and a count in
+        the other, which made a consumer branch on the type as well as on `computed` --
+        two ways of asking one question, and the wrong one silently returns something
+        falsy either way. `computed` is the field to read; `candidates` is null when there
+        is nothing to count.
         """
         if self._lexicon is None:
             return {
@@ -146,7 +161,8 @@ class SpeechTranscriptProvider:
                 "why_not": (
                     "no lexicon supplied; install the opt-in speech group and pass one"
                 ),
-                "candidates": [],
+                "candidates": None,
+                "detail": [],
             }
         candidates = find_uncertain_names(
             turns, lexicon=self._lexicon, floor=self._rarity_floor

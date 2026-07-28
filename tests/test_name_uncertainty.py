@@ -258,7 +258,9 @@ def test_the_provider_records_that_it_did_not_run_rather_than_an_empty_list() ->
 
     without = SpeechTranscriptProvider(Recognizer()).transcribe(Path("a.wav"))
     block = without.native_artifact["name_uncertainty"]
-    assert block["computed"] is False and block["candidates"] == []
+    assert block["computed"] is False
+    assert block["candidates"] is None, "a count and a list are two answers to one question"
+    assert block["detail"] == []
     assert "no lexicon" in block["why_not"]
 
     with_lexicon = SpeechTranscriptProvider(
@@ -268,3 +270,40 @@ def test_the_provider_records_that_it_did_not_run_rather_than_an_empty_list() ->
     assert block["computed"] is True and block["candidates"] == 1
     assert block["detail"][0]["forms"][0]["text"] == "Garthog"
     assert "not a confidence" in block["caution"]
+
+
+def test_preflight_reaches_the_lexicon_before_recognition_runs() -> None:
+    """A missing lexicon must cost a second, not twenty minutes of recognition.
+
+    `WordfreqLexicon` loads its table lazily, so without this the first sign of a missing
+    dependency is the name pass running *after* the recogniser has finished -- the same
+    failure `SpeechTranscriptProvider.preflight` already existed to prevent for the
+    diarizer's `soundfile` import.
+    """
+
+    from rpg_chronicle.transcription.provider import SpeechTranscriptProvider
+
+    class Recognizer:
+        name = "stub"
+
+        def preflight(self) -> None:
+            return None
+
+        def recognize(self, audio: Path):  # pragma: no cover - must not be reached
+            raise AssertionError("recognition ran before the lexicon was checked")
+
+    class MissingLexicon:
+        name = "missing"
+
+        def preflight(self) -> None:
+            raise ImportError("wordfreq is not importable")
+
+        def zipf(self, word: str) -> float:  # pragma: no cover
+            raise AssertionError("must not be reached")
+
+    provider = SpeechTranscriptProvider(Recognizer(), lexicon=MissingLexicon())
+    with pytest.raises(ImportError, match="wordfreq"):
+        provider.preflight()
+
+    # A stub lexicon with no preflight of its own is skipped rather than rejected.
+    SpeechTranscriptProvider(Recognizer(), lexicon=ORDINARY).preflight()
