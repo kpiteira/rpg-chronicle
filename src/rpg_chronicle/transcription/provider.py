@@ -41,9 +41,10 @@ UNRELIABLE_SPEAKERS = "unreliable"
 class Attribution:
     """How well a speaker label describes the turn it was attached to.
 
-    Recorded per turn in the engine-native artifact rather than on `TranscriptTurn`:
-    R01 asked for an attribution-quality field on the canonical model and that request
-    is the TPM's to answer, so this carries the evidence without pre-empting the shape.
+    Both numbers now reach the canonical turn as `speaker_coverage` and `speaker_purity`
+    (D-018), which is what R01 asked for and what #20 could not do while `model.py` was
+    unchanged. They stay in the engine-native artifact as well: that artifact is the
+    debugging record, and D-006 gives it that job.
 
     `coverage` is the share of the turn any speaker covers at all; `purity` is the share
     the winning speaker covers *of what was covered*. Reported separately because they
@@ -169,6 +170,11 @@ class SpeechTranscriptProvider:
                     text=text,
                     physical_speaker=attribution.label,
                     confidence=segment.confidence,
+                    confidence_kind=(
+                        recognition.confidence_kind if segment.confidence is not None else None
+                    ),
+                    speaker_coverage=attribution.coverage,
+                    speaker_purity=attribution.purity,
                 )
             )
             attributions.append(

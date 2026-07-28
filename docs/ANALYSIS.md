@@ -340,6 +340,12 @@ before `run_pipeline`, which writes the canonical session the moment it is calle
   currently carry. That is now a consumer need backed by a fixture, which is what
   `docs/ARCHITECTURE_BOUNDARIES.md` asks for before the shared boundary changes — but it
   is the TPM's call, so no field was added.
+
+  **Granted in T04 (#33), D-018.** `CanonicalSession` carries `entities` and `threads`,
+  the provider merges entities by name across overlapping windows so aliases accumulate,
+  and both reach the review package. One consequence to know about: entities and threads
+  are claims now, so a fabricated citation aborts the run as it does for a scene, and the
+  loose validation that existed because nothing consumed them is gone.
 - **A second backend.** Out of scope by the goal. The seam is proved with a fake.
 - **Prompt regression testing.** The alias miss was found by reading output, not by a
   test, and could regress silently. Pinning prompt behaviour needs a scoring approach

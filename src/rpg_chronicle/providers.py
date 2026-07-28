@@ -10,9 +10,24 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
-from .model import ReviewQuestion, Scene, TranscriptTurn, evidence_for
+from .model import Entity, ReviewQuestion, Scene, Thread, TranscriptTurn, evidence_for
+
+
+def _declared_aliases(item: dict[str, Any]) -> list[str]:
+    """Read a fixture's alias list, refusing anything that is not one.
+
+    `list("Kayleth")` is a list of seven characters and no exception, which is the worst
+    available outcome: the fixture would appear to declare seven aliases.
+    """
+    value = item.get("aliases", [])
+    if not isinstance(value, list) or not all(isinstance(alias, str) for alias in value):
+        raise ValueError(
+            f"fixture entity {item.get('name')!r} declares aliases {value!r}; "
+            "'aliases' must be a list of strings"
+        )
+    return list(value)
 
 
 @dataclass(frozen=True)
@@ -26,6 +41,8 @@ class AnalysisResult:
     summary: str
     scenes: list[Scene]
     review_questions: list[ReviewQuestion]
+    entities: list[Entity] = field(default_factory=list)
+    threads: list[Thread] = field(default_factory=list)
     native_artifact: dict[str, object] = field(default_factory=dict)
 
 
@@ -65,6 +82,17 @@ class FixtureTranscriptProvider:
                 text=item["text"],
                 physical_speaker=item.get("physical_speaker"),
                 confidence=item.get("confidence"),
+                # A fixture's confidence is a number somebody wrote down, not a
+                # measurement any engine produced. Naming it "declared" is the same
+                # distinction D-009 draws everywhere else, applied to the one field
+                # where an unnamed number would look exactly like a measured one.
+                confidence_kind=(
+                    item.get("confidence_kind", "declared")
+                    if item.get("confidence") is not None
+                    else None
+                ),
+                speaker_coverage=item.get("speaker_coverage"),
+                speaker_purity=item.get("speaker_purity"),
             )
             for item in payload["engine_output"]["turns"]
         ]
@@ -110,9 +138,29 @@ class FixtureAnalysisProvider:
             )
             for item in declared["review_questions"]
         ]
+        entities = [
+            Entity(
+                id=item["id"],
+                name=item["name"],
+                kind=item["kind"],
+                aliases=_declared_aliases(item),
+                evidence=evidence_for(turns_by_id, item["turn_ids"]),
+            )
+            for item in declared.get("entities", [])
+        ]
+        threads = [
+            Thread(
+                id=item["id"],
+                description=item["description"],
+                evidence=evidence_for(turns_by_id, item["turn_ids"]),
+            )
+            for item in declared.get("threads", [])
+        ]
         return AnalysisResult(
             summary=declared["summary"],
             scenes=scenes,
             review_questions=questions,
+            entities=entities,
+            threads=threads,
             native_artifact={"provider": self.name, "source": str(self._fixture_path)},
         )

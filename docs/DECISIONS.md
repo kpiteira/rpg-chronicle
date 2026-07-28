@@ -266,3 +266,83 @@ the repository context to see.
 
 Rule going forward: when a control passes work that turned out to be wrong, check whether
 it was measuring the right artifact before hardening it.
+
+## D-018: The canonical model carries what its consumers had evidence for
+
+D-006 drew the canonical boundary narrow and said it would grow only when a visible
+product increment required it. Three consumers had asked, each with a measurement, and
+none had been granted. The cost was no longer theoretical: #20 measured per-turn
+attribution quality and had to record it in the engine-native artifact, which
+`AnalysisProvider` explicitly forbids a consumer from reading — *"Implementations receive
+only canonical turns -- never the original fixture or the engine-native artifact"*. The
+producer knew how shaky a speaker label was and the consumer structurally could not.
+
+Three additions, each with a named consumer and a measurement rather than an anticipated
+need:
+
+- **`TranscriptTurn.confidence_kind`.** R01 measured that a Whisper decoder
+  log-probability and a native token confidence occupy the same 0–1 range and are not the
+  same quantity. A confidence with no stated kind is now refused at construction, because
+  the ambiguity the field removes can otherwise be reintroduced by omitting it. A
+  fixture's confidence is named `declared`, which is D-009's distinction applied to the
+  one field where an unnamed number looks exactly like a measured one.
+- **`TranscriptTurn.speaker_coverage` and `speaker_purity`.** R01 measured two thirds of
+  turns from some stacks carrying a label describing only part of the turn. Two numbers
+  rather than one because they fail differently: low coverage means the diarizer heard
+  silence, low purity means the turn straddles a speaker change.
+- **`CanonicalSession.entities` and `threads`.** A01 recovered them from every window and
+  they stopped at the native artifact. Entities merge across overlapping windows **by
+  name**, the opposite of how scenes deduplicate by span, because a scene is its span
+  while an entity is the same entity wherever it appears. Aliases accumulate and the
+  canonical spelling is not resolved: deciding that two spellings are one name is what
+  `docs/UX.md` puts in front of a person, and both spellings must survive to be asked.
+
+### What this costs
+
+Entities and threads are now claims, so a fabricated citation aborts the run exactly as it
+does for a scene. `rpg_chronicle.analysis.provider` previously validated them loosely on
+the stated grounds that *"A four-hour run should not abort over a field nothing consumes"*.
+Something consumes them now, and the loose validation went with the reason for it. That is
+a real change in failure behaviour on long runs and it is the deliberate side of the same
+trade the module already made for every other claim.
+
+### What was refused
+
+- **Per-speaker channel handling.** `research/what-real-recordings-do.md` records that a
+  recording carrying per-speaker channels *"would need handling nobody has designed"*, and
+  no corpus item has met the case. A canonical representation designed against a guess is
+  worse than the diarizer's current refusal.
+- **The union of what `docs/VAULT_INTEGRATION.md` and `docs/UX.md` imagine.** Both describe
+  entity-shaped data in more detail than any producer emits — relationship changes, quest
+  changes, timeline events. Adding them would create fields nothing fills, which is the
+  failure this decision's own rule exists to prevent.
+
+### Schema versioning
+
+`0.1` → `0.2`. A `0.1` session loads and resumes, but **not** by defaulting every added
+field to empty, which is what this decision first claimed and what a goal-validator run
+disproved by producing a real `0.1` session and resuming it. Every `0.1` turn the fixture
+and audio paths ever wrote carries a `confidence` and no `confidence_kind` — precisely the
+shape `0.2` refuses to construct — so "load with the new fields empty" meant an unhandled
+`ValueError` on resumption for every session anyone actually had.
+
+Loading a `0.1` turn therefore keeps the number and marks its provenance
+`unstated (recorded before schema 0.2)`. That is the honest answer available: the quantity
+was never recorded, and naming it `declared` or guessing an engine would invent provenance
+for a number whose provenance is gone. A consumer can see it must not compare that turn
+against one from a named engine, which is the field doing its job on the case where nobody
+wrote the answer down. The migration applies to `0.1` files only; a `0.2` file that omits
+the kind is still refused.
+
+A migrated session is rewritten declaring `0.2`, because it now contains a `0.2` field and
+a version that recorded where a file came from rather than what is in it would mislead the
+next reader. A session declaring a version this build does not know is refused rather than
+loaded, because resuming from a file you have partly understood is worse than stopping.
+
+The general lesson is worth more than the fix: an invariant added to a live type is a
+migration whether or not anyone calls it one, and the test that claimed to cover it
+hand-wrote the one input shape that survived the invariant by accident.
+
+Rule going forward: a shared contract grows when a consumer can show it cannot act
+correctly without the field — not when a consumer would find the field convenient, and not
+when a document describes data no producer emits.

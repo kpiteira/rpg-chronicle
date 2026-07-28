@@ -14,14 +14,29 @@ from typing import Any
 
 from .model import (
     CanonicalSession,
+    Entity,
     Evidence,
     ReviewQuestion,
     Scene,
+    Thread,
     TranscriptTurn,
 )
 from .providers import AnalysisProvider, TranscriptProvider
 
-SCHEMA_VERSION = "0.1"
+SCHEMA_VERSION = "0.2"
+
+# 0.1 sessions are readable, but not by defaulting every added field to empty. A 0.1 turn
+# carries a `confidence` and no `confidence_kind`, which is exactly what 0.2 refuses to
+# construct, so loading one needs an answer rather than a default: the quantity was never
+# recorded, and saying so is the only honest thing available. Naming it "declared" or
+# guessing an engine would invent provenance for a number whose provenance is gone.
+#
+# The reverse direction is refused outright: a file written by a newer version may contain
+# a field this code would silently drop, and resuming from a session you have partly
+# understood is worse than stopping.
+KNOWN_SCHEMA_VERSIONS = ("0.1", "0.2")
+
+UNSTATED_CONFIDENCE_KIND = "unstated (recorded before schema 0.2)"
 
 
 def _write_json(path: Path, payload: Any) -> None:
@@ -31,19 +46,83 @@ def _write_json(path: Path, payload: Any) -> None:
     temporary.replace(path)
 
 
+class UnreadableSessionError(ValueError):
+    """Raised when a stored session was written by a schema this code does not know."""
+
+
+def _migrated_turn(item: dict[str, Any], stored: str) -> dict[str, Any]:
+    """Make a stored turn constructible under the current schema.
+
+    Only one field needs it. A 0.1 turn recorded a confidence without recording what the
+    number was, which 0.2 refuses; the number is kept and its provenance is marked
+    unstated, because it genuinely is. A consumer thresholding on confidence can now see
+    that it must not compare this turn against a turn from a named engine -- which is the
+    whole reason the field exists, applied to the case where the answer is "nobody wrote
+    it down".
+    """
+    if stored != "0.1":
+        return item
+    if item.get("confidence") is None or item.get("confidence_kind"):
+        return item
+    return {**item, "confidence_kind": UNSTATED_CONFIDENCE_KIND}
+
+
 def _load_session(path: Path) -> CanonicalSession:
     data = json.loads(path.read_text())
-    data["turns"] = [TranscriptTurn(**item) for item in data.get("turns", [])]
+    stored = data.get("schema_version")
+    if stored not in KNOWN_SCHEMA_VERSIONS:
+        raise UnreadableSessionError(
+            f"{path} declares schema_version {stored!r}; this build knows "
+            f"{', '.join(KNOWN_SCHEMA_VERSIONS)}. Resuming from a session that may carry "
+            "fields this code would drop is worse than stopping."
+        )
+    data["turns"] = [
+        TranscriptTurn(**_migrated_turn(item, stored)) for item in data.get("turns", [])
+    ]
     data["scenes"] = [
         Scene(**{**item, "evidence": Evidence(**item["evidence"])})
         for item in data.get("scenes", [])
+    ]
+    data["entities"] = [
+        Entity(**{**item, "evidence": Evidence(**item["evidence"])})
+        for item in data.get("entities", [])
+    ]
+    data["threads"] = [
+        Thread(**{**item, "evidence": Evidence(**item["evidence"])})
+        for item in data.get("threads", [])
     ]
     data["review_questions"] = [
         ReviewQuestion(**{**item, "evidence": Evidence(**item["evidence"])})
         for item in data.get("review_questions", [])
     ]
+    # A migrated session is rewritten at every stage boundary, so it must declare what it
+    # now contains. Leaving 0.1 on a file that has gained a 0.2 field would make the
+    # version a record of where the file came from rather than of what is in it, and the
+    # next reader would trust the wrong one.
+    data["schema_version"] = SCHEMA_VERSION
     allowed = {item.name for item in fields(CanonicalSession)}
     return CanonicalSession(**{key: value for key, value in data.items() if key in allowed})
+
+
+# The share of a turn a speaker must cover before the label is reported without comment.
+# Not a measured threshold and not presented as one: R01 found two thirds of turns from
+# some stacks carrying a label that describes only part of the turn, so anything short of
+# a clear majority is worth surfacing until a benchmark says otherwise.
+ATTRIBUTION_REPORTING_FLOOR = 0.75
+
+
+def _attribution_is_uncertain(turn: TranscriptTurn) -> bool:
+    """Whether a consumer should be told this speaker label is shaky.
+
+    A turn carrying no attribution numbers at all is not uncertain, it is unmeasured, and
+    saying otherwise would flag every fixture turn as a problem.
+    """
+    measured = [
+        value
+        for value in (turn.speaker_coverage, turn.speaker_purity)
+        if value is not None
+    ]
+    return bool(measured) and min(measured) < ATTRIBUTION_REPORTING_FLOOR
 
 
 def _build_review_package(session: CanonicalSession) -> dict[str, Any]:
@@ -59,6 +138,43 @@ def _build_review_package(session: CanonicalSession) -> dict[str, Any]:
                 "evidence": scene.evidence.__dict__,
             }
             for scene in session.scenes
+        ],
+        # Named things and open threads reach the reviewer, which is what `docs/UX.md`
+        # asks the core surface to show. Aliases travel with the entity: the spellings a
+        # recognizer disagreed about are the thing a person can settle in seconds.
+        # The id travels with each. Keying on the name would be wrong for the reason the
+        # name is carried at all: it is the model's proposal, not a resolved identity, and
+        # a reviewer settling two spellings into one changes it.
+        "entities": [
+            {
+                "id": entity.id,
+                "name": entity.name,
+                "kind": entity.kind,
+                "aliases": list(entity.aliases),
+                "evidence": entity.evidence.__dict__,
+            }
+            for entity in session.entities
+        ],
+        "open_threads": [
+            {
+                "id": thread.id,
+                "description": thread.description,
+                "evidence": thread.evidence.__dict__,
+            }
+            for thread in session.threads
+        ],
+        # Attribution is stated where it is weak, not everywhere. A reviewer does not
+        # need to be told about every certain turn, and a summary-first review
+        # (D-005) should not become a list of five hundred confidence numbers.
+        "uncertain_attribution": [
+            {
+                "turn_id": turn.id,
+                "physical_speaker": turn.physical_speaker,
+                "speaker_coverage": turn.speaker_coverage,
+                "speaker_purity": turn.speaker_purity,
+            }
+            for turn in session.turns
+            if _attribution_is_uncertain(turn)
         ],
         "needs_attention": [
             {
@@ -118,6 +234,8 @@ def run_pipeline(
             session.processor_artifacts["analysis"] = str(native_path.relative_to(session_dir))
         session.summary = analysis.summary
         session.scenes = analysis.scenes
+        session.entities = analysis.entities
+        session.threads = analysis.threads
         session.review_questions = analysis.review_questions
         session.provenance["analysis_provider"] = getattr(
             analysis_provider, "name", type(analysis_provider).__name__
