@@ -179,7 +179,83 @@ def _parser() -> argparse.ArgumentParser:
             "so it is safe to commit as evidence for a restricted recording."
         ),
     )
+
+    score = subparsers.add_parser(
+        "score",
+        help="score a completed run against a benchmark manifest",
+        description=(
+            "Reports every dimension docs/MILESTONES.md makes M2 conditional on, each "
+            "with the basis it was computed from -- or with a statement that it cannot "
+            "be measured yet and precisely what is missing. It never improves a score "
+            "and never touches the run. Manifests and answer keys live in the content "
+            "directory (~/.rpg-chronicle, RPG_CHRONICLE_HOME to override), not in this "
+            "repository, so --manifest takes a manifest id or a path to one."
+        ),
+    )
+    score.add_argument(
+        "--session",
+        type=Path,
+        required=True,
+        help="a session directory a pipeline run wrote, which is <output>/<session-id>",
+    )
+    score.add_argument(
+        "--manifest",
+        required=True,
+        help="manifest id in the content directory, or a path to a manifest file",
+    )
+    score.add_argument(
+        "--run-report",
+        type=Path,
+        help=(
+            "the JSON `run-audio --run-report` wrote for this run. Time and memory are "
+            "measured during the run and cannot be recovered from a session afterwards; "
+            "without this they are reported unmeasurable rather than guessed."
+        ),
+    )
+    score.add_argument(
+        "--report",
+        type=Path,
+        help=(
+            "write the full JSON report here. It quotes truth labels, so it belongs in "
+            "the content directory beside the manifest and never in this repository."
+        ),
+    )
     return parser
+
+
+def _score(args: argparse.Namespace) -> None:
+    from .scoring import (
+        ManifestNotFoundError,
+        SessionNotFoundError,
+        load_manifest,
+        load_session,
+        render,
+        render_json,
+    )
+    from .scoring import score as score_run
+
+    try:
+        manifest = load_manifest(args.manifest)
+        session_dir = args.session.expanduser().resolve()
+        session = load_session(session_dir)
+    except (ManifestNotFoundError, SessionNotFoundError) as error:
+        raise SystemExit(str(error)) from error
+
+    run_report = None
+    if args.run_report:
+        run_report = json.loads(args.run_report.read_text())
+
+    report = score_run(manifest, session_dir, session, run_report)
+    print(render(report), end="")
+    if args.report:
+        args.report.parent.mkdir(parents=True, exist_ok=True)
+        args.report.write_text(render_json(report))
+        print(f"report: {args.report}")
+    # A withheld verdict is a refusal, and a refusal that exits 0 is one a script will
+    # step over. The dimensions are still printed -- the operator asked for them and the
+    # clean ones are valid -- but the exit status says the headline score was not given.
+    if report["verdict"] != "reported":
+        raise SystemExit(2)
 
 
 def _model_provider(args: argparse.Namespace) -> ModelAnalysisProvider:
@@ -435,7 +511,7 @@ def _run_audio(args: argparse.Namespace) -> None:
 
 def main() -> None:
     args = _parser().parse_args()
-    handlers = {"run-fixture": _run_fixture, "run-audio": _run_audio}
+    handlers = {"run-fixture": _run_fixture, "run-audio": _run_audio, "score": _score}
     try:
         handlers[args.command](args)
     except BackendUnavailableError as error:

@@ -180,6 +180,11 @@
           "type": "array",
           "items": {"type": "string", "minLength": 1},
           "description": "Providers that helped build this truth and therefore cannot be scored against it without declaring the dependency. Machine-readable so a scoring run can refuse the combination instead of relying on someone having read the notes. Required once any target is machine-assisted."
+        },
+        "negative_controls": {
+          "type": "array",
+          "description": "Terms an annotator established are absent from the excerpt, so that a run asserting one is drawing on metadata, on a title, or on prior sessions rather than on the audio it was given. This is the one thing in an answer key that can be checked without judging whether two sentences mean the same thing, which makes it the strongest single measurement the corpus supports - and it only works if the annotator established absence rather than merely failing to notice the term. Structured rather than described in truth.notes because a scoring run has to act on it.",
+          "items": {"$ref": "#/$defs/negativeControl"}
         }
       }
     },
@@ -221,6 +226,28 @@
     }
   },
   "$defs": {
+    "negativeControl": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["term", "kind", "rationale"],
+      "properties": {
+        "term": {
+          "type": "string",
+          "minLength": 2,
+          "description": "The term itself, spelled as a system would plausibly produce it. Matched as whole words, so a control of one common word is a control that fires on noise."
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["title_metadata", "later_in_episode", "prior_session", "publisher_metadata", "invented"],
+          "description": "Where a system would have got the term from if it produced one. This is what makes a hit diagnostic rather than merely wrong: title_metadata says the episode title supplies it, later_in_episode says the recording contains it outside the annotated window, prior_session says it belongs to the campaign but not this excerpt."
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1,
+          "description": "How absence was established, and over what span. Absence is a stronger claim than presence and is easier to get wrong: 'no decode of this window produced it' is evidence, 'I did not notice it' is not. State which."
+        }
+      }
+    },
     "truthThread": {
       "type": "object",
       "additionalProperties": false,

@@ -91,13 +91,14 @@ licence argument, and the transcript merged. See `docs/DECISIONS.md` D-017.
 It posts its verdict as an issue comment bound to a hash of the goal body, so a goal
 edited after being checked no longer carries a matching verdict. The `require-goal-check`
 job in `.github/workflows/goal-lifecycle.yml` looks for that comment when an issue
-carrying `goal:active` is opened, labelled, unlabelled or reopened. It invokes no model,
-and like every other control here it reports rather than prevents.
+carrying `goal:active` is opened, edited, labelled, unlabelled or reopened. It invokes no
+model, and like every other control here it reports rather than prevents.
 
-Editing a goal body is deliberately **not** a trigger, so an edit after a passing check is
-reported at the next label event rather than immediately. What covers it meanwhile is the
-specialist: `AGENTS.md` has a session confirm the verdict matches the body as it now reads
-before starting. D-017 says why the automatic version was not taken.
+Editing an active goal's body is a trigger, so an edit after a passing check is reported
+immediately rather than at the next label event. Until #38 it was not, which left the
+hash binding sound and unreachable — D-017 records what that cost and why the trigger is
+now paid for. `AGENTS.md` still has a session confirm the verdict matches the body as it
+now reads before starting, because the workflow reports and does not prevent.
 
 A blocking verdict is answered by fixing the goal and re-running the check. It is
 **overridable by the operator, not by the TPM**: a comment on the issue containing
