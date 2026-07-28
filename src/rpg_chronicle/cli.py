@@ -344,8 +344,39 @@ def _run_report(args: argparse.Namespace, session: Any, provider: Any, wall_s: f
         "turns_with_timestamps": sum(
             1 for turn in turns if turn.end_ms > turn.start_ms >= 0
         ),
+        # Counts, never the spellings. The candidates themselves are recognized tokens
+        # from the recording and stay in the engine-native artifact outside the
+        # repository; what belongs in committable evidence is how many there were and
+        # how many the engine contradicted itself about.
+        **_name_uncertainty_counts(session, args.output),
         "processor_artifacts": dict(native),
         "contains_recognized_text": False,
+    }
+
+
+def _name_uncertainty_counts(session: Any, output: Path) -> dict:
+    """Read the name-uncertainty summary back out of the engine-native artifact.
+
+    Reported here because a figure that lives only in prose is not evidence -- the same
+    complaint #23 carried forward about its own write-up. A resumed run reads the
+    artifact the original run wrote, so the counts survive the transcription stage being
+    skipped.
+    """
+    relative = session.processor_artifacts.get("transcript")
+    if not relative:
+        return {}
+    path = output / session.session_id / relative
+    try:
+        block = json.loads(path.read_text()).get("name_uncertainty", {})
+    except (OSError, ValueError):
+        return {}
+    if not block.get("computed"):
+        return {"name_candidates": None, "name_uncertainty_skipped": block.get("why_not")}
+    return {
+        "name_candidates": block.get("candidates"),
+        "name_candidates_self_contradicted": block.get("self_contradicted"),
+        "name_uncertainty_lexicon": block.get("lexicon"),
+        "name_uncertainty_rarity_floor": block.get("rarity_floor"),
     }
 
 

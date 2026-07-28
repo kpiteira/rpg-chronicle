@@ -46,12 +46,26 @@ class StubAnalysis:
         return AnalysisResult(summary="a summary", scenes=[], review_questions=[])
 
 
-def _run(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, *extra: str) -> Path:
+def _run(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+    *extra: str,
+    provider: object | None = None,
+) -> Path:
+    """Run the CLI against stubs. `provider` overrides the transcript provider.
+
+    The override exists because this helper installs its own provider, so a test that
+    patches `_transcript_provider` beforehand has its patch silently replaced -- which is
+    how the name-uncertainty test first came to assert against a provider it had not
+    configured.
+    """
     audio = tmp_path / "excerpt.wav"
     audio.write_bytes(b"")
     report = tmp_path / "report.json"
     monkeypatch.setattr(
-        cli, "_transcript_provider", lambda args: SpeechTranscriptProvider(StubRecognizer())
+        cli,
+        "_transcript_provider",
+        lambda args: provider or SpeechTranscriptProvider(StubRecognizer()),
     )
     monkeypatch.setattr(cli, "_model_provider", lambda args: StubAnalysis())
     monkeypatch.setattr(
@@ -142,3 +156,45 @@ def test_no_diarize_drops_labels_rather_than_carrying_unwanted_ones(
     report = json.loads(_run(monkeypatch, tmp_path, "--no-diarize").read_text())
     assert report["turns_with_speaker"] == 0
     assert report["distinct_speaker_labels"] == 0
+
+
+def test_the_report_says_when_name_uncertainty_did_not_run(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """No lexicon must not look like no suspicious names.
+
+    The stub provider here is built without one, so the report has to say so rather than
+    reporting zero candidates -- which a reader would take as the recogniser having held
+    every name steady.
+    """
+    report = json.loads(_run(monkeypatch, tmp_path).read_text())
+    assert report["name_candidates"] is None
+    assert "no lexicon" in report["name_uncertainty_skipped"]
+
+
+def test_the_report_carries_name_candidate_counts_and_not_the_spellings(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    """Counts are committable evidence; the spellings are recognized text and are not.
+
+    `SECRET` is the text the stub recogniser emits, and `Vaelthorn` in it is exactly the
+    kind of coined name this signal selects -- so if a candidate spelling ever leaked into
+    the report, this is where it would show.
+    """
+
+    class Lexicon:
+        def zipf(self, word: str) -> float:
+            return 0.0 if word.lower() == "vaelthorn" else 6.0
+
+    report = json.loads(
+        _run(
+            monkeypatch,
+            tmp_path,
+            provider=SpeechTranscriptProvider(StubRecognizer(), lexicon=Lexicon()),
+        ).read_text()
+    )
+    assert report["name_candidates"] == 1
+    assert report["name_candidates_self_contradicted"] == 0
+    assert report["name_uncertainty_rarity_floor"] == 2.0
+    assert "Vaelthorn" not in json.dumps(report)
+    assert report["contains_recognized_text"] is False

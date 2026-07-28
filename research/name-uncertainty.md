@@ -145,6 +145,16 @@ recur, and a name spelled five ways is one candidate however often it appears.
 
 Two hours is still not four, and the extrapolation is not offered as one.
 
+### The product path, not just the probe
+
+The probe imports the product module rather than carrying its own copy, so the two cannot
+disagree about the rule. They also agree about the result on real audio: a full `run-audio`
+run over the ten-minute excerpt produced **6 candidates from 301 turns, one of them
+self-contradicted with two spellings** — the same figures the probe reports for the same
+window at the same floor. Total wall clock 189 s, against 160 s for the R02 run of the same
+excerpt without this pass; the difference is the analysis model's variable network call, not
+the 5.5 ms scan.
+
 ## Cost
 
 Measured, not estimated, on the hour of audio above.
