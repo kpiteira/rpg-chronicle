@@ -95,13 +95,25 @@ class GeneratedRegion:
 def digest_body(body: str) -> str:
     """Digest a region body, ignoring the whitespace an editor changes on its own.
 
-    Trailing whitespace and a final newline are normalised away. A person who opens a
-    note, changes nothing, and lets their editor strip a trailing space has not edited
-    the region, and treating that as an edit would reclaim regions until nothing was
-    owned and the mechanism became noise.
+    Two things are normalised and no others: whitespace at the *end* of a line, and blank
+    lines at the start and end of the region. A person who opens a note, changes nothing,
+    and lets their editor strip a trailing space has not edited the region, and treating
+    that as an edit would reclaim regions until nothing was owned and the mechanism became
+    noise.
+
+    **Leading whitespace on a content line is preserved**, and the distinction is not
+    pedantic. An earlier version used `body.strip()`, which also removed indentation from
+    the first content line — so re-indenting a list, which is a real edit that changes how
+    the note renders, produced an unchanged digest and left the region classified
+    `TOOL_OWNED`. A human edit that the tool would then overwrite is the exact failure this
+    module exists to prevent, and it contradicted this docstring while doing it.
     """
-    normalised = "\n".join(line.rstrip() for line in body.strip().splitlines())
-    return hashlib.sha256(normalised.encode("utf-8")).hexdigest()
+    lines = [line.rstrip() for line in body.splitlines()]
+    while lines and not lines[0]:
+        lines.pop(0)
+    while lines and not lines[-1]:
+        lines.pop()
+    return hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest()
 
 
 def section_body(text: str, note: Note, section: Section) -> str:

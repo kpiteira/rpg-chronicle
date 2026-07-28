@@ -501,6 +501,13 @@ def survey_vault(
         raise NotADirectoryError(f"not a vault directory: {root}")
 
     def included(path: Path) -> bool:
+        # Symlinks are excluded, matching `vault_digest`. A symlinked note is read from
+        # wherever it points, which for a tool whose whole promise is a bounded read-only
+        # look at one directory means reading outside the vault and reporting the result
+        # as the vault's own shape. `digest.py` already refused them; this walk did not,
+        # and the two disagreeing about what the vault contains is its own defect.
+        if path.is_symlink():
+            return False
         return not any(part in ignored_directories for part in path.relative_to(root).parts)
 
     notes = tuple(

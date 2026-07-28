@@ -301,6 +301,31 @@ def test_no_note_carries_a_signal_of_who_wrote_it(survey):
     assert survey.provenance_signals() == ()
 
 
+def test_a_symlinked_note_is_not_read(tmp_path):
+    """A bounded read-only look at one directory must stay inside it.
+
+    `vault_digest` already refused symlinks and `survey_vault` did not, so the two
+    disagreed about what a vault contains. Worse, following one reads a file outside the
+    vault and reports it as the vault's own shape — for a tool whose entire promise is a
+    bounded, read-only look at one directory, that is the promise broken.
+    """
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    (outside / "Secret.md").write_text("---\ntype: npc\n---\n\n# Secret\n\n## Overview\n\nx\n")
+    (outside / "art.png").write_bytes(b"\x89PNG\r\n\x1a\n")
+
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    (vault / "Real.md").write_text("# Real\n\n## Overview\n\nin the vault\n")
+    (vault / "Linked.md").symlink_to(outside / "Secret.md")
+    (vault / "linked-art.png").symlink_to(outside / "art.png")
+
+    found = survey_vault(vault)
+    assert [note.path for note in found.notes] == ["Real.md"]
+    assert found.asset_names == frozenset()
+    assert vault_digest(vault).files == 1, "the digest already agreed; now the survey does"
+
+
 def test_a_dot_in_a_note_title_is_not_a_file_extension(tmp_path):
     """`[[Dr. Grey]]` names a note, not a file called `Dr` with a strange suffix.
 
@@ -428,6 +453,29 @@ class TestAuthoredAndGeneratedBoundary:
             content_digest=digest_body("something the tool wrote before a person edited it"),
         )
         assert classify_region(text, note, section, {record.key: record}) == RECLAIMED
+
+    def test_indenting_the_first_line_of_a_region_reclaims_it(self):
+        """Leading whitespace is content. Trailing whitespace is not.
+
+        The bug was `body.strip()`, which removes both. It is worth isolating precisely,
+        because it only ever hid the indentation of the *first* content line — every later
+        line kept its own, so a broad re-indentation still changed the digest and a test
+        using one would have passed against the defect. These two bodies differ in exactly
+        the character the old code discarded.
+
+        The consequence: indenting the opening line of a region — a real edit, and one
+        that changes how the note renders — left the digest unchanged, so the region stayed
+        `TOOL_OWNED` and the tool would have overwritten a person's edit.
+        """
+        four = "\n    first line\nsecond line\n"
+        eight = "\n        first line\nsecond line\n"
+        assert digest_body(four) != digest_body(eight)
+
+        # And the half that must survive the fix: end-of-line whitespace and surrounding
+        # blank lines are still ignored, or every editor save would reclaim everything.
+        assert digest_body("\n\nfirst line   \nsecond line\t\n\n") == digest_body(
+            "first line\nsecond line"
+        )
 
     def test_whitespace_alone_does_not_reclaim_a_region(self, survey):
         """Otherwise an editor's own tidying would revoke ownership until none was left."""
