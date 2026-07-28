@@ -100,8 +100,16 @@ question's own evidence names. The reviewer sees what the claim rests on and not
 which is what `docs/PRODUCT.md`'s "never assign proofreading homework" means in practice.
 D-005 is the standing rule and this surface is the shape of it.
 
-`--answers <file>` takes the same decisions as JSON instead of interactively. It is the
-same code path, so the scripted and the typed answer cannot drift apart.
+`--answers <file>` takes the same decisions as JSON instead of interactively. Both
+surfaces produce the same answers and apply them through the same code, and a test pins
+that: an interactive rename must equal the sheet that expresses the same decision.
+
+They part in one place, and it is a rough edge rather than a design position. A sheet is
+validated before anything is applied, so a file that cannot be applied is refused with the
+file still on disk. The interactive queue validates at apply time, so a decision the
+software refuses — merging two records it has no ruling on the kind of, say — discards
+everything typed into that queue. Use `--answers` for a session you do not want to answer
+twice.
 
 Concretely, on `benchmarks/fixtures/r0_correction_session_1.json`: **four decisions** for a
 session of ten turns. Each arrives with the turns it cites — three, two, one and one

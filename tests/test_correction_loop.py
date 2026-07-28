@@ -447,8 +447,12 @@ def test_a_later_session_is_analysed_differently_because_of_the_earlier_answer(a
 
     The control run and the carried run consume the identical fixture through the
     identical provider. Everything about them is the same except that one was given the
-    vocabulary the first session's answers produced. Deleting the `carry_forward` call in
-    `pipeline.run_pipeline` turns this red and nothing else in the suite.
+    vocabulary the first session's answers produced.
+
+    Deleting the `carry_forward` call in `pipeline.run_pipeline` turns this red, along
+    with four other tests in this file and nothing outside it. That was measured rather
+    than asserted; an earlier version of this docstring claimed "and nothing else in the
+    suite", which understated the coverage and was the kind of sentence nobody checks.
     """
     output, _, _ = answered
     vocabulary = Vocabulary.load(output / STORE_FILENAME)
@@ -674,11 +678,18 @@ def test_an_interactive_rename_produces_the_same_answer_a_sheet_would(tmp_path):
         console=Console(stdin=io.StringIO(script), stdout=io.StringIO()),
         answered_by="karl",
     )
-    assert len(sheet.answers) == 1
-    answer = sheet.answers[0]
-    assert answer.question_id == "question-001"
-    assert answer.action == "accept"
-    assert answer.operation.name == "the Tallow Warden of Wrackford"
+    written = _sheet(
+        {
+            "question_id": "question-001",
+            "action": "accept",
+            "operation": {
+                "op": "revise_entity",
+                "entity_id": "entity-002",
+                "name": "the Tallow Warden of Wrackford",
+            },
+        }
+    )
+    assert sheet == written, "typing it and writing it down must produce the same answer"
 
 
 # -- what a settled name tells the next analysis ----------------------------------------
@@ -873,3 +884,58 @@ def test_a_third_person_can_reopen_a_settled_name(tmp_path):
         canonical="Vesh Kaldyr", approved_by="a-third-player", approved_at=LATER, **common
     )
     assert entry.contested
+
+
+def test_an_answer_naming_its_own_author_is_still_held_to_the_guard(answered):
+    """The guard has to ask about the person it is going to write down.
+
+    An answer may name its own author while the sheet names a default. Checking the
+    sheet's identity and recording the answer's meant a second person could supersede
+    the first without --override, and the record would attribute the change to them
+    accurately — a refusal that asks about one person and writes down another.
+    """
+    _, session_dir, _ = answered
+    sheet = parse_answer_sheet(
+        {
+            "answered_by": "karl",
+            "answers": [
+                {
+                    "question_id": "question-002",
+                    "action": "correct",
+                    "answered_by": "a-different-player",
+                    "operation": {
+                        "op": "revise_entity",
+                        "entity_id": "entity-001",
+                        "name": "Vesh Khaldur",
+                    },
+                }
+            ],
+        },
+        default_answered_by="karl",
+    )
+    with pytest.raises(AnswerError, match="already settled by 'karl'"):
+        answer_session(session_dir, sheet, now=LATER)
+
+    assert _named(load_session(session_dir / "canonical-session.json"), "Vesh Calder")
+
+
+def test_the_author_named_on_an_answer_is_the_one_recorded(tmp_path):
+    output = tmp_path / "campaign"
+    _run(FIRST, output)
+    session_dir = output / "r0-correction-hollow-bell-1"
+    sheet = parse_answer_sheet(
+        {
+            "answered_by": "karl",
+            "answers": [
+                {"question_id": "question-003", "action": "defer", "answered_by": "the-gm"},
+                {"question_id": "question-004", "action": "irrelevant"},
+            ],
+        },
+        default_answered_by="karl",
+    )
+    answer_session(session_dir, sheet, now=NOW)
+
+    record = CorrectionRecord.load(
+        session_dir / RECORD_FILENAME, session_id="r0-correction-hollow-bell-1"
+    )
+    assert [entry.answered_by for entry in record.entries] == ["the-gm", "karl"]

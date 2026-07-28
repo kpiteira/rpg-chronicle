@@ -171,6 +171,15 @@ def _decisions_by_person(record: CorrectionRecord) -> dict[str, str]:
     return decided
 
 
+def _author_of(answer: Answer, sheet: AnswerSheet) -> str:
+    """Who this answer is from. One definition, used by the guard and by the record.
+
+    Two readings of the same question is how the guard and the entry it writes came
+    apart: an answer may name its own author, and the sheet names a default.
+    """
+    return answer.answered_by or sheet.answered_by
+
+
 def _keys_touched(answer: Answer) -> list[str]:
     keys = [f"question:{answer.question_id}"]
     if answer.operation is not None:
@@ -229,13 +238,19 @@ def apply_answers(
     decided = _decisions_by_person(record)
     if not override:
         for index, answer in enumerate(sheet.answers):
+            # The identity the entry will be *recorded* under, not the sheet's. An answer
+            # may name its own author, and checking the sheet's while recording the
+            # answer's would let a second person supersede the first without saying so
+            # and have the record attribute the change to them correctly -- a guard that
+            # asks about one person and writes down another.
+            author = _author_of(answer, sheet)
             for key in _keys_touched(answer):
                 owner = decided.get(key)
-                if owner is not None and owner != sheet.answered_by:
+                if owner is not None and owner != author:
                     kind, _, name = key.partition(":")
                     raise AnswerError(
                         f"answers[{index}]: {kind} {name!r} was already settled by "
-                        f"{owner!r}, and {sheet.answered_by!r} disagrees. Nothing has "
+                        f"{owner!r}, and {author!r} disagrees. Nothing has "
                         "been changed. Re-run with override to record the disagreement "
                         "and supersede it; the earlier decision stays in "
                         "corrections.json either way."
@@ -252,7 +267,7 @@ def apply_answers(
         where = f"answers[{index}]"
         assert answer.question_id is not None
         question = questions_by_id[answer.question_id]
-        answered_by = answer.answered_by or sheet.answered_by
+        answered_by = _author_of(answer, sheet)
 
         changes: tuple[Change, ...] = ()
         settles_a_name = False
