@@ -20,6 +20,7 @@ from .analysis.provider import DEFAULT_MAX_QUESTIONS, ModelAnalysisProvider
 from .pipeline import run_pipeline
 from .providers import FixtureAnalysisProvider, FixtureTranscriptProvider
 from .transcription.engine import EngineError, EngineUnavailableError
+from .transcription.name_uncertainty import DEFAULT_RARITY_FLOOR, WordfreqLexicon
 from .transcription.provider import SpeechTranscriptProvider
 from .transcription.sherpa_diarization import (
     DEFAULT_CLUSTER_THRESHOLD,
@@ -140,6 +141,25 @@ def _parser() -> argparse.ArgumentParser:
         help=(
             "skip speaker labelling. The labels are marked unreliable either way; this "
             "drops them entirely rather than carrying ones you do not want."
+        ),
+    )
+    run_audio.add_argument(
+        "--no-name-uncertainty",
+        action="store_true",
+        help=(
+            "skip the name-uncertainty pass. It costs milliseconds against minutes of "
+            "recognition, so the reason to skip it is not having the lexicon installed."
+        ),
+    )
+    run_audio.add_argument(
+        "--rarity-floor",
+        type=float,
+        default=DEFAULT_RARITY_FLOOR,
+        help=(
+            "Zipf frequency below which a word is a name candidate. Raising it finds "
+            "more mangled names and adds ordinary rare vocabulary to the queue: measured "
+            "on the benchmark recording, 3.0 caught one more verified name and tripled "
+            "the queue. See research/name-uncertainty.md."
         ),
     )
     run_audio.add_argument(
@@ -343,7 +363,10 @@ def _transcript_provider(args: argparse.Namespace) -> SpeechTranscriptProvider:
             model_dir=args.model_dir, cluster_threshold=args.cluster_threshold
         )
     )
-    return SpeechTranscriptProvider(recognizer, diarizer)
+    lexicon = None if args.no_name_uncertainty else WordfreqLexicon()
+    return SpeechTranscriptProvider(
+        recognizer, diarizer, lexicon=lexicon, rarity_floor=args.rarity_floor
+    )
 
 
 def _run_report(args: argparse.Namespace, session: Any, provider: Any, wall_s: float) -> dict:
@@ -397,8 +420,39 @@ def _run_report(args: argparse.Namespace, session: Any, provider: Any, wall_s: f
         "turns_with_timestamps": sum(
             1 for turn in turns if turn.end_ms > turn.start_ms >= 0
         ),
+        # Counts, never the spellings. The candidates themselves are recognized tokens
+        # from the recording and stay in the engine-native artifact outside the
+        # repository; what belongs in committable evidence is how many there were and
+        # how many the engine contradicted itself about.
+        **_name_uncertainty_counts(session, args.output),
         "processor_artifacts": dict(native),
         "contains_recognized_text": False,
+    }
+
+
+def _name_uncertainty_counts(session: Any, output: Path) -> dict:
+    """Read the name-uncertainty summary back out of the engine-native artifact.
+
+    Reported here because a figure that lives only in prose is not evidence -- the same
+    complaint #23 carried forward about its own write-up. A resumed run reads the
+    artifact the original run wrote, so the counts survive the transcription stage being
+    skipped.
+    """
+    relative = session.processor_artifacts.get("transcript")
+    if not relative:
+        return {}
+    path = output / session.session_id / relative
+    try:
+        block = json.loads(path.read_text()).get("name_uncertainty", {})
+    except (OSError, ValueError):
+        return {}
+    if not block.get("computed"):
+        return {"name_candidates": None, "name_uncertainty_skipped": block.get("why_not")}
+    return {
+        "name_candidates": block.get("candidates"),
+        "name_candidates_self_contradicted": block.get("self_contradicted"),
+        "name_uncertainty_lexicon": block.get("lexicon"),
+        "name_uncertainty_rarity_floor": block.get("rarity_floor"),
     }
 
 

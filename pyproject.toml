@@ -32,6 +32,11 @@ speech = [
   # `uv sync --group speech` working and appearing to work.
   "sherpa-onnx-core>=1.13",
   "soundfile>=0.12",
+  # The lexicon behind name uncertainty. A frequency table rather than a wordlist,
+  # because membership is the wrong question: `/usr/share/dict/words` lacks `okay`,
+  # `played` and `mom`, so its misses are ordinary speech rather than names. The test
+  # suite injects its own lexicon and never imports this.
+  "wordfreq>=3.1",
 ]
 
 [project.scripts]
