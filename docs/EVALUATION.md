@@ -41,6 +41,83 @@ speech is in them.
 - Human review time
 - Important errors not surfaced
 
+## The scoring harness
+
+`rpg-chronicle score` reads a completed run and an answer key and reports the dimensions
+`docs/MILESTONES.md` makes M2 conditional on. It never improves a score and never touches
+the pipeline: a component that both measures and tunes cannot be trusted about either.
+
+```bash
+uv run rpg-chronicle score \
+  --session <output>/<session-id> \
+  --manifest <manifest-id or path> \
+  --run-report <the json run-audio --run-report wrote> \
+  --report <where to write the full json>
+```
+
+`--manifest` takes a bare id and finds it in the content directory, or a path. The suite
+runs against `benchmarks/fixtures/scoring/`, which is invented material with nobody's
+speech in it, so no content directory is needed to test the harness — only to score a real
+recording. The command exits 2 when it withholds the score.
+
+### What each dimension is, and what it is not
+
+Two rules shape the whole report. *A number with no stated basis is worse than no number*,
+so every dimension prints what it was computed from and what it does not mean, and the JSON
+carries the same fields. *Partial coverage stated plainly beats seven numbers of mixed
+integrity*, so a dimension that cannot be computed says so and names the missing input
+rather than reporting a zero.
+
+| Dimension | What is measured | What the number is not |
+|---|---|---|
+| `entity_capture` | Two bounds. `recall_by_name` is the share of annotated entity targets whose label matches an entity name or alias as whole tokens, in either containment direction. `recall_anchor_corroborated` additionally requires the entity to cite turns spanning the annotated moment. | Not a statement that the entity was described correctly. The upper bound says the name appeared somewhere; the lower bound says it appeared where the annotator heard it. The truth is between, and nothing here narrows it. |
+| `plot_capture` | `coverage_upper_bound`: the share of anchored event targets whose anchor falls inside some scene's evidence span. `term_overlap_share` additionally requires the covering scene to repeat half the event label's distinctive words. | Not capture. A scene spanning the moment may describe something else, and a correctly worded summary that shares no vocabulary fails the overlap test. The 50% threshold is a chosen constant that has never been calibrated. |
+| `unsupported_claims` | Three mechanical failures: assertions of a declared negative control; entities whose name occurs in none of the turns they cite; claims citing turn ids the session lacks. | Not a census. It sees only what an annotator declared absent and what contradicts its own citations. `in_transcript` separates an analysis that invented a term from one that repeated a recognizer's invention — the second is a recognition failure and is scored nowhere. |
+| `surfaced_errors` | Of the errors this harness detected, how many the run raised a review question about — by evidence span for a missed target, by naming the term for a control. | Inherits every bound above it, and is silent about the largest class of important error: a scene that confidently describes the wrong thing. Nothing here detects one. |
+| `processing_time` | `wall_clock_s` from the run report, and the realtime factor against the annotated excerpt. | One machine, whatever else was running. Excludes acquisition, conversion and model loading outside the timed region. |
+| `peak_memory` | **Not measured.** Nothing in this repository records memory. | The gap is named in the report: a peak-RSS reading covering `RUSAGE_CHILDREN` as well as `RUSAGE_SELF`, since the recognizer is a subprocess, added to the run report that `run-audio` writes. |
+| `question_count` | The review queue length, and its rate per recorded hour. | A count, not a quality. A run that asks nothing scores best and may have missed everything, which is why it is only readable beside `surfaced_errors`. |
+| `review_burden` | **A proxy.** Questions and scenes priced at assumed per-item seconds, per recorded hour, against the personal-alpha target in `docs/PRODUCT.md`. | Not a review time. Both constants are assumptions and no human has been timed reviewing a session this pipeline produced, so the absolute value means nothing. Only its direction does. |
+
+### Contamination is behaviour, not a warning
+
+`truth.contaminating_providers` names engines that helped build an answer key. Scoring one
+of them against that key marks it against its own output, so the harness withholds every
+dimension that reads the key and reports the rest. The value is computed and then not
+printed: a number beside a warning is still a number somebody quotes.
+
+Identity is read from provenance *and* from the engine-native artifacts, at any depth. A
+manifest names a provider to model precision (`whisper.cpp large-v3-turbo`); a session
+records the provider's composed name in provenance and the model file two levels inside
+the artifact. A check reading only the obvious places does not fire, and a contamination
+check that never fires is worse than none because it looks like one.
+
+The check fails closed in two ways, both of which the first real run needed:
+
+- a session recording nothing that identifies its engines is `undetermined`, not clean;
+- a session that identifies an engine *family* but not the model, where everything it does
+  record agrees with a declared provider, is also `undetermined`. Being consistent as far
+  as anyone can see is not the same as being cleared.
+
+Fixture-provider output is refused separately and for a different reason: it is declared
+truth being replayed, so scoring it measures whoever wrote the fixture.
+
+### Timelines
+
+A manifest anchor is an offset into published media; a session's turns are offsets into
+whatever file was recognized. The harness picks between the two hypotheses by which one
+actually lands anchors inside the session, reports the choice, and refuses the
+anchor-based dimensions when neither does. Guessing would report a confident zero, which
+looks exactly like a run that captured nothing.
+
+### What the corpus cannot currently measure
+
+Both annotated items — Hiddengrid and Mystic Horizon — declare `whisper.cpp large-v3-turbo`
+contaminating, and that is the recognizer the pipeline runs. **No clean capture measurement
+of the pipeline's own stack is obtainable from this corpus today.** The baseline in
+`research/b05-scoring-baseline.md` records what that looks like in practice. Closing it
+needs an answer key built without the engine under test, not a change to the harness.
+
 ## First benchmark set
 
 Start small:

@@ -1,0 +1,5 @@
+{
+  "engine": "synthetic-transcriber",
+  "model_file": "synthetic-v0.bin",
+  "note": "Invented fixture artifact. No engine produced this and no audio was read."
+}

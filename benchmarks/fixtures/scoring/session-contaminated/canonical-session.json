@@ -1,0 +1,273 @@
+{
+  "schema_version": "0.2",
+  "session_id": "synthetic-scoring-contaminated",
+  "source": {
+    "kind": "json",
+    "path": "benchmarks/fixtures/scoring/manifest.json"
+  },
+  "status": "review_ready",
+  "turns": [
+    {
+      "id": "t01",
+      "start_ms": 0,
+      "end_ms": 50000,
+      "text": "So we come up the road and the village is just water, right up to the doorsteps.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    },
+    {
+      "id": "t02",
+      "start_ms": 50000,
+      "end_ms": 100000,
+      "text": "Alder steps off the cart first. Alder, you can smell the rot from here.",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    },
+    {
+      "id": "t03",
+      "start_ms": 100000,
+      "end_ms": 150000,
+      "text": "I want to find whoever is in charge of this mess before it gets dark.",
+      "physical_speaker": "SPEAKER_02",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    },
+    {
+      "id": "t04",
+      "start_ms": 150000,
+      "end_ms": 200000,
+      "text": "Brindle goes quiet. Fine. Brindle owes the ferryman for the crossing, and it is not paid.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    },
+    {
+      "id": "t05",
+      "start_ms": 200000,
+      "end_ms": 250000,
+      "text": "A debt like that does not stay small. How much are we talking about?",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    },
+    {
+      "id": "t06",
+      "start_ms": 250000,
+      "end_ms": 300000,
+      "text": "The mill is the problem. It is flooded to the second floor and the water has nowhere to go.",
+      "physical_speaker": "SPEAKER_02",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    },
+    {
+      "id": "t07",
+      "start_ms": 300000,
+      "end_ms": 350000,
+      "text": "Then we drain it. The party agrees to drain the mill before anything else.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    },
+    {
+      "id": "t08",
+      "start_ms": 350000,
+      "end_ms": 400000,
+      "text": "Somebody has to go in the water and open the sluice by hand.",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    },
+    {
+      "id": "t09",
+      "start_ms": 400000,
+      "end_ms": 450000,
+      "text": "I hate this plan. I want that on the record.",
+      "physical_speaker": "SPEAKER_02",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    },
+    {
+      "id": "t10",
+      "start_ms": 450000,
+      "end_ms": 500000,
+      "text": "Something takes hold of your leg and bites down hard. You are bleeding.",
+      "physical_speaker": "SPEAKER_00",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    },
+    {
+      "id": "t11",
+      "start_ms": 500000,
+      "end_ms": 550000,
+      "text": "We keep going. There is no time to bind it properly.",
+      "physical_speaker": "SPEAKER_01",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    },
+    {
+      "id": "t12",
+      "start_ms": 550000,
+      "end_ms": 600000,
+      "text": "The water starts to move, and the level drops about a foot while you watch.",
+      "physical_speaker": "SPEAKER_02",
+      "confidence": 0.82,
+      "confidence_kind": "declared",
+      "speaker_coverage": 0.9,
+      "speaker_purity": 0.88
+    }
+  ],
+  "scenes": [
+    {
+      "id": "s1",
+      "title": "Arrival at the flooded village",
+      "summary": "The party arrives to find the village under water and goes looking for whoever is in charge.",
+      "evidence": {
+        "turn_ids": [
+          "t01",
+          "t02",
+          "t03"
+        ],
+        "start_ms": 0,
+        "end_ms": 150000
+      }
+    },
+    {
+      "id": "s2",
+      "title": "Brindle's debt",
+      "summary": "Brindle admits owing the ferryman a debt for the crossing, and the party presses for the amount.",
+      "evidence": {
+        "turn_ids": [
+          "t04",
+          "t05"
+        ],
+        "start_ms": 150000,
+        "end_ms": 250000
+      }
+    },
+    {
+      "id": "s3",
+      "title": "Draining the mill",
+      "summary": "The party agrees to drain the flooded mill, which means opening the sluice by hand.",
+      "evidence": {
+        "turn_ids": [
+          "t06",
+          "t07",
+          "t08"
+        ],
+        "start_ms": 250000,
+        "end_ms": 400000
+      }
+    }
+  ],
+  "entities": [
+    {
+      "id": "e1",
+      "name": "Alder",
+      "kind": "person",
+      "aliases": [
+        "Elder"
+      ],
+      "evidence": {
+        "turn_ids": [
+          "t02"
+        ],
+        "start_ms": 50000,
+        "end_ms": 100000
+      }
+    },
+    {
+      "id": "e2",
+      "name": "Brindle",
+      "kind": "character",
+      "aliases": [],
+      "evidence": {
+        "turn_ids": [
+          "t04"
+        ],
+        "start_ms": 150000,
+        "end_ms": 200000
+      }
+    },
+    {
+      "id": "e3",
+      "name": "The Sunken Mill",
+      "kind": "place",
+      "aliases": [
+        "the mill"
+      ],
+      "evidence": {
+        "turn_ids": [
+          "t06",
+          "t07"
+        ],
+        "start_ms": 250000,
+        "end_ms": 350000
+      }
+    }
+  ],
+  "threads": [
+    {
+      "id": "th1",
+      "description": "Brindle's unpaid debt to the ferryman is still outstanding.",
+      "evidence": {
+        "turn_ids": [
+          "t04",
+          "t05"
+        ],
+        "start_ms": 150000,
+        "end_ms": 250000
+      }
+    }
+  ],
+  "summary": "The party reaches a flooded village, learns that Brindle owes the ferryman for the crossing, and agrees to drain the sunken mill.",
+  "review_questions": [
+    {
+      "id": "q1",
+      "issue": "Someone is bitten in the water and the name of whoever was bitten is unclear.",
+      "recommendation": "Confirm who entered the water at this point.",
+      "why_it_matters": "An untreated wound carries into the next session and the wrong name misattributes it.",
+      "evidence": {
+        "turn_ids": [
+          "t10"
+        ],
+        "start_ms": 450000,
+        "end_ms": 500000
+      },
+      "confidence": 0.45,
+      "consequence": "high",
+      "status": "open"
+    }
+  ],
+  "processor_artifacts": {
+    "transcript": "processor-native/transcript.json"
+  },
+  "provenance": {
+    "transcript_provider": "example-engine-v1",
+    "analysis_provider": "synthetic-analysis",
+    "analysis_is_declared_truth": false
+  }
+}

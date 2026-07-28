@@ -1,0 +1,139 @@
+{
+  "schema_version": "0.1",
+  "id": "synthetic-scoring-fixture",
+  "title": "Synthetic Scoring Fixture (invented; no recording exists)",
+  "corpus_tier": "controlled_or_synthetic",
+  "source": {
+    "landing_url": "https://example.invalid/synthetic-scoring-fixture",
+    "media_url": "https://example.invalid/synthetic-scoring-fixture.mp3",
+    "publisher": "RPG Chronicle test fixture",
+    "published_at": "2026-07-28",
+    "accessed_at": "2026-07-28",
+    "episode_duration_ms": 600000
+  },
+  "excerpt": {
+    "start_ms": 0,
+    "end_ms": 600000,
+    "timestamp_basis": "published_media_file",
+    "verification": "Invented for tests. No recording exists, nobody spoke any of this, and no digest is recorded because there are no bytes to digest. It exists so the scoring harness can be exercised in CI, which has no content directory and must never be given one."
+  },
+  "recording_conditions": {
+    "capture_layout": "single_mixed_track",
+    "production": "raw",
+    "expected_physical_speakers": 4,
+    "proven_distinct_speakers": null,
+    "overlap": "low",
+    "music_or_effects": false,
+    "observations": "Invented fixture value. Nothing here was measured because there is nothing to measure."
+  },
+  "references": {
+    "caption_or_transcript": "none",
+    "speaker_labels": false,
+    "annotation_status": "verified"
+  },
+  "truth": {
+    "method": "Authored by hand as a test fixture on 2026-07-28. No recording was consulted, because none exists. The basis values below are invented labels chosen to exercise the harness's per-basis breakdown: they record what the harness must do with a mixed answer key, not what anybody heard. A score against this manifest measures the harness, never a transcription or analysis engine.",
+    "contaminating_providers": [
+      "example-engine-v1"
+    ],
+    "important_entities": [
+      {
+        "label": "Alder",
+        "kind": "person",
+        "status": "verified",
+        "anchor_ms": 60000,
+        "basis": "audio_observed",
+        "evidence": "Invented fixture datum. Chosen as a bare name so the harness's name matching is exercised on the easy case."
+      },
+      {
+        "label": "Brindle",
+        "kind": "character",
+        "status": "verified",
+        "anchor_ms": 180000,
+        "basis": "audio_observed",
+        "evidence": "Invented fixture datum. The degraded variants rename and remove this one, which is how the discrimination check moves entity capture without touching anything else."
+      },
+      {
+        "label": "The Sunken Mill",
+        "kind": "place",
+        "status": "verified",
+        "anchor_ms": 300000,
+        "basis": "audio_machine_assisted",
+        "evidence": "Invented fixture datum. A multi-word label, so the harness is exercised on a name that must match as a token run rather than as a whole string."
+      },
+      {
+        "label": "Corvath, the ferryman the debt is owed to",
+        "kind": "character",
+        "status": "verified",
+        "anchor_ms": 480000,
+        "basis": "audio_machine_assisted",
+        "evidence": "Invented fixture datum. A name wrapped in a description, which is how a real annotator writes a label and which equality matching would score as a miss. The baseline session deliberately does not produce this entity, so the fixture has a real miss in it."
+      }
+    ],
+    "important_events": [
+      {
+        "label": "Brindle admits owing the ferryman a debt",
+        "kind": "event",
+        "status": "verified",
+        "anchor_ms": 180000,
+        "basis": "audio_observed",
+        "evidence": "Invented fixture datum."
+      },
+      {
+        "label": "The party agrees to drain the flooded mill",
+        "kind": "event",
+        "status": "verified",
+        "anchor_ms": 300000,
+        "basis": "audio_observed",
+        "evidence": "Invented fixture datum."
+      },
+      {
+        "label": "Alder is bitten while wading and the wound is left untreated",
+        "kind": "event",
+        "status": "verified",
+        "anchor_ms": 480000,
+        "basis": "audio_machine_assisted",
+        "evidence": "Invented fixture datum. No baseline scene covers this anchor, so plot capture has a real gap in it and an uncovered figure of zero would be the instrument failing rather than the run."
+      }
+    ],
+    "threads": [
+      {
+        "label": "The debt owed to the ferryman",
+        "first_anchor_ms": 60000,
+        "last_anchor_ms": 480000,
+        "evidence": "Invented fixture datum. Both ends are the anchors of truth targets above, which is what the validator requires of a thread."
+      }
+    ],
+    "negative_controls": [
+      {
+        "term": "Kaervek",
+        "kind": "prior_session",
+        "rationale": "Invented fixture datum. Treated as a name belonging to an earlier session in the same campaign and absent from this excerpt, so a run that reports it is drawing on campaign context rather than on the audio it was given."
+      },
+      {
+        "term": "Thornwood",
+        "kind": "title_metadata",
+        "rationale": "Invented fixture datum. Treated as a word the episode title supplies and the audio never does, which is the trap a system with access to filenames walks into."
+      }
+    ],
+    "notes": "Every value in this file is invented. It describes no recording and answers for no audio. It exists so that `rpg-chronicle score` can be exercised end to end without a content directory, which is what lets the test suite run in CI under the rule that keeps real manifests and answer keys out of this repository (docs/CONTENT_AUDIT.md). Nothing measured against it is a result about any engine."
+  },
+  "rights": {
+    "copyright_holder": "None; this manifest describes no real work",
+    "license": "Not applicable - synthetic fixture",
+    "license_url": "https://example.invalid/license",
+    "local_processing": "permitted",
+    "redistribution": "permitted",
+    "review_notes": "Fixture manifest. It describes no recording, so no rights attach and nobody's speech is in it.",
+    "accessed_at": "2026-07-28"
+  },
+  "selection": {
+    "r0_status": "rejected",
+    "diagnostic_value": "Diagnoses the scoring harness and nothing else. Marked rejected on purpose: it is not a recording, it is not corpus material, and a score against it is not a result about any engine.",
+    "risks": [
+      "It is invented, so a harness that passes against it may still be wrong about real audio.",
+      "Its labels are short and clean, which is the easy case for name matching; real labels are messier.",
+      "Being committed, it is the one answer key a reader may mistake for corpus material, which is why the title, the notes and this field all say it is not."
+    ]
+  }
+}
