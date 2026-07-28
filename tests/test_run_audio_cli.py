@@ -67,7 +67,7 @@ def _run(
         "_transcript_provider",
         lambda args: provider or SpeechTranscriptProvider(StubRecognizer()),
     )
-    monkeypatch.setattr(cli, "_model_provider", lambda args: StubAnalysis())
+    monkeypatch.setattr(cli, "_model_provider", lambda args, vocabulary=None: StubAnalysis())
     monkeypatch.setattr(
         "sys.argv",
         [
@@ -133,7 +133,7 @@ def test_engine_preflight_failure_is_a_message_not_a_traceback(
     monkeypatch.setattr(
         cli, "_transcript_provider", lambda args: SpeechTranscriptProvider(Missing())
     )
-    monkeypatch.setattr(cli, "_model_provider", lambda args: StubAnalysis())
+    monkeypatch.setattr(cli, "_model_provider", lambda args, vocabulary=None: StubAnalysis())
     monkeypatch.setattr(
         "sys.argv",
         [

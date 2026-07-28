@@ -12,6 +12,8 @@ threads, and on callbacks to earlier events rather than on "key takeaways".
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
+from dataclasses import dataclass
 
 from ..model import TranscriptTurn
 from .decompose import render_turns
@@ -185,7 +187,55 @@ def window_system_prompt(*, max_questions: int) -> str:
     return f"{_WINDOW_SYSTEM}\n\n{_question_budget(max_questions)}"
 
 
-def window_user_prompt(turns: list[TranscriptTurn], *, index: int, total: int) -> str:
+@dataclass(frozen=True)
+class ApprovedName:
+    """A name a person has already settled, on an earlier session of the same campaign.
+
+    Held as plain data rather than as the store it came from, so nothing in this package
+    imports the review loop. The provider is handed names; where they were approved and
+    by whom is the correction record's business, not the prompt's.
+    """
+
+    canonical: str
+    kind: str
+    aliases: tuple[str, ...] = ()
+
+
+def approved_names_preamble(names: Sequence[ApprovedName]) -> str:
+    """Tell the model what a person already decided, without telling it what it heard.
+
+    The wording is careful in one direction: an approved name is a *spelling*, applied
+    when the excerpt is talking about that thing anyway. It is never a licence to find
+    the thing. A model told "this campaign contains Vesh Calder" and given an excerpt
+    that never mentions him will oblige, and a fabricated entity is exactly the
+    unsupported claim `docs/PRODUCT.md` refuses -- the citation rule would then abort a
+    four-hour run over an invention this preamble invited.
+    """
+    if not names:
+        return ""
+    lines = []
+    for name in names:
+        also = f" -- also heard as {', '.join(name.aliases)}" if name.aliases else ""
+        lines.append(f"- {name.canonical} ({name.kind}){also}")
+    return (
+        "A person has already settled the spelling of these names in earlier sessions "
+        "of this campaign:\n\n"
+        + "\n".join(lines)
+        + "\n\nUse the settled spelling when this excerpt is talking about one of them, "
+        "including when the transcript spells it differently -- that is what the earlier "
+        "answer was for, and asking again wastes the person's attention. This list is "
+        "not a claim that any of them appear here. If an excerpt does not mention one, "
+        "it is not in this excerpt, and inventing it would be a fabricated claim."
+    )
+
+
+def window_user_prompt(
+    turns: list[TranscriptTurn],
+    *,
+    index: int,
+    total: int,
+    approved_names: Sequence[ApprovedName] = (),
+) -> str:
     """Render one excerpt for analysis.
 
     The excerpt is positioned within the session because "this is the final stretch"
@@ -199,7 +249,12 @@ def window_user_prompt(turns: list[TranscriptTurn], *, index: int, total: int) -
             "Earlier and later excerpts exist and you cannot see them, so do not "
             "speculate about what happens outside this one."
         )
-    return f"{header}\n\nTranscript:\n\n{render_turns(turns)}"
+    parts = [header]
+    preamble = approved_names_preamble(approved_names)
+    if preamble:
+        parts.append(preamble)
+    parts.append(f"Transcript:\n\n{render_turns(turns)}")
+    return "\n\n".join(parts)
 
 
 def synthesis_system_prompt(*, max_questions: int) -> str:

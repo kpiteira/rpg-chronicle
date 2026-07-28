@@ -329,6 +329,40 @@ before `run_pipeline`, which writes the canonical session the moment it is calle
 > measurements on one date against a model that will change under them. They should be
 > treated as a scale reading, not a benchmark, and re-measured when the model changes.
 
+## What an answered question changes about the next analysis
+
+Added by A02 (#37), which closed the correction loop. Two things changed here, and the
+distinction between them matters more than either.
+
+**The provider is told what a person settled.** `ModelAnalysisProvider` takes an
+`approved_names` list — canonical name, kind, and the spellings already seen for it — and
+`prompts.approved_names_preamble` renders it into each window's user prompt. The wording is
+careful in one direction: an approved name is a *spelling*, applied when the excerpt is
+talking about that thing anyway, and explicitly not a claim that it appears. A model told
+"this campaign contains Vesh Calder" and shown an excerpt that never mentions him will
+oblige, and the citation rule would then abort the run over an invention the preamble
+invited. `approved_names_supplied` is recorded in the native artifact, so a run says how
+many it was given.
+
+**Nothing here measures whether that helps.** The alias plant in `long_session_plan.json`
+was designed to test whether the model *notices* two names, not whether it adopts a
+supplied one, and no run has been made with a populated vocabulary. The claim this section
+supports is that the names reach the prompt — pinned by a test that goes red when the
+interpolation is removed. Whether a settled spelling actually reduces repeat questions on a
+four-hour session is a quality question, and per D-009 it belongs in a benchmark rather than
+in an assertion here. It is a follow-up, listed below.
+
+**The deterministic half is what carries the weight.** `pipeline.run_pipeline` renames any
+entity whose surface form the vocabulary claims, after analysis, whatever the provider was.
+That works with the fixture provider, which reads no prompt at all, and it is what the
+acceptance evidence for #37 exercised: two runs of the same later-session fixture through
+the same provider, differing only in whether the earlier session had been answered. The
+prompt half can only ever help a model; the deterministic half is the guarantee.
+
+The contested case reaches here too. A name two people approved differently is left out of
+the prompt entirely, for the same reason it is not applied: presenting a disputed spelling
+to a model as settled would ask the one input that cannot resolve it to resolve it.
+
 ## Follow-ups this goal did not do
 
 - **Analysis quality on real recorded play.** Explicitly out of scope; needs a selected
@@ -350,3 +384,11 @@ before `run_pipeline`, which writes the canonical session the moment it is calle
 - **Prompt regression testing.** The alias miss was found by reading output, not by a
   test, and could regress silently. Pinning prompt behaviour needs a scoring approach
   that does not become a tautology, which is a benchmark-research question.
+- **Whether a settled name reduces repeat questions.** Added by A02. The vocabulary
+  reaches the prompt and the effect is unmeasured; the honest test is a four-hour run with
+  a populated store against the same run without one, scored on how many questions repeat
+  a name the operator already answered. That is a review-burden measurement, which is
+  benchmark-research's instrument rather than this role's.
+- **Restating prose after a name changes.** A merge or a rename updates the entity; the
+  scene summaries and the session summary still contain the old name. Re-generating prose
+  costs a model request and risks changing more than the name, so nothing does it yet.

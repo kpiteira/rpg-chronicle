@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 import time
 from pathlib import Path
 from typing import Any
@@ -16,9 +17,15 @@ from typing import Any
 from .analysis.backend import BackendError, BackendUnavailableError
 from .analysis.claude_cli import DEFAULT_MODEL, ClaudeCliBackend
 from .analysis.decompose import TokenBudget
+from .analysis.prompts import ApprovedName
 from .analysis.provider import DEFAULT_MAX_QUESTIONS, ModelAnalysisProvider
-from .pipeline import run_pipeline
+from .pipeline import load_session, run_pipeline
 from .providers import FixtureAnalysisProvider, FixtureTranscriptProvider
+from .review.answers import CARRY_FORWARD_ACTION, AnswerError, load_answer_sheet
+from .review.console import Console, ReviewAborted, collect_answers
+from .review.record import RECORD_FILENAME, CorrectionRecord, UnreadableRecordError
+from .review.session import CANONICAL_FILENAME, answer_session
+from .review.vocabulary import STORE_FILENAME, Vocabulary, VocabularyError
 from .transcription.engine import EngineError, EngineUnavailableError
 from .transcription.name_uncertainty import DEFAULT_RARITY_FLOOR, WordfreqLexicon
 from .transcription.provider import SpeechTranscriptProvider
@@ -83,6 +90,7 @@ def _parser() -> argparse.ArgumentParser:
         type=Path,
         help="write measured tokens, wall time, and request count to this path",
     )
+    _add_vocabulary_flags(run_fixture)
 
     run_audio = subparsers.add_parser(
         "run-audio",
@@ -179,6 +187,57 @@ def _parser() -> argparse.ArgumentParser:
             "so it is safe to commit as evidence for a restricted recording."
         ),
     )
+    _add_vocabulary_flags(run_audio)
+
+    review = subparsers.add_parser(
+        "review",
+        help="answer the questions in a session's review package",
+        description=(
+            "Walks the needs-attention queue and applies what you decide to the canonical "
+            "session. Nothing is written until the whole sheet applies, an answer's effect "
+            "is recorded in corrections.json with what it changed from, and an approved "
+            "name joins the vocabulary so the next session does not ask again."
+        ),
+    )
+    review.add_argument("session_dir", type=Path, help="a session directory the pipeline wrote")
+    review.add_argument(
+        "--answers",
+        type=Path,
+        help=(
+            "a JSON answer sheet, instead of the interactive queue. Same effect, "
+            "scriptable, and what the acceptance evidence uses."
+        ),
+    )
+    review.add_argument(
+        "--by",
+        default="operator",
+        help="who is answering; recorded against every answer and every approved name",
+    )
+    review.add_argument(
+        "--vocabulary",
+        type=Path,
+        help="approved-name store (default: vocabulary.json beside the session directories)",
+    )
+    review.add_argument(
+        "--include-answered",
+        action="store_true",
+        help="show questions that already carry a disposition, not only open ones",
+    )
+    review.add_argument(
+        "--override",
+        action="store_true",
+        help=(
+            "record a disagreement with somebody else's earlier decision and supersede "
+            "it. Without this, an answer that would change what another person settled "
+            "is refused and nothing is written. The earlier decision survives in "
+            "corrections.json either way."
+        ),
+    )
+    review.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="report what the answers would change and write nothing",
+    )
 
     score = subparsers.add_parser(
         "score",
@@ -223,6 +282,58 @@ def _parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _add_vocabulary_flags(subparser: argparse.ArgumentParser) -> None:
+    """Where approved names come from, for the commands that produce entities.
+
+    Carrying forward is on by default because a store nothing reads improves nothing,
+    which is the half of `docs/PRODUCT.md`'s "improve from approved vocabulary" that
+    usually gets deferred. Every application is recorded in the session's own correction
+    record, so the default is visible rather than silent, and `--no-carry-forward` turns
+    it off for a run that must reproduce what the analysis alone produced.
+    """
+    subparser.add_argument(
+        "--vocabulary",
+        type=Path,
+        help="approved-name store (default: vocabulary.json in the output directory)",
+    )
+    subparser.add_argument(
+        "--no-carry-forward",
+        action="store_true",
+        help="ignore approved names entirely; report the analysis exactly as produced",
+    )
+
+
+def _vocabulary_for(args: argparse.Namespace) -> Vocabulary | None:
+    if args.no_carry_forward:
+        return None
+    path = args.vocabulary or (args.output / STORE_FILENAME)
+    try:
+        return Vocabulary.load(path)
+    except VocabularyError as error:
+        raise SystemExit(f"vocabulary unusable: {error}") from error
+    except UnreadableRecordError as error:
+        raise SystemExit(f"correction record unusable: {error}") from error
+
+
+def _report_carry_forward(session_dir: Path, session_id: str) -> None:
+    record_path = session_dir / RECORD_FILENAME
+    if not record_path.exists():
+        return
+    record = CorrectionRecord.load(record_path, session_id=session_id)
+    carried = [entry for entry in record.entries if entry.action == CARRY_FORWARD_ACTION]
+    applied = [entry for entry in carried if entry.changes]
+    if applied:
+        print(f"carried forward: {len(applied)} approved name(s) applied")
+        for entry in applied:
+            for change in entry.changes:
+                before = (change.before or {})["entities"][0]["name"]
+                after = (change.after or {})["entities"][0]["name"]
+                print(f"  {change.target}: {before!r} -> {after!r}")
+    for entry in carried:
+        if entry.declined:
+            print(f"carry-forward declined for {entry.note}: {entry.declined}")
+
+
 def _score(args: argparse.Namespace) -> None:
     from .scoring import (
         ManifestNotFoundError,
@@ -258,7 +369,25 @@ def _score(args: argparse.Namespace) -> None:
         raise SystemExit(2)
 
 
-def _model_provider(args: argparse.Namespace) -> ModelAnalysisProvider:
+def approved_names(vocabulary: Vocabulary | None) -> tuple[ApprovedName, ...]:
+    """The settled names worth telling a model about.
+
+    Contested entries are left out. Two people disagreeing about a spelling is not
+    something to put in a prompt as though it were decided, and the model's guess is the
+    one input that cannot settle it.
+    """
+    if vocabulary is None:
+        return ()
+    return tuple(
+        ApprovedName(canonical=entry.canonical, kind=entry.kind, aliases=tuple(entry.aliases))
+        for entry in vocabulary.entries
+        if not entry.contested
+    )
+
+
+def _model_provider(
+    args: argparse.Namespace, vocabulary: Vocabulary | None = None
+) -> ModelAnalysisProvider:
     """Construct the model-backed provider from the parsed flags.
 
     Overridden in tests to inject a backend that does not reach a vendor.
@@ -270,6 +399,7 @@ def _model_provider(args: argparse.Namespace) -> ModelAnalysisProvider:
             overlap_turns=args.overlap_turns,
         ),
         max_questions=args.max_questions,
+        approved_names=approved_names(vocabulary),
     )
 
 
@@ -286,10 +416,17 @@ def _fixture_provider(fixture: Path) -> FixtureAnalysisProvider:
 
 def _run_fixture(args: argparse.Namespace) -> None:
     session_id = json.loads(args.fixture.read_text())["session"]["id"]
+    # Loaded once and used twice: settled names go into the prompt so the model spells
+    # them right in the first place, and into the pipeline so an entity it still spells
+    # the old way is corrected deterministically afterwards. The two are not redundant --
+    # the first only works with a model, the second works with any provider.
+    vocabulary = _vocabulary_for(args)
 
     if args.analysis == "model":
         try:
-            provider: FixtureAnalysisProvider | ModelAnalysisProvider = _model_provider(args)
+            provider: FixtureAnalysisProvider | ModelAnalysisProvider = _model_provider(
+                args, vocabulary
+            )
         except ValueError as error:
             # A budget with no room for the prompt, a negative overlap, a question cap
             # of zero. These are usage errors and deserve a usage error's message
@@ -308,9 +445,11 @@ def _run_fixture(args: argparse.Namespace) -> None:
         transcript_provider=FixtureTranscriptProvider(),
         analysis_provider=provider,
         session_id=session_id,
+        vocabulary=vocabulary,
     )
 
     print(f"{session.session_id}: {session.status}")
+    _report_carry_forward(args.output / session.session_id, session.session_id)
     if isinstance(provider, ModelAnalysisProvider):
         cost = provider.cost
         print(
@@ -457,9 +596,12 @@ def _name_uncertainty_counts(session: Any, output: Path) -> dict:
 
 
 def _run_audio(args: argparse.Namespace) -> None:
+    vocabulary = _vocabulary_for(args)
     if args.analysis == "model":
         try:
-            analysis: FixtureAnalysisProvider | ModelAnalysisProvider = _model_provider(args)
+            analysis: FixtureAnalysisProvider | ModelAnalysisProvider = _model_provider(
+                args, vocabulary
+            )
         except ValueError as error:
             raise SystemExit(f"invalid analysis options: {error}") from error
     else:
@@ -486,10 +628,12 @@ def _run_audio(args: argparse.Namespace) -> None:
         transcript_provider=transcript,
         analysis_provider=analysis,
         session_id=args.session_id or args.audio.stem,
+        vocabulary=vocabulary,
     )
     wall_s = time.monotonic() - started
 
     print(f"{session.session_id}: {session.status}")
+    _report_carry_forward(args.output / session.session_id, session.session_id)
     print(f"transcript provider: {session.provenance.get('transcript_provider')}")
     print(
         f"turns: {len(session.turns)}, "
@@ -509,11 +653,80 @@ def _run_audio(args: argparse.Namespace) -> None:
         print(f"run report: {args.run_report}")
 
 
+def _review(args: argparse.Namespace) -> None:
+    canonical = args.session_dir / CANONICAL_FILENAME
+    if not canonical.exists():
+        raise SystemExit(
+            f"{canonical} does not exist. Point this at a session directory the pipeline "
+            "has carried to review_ready."
+        )
+
+    if args.answers:
+        sheet = load_answer_sheet(args.answers, default_answered_by=args.by)
+    else:
+        sheet = collect_answers(
+            load_session(canonical),
+            console=Console(stdin=sys.stdin, stdout=sys.stdout),
+            answered_by=args.by,
+            include_answered=args.include_answered,
+        )
+
+    if not sheet.answers:
+        print("nothing was answered; the session is unchanged")
+        return
+
+    reviewed = answer_session(
+        args.session_dir,
+        sheet,
+        vocabulary_path=args.vocabulary,
+        override=args.override,
+        dry_run=args.dry_run,
+    )
+    outcome = reviewed.outcome
+    prefix = "would change" if args.dry_run else "changed"
+    print(
+        f"{reviewed.session.session_id}: {len(outcome.applied)} answered, "
+        f"{len(outcome.changed_entities)} entity record(s) {prefix}"
+    )
+    for entry in reviewed.record.entries[-len(sheet.answers) :]:
+        line = f"  {entry.question_id}: {entry.action}"
+        for change in entry.changes:
+            before = (change.before or {})["entities"]
+            after = (change.after or {})["entities"][0]
+            names = ", ".join(repr(item["name"]) for item in before)
+            line += f" -- {change.operation} {names} -> {after['name']!r}"
+        print(line)
+    if outcome.vocabulary_entries:
+        verb = "would join" if args.dry_run else "joined"
+        print(
+            f"vocabulary: {len(outcome.vocabulary_entries)} name(s) {verb} "
+            f"{reviewed.vocabulary_path}"
+        )
+    if args.dry_run:
+        print("dry run: nothing was written")
+    else:
+        print(f"record: {args.session_dir / RECORD_FILENAME}")
+
+
 def main() -> None:
     args = _parser().parse_args()
-    handlers = {"run-fixture": _run_fixture, "run-audio": _run_audio, "score": _score}
+    handlers = {
+        "run-fixture": _run_fixture,
+        "run-audio": _run_audio,
+        "review": _review,
+        "score": _score,
+    }
     try:
         handlers[args.command](args)
+    except AnswerError as error:
+        # A refused sheet changed nothing, so this is a usage error rather than a crash.
+        raise SystemExit(f"answers refused: {error}") from error
+    except ReviewAborted as error:
+        raise SystemExit(f"review stopped: {error}; nothing was written") from error
+    except VocabularyError as error:
+        raise SystemExit(f"vocabulary unusable: {error}") from error
+    except UnreadableRecordError as error:
+        raise SystemExit(f"correction record unusable: {error}") from error
     except BackendUnavailableError as error:
         # A configuration failure, not a crash. The message names what is missing
         # and never the value of anything.

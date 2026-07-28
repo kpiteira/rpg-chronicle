@@ -1,0 +1,114 @@
+{
+  "schema_version": "0.2",
+  "session_id": "r0-synthetic-crossroads",
+  "source": {
+    "kind": "json",
+    "path": "benchmarks/fixtures/r0_synthetic_session.json"
+  },
+  "status": "review_ready",
+  "turns": [
+    {
+      "id": "turn-001",
+      "start_ms": 0,
+      "end_ms": 6400,
+      "text": "At dusk you reach the flooded crossroads. A courier named Mira Vey is waiting by the old shrine.",
+      "physical_speaker": "speaker-1",
+      "confidence": 0.98,
+      "confidence_kind": "declared",
+      "speaker_coverage": null,
+      "speaker_purity": null
+    },
+    {
+      "id": "turn-002",
+      "start_ms": 6800,
+      "end_ms": 11900,
+      "text": "I ask Mira why the royal seal on her letter has been broken.",
+      "physical_speaker": "speaker-2",
+      "confidence": 0.96,
+      "confidence_kind": "declared",
+      "speaker_coverage": null,
+      "speaker_purity": null
+    },
+    {
+      "id": "turn-003",
+      "start_ms": 12300,
+      "end_ms": 19100,
+      "text": "She says riders from the Ashen Company attacked her and took the map to Dunmarrow.",
+      "physical_speaker": "speaker-1",
+      "confidence": 0.93,
+      "confidence_kind": "declared",
+      "speaker_coverage": null,
+      "speaker_purity": null
+    },
+    {
+      "id": "turn-004",
+      "start_ms": 19600,
+      "end_ms": 24800,
+      "text": "We agree to recover the map before the company reaches Dunmarrow.",
+      "physical_speaker": "speaker-3",
+      "confidence": 0.91,
+      "confidence_kind": "declared",
+      "speaker_coverage": null,
+      "speaker_purity": null
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene-001",
+      "title": "The courier at the crossroads",
+      "summary": "The party meets Mira Vey and discovers that the Ashen Company stole a map to Dunmarrow.",
+      "evidence": {
+        "turn_ids": [
+          "turn-001",
+          "turn-002",
+          "turn-003"
+        ],
+        "start_ms": 0,
+        "end_ms": 19100
+      }
+    },
+    {
+      "id": "scene-002",
+      "title": "A new objective",
+      "summary": "The party agrees to recover the stolen map before the Ashen Company arrives.",
+      "evidence": {
+        "turn_ids": [
+          "turn-004"
+        ],
+        "start_ms": 19600,
+        "end_ms": 24800
+      }
+    }
+  ],
+  "entities": [],
+  "threads": [],
+  "summary": "The party met courier Mira Vey at a flooded crossroads. After learning that the Ashen Company stole her map, they agreed to recover it before the company reaches Dunmarrow.",
+  "review_questions": [
+    {
+      "id": "question-001",
+      "issue": "Confirm the spelling of the destination: Dunmarrow.",
+      "recommendation": "Dunmarrow",
+      "why_it_matters": "It is the destination of the newly accepted objective and will become a campaign entity.",
+      "evidence": {
+        "turn_ids": [
+          "turn-003",
+          "turn-004"
+        ],
+        "start_ms": 12300,
+        "end_ms": 24800
+      },
+      "confidence": 0.72,
+      "consequence": "high",
+      "status": "open"
+    }
+  ],
+  "processor_artifacts": {
+    "transcript": "processor-native/transcript.json",
+    "analysis": "processor-native/analysis.json"
+  },
+  "provenance": {
+    "transcript_provider": "fixture-transcriber",
+    "analysis_provider": "fixture-analysis",
+    "analysis_is_declared_truth": true
+  }
+}

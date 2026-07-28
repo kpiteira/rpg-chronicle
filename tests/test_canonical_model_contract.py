@@ -377,9 +377,9 @@ def test_a_session_written_before_these_fields_existed_still_loads(tmp_path):
     path = tmp_path / "canonical-session.json"
     path.write_text(json.dumps(_session_payload("0.1")))
 
-    from rpg_chronicle.pipeline import UNSTATED_CONFIDENCE_KIND, _load_session
+    from rpg_chronicle.pipeline import UNSTATED_CONFIDENCE_KIND, load_session
 
-    session = _load_session(path)
+    session = load_session(path)
     assert isinstance(session, CanonicalSession)
     turn = session.turns[0]
     # The number is kept and its provenance is marked as what it is: never recorded.
@@ -397,10 +397,10 @@ def test_a_0_2_turn_still_may_not_omit_the_quantity(tmp_path):
     path = tmp_path / "canonical-session.json"
     path.write_text(json.dumps(_session_payload("0.2")))
 
-    from rpg_chronicle.pipeline import _load_session
+    from rpg_chronicle.pipeline import load_session
 
     with pytest.raises(ValueError, match="confidence_kind"):
-        _load_session(path)
+        load_session(path)
 
 
 def test_a_resumed_0_1_session_runs_to_review_ready(tmp_path):
@@ -427,10 +427,10 @@ def test_a_session_from_a_schema_this_build_does_not_know_is_refused(tmp_path):
     path = tmp_path / "canonical-session.json"
     path.write_text(json.dumps(_session_payload("9.9")))
 
-    from rpg_chronicle.pipeline import _load_session
+    from rpg_chronicle.pipeline import load_session
 
     with pytest.raises(UnreadableSessionError, match="9.9"):
-        _load_session(path)
+        load_session(path)
 
 
 def test_entities_and_threads_reach_the_review_package(tmp_path):
