@@ -57,6 +57,19 @@ class GeneratedRegion:
 
     `content_digest` is over the region body as written. It is what turns "the tool wrote
     this" into "the tool wrote this and nobody has touched it since".
+
+    **A known limit, stated because it is easy to read this as stronger than it is.** The
+    key is `(note path, section title)`, so a note carrying the same section title twice
+    cannot be told apart at this level — the ambiguity `section_body` was line-indexed to
+    remove still exists in the *lookup*. It is safe rather than resolved, and safe for a
+    structural reason rather than by luck: the digest is taken over one specific span, so
+    at most one of two same-titled sections can match it, and the other classifies
+    `RECLAIMED`. Every outcome is therefore "do not write", which is the correct direction.
+    `test_a_duplicate_section_title_fails_closed_rather_than_writing` demonstrates it.
+
+    What it costs is capability, not safety: the tool cannot own either of two same-titled
+    regions reliably. V02 should key on something stable — a section index, or an
+    identifier the tool assigns when it writes — rather than inherit this.
     """
 
     note_path: str

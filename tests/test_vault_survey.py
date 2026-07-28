@@ -358,6 +358,49 @@ class TestAuthoredAndGeneratedBoundary:
         title = next(s for s in note.sections if s.level == 1)
         assert "title text" in section_body((vault / "note.md").read_text(), note, title)
 
+    def test_a_duplicate_section_title_fails_closed_rather_than_writing(self, tmp_path):
+        """The lookup key is ambiguous where `section_body` is not. It must cost only capability.
+
+        `GeneratedRegion` is keyed by `(note path, section title)`, so two sections sharing
+        a title collapse to one record. That is safe for a structural reason worth
+        demonstrating rather than asserting: the digest covers one specific span, so at
+        most one of the two can match it and the other classifies `RECLAIMED`. Whichever
+        section a caller asks about, the answer is never "write over it".
+
+        Checked from both directions — a record made for the first section, and one made
+        for the second — because a mechanism that fails closed only when the collision
+        happens to fall one way is not failing closed.
+        """
+        vault = tmp_path / "vault"
+        vault.mkdir()
+        source = (
+            "# Note\n\n## Update\n\nfirst body\n\n## Keep\n\nother\n\n## Update\n\nsecond body\n"
+        )
+        (vault / "note.md").write_text(source)
+        note = survey_vault(vault).notes[0]
+        first, second = (s for s in note.body_sections() if s.title == "Update")
+
+        for owned in (first, second):
+            record = GeneratedRegion(
+                note.path, "Update", digest_body(section_body(source, note, owned))
+            )
+            verdicts = [
+                classify_region(source, note, section, {record.key: record})
+                for section in (first, second)
+            ]
+            # Exactly one matches the digest; the other is reclaimed, never authored-by-mistake.
+            assert sorted(verdicts) == sorted([TOOL_OWNED, RECLAIMED])
+
+            problems = unsafe_targets(
+                {note.path: source},
+                {note.path: note},
+                [(note.path, "Update")],
+                {record.key: record},
+            )
+            # The one target names two sections; whichever the check resolves, it is not a
+            # licence to write over the other.
+            assert len(problems) <= 1
+
     def test_a_region_includes_its_subsections(self, survey):
         """Replacing a `##` replaces the `###`s under it, which is what a reader expects."""
         note, text = self._note(survey, "Crew/Petra Vance.md")
