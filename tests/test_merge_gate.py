@@ -309,13 +309,21 @@ def test_a_head_marker_quoted_inside_a_stale_verdict_does_not_satisfy_the_bindin
     marker -- because the pull request being validated changes this file, and the marker is
     in it -- would otherwise read as a verdict for the current head.
     """
-    body = (
-        f"<!-- goal-validator sha:{STALE} -->\n"
-        "```json\n"
-        '{"verdict": "pass", "advisory": ["The diff adds the line '
-        f'<!-- goal-validator sha:{HEAD} --> to a fixture."]}}\n'
-        "```"
+    # Built with json.dumps rather than written out, so the payload is readable JSON by
+    # construction. Hand-writing it needed an f-string brace escape next to a literal one,
+    # which is unambiguous to the interpreter and not to a reader.
+    payload = json.dumps(
+        {
+            "verdict": "pass",
+            "advisory": [
+                f"The diff adds the line <!-- goal-validator sha:{HEAD} --> to a fixture."
+            ],
+        }
     )
+    body = f"<!-- goal-validator sha:{STALE} -->\n```json\n{payload}\n```"
     code, stderr, _ = gate("gh pr merge 7 --rebase", GH_VERDICT=body)
     assert code == 2
     assert "predates its current head commit" in stderr
+    # The verdict really does say pass, so the refusal above is the binding check and not a
+    # side effect of unreadable input.
+    assert json.loads(payload)["verdict"] == "pass"
