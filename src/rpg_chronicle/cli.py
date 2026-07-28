@@ -34,6 +34,8 @@ from .transcription.sherpa_diarization import (
     SherpaDiarizationEngine,
 )
 from .transcription.whisper_cpp import DEFAULT_MODEL_FILENAME, WhisperCppEngine
+from .vault.digest import vault_digest
+from .vault.survey import format_report, survey_vault
 
 DEFAULT_MODEL_DIR = Path.home() / ".cache/rpg-chronicle/models"
 """Where the speech models live by default.
@@ -279,6 +281,46 @@ def _parser() -> argparse.ArgumentParser:
             "the content directory beside the manifest and never in this repository."
         ),
     )
+
+    vault_survey = subparsers.add_parser(
+        "vault-survey",
+        help="walk a vault read-only and report its structure",
+        description=(
+            "Reports note types, frontmatter keys, link topology and section "
+            "conventions. It opens files and never writes them. The report echoes the "
+            "vault's own section titles, so the output of a run against a real vault is "
+            "a description of that vault: keep it outside the repository, beside the "
+            "recordings. See docs/VAULT_INTEGRATION.md."
+        ),
+    )
+    vault_survey.add_argument("vault", type=Path)
+    vault_survey.add_argument(
+        "--json",
+        type=Path,
+        help="also write the counted findings as JSON to this path",
+    )
+
+    vault_integrity = subparsers.add_parser(
+        "vault-digest",
+        help="fingerprint a vault so a later change would be detectable",
+        description=(
+            "Prints a file count, a total size, the newest modification time and one "
+            "rolled-up SHA-256 over every file's path and contents. It names nothing "
+            "inside the vault, so the output is safe to publish as evidence that a "
+            "read-only promise was kept. Obsidian's configuration directory and the "
+            "operating system's own scratch files are excluded by default, because both "
+            "are rewritten merely by looking at the vault."
+        ),
+    )
+    vault_integrity.add_argument("vault", type=Path)
+    vault_integrity.add_argument(
+        "--include-app-state",
+        action="store_true",
+        help=(
+            "cover .obsidian, .trash and .DS_Store too; only meaningful with the vault "
+            "closed and unopened in a file browser"
+        ),
+    )
     return parser
 
 
@@ -383,6 +425,63 @@ def approved_names(vocabulary: Vocabulary | None) -> tuple[ApprovedName, ...]:
         for entry in vocabulary.entries
         if not entry.contested
     )
+
+
+def _vault_survey(args: argparse.Namespace) -> None:
+    # Handled here rather than in `main()`. Rule 4 of docs/PARALLEL_EXECUTION.md lets a
+    # role add its own wiring to this file; a shared `except` clause would have changed
+    # the error path of every other role's command too, which is the other half of the
+    # rule.
+    try:
+        survey = survey_vault(args.vault)
+    except NotADirectoryError as error:
+        raise SystemExit(str(error)) from error
+    print(format_report(survey), end="")
+    if args.json:
+        topology = survey.link_topology()
+        payload = {
+            "notes": len(survey.notes),
+            "note_types": dict(survey.note_types()),
+            "folders": dict(survey.folders()),
+            "frontmatter_keys": dict(survey.frontmatter_keys()),
+            "inconsistent_value_shapes": survey.inconsistent_value_shapes(),
+            "link_topology": {
+                "total": topology.total,
+                "distinct_targets": topology.distinct_targets,
+                "resolved": topology.resolved,
+                "unresolved": topology.unresolved,
+                "ambiguous": topology.ambiguous,
+                "piped": topology.piped,
+                "anchored": topology.anchored,
+                "path_qualified": topology.path_qualified,
+                "embeds_to_asset": topology.embeds_to_asset,
+                "embeds_to_note": topology.embeds_to_note,
+            },
+            "accumulating_notes": len(survey.accumulating_notes()),
+            "accumulation_positions": dict(survey.accumulation_positions()),
+            "stub_notes": len(survey.stubs()),
+            "ambiguous_titles": len(survey.ambiguous_titles()),
+            "provenance_signals": list(survey.provenance_signals()),
+        }
+        args.json.parent.mkdir(parents=True, exist_ok=True)
+        args.json.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
+        print(f"json: {args.json}")
+
+
+def _vault_digest(args: argparse.Namespace) -> None:
+    try:
+        if args.include_app_state:
+            print(
+                vault_digest(
+                    args.vault,
+                    ignored_directories=frozenset(),
+                    ignored_filenames=frozenset(),
+                )
+            )
+            return
+        print(vault_digest(args.vault))
+    except NotADirectoryError as error:
+        raise SystemExit(str(error)) from error
 
 
 def _model_provider(
@@ -715,6 +814,8 @@ def main() -> None:
         "run-audio": _run_audio,
         "review": _review,
         "score": _score,
+        "vault-survey": _vault_survey,
+        "vault-digest": _vault_digest,
     }
     try:
         handlers[args.command](args)
