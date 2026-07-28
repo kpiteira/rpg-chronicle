@@ -112,11 +112,11 @@ everything typed into that queue. Use `--answers` for a session you do not want 
 twice.
 
 Concretely, on `benchmarks/fixtures/r0_correction_session_1.json`: **four decisions** for a
-session of ten turns. Each arrives with the turns it cites — three, two, one and one
-respectively, eleven lines of excerpt in total — and each names the entities that evidence
-points at. Nothing else is displayed, and there is no command that displays more. A run
-that produced eighty of these screens would have failed the attention budget above even if
-every one were correct.
+session of ten turns. Each arrives with the turns it cites — three, two, one and one, so
+**seven quoted turns across the whole queue** — and each names the entities that evidence
+points at. Seven of the session's ten turns are quoted somewhere; the reviewer never sees
+the other three, and no command shows them. A run that produced eighty of these screens
+would have failed the attention budget above even if every one were correct.
 
 ### What a correction reaches
 

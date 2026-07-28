@@ -25,7 +25,11 @@ from rpg_chronicle.providers import FixtureAnalysisProvider, FixtureTranscriptPr
 from rpg_chronicle.review.answers import AnswerError, parse_answer_sheet
 from rpg_chronicle.review.apply import apply_answers, carry_forward
 from rpg_chronicle.review.console import Console, ReviewAborted, collect_answers
-from rpg_chronicle.review.record import RECORD_FILENAME, CorrectionRecord
+from rpg_chronicle.review.record import (
+    RECORD_FILENAME,
+    CorrectionRecord,
+    UnreadableRecordError,
+)
 from rpg_chronicle.review.session import answer_session
 from rpg_chronicle.review.vocabulary import STORE_FILENAME, Vocabulary
 
@@ -746,7 +750,7 @@ def test_a_contested_name_is_never_put_in_a_prompt(answered):
 
 def test_a_record_refuses_to_be_appended_to_from_another_session(answered):
     _, session_dir, _ = answered
-    with pytest.raises(ValueError, match="belongs to one session"):
+    with pytest.raises(UnreadableRecordError, match="belongs to one session"):
         CorrectionRecord.load(session_dir / RECORD_FILENAME, session_id="some-other-session")
 
 
@@ -939,3 +943,63 @@ def test_the_author_named_on_an_answer_is_the_one_recorded(tmp_path):
         session_dir / RECORD_FILENAME, session_id="r0-correction-hollow-bell-1"
     )
     assert [entry.answered_by for entry in record.entries] == ["the-gm", "karl"]
+
+
+def test_a_review_that_settles_no_name_creates_no_store(tmp_path):
+    """The store's existence should mean a name was approved, not that review was run."""
+    output = tmp_path / "campaign"
+    _run(FIRST, output)
+    session_dir = output / "r0-correction-hollow-bell-1"
+    answer_session(
+        session_dir,
+        _sheet(
+            {"question_id": "question-003", "action": "defer"},
+            {"question_id": "question-004", "action": "irrelevant"},
+        ),
+        now=NOW,
+    )
+    assert (session_dir / RECORD_FILENAME).exists(), "the answers themselves are recorded"
+    assert not (output / STORE_FILENAME).exists()
+
+
+def test_a_record_from_another_session_is_a_usage_error_not_a_traceback(tmp_path, monkeypatch):
+    from rpg_chronicle import cli
+
+    output = tmp_path / "campaign"
+    _run(FIRST, output)
+    session_dir = output / "r0-correction-hollow-bell-1"
+    answer_session(session_dir, _sheet({"question_id": "question-003", "action": "defer"}), now=NOW)
+
+    stale = json.loads((session_dir / RECORD_FILENAME).read_text())
+    stale["session_id"] = "some-other-campaign"
+    (session_dir / RECORD_FILENAME).write_text(json.dumps(stale))
+
+    sheet = tmp_path / "answers.json"
+    sheet.write_text(json.dumps({"answered_by": "karl", "answers": [SPELL_THE_CHANDLER]}))
+    monkeypatch.setattr(
+        "sys.argv",
+        ["rpg-chronicle", "review", str(session_dir), "--answers", str(sheet)],
+    )
+    with pytest.raises(SystemExit, match="correction record unusable"):
+        cli.main()
+
+
+def test_a_malformed_answer_file_is_a_usage_error_not_a_decoder_traceback(tmp_path, monkeypatch):
+    from rpg_chronicle import cli
+
+    output = tmp_path / "campaign"
+    _run(FIRST, output)
+    sheet = tmp_path / "answers.json"
+    sheet.write_text('{"answered_by": "karl", "answers": [')
+    monkeypatch.setattr(
+        "sys.argv",
+        [
+            "rpg-chronicle",
+            "review",
+            str(output / "r0-correction-hollow-bell-1"),
+            "--answers",
+            str(sheet),
+        ],
+    )
+    with pytest.raises(SystemExit, match="answers refused"):
+        cli.main()

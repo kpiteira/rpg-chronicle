@@ -226,6 +226,11 @@ def parse_answer_sheet(payload: Any, *, default_answered_by: str) -> AnswerSheet
 
 
 def load_answer_sheet(path: Path, *, default_answered_by: str) -> AnswerSheet:
-    return parse_answer_sheet(
-        json.loads(path.read_text()), default_answered_by=default_answered_by
-    )
+    try:
+        payload = json.loads(path.read_text())
+    except json.JSONDecodeError as error:
+        # A typo in a hand-written sheet is the most likely way this is ever wrong, and
+        # it deserves the same usage error every other bad answer gets rather than a
+        # decoder traceback.
+        raise AnswerError(f"{path} is not readable JSON: {error}") from error
+    return parse_answer_sheet(payload, default_answered_by=default_answered_by)

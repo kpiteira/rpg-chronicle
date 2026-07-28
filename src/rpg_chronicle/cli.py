@@ -23,7 +23,7 @@ from .pipeline import load_session, run_pipeline
 from .providers import FixtureAnalysisProvider, FixtureTranscriptProvider
 from .review.answers import CARRY_FORWARD_ACTION, AnswerError, load_answer_sheet
 from .review.console import Console, ReviewAborted, collect_answers
-from .review.record import RECORD_FILENAME, CorrectionRecord
+from .review.record import RECORD_FILENAME, CorrectionRecord, UnreadableRecordError
 from .review.session import CANONICAL_FILENAME, answer_session
 from .review.vocabulary import STORE_FILENAME, Vocabulary, VocabularyError
 from .transcription.engine import EngineError, EngineUnavailableError
@@ -311,6 +311,8 @@ def _vocabulary_for(args: argparse.Namespace) -> Vocabulary | None:
         return Vocabulary.load(path)
     except VocabularyError as error:
         raise SystemExit(f"vocabulary unusable: {error}") from error
+    except UnreadableRecordError as error:
+        raise SystemExit(f"correction record unusable: {error}") from error
 
 
 def _report_carry_forward(session_dir: Path, session_id: str) -> None:
@@ -723,6 +725,8 @@ def main() -> None:
         raise SystemExit(f"review stopped: {error}; nothing was written") from error
     except VocabularyError as error:
         raise SystemExit(f"vocabulary unusable: {error}") from error
+    except UnreadableRecordError as error:
+        raise SystemExit(f"correction record unusable: {error}") from error
     except BackendUnavailableError as error:
         # A configuration failure, not a crash. The message names what is missing
         # and never the value of anything.

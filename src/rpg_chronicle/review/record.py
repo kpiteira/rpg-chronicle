@@ -32,6 +32,16 @@ def utc_now() -> str:
     return datetime.now(UTC).replace(microsecond=0).isoformat()
 
 
+class UnreadableRecordError(ValueError):
+    """The correction record on disk is not one this build may append to.
+
+    Its own error class so the CLI can say so as a usage error. A bare `ValueError` from
+    three modules down reaches a person as a traceback, and the two cases this covers --
+    a record from a schema this build does not know, and a record belonging to another
+    session -- are both things an operator can fix once they are told which.
+    """
+
+
 RECORD_FILENAME = "corrections.json"
 RECORD_SCHEMA_VERSION = "0.1"
 """Versioned independently of the canonical session.
@@ -104,14 +114,14 @@ class CorrectionRecord:
         payload = json.loads(path.read_text())
         stored = payload.get("schema_version")
         if stored != RECORD_SCHEMA_VERSION:
-            raise ValueError(
+            raise UnreadableRecordError(
                 f"{path} declares correction-record schema {stored!r}; this build knows "
                 f"{RECORD_SCHEMA_VERSION!r}. Appending to a record you have partly "
                 "understood would corrupt the history it exists to preserve."
             )
         recorded = payload.get("session_id")
         if recorded != session_id:
-            raise ValueError(
+            raise UnreadableRecordError(
                 f"{path} records session {recorded!r}, not {session_id!r}. A correction "
                 "record belongs to one session; appending across sessions would attribute "
                 "one table's decisions to another."

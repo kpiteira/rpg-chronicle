@@ -83,7 +83,12 @@ def answer_session(
         }
         write_json(canonical_path, session.to_dict())
         record.write(record_path)
-        vocabulary.write(resolved_vocabulary)
+        # Only when there is something to store. A review of four deferrals settles no
+        # name, and an empty vocabulary.json would make the file's existence mean
+        # "somebody ran review here" rather than "somebody approved a name here" --
+        # a weaker signal than the rest of this module's refusal to write on nothing.
+        if vocabulary.entries:
+            vocabulary.write(resolved_vocabulary)
         # The package a person answers against must describe the session they now have.
         # Leaving the old one would show the pre-correction names next time it is opened,
         # and the second reviewer would answer a question that no longer exists.
