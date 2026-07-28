@@ -133,6 +133,44 @@ def test_links_resolve_by_basename_across_the_whole_vault(survey):
     assert any(n.path == "Chronicle/Places/Cinder Steps.md" for n in survey.notes)
 
 
+def test_link_topology_counts_each_outcome_itself(tmp_path):
+    """`link_topology()`'s own resolved/unresolved/ambiguous counters, pinned exactly.
+
+    The goal validator found this gap by mutation: replacing the classification inside
+    `link_topology()` with an unconditional `resolved += 1` left every other test green,
+    because `test_some_links_point_at_notes_that_were_never_written` reads
+    `unresolved_targets()` — a separate `_stems()` lookup — and only bounds the share from
+    above. So the `unresolved` and `ambiguous` figures that `docs/VAULT_INTEGRATION.md`
+    asks a reader to check were themselves unchecked.
+
+    Exact equality on a purpose-built vault, because a bound that a stub also satisfies is
+    not evidence. Two notes share the stem `Ambiguous` from different folders, which is
+    the only way to produce the ambiguous case at all.
+    """
+    vault = tmp_path / "vault"
+    (vault / "a").mkdir(parents=True)
+    (vault / "b").mkdir()
+    (vault / "Target.md").write_text("# Target\n")
+    (vault / "a" / "Ambiguous.md").write_text("# Ambiguous\n")
+    (vault / "b" / "Ambiguous.md").write_text("# Ambiguous\n")
+    (vault / "Source.md").write_text(
+        "# Source\n\n"
+        "[[Target]] and [[Target|again]]\n"          # 2 resolved, 1 of them piped
+        "[[Never Written]]\n"                        # 1 unresolved
+        "[[Ambiguous]]\n"                            # 1 ambiguous
+        "[[Target#Some Section]]\n"                  # 1 resolved, anchored
+    )
+
+    topology = survey_vault(vault).link_topology()
+    assert topology.resolved == 3
+    assert topology.unresolved == 1
+    assert topology.ambiguous == 1
+    assert topology.total == 5
+    assert topology.piped == 1
+    assert topology.anchored == 1
+    assert survey_vault(vault).ambiguous_titles() == ("Ambiguous",)
+
+
 def test_some_links_point_at_notes_that_were_never_written(survey):
     """Dangling links are ordinary, not damage.
 
