@@ -568,6 +568,25 @@ class TestAuthoredAndGeneratedBoundary:
         assert (marisol.path, "A Section Nobody Wrote", "section does not exist") in problems
         assert ("People/Nobody At All.md", "Overview", "note does not exist") in problems
 
+    def test_a_missing_source_is_reported_and_never_raised(self, survey):
+        """The contract is to return every reason a write must not happen.
+
+        `unsafe_targets` checked `notes` for the note and then indexed `sources` directly,
+        so a caller whose two maps disagreed got a `KeyError` instead of an entry in the
+        list. Latent today -- the only callers build both from one survey -- and exactly
+        what a caller assembling a package from more than one survey would hit. A safety
+        check that raises at the question "is this safe?" has given the one answer it
+        must never give.
+        """
+        note = next(n for n in survey.notes if n.path == "People/Marisol Quay.md")
+        problems = unsafe_targets(
+            {},  # sources deliberately empty while notes knows the note
+            {note.path: note},
+            [(note.path, "Notes")],
+            {},
+        )
+        assert problems == [(note.path, "Notes", "note does not exist")]
+
     def test_losing_the_records_costs_write_access_and_never_content(self, survey):
         """Fail-closed, checked by removing the records rather than by asserting the intent."""
         notes = {n.path: n for n in survey.notes}

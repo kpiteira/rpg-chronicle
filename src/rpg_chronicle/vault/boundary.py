@@ -179,7 +179,14 @@ def unsafe_targets(
     problems: list[tuple[str, str, str]] = []
     for note_path, section_title in targets:
         note = notes.get(note_path)
-        if note is None:
+        source = sources.get(note_path)
+        if note is None or source is None:
+            # Both maps are checked, and a note present in one but not the other is a
+            # missing note rather than a crash. This function's contract is to *return*
+            # every reason a write must not happen; raising `KeyError` at a caller that
+            # asked "is this safe?" is the one answer it must never give, and a partial
+            # `sources` map is exactly what a caller assembling a change package from
+            # more than one survey would hand it.
             problems.append((note_path, section_title, "note does not exist"))
             continue
         matches = [s for s in note.body_sections() if s.title == section_title]
@@ -194,7 +201,7 @@ def unsafe_targets(
             # target the caller could not have meant unambiguously.
             problems.append((note_path, section_title, AMBIGUOUS))
             continue
-        verdict = classify_region(sources[note_path], note, matches[0], records)
+        verdict = classify_region(source, note, matches[0], records)
         if verdict != TOOL_OWNED:
             problems.append((note_path, section_title, verdict))
     return problems
