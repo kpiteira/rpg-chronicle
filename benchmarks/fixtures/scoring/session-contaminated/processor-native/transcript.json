@@ -1,0 +1,5 @@
+{
+  "engine": "example-engine",
+  "model_file": "example-engine-v1.bin",
+  "note": "Invented fixture artifact naming the engine this manifest declares contaminating."
+}
