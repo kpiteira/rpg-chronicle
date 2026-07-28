@@ -10,9 +10,24 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
 from .model import Entity, ReviewQuestion, Scene, Thread, TranscriptTurn, evidence_for
+
+
+def _declared_aliases(item: dict[str, Any]) -> list[str]:
+    """Read a fixture's alias list, refusing anything that is not one.
+
+    `list("Kayleth")` is a list of seven characters and no exception, which is the worst
+    available outcome: the fixture would appear to declare seven aliases.
+    """
+    value = item.get("aliases", [])
+    if not isinstance(value, list) or not all(isinstance(alias, str) for alias in value):
+        raise ValueError(
+            f"fixture entity {item.get('name')!r} declares aliases {value!r}; "
+            "'aliases' must be a list of strings"
+        )
+    return list(value)
 
 
 @dataclass(frozen=True)
@@ -128,7 +143,7 @@ class FixtureAnalysisProvider:
                 id=item["id"],
                 name=item["name"],
                 kind=item["kind"],
-                aliases=list(item.get("aliases", [])),
+                aliases=_declared_aliases(item),
                 evidence=evidence_for(turns_by_id, item["turn_ids"]),
             )
             for item in declared.get("entities", [])

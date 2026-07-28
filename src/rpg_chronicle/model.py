@@ -84,7 +84,14 @@ class TranscriptTurn:
             )
         for name in ("speaker_coverage", "speaker_purity"):
             value = getattr(self, name)
-            if value is not None and not 0.0 <= value <= 1.0:
+            if value is None:
+                continue
+            # A stored session is JSON, so anything can arrive here. `bool` is excluded
+            # explicitly because it is an `int` and `True` would otherwise pass as a
+            # perfect share.
+            if isinstance(value, bool) or not isinstance(value, int | float):
+                raise TypeError(f"Turn {self.id} has {name}={value!r}, which is not a number")
+            if not 0.0 <= value <= 1.0:
                 raise ValueError(f"Turn {self.id} has {name}={value}, which is not a share")
 
 

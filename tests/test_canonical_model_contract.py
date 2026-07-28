@@ -20,7 +20,11 @@ import pytest
 from rpg_chronicle.analysis.provider import ModelAnalysisProvider, _merge_entities_and_threads
 from rpg_chronicle.model import CanonicalSession, TranscriptTurn, UnsupportedEvidenceError
 from rpg_chronicle.pipeline import SCHEMA_VERSION, UnreadableSessionError, run_pipeline
-from rpg_chronicle.providers import AnalysisResult, FixtureTranscriptProvider
+from rpg_chronicle.providers import (
+    AnalysisResult,
+    FixtureAnalysisProvider,
+    FixtureTranscriptProvider,
+)
 from rpg_chronicle.transcription.engine import (
     DiarizationResult,
     RecognitionResult,
@@ -167,6 +171,14 @@ def test_an_attribution_share_outside_zero_to_one_is_refused(field_name):
         TranscriptTurn(id="t1", start_ms=0, end_ms=10, text="Words.", **{field_name: 1.4})
 
 
+@pytest.mark.parametrize("field_name", ["speaker_coverage", "speaker_purity"])
+@pytest.mark.parametrize("bad", ["0.8", True, [0.8]])
+def test_an_attribution_share_that_is_not_a_number_is_refused(field_name, bad):
+    """A stored session is JSON, so a string reaches here; `True` is an `int` and is not a share."""
+    with pytest.raises(TypeError, match=field_name):
+        TranscriptTurn(id="t1", start_ms=0, end_ms=10, text="Words.", **{field_name: bad})
+
+
 class TestEntityMerging:
     """What happens when two overlapping windows describe the same name."""
 
@@ -214,6 +226,33 @@ class TestEntityMerging:
             {turn.id: turn for turn in turns},
         )
         assert sorted(entity.kind for entity in merged) == ["character", "faction"]
+
+    @pytest.mark.parametrize("bad", ["Kayleth", {"0": "Kayleth"}, [1]])
+    def test_a_fixture_alias_field_that_is_not_a_list_of_strings_is_refused(self, bad, tmp_path):
+        """`list("Kayleth")` is seven aliases and no exception, which is the worst outcome."""
+        fixture = tmp_path / "fixture.json"
+        fixture.write_text(
+            json.dumps(
+                {
+                    "expected_analysis": {
+                        "summary": "s",
+                        "scenes": [],
+                        "review_questions": [],
+                        "entities": [
+                            {
+                                "id": "e1",
+                                "name": "Kaelith",
+                                "kind": "character",
+                                "aliases": bad,
+                                "turn_ids": ["turn-001"],
+                            }
+                        ],
+                    }
+                }
+            )
+        )
+        with pytest.raises(ValueError, match="aliases"):
+            FixtureAnalysisProvider(fixture).analyze(self._turns())
 
     def test_a_fabricated_citation_on_an_entity_aborts_like_any_other_claim(self):
         turns = self._turns()
