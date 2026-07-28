@@ -839,3 +839,37 @@ def test_a_run_with_no_carry_forward_reproduces_the_analysis_alone(tmp_path, cap
     assert "carried forward" not in capsys.readouterr().out
     later = load_session(output / "r0-correction-hollow-bell-2" / "canonical-session.json")
     assert _named(later, "Vesh Kalder")
+
+
+def test_a_contested_name_can_be_settled_by_agreeing(tmp_path):
+    """Contested is a state with an exit, or the store's own promise is false.
+
+    It says a disputed name is left alone "until a person settles it". If the flag
+    latched, settling it would be impossible and carrying that name forward would be
+    dead for the life of the campaign.
+    """
+    vocabulary = Vocabulary()
+    common = {"kind": "character", "aliases": ["Vesh Kalder"], "session_id": "one"}
+    vocabulary.approve(canonical="Vesh Calder", approved_by="karl", approved_at=NOW, **common)
+    entry = vocabulary.approve(
+        canonical="Vesh Khaldur", approved_by="another-player", approved_at=LATER, **common
+    )
+    assert entry.contested
+
+    settled = vocabulary.approve(
+        canonical="Vesh Khaldur", approved_by="karl", approved_at="2026-07-30T09:00:00+00:00",
+        **common,
+    )
+    assert not settled.contested
+    assert settled.canonical == "Vesh Khaldur"
+    assert len(settled.approvals) == 3, "agreeing must not discard the history of the dispute"
+
+
+def test_a_third_person_can_reopen_a_settled_name(tmp_path):
+    vocabulary = Vocabulary()
+    common = {"kind": "character", "aliases": ["Vesh Kalder"], "session_id": "one"}
+    vocabulary.approve(canonical="Vesh Calder", approved_by="karl", approved_at=NOW, **common)
+    entry = vocabulary.approve(
+        canonical="Vesh Kaldyr", approved_by="a-third-player", approved_at=LATER, **common
+    )
+    assert entry.contested

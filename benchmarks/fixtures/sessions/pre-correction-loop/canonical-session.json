@@ -3,7 +3,7 @@
   "session_id": "r0-synthetic-crossroads",
   "source": {
     "kind": "json",
-    "path": "/Users/karl/Documents/dev/rpg-review/benchmarks/fixtures/r0_synthetic_session.json"
+    "path": "benchmarks/fixtures/r0_synthetic_session.json"
   },
   "status": "review_ready",
   "turns": [

@@ -21,8 +21,10 @@ different person later approves another for the same name, the entry becomes con
 and stops being applied. Overwriting the first approval would be exactly the silent
 overwrite of authored content `AGENTS.md` rule 12 forbids; picking the older one would
 ignore the newer person; guessing between two people is not the software's call. Both
-approvals stay in the file and the name is left alone until a person settles it. One
-person changing their own mind is not a disagreement, and supersedes cleanly.
+approvals stay in the file and the name is left alone until a person settles it -- and
+settling it means agreeing, which clears the flag, because a contested state with no exit
+would make that sentence false. One person changing their own mind is not a disagreement
+and supersedes cleanly; that is the same rule counted over two people.
 """
 
 from __future__ import annotations
@@ -48,6 +50,25 @@ def fold_surface(value: str) -> str:
     to disagree, and the disagreement would show up as a name that never quite matches.
     """
     return " ".join(value.split()).casefold()
+
+
+def _is_contested(approvals: list[dict[str, Any]]) -> bool:
+    """Whether the people who have spoken currently disagree.
+
+    Recomputed from each approver's *latest* approval every time, rather than latched once
+    and carried forward. A sticky flag would have made "contested" a state with no exit:
+    the store says a disputed name is left alone until a person settles it, and if agreeing
+    could not clear the flag then settling it was impossible and the promise was false.
+    Deciding from the latest approval per person is the same rule that already lets one
+    person change their own mind, applied to two.
+
+    The full history stays in `approvals` either way. What is recomputed is only who
+    currently believes what.
+    """
+    latest: dict[str, str] = {}
+    for approval in approvals:
+        latest[str(approval.get("by"))] = fold_surface(str(approval.get("canonical", "")))
+    return len(set(latest.values())) > 1
 
 
 @dataclass
@@ -124,18 +145,9 @@ class Vocabulary:
 
         approvals: list[dict[str, Any]] = []
         known: list[str] = []
-        contested = False
-        previous_canonicals: set[str] = set()
         for entry in overlapping:
             approvals.extend(entry.approvals)
             known.extend(entry.surfaces())
-            contested = contested or entry.contested
-            previous_canonicals.add(fold_surface(entry.canonical))
-
-        prior_approvers = {str(item.get("by")) for item in approvals}
-        disagrees = bool(previous_canonicals) and previous_canonicals != {fold_surface(canonical)}
-        if disagrees and prior_approvers - {approved_by}:
-            contested = True
 
         approvals.append(
             {
@@ -147,6 +159,7 @@ class Vocabulary:
                 "question_id": question_id,
             }
         )
+        contested = _is_contested(approvals)
 
         merged: list[str] = []
         for item in [*surfaces, *known]:

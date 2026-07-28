@@ -7,7 +7,14 @@ uv run rpg-chronicle run-fixture benchmarks/fixtures/r0_synthetic_session.json -
 ```
 
 on `main` at c92680c — the commit A02 branched from, before any file in
-`src/rpg_chronicle/review/` existed. Both files are copied here verbatim.
+`src/rpg_chronicle/review/` existed.
+
+**One field was edited.** `source.path` held the absolute path of the machine that ran
+it, including a username, which has no business in a public repository and nothing reads.
+It now holds the repository-relative path to the same fixture. Nothing else was touched,
+and the edit cannot weaken what this payload demonstrates: that is the *absence* of
+`needs_attention[].id`, `needs_attention[].status`, and `provenance.corrections`, none of
+which is reachable from a source path.
 
 It is committed rather than regenerated because regenerating it with current code would
 test nothing: the point is to load a payload this repository actually wrote under the
