@@ -20,7 +20,7 @@ by hand with:
 uv run rpg-chronicle vault-survey tests/fixtures/synthetic_vault
 ```
 
-The oddities are deliberate. A key spelled two ways, a link pointing at a note that was
+The oddities are deliberate. A key whose value is shaped two ways, a link pointing at a note that was
 never written, a note with nothing in it, a session whose frontmatter carries fields no
 other session has — every one of those reproduces something a real vault does, and a
 fixture that tidied them up would let software pass here and fail on contact with a

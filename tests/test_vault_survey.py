@@ -78,8 +78,11 @@ def test_note_types_come_from_frontmatter_not_from_the_folder(survey):
     assert sessions and all(n.note_type is None for n in sessions)
 
 
-def test_the_same_key_is_spelled_more_than_one_way(survey):
+def test_one_key_carries_more_than_one_value_shape(survey):
     """Arity is not a property of a key, so a tool cannot infer it and must not impose it.
+
+    Value shape, not key spelling. The two are separate findings and the earlier name for
+    this test blurred them.
 
     This is the finding that rules out a YAML round-trip: `related_npcs` is a block list
     in one note, a comma-joined string in another and a bare scalar in a third, and any
@@ -202,6 +205,27 @@ def test_a_dot_in_a_note_title_is_not_a_file_extension(tmp_path):
         "Ward",
     }
     assert found.link_topology().unresolved == 0
+
+
+def test_an_embed_is_an_asset_only_when_it_names_one(tmp_path):
+    """`![[Dr. Grey]]` transcludes a note; a dot in a title does not make it a picture.
+
+    The same mistake as `Link.basename` had, in the branch the first fix did not reach.
+    Left alone it would have skewed the embed counts in the one direction that matters:
+    a note transclusion counted as an image is a link between two notes that the topology
+    does not know about.
+    """
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    (vault / "art.png").write_bytes(b"\x89PNG\r\n\x1a\n")
+    (vault / "Dr. Grey.md").write_text("# Dr. Grey\n")
+    (vault / "Ward.md").write_text(
+        "# Ward\n\n![[art.png]]\n\n![[Dr. Grey]]\n\n![[Dr. Grey.md]]\n"
+    )
+
+    topology = survey_vault(vault).link_topology()
+    assert topology.embeds_to_asset == 1
+    assert topology.embeds_to_note == 2
 
 
 def test_a_provenance_key_is_recognised_however_it_is_spelled(tmp_path):

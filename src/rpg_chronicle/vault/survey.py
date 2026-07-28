@@ -231,11 +231,15 @@ class VaultSurvey:
         return dict(grouped)
 
     def inconsistent_value_shapes(self) -> dict[str, tuple[str, ...]]:
-        """Keys that are spelled more than one way across the vault.
+        """Keys whose *values* take more than one shape across the vault.
 
-        A key here is one a consumer cannot infer arity for. `affiliation` holding a
-        bare name in one note and two comma-joined names in another means a tool reading
-        it has to accept both and must not rewrite either into the other.
+        This is about value shape, not key spelling -- the two are different findings and
+        conflating them in the wording made this read as something it does not do. A key
+        here is one a consumer cannot infer arity for: `affiliation` holding a bare name
+        in one note and two comma-joined names in another means a tool reading it has to
+        accept both and must not rewrite either into the other. Key *spelling* drift
+        (`related_npcs` against `related npcs`) is a separate question this does not
+        answer; `_normalise_key` is where that idea lives.
         """
         shapes: dict[str, set[str]] = defaultdict(set)
         for note in self.notes:
@@ -257,7 +261,13 @@ class VaultSurvey:
         for note in self.notes:
             for link in note.links:
                 if link.is_embed:
-                    if link.target in self.asset_names or Path(link.target).suffix:
+                    # An embed is an asset when it names one, not when it merely
+                    # contains a dot. `![[Dr. Grey]]` transcludes a note, and
+                    # `![[Note.md]]` transcludes a note whose link spells the extension
+                    # out -- treating either as an image is the same dot-in-title
+                    # mistake `Link.basename` had.
+                    name = link.target.rsplit("/", 1)[-1]
+                    if name in self.asset_names or Path(name).suffix.lower() in ASSET_SUFFIXES:
                         embeds_asset += 1
                     else:
                         embeds_note += 1
@@ -544,7 +554,7 @@ def format_report(survey: VaultSurvey) -> str:
         rendered = ", ".join(f"{key}({count})" for key, count in ranked(keys))
         lines.append(f"  {note_type}: {rendered}")
 
-    section("frontmatter keys spelled more than one way")
+    section("frontmatter keys whose values take more than one shape")
     drift = survey.inconsistent_value_shapes()
     if drift:
         for key, shapes in sorted(drift.items()):
