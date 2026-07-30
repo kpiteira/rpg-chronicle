@@ -34,22 +34,43 @@ Examples not worth asking:
 
 ## Attention budget
 
-The queue is capped, and the cap is a number rather than an intention.
+**What asks the questions is `prompts/session-agent.md`, and it has no numeric cap.**
+Judgement is the limit, and a long queue is reported as a finding rather than truncated into
+looking normal.
 
-`docs/PRODUCT.md` puts the north star at around five minutes of review for a typical
-four-hour session. At roughly thirty seconds to read a question, weigh a recommendation,
-and act on it, that is **ten questions for a full session**. Ten is therefore the default
-bound.
+**The code cap is still there and still silent.** `_rank` in
+`src/rpg_chronicle/analysis/provider.py` ends with `ranked[: self._max_questions]`, so the
+candidate questions the pipeline hands the agent are truncated at ten with nothing recording
+how many were dropped. The agent forms its own questions from the transcript and is not
+bound by that list, which is why the cap no longer governs what reaches a person — but the
+code has not changed and this section would be describing an intention rather than the
+repository if it said otherwise. Removing it is #46.
 
-Three properties follow, and all three are load-bearing:
+The reversal is worth reading, because the original reasoning was sound and the mechanism
+was not. `docs/PRODUCT.md` puts the north star at around five minutes of review for a
+four-hour session; at thirty seconds a question that is ten questions, so ten became a bound
+enforced in code.
 
-- The bound is enforced in code, not requested of a model. A generator asked for at most
-  ten questions usually returns at most ten, and "usually" is not a bound.
-- It is a budget, not a target. Three questions that matter is a better outcome than ten.
-  An analysis pass that emits eighty questions has failed even if every one is correct.
-- What gets kept when the bound binds is the most consequential first, and among equally
-  consequential questions the least confident first. A high-consequence claim the system
-  is sure about is worth less human attention than one it is guessing at.
+Two things were wrong with it. **The truncation was silent**: nothing recorded how many
+questions were dropped, so a queue trimmed from forty to ten was indistinguishable from a
+session that produced ten. That is a control reporting a complete answer when it has not
+given one, which D-019 is about. And **the cap was never the binding constraint.** On an
+hour of real audio the pipeline produced three questions against a bound of ten, while
+silently filing known recogniser manglings as alternative spellings instead of asking about
+them. Removing the cap would have changed nothing; the failure was upstream of it.
+
+What survives from the original reasoning:
+
+- It is a budget, not a target. Three questions that matter beats ten. A pass that emits
+  eighty has failed even if every one is correct — and it should say so, plainly, rather
+  than hand over the first ten.
+- Most consequential first, and among equally consequential ones the least confident first.
+  A high-consequence claim the system is sure about is worth less attention than one it is
+  guessing at.
+- A suspected recogniser mangling of a name is always worth asking, because it costs the
+  reader five seconds and a wrong name becomes a note title and a dozen links.
+
+`prompts/session-agent.md` is where this now lives in executable form.
 
 A question about something the session deliberately left open — a cliffhanger, an
 unresolved thread the table intends to resolve next time — is not a review question. It

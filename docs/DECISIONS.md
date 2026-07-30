@@ -411,3 +411,81 @@ same turns are two claims.
 
 Rule going forward: when a control cannot answer, it says so. Producing the reassuring
 answer instead is the failure mode all three of these shared.
+
+## D-020: The vault is updated by an agent that reads it, not by a mapping layer
+
+The plan was a mapper: code that turned canonical entities into notes by rule — character to
+`Characters/`, thread to `Quests/`, scene to a session note. The operator rejected it on the
+grounds that the vault is a connected graph of facts rather than a pile of session logs, and
+that the intelligence updating it should read it first, the way a coding agent reads a
+repository before changing it. He had already run that workflow for a whole campaign with
+handwritten notes as the input; this project replaces the handwriting, not the workflow.
+
+What replaces the mapper is `prompts/session-agent.md`. What stays as software is the guard:
+vault reading (`src/rpg_chronicle/vault/`), the boundary that refuses to touch authored
+regions, and git for preview, history and undo.
+
+### Why a mapping layer could not have worked
+
+Three defects in one hour of real audio, each caught by an agent that read the vault, and
+none of them fixable by a mapping table.
+
+- **A goddess typed as a faction.** `Cadence` is a luck deity an order worships. No rule
+  connecting entity kinds to folders knows that the reference vault gives patrons their own
+  folder and their own `type:`; the vault knows, and only a reader of it can.
+- **A character trait deleted as noise.** The transcript-only pass recommended normalising
+  "Firlbog" to "Firbolg" as recogniser error. The recording says Lug *"dislikes being
+  described as a Firlbog, which people tend to do. It feels like a slur."* Normalising would
+  have removed something about him.
+- **The wrong character credited.** The pass recorded one character charming a mob; the
+  transcript has another casting the spell and failing on a natural 20.
+
+The check that passed that summary compared it against scenes and threads produced by the
+same model in the same pass. Internal consistency reported as accuracy, which is the
+tautology rule of `AGENTS.md` shared rule 8 committed one level up, against a summary rather
+than against a test.
+
+### The session note is a hub, not a narrative
+
+The reference vault's session notes are long scene-by-scene narratives. They are that way
+because they were written from sparse handwritten notes — the prose *was* the record, since
+nothing else existed. With a full timestamped transcript that is no longer true, and the
+first draft produced 3,947 words for one hour, roughly a novella per four-hour session.
+
+The note now says what happened and points at the notes holding the detail: an arc in a few
+paragraphs, a timestamped event table, then one line per character, NPC, deity, faction,
+location, item, mechanic and plot. Completeness is required and length is not — a name
+missing from the hub is a note that never gets written.
+
+**Only events in the session's story belong on the timeline**, because a timestamp marks
+when something was *said*, not when it *happened*. History the GM narrates is world
+knowledge; a rule the table invents is a mechanic; initiative and turn order are neither.
+Mixing them makes a cataclysm two months before play read as tonight's news. The standard
+for what earns a line is what a player would tell a friend who missed the session.
+
+### What was measured
+
+Two hours of real audio through the whole chain, the second from an unconverted recorder
+file rather than a prepared transcript.
+
+- 45 notes, **zero unresolved links, zero duplicate basenames**; a quest opened in hour one
+  moved to `Quests/Completed/` when hour two resolved it.
+- The second run was given no indication that its audio continued the first. It read
+  `covers: first 60 minutes` in the existing session note, concluded the recording was the
+  same evening, and extended that note rather than inventing a second session.
+- The reference vault is byte-identical after three runs, checked with `vault-digest`.
+- It contradicted the operator with evidence — told four players, it found five and made the
+  case rather than reconciling silently.
+
+### Stated limits
+
+- **The correction path has never run.** The operator had nothing to correct on either
+  draft, so the step where his edits become the authority is unexercised.
+- **Progress reporting does not work.** A pipeline run in the foreground cannot report while
+  it blocks, so the operator gets silence for the length of a transcription. The brief asks
+  for reporting and supplies no mechanism; it needs one.
+- **The test corpus cannot answer a question.** A published recording has no table to ask,
+  so any reading the agent flags for confirmation stays open permanently. Questions are
+  therefore the least tested part of the loop.
+- **Both runs used professionally produced audio.** A room mic will be harder, and the name
+  manglings this loop exists to catch will be more frequent, not less.
