@@ -430,15 +430,17 @@ regions, and git for preview, history and undo.
 Three defects in one hour of real audio, each caught by an agent that read the vault, and
 none of them fixable by a mapping table.
 
-- **A goddess typed as a faction.** `Cadence` is a luck deity an order worships. No rule
-  connecting entity kinds to folders knows that the reference vault gives patrons their own
-  folder and their own `type:`; the vault knows, and only a reader of it can.
-- **A character trait deleted as noise.** The transcript-only pass recommended normalising
-  "Firlbog" to "Firbolg" as recogniser error. The recording says Lug *"dislikes being
-  described as a Firlbog, which people tend to do. It feels like a slur."* Normalising would
-  have removed something about him.
-- **The wrong character credited.** The pass recorded one character charming a mob; the
-  transcript has another casting the spell and failing on a natural 20.
+- **A deity typed as a faction.** A god that one character's order worships was recorded as
+  an organisation. No rule connecting entity kinds to folders knows that the reference vault
+  gives deities their own folder and their own `type:`; the vault knows, and only a reader of
+  it can.
+- **A character trait deleted as noise.** The pass read a variant spelling of a fantasy
+  ancestry as recogniser error and recommended normalising it away. The recording establishes
+  that the character objects to being called by that variant and finds it demeaning — so it
+  is a trait rather than a mishearing, and normalising would have removed something about
+  him.
+- **The wrong character credited.** The pass recorded one character talking down a hostile
+  crowd; the transcript has a different character attempting it and failing on a natural 20.
 
 The check that passed that summary compared it against scenes and threads produced by the
 same model in the same pass. Internal consistency reported as accuracy, which is the
