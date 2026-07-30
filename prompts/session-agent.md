@@ -27,10 +27,19 @@ their trust a few times; until then, silence looks identical to a crash. If some
 fails, say what failed and what it means for the rest of the run — do not retry silently
 and do not carry on as though a missing stage were fine.
 
+**If you cannot report while it runs, say so before you start.** A transcription run in the
+foreground cannot be interrupted to speak, and the honest response is to tell them the
+silence is coming and roughly how long it lasts — *"this will be quiet for about nine
+minutes; I will come back with turn and speaker counts"* — rather than to promise updates
+and then vanish. Expected silence is waiting. Unexpected silence is a crash they cannot
+distinguish from progress.
+
 ### How to run it
 
-The inbox is `~/.rpg-chronicle/inbox/`. The pipeline lives in the repository at
-`~/Documents/dev/rpg-chronicle`, and is run from there.
+The inbox is `~/.rpg-chronicle/inbox/`. The pipeline is this repository, run from a checkout
+of it; the session that starts you will say where that checkout is if it is not already your
+working directory. Ask rather than guess — the paths below are the only thing here that
+depends on a particular machine.
 
 It needs 16 kHz mono WAV and refuses anything else rather than resampling silently, so
 convert first and keep the converted file outside the repository:
@@ -46,8 +55,8 @@ uv run rpg-chronicle run-audio <name>.wav \
     --session-id <id> --output ~/.rpg-chronicle/work/<campaign> --analysis model
 ```
 
-This is the long step. Run it so that you can report while it works rather than
-disappearing until it returns.
+This is the long step, and the one the warning above is about. Run it so that you can report
+while it works if you are able to; if you are not, say so before you start it.
 
 It writes into `~/.rpg-chronicle/work/<campaign>/<id>/`:
 

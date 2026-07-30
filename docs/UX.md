@@ -34,14 +34,22 @@ Examples not worth asking:
 
 ## Attention budget
 
-The queue is **not** capped by a number. Judgement is the limit, and a long queue is
-reported as a finding rather than truncated into looking normal.
+**What asks the questions is `prompts/session-agent.md`, and it has no numeric cap.**
+Judgement is the limit, and a long queue is reported as a finding rather than truncated into
+looking normal.
 
-This reverses an earlier decision, and the reversal is worth reading because the original
-reasoning was sound and the mechanism was not. `docs/PRODUCT.md` puts the north star at
-around five minutes of review for a four-hour session; at thirty seconds a question that is
-ten questions, so ten became a bound enforced in code — `ranked[:max_questions]` in the
-analysis provider.
+**The code cap is still there and still silent.** `_rank` in
+`src/rpg_chronicle/analysis/provider.py` ends with `ranked[: self._max_questions]`, so the
+candidate questions the pipeline hands the agent are truncated at ten with nothing recording
+how many were dropped. The agent forms its own questions from the transcript and is not
+bound by that list, which is why the cap no longer governs what reaches a person — but the
+code has not changed and this section would be describing an intention rather than the
+repository if it said otherwise. Removing it is #46.
+
+The reversal is worth reading, because the original reasoning was sound and the mechanism
+was not. `docs/PRODUCT.md` puts the north star at around five minutes of review for a
+four-hour session; at thirty seconds a question that is ten questions, so ten became a bound
+enforced in code.
 
 Two things were wrong with it. **The truncation was silent**: nothing recorded how many
 questions were dropped, so a queue trimmed from forty to ten was indistinguishable from a
